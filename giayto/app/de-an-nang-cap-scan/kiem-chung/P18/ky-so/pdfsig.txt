@@ -1,0 +1,39 @@
+== da-ky-app-tao-ui.pdf
+Digital Signature Info of: da-ky-app-tao-ui.pdf
+Signature #1:
+  - Signature Field Name: Signature1791860673115
+  - Signer Certificate Common Name: Nguyễn Văn Thử
+  - Signer full Distinguished Name: CN=Nguyễn Văn Thử
+  - Signing Time: Oct 13 2026 03:04:33
+  - Signing Hash Algorithm: SHA-256
+  - Signature Type: adbe.pkcs7.detached
+  - Signed Ranges: [0 - 1231], [17617 - 18392]
+  - Total document signed
+  - Signature Validation: Signature is Valid.
+  - Certificate Validation: Certificate issuer is unknown.
+== da-ky-cu-3des.pdf
+Digital Signature Info of: da-ky-cu-3des.pdf
+Signature #1:
+  - Signature Field Name: Signature1791860664996
+  - Signer Certificate Common Name: Nguyễn Văn Thử
+  - Signer full Distinguished Name: O=P18,CN=Nguyễn Văn Thử
+  - Signing Time: Oct 13 2026 03:04:24
+  - Signing Hash Algorithm: SHA-256
+  - Signature Type: adbe.pkcs7.detached
+  - Signed Ranges: [0 - 1231], [17617 - 18392]
+  - Total document signed
+  - Signature Validation: Signature is Valid.
+  - Certificate Validation: Certificate issuer is unknown.
+== da-ky-moi-aes.pdf
+Digital Signature Info of: da-ky-moi-aes.pdf
+Signature #1:
+  - Signature Field Name: Signature1791860657951
+  - Signer Certificate Common Name: Nguyễn Văn Thử
+  - Signer full Distinguished Name: O=P18,CN=Nguyễn Văn Thử
+  - Signing Time: Oct 13 2026 03:04:17
+  - Signing Hash Algorithm: SHA-256
+  - Signature Type: adbe.pkcs7.detached
+  - Signed Ranges: [0 - 1231], [17617 - 18392]
+  - Total document signed
+  - Signature Validation: Signature is Valid.
+  - Certificate Validation: Certificate issuer is unknown.
