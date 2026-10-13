@@ -8,7 +8,7 @@
 - **HM-01 (12/10):** `npx vitest run` thoát **mã 0** (trước đó 830 đạt nhưng mã 1 do app-routing.test thiếu IndexedDB). Khi chạy kiểm thử luôn kiểm cả mã thoát, không chỉ số đạt.
 - Không chạy `scripts/dong-bo-tien-do.py` khi chưa đọc: nó ghi đè TIEP-THEO.md.
 
-Gói R: 24/27 xong, **R6.2 làm một phần (chưa gạch)**. Còn R6.2 (phần 2), R6.4, R6.5 — đều chờ người dùng.
+Gói R: 25/27 xong — **R6.2 ĐÃ XONG 13/10/2026 (P17, HM-12: app 98,68% vs Cam 98,88%, đạt; xem TD-42/43)**. Còn R6.4 (= HM-14) và R6.5 — chờ người dùng.
 
 ## Vừa làm: R6.2 — bộ ảnh NB + kịch bản so OCR
 - Dựng `kiem-chung/bo-anh-NB/` (ảnh gốc từ PDF, chữ chuẩn 4.082 ký tự do trợ lý chép — **cần người dùng rà**), thư mục `cam/` đang trống.

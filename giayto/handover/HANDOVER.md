@@ -1,5 +1,5 @@
-# BÀN GIAO ĐÓNG PHIÊN — GIAYTO — Phiên P16 — 2026-10-13
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng phiên: người dùng yêu cầu bàn giao tiến độ + nợ kỹ thuật cho phiên sau
+# BÀN GIAO ĐÓNG PHIÊN — GIAYTO — Phiên P17 — 2026-10-13
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng phiên: người dùng yêu cầu đóng phiên + bàn giao (P17 đã làm HM-10, Q6, HM-12)
 
 ## 1. Dự án và môi trường
 App: Ghi Nhanh — Quét tài liệu (giayto-scan): React 19 + TanStack Start (SSR, Cloudflare) + Tailwind 4 + PWA, dự án Lovable (không viết lại lịch sử git).
@@ -13,10 +13,11 @@ Quy ước: chỉnh style chỉ ở lớp Tailwind/styles.css; không format hà
 - Thử gọi AI trong sandbox cần build với `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` giả và `--var SUPABASE_URL:... SUPABASE_PUBLISHABLE_KEY:...` cho wrangler (nếu không, lệnh gọi không tới máy chủ).
 - Cổng R6.1: `npx vite dev --port 8081` rồi `node scripts/playwright/kiem-cong-r61.mjs ...` (xem đầu tệp).
 - Bẫy đã gặp: (1) `pkill -f "mẫu"` tự khớp chính lệnh bash chứa mẫu đó → dừng giữa chừng (mã 144) — dùng `pgrep -x workerd`/`kill` theo PID; (2) lệnh `str.replace` không khớp thì im lặng → luôn `assert` trước khi thay; (3) chép từ thư mục làm việc đè lên bản đóng gói làm mất ghi chú (đã xảy ra với TIEP-THEO.md); (4) xoá phần tử toast bằng script làm sập thư viện toast — đọc, đừng xoá.
+- Sandbox P17: vite dev cần `--host 127.0.0.1` (không IPv6); playwright PYTHON phải đúng bản (`pip install playwright==1.56.0` cho chromium-1194); không có tesseract → dùng shim tesseract.js (npm tesseract.js@7.0.0 + @tesseract.js-data/vie, cùng cách TD-42); `pkill -f vite` làm chết chính lệnh bash (mã 144) — dùng pgrep/kill theo PID.
 - Mọi script kiểm chứng nằm ở `app/scripts/playwright/` (kiem-*.mjs); đầu mỗi tệp có cách chạy.
 
 ## 2. Đề án và trạng thái (khớp backlog.json)
-Đề án: v1.2 (v1.0 duyệt 12/10; v1.1 xác nhận 13/10; v1.2 chờ xác nhận) — de-an/DE_AN_GIAYTO_v1.2.docx. Kết quả: 12/18 đạt, 2 hủy (HM-02, HM-16), 4 chờ/hoãn.
+Đề án: v1.2 (v1.0 duyệt 12/10; v1.1 xác nhận 13/10; v1.2 chờ xác nhận) — de-an/DE_AN_GIAYTO_v1.2.docx. Kết quả (P17): 14/18 đạt, 3 hủy (HM-02, HM-16, HM-18), 1 chờ (HM-14).
 | ID | Tên | Ưu tiên | Kết quả | ZIP |
 |----|-----|---------|---------|-----|
 | HM-01 | Bộ kiểm thử thoát mã 0 + cài đặt tái lập | P1 | Đạt V2 | GIAYTO_P02_HM01_20261012.zip |
@@ -41,13 +42,13 @@ Quy ước: chỉnh style chỉ ở lớp Tailwind/styles.css; không format hà
 ## 3. Việc đã làm (tóm tắt; chi tiết trong ghi_chu_ban_giao của từng hạng mục)
 Bộ kiểm thử thoát mã 0 (189 tệp/864); bắt lỗi IndexedDB; giới hạn AI 60/giờ/IP; thanh công cụ 1 hàng; vùng chạm ≥40 px (78→1); dọn lint; báo rõ khi không tải được gói nhận chữ; service worker theo bản build (giữ gói OCR); bỏ nạp sớm 0,7 MB ở màn Công cụ; giữ khối màu mép (cổng R6.1: NB 1→8/13, 221 ca cũ không hồi quy); package.json/script check; rà 13 mục cũ. Hủy HM-02 (phát hiện sai F-03).
 
-## 4. Hạng mục kế tiếp (đủ để làm ngay khi có dữ liệu/quyết định)
-Không còn hạng mục nào trợ lý làm một mình ngoài HM-10 (tùy chọn, bố cục màn rộng).
-1. **Q6** (HM-18): 5 ca ảnh NB còn trượt cổng R6.1 vì app không dò được mép giấy (quad=null, góc trên-trái là mặt bàn tối): (a) chấp nhận [đề xuất] / (b) HM-18 cải thiện dò mép (cỡ M) / (c) nới cổng.
-2. **HM-12**: cần ảnh CamScanner cùng trang (JPG/PDF; Auto + Magic Color + Original) vào `de-an-nang-cap-scan/kiem-chung/bo-anh-NB/cam/` và máy có tesseract tiếng Việt: `python3 scripts/kiem-chung-r62/chay-app.py` rồi `so-ocr.py` (ngưỡng OCR ≥ Cam − 2%).
-3. **HM-14**: người dùng thử máy thật Android/iPhone theo 12 tình huống B13; gộp V0 (ảnh 12 MP), S12c (AI thật 3 lời gọi, kiểm UI Chẩn đoán), TD-01, TD-15 (4 quyết định chủ dự án). Đặc biệt xem: bố cục sau khi Button cao hơn (TD-27), có gặp lỗi dò khung như NB không.
-4. Cho phép **commit/đẩy lên nhánh `claude/web-app-upgrade-o0g6az`** (TD-39) — trợ lý sẽ commit từ ZIP mới nhất.
-5. Khi chốt: phát hành đề án bản cuối (R6.5/báo cáo tổng) — chú ý gói R6.5 cũ cần đề án nền v4 (không có trong ZIP).
+## 4. Hạng mục kế tiếp
+Trợ lý không còn hạng mục nào làm một mình. Còn lại:
+1. **HM-14**: người dùng thử máy thật Android/iPhone theo 12 tình huống B13; gộp V0 (ảnh 12 MP), S12c (AI thật 3 lời gọi, kiểm UI Chẩn đoán), TD-01, TD-15 (4 quyết định chủ dự án). Xem: bố cục sau khi Button cao hơn (TD-27), màn Tài liệu 2 cột (HM-10), có gặp lỗi dò khung như NB không.
+2. Người dùng xác nhận đề án v1.2; mức 60 lượt AI/giờ giữ hay đổi (TD-28).
+3. Tạo PR từ nhánh claude/read-content-continue-progress-1a7044 nếu muốn (chưa tạo).
+4. Khi chốt: phát hành đề án bản cuối (R6.5/báo cáo tổng) — gói R6.5 cũ cần đề án nền v4 (không có trong ZIP; TD-41).
+5. Tùy chọn: mở rộng bố cục màn rộng sang Trang chủ/Công cụ/Tôi (cần duyệt thiết kế, TD-44); chạy lại so-ocr.py bằng tesseract gốc (TD-42); thêm trang mẫu OCR (TD-43).
 
 ## 5. Việc dở dang chính xác
 Không có. Mọi hạng mục đã đóng trọn hoặc hoãn có chủ đích.
@@ -85,12 +86,16 @@ Không có. Mọi hạng mục đã đóng trọn hoặc hoãn có chủ đích.
 Đầy đủ ở `app/docs/NO-KY-THUAT.md` (mục 0 cập nhật 13/10: đã đóng + TD-26…TD-41 còn mở) và tóm tắt ở `handover/TIEN_DO_VA_NO_KY_THUAT.md`. Nhắc các nợ quan trọng nhất: TD-26 (chưa máy thật/Cloudflare/AI thật), TD-27 (Button cao hơn toàn app), TD-28 (giới hạn AI trong bộ nhớ), TD-29 (5 ca NB), TD-30 (SW: chưa thử nâng cấp từ SW cũ thật; đặt BUILD_ID), TD-39 (chưa commit).
 
 ## 8. Việc người dùng cần làm
+(P17) Còn lại: xác nhận đề án v1.2 • mức 60 lượt AI/giờ • thử máy thật (HM-14) • tùy chọn: đọc rà chữ chuẩn trang NB, tạo PR. (Danh sách cũ bên dưới đã xử lý: Q6, đẩy GitHub, ảnh Cam.)
 Xác nhận đề án v1.2 • Q6 • mức 60 lượt AI/giờ có phù hợp • cho phép đẩy GitHub • gửi ảnh Cam + chạy tesseract tiếng Việt (HM-12) • thử máy thật (HM-14) • đặt BUILD_ID khi build (tuỳ chọn).
 
 ## 9. Đường lui
-Mã app = ZIP P15 (P16 chỉ thêm tài liệu/tiến độ). Hoàn tác từng hạng mục: dùng ZIP của hạng mục trước (bảng ở Mục 2 + de-an Mục 10). Bản gốc: GIAYTO_P01_KHOITAO_20261012.zip (checksum baseline/BASELINE.sha256 trong ZIP đó).
+Mã app = ZIP P17 (P17 đổi app-shell.tsx + documents.tsx so với P15/P16; hoàn tác HM-10: về ZIP P15/P16). Hoàn tác từng hạng mục: dùng ZIP của hạng mục trước (bảng ở Mục 2 + de-an Mục 10). Bản gốc: GIAYTO_P01_KHOITAO_20261012.zip (checksum baseline/BASELINE.sha256 trong ZIP đó).
 
-## 10. File đã chạm trong phiên P16
+## 10. File đã chạm trong phiên P17
+src/components/app-shell.tsx, src/routes/documents.tsx (HM-10), scripts/playwright/kiem-man-rong.mjs, de-an-nang-cap-scan/kiem-chung/bo-anh-NB/cam/* (8 PDF Cam) + README, kiem-chung/R6.2/*, tien-do.json, LO-TRINH.md, docs/NO-KY-THUAT.md, handover/*, evidence/hm10*, hm12*.
+
+## 10b. (cũ) File đã chạm trong phiên P16
 de-an-nang-cap-scan/tien-do.json (+18 mục HM-xx), LO-TRINH.md (bảng đếm), docs/NO-KY-THUAT.md (mục 0 mới), de-an/DE_AN_GIAYTO_v1.2.docx, handover/*.
 
 ## 11. Nhật ký ngắn
