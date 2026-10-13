@@ -30,7 +30,7 @@ Quy ước: chỉnh style chỉ ở lớp Tailwind/styles.css; không format hà
 | HM-09 | Đo tải trang; bỏ ~0,7 MB nạp sớm ở màn Công cụ | P3 | Đạt V3 | GIAYTO_P11_HM09_20261012.zip |
 | HM-10 | Bố cục màn rộng (đề xuất) | P3 | Đạt V3 (P17; chưa đóng ZIP) | — |
 | HM-11 | R6.1e: giữ khối màu bão hoà ở mép trang (Q3=a) | P2 | Đạt V3 | GIAYTO_P15_HM11_20261013.zip |
-| HM-12 | R6.2 phần 2: so OCR với CamScanner | P2 | Chưa làm | — |
+| HM-12 | R6.2 phần 2: so OCR với CamScanner | P2 | Đạt V3 (P17; app 98,68% vs Cam 98,88%) | — |
 | HM-13 | Rà 13 mục S/V cũ đang dở | P3 | Đạt V1 | GIAYTO_P12_HM13_20261013.zip |
 | HM-14 | R6.4 UAT máy thật + R6.5 đề án cuối | P2 | Chưa làm | — |
 | HM-15 | App không bắt lỗi khi IndexedDB không dùng được | P2 | Đạt V3 | GIAYTO_P04_HM15_20261012.zip |
@@ -100,3 +100,4 @@ de-an-nang-cap-scan/tien-do.json (+18 mục HM-xx), LO-TRINH.md (bảng đếm),
 - P17 (13/10/2026): HM-10 xong — /documents 2 cột từ 1024 px (AppShell prop wide). Mã đã commit lên nhánh claude/read-content-continue-progress-1a7044 (thư mục giayto/); TD-39 đóng.
 - P17: nhận 2 PDF "Ảnh gốc bài báo Ninh Bình": tệp 1 trùng byte với goc/IMG_NB_01.jpg; tệp 2 (2197×3009, đã xử lý) đặt vào cam/IMG_NB_01_cam-chua-ro-che-do.pdf. Sandbox không có tesseract (apt không có gói; tải vie.traineddata bị 403) → HM-12 chưa chấm được; cần máy có tesseract-ocr-vie. 6 PDF + JPG về biên bản thế chấp là SAI trang và có dữ liệu cá nhân — không đưa vào repo.
 - P17: nhận thêm 7 PDF "CSN" (đúng trang NB, 1271×1800) đặt vào cam/: thang-xam, sinh-thai, den-trang, khong-bong, than-ky-magic, tang-cuong, lam-sang. Dữ liệu Cam đã đủ; còn thiếu duy nhất tesseract tiếng Việt để chạy chay-app.py + so-ocr.py (HM-12).
+- P17: HM-12 chạy xong bằng shim tesseract.js (xem backlog). Kết quả ĐẠT (chênh −0,2 điểm, ngưỡng −2). Nên xác nhận lại trên tesseract CLI gốc nếu muốn chặt chẽ.
