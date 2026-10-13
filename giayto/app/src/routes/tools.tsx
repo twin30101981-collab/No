@@ -230,12 +230,12 @@ function Tools() {
   ];
 
   return (
-    <AppShell title="Công cụ">
+    <AppShell wide title="Công cụ">
       {groups.map((g, gi) => (
         <section key={g.title} className={`rise px-5 pt-5`} style={{ animationDelay: `${gi * 0.04}s` }}>
           <h2 className="font-display text-[0.8125rem] font-semibold text-muted-foreground">{g.title}</h2>
           {g.title === "Chuyển đổi" && <ConvertGuide />}
-          <div className="mt-2.5 grid grid-cols-4 gap-2">
+          <div className="mt-2.5 grid grid-cols-4 gap-2 lg:grid-cols-8">
             {g.tools.map(({ label, icon: Icon, run, ai }) => (
               <button key={label} disabled={!!busy} onClick={() => run?.()}
                 className="shortcut-tile relative flex h-[78px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 active:scale-95 disabled:opacity-60">
