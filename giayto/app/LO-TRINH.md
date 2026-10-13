@@ -85,4 +85,5 @@ Lịch sử chi tiết các bước P0–P8: de-an-nang-cap-scan/LO-TRINH-LICH-S
 - 2026-10-11 R6.6: Nhúng phông cục bộ (@fontsource Manrope/Sora) thay Google Fonts — app ngoại tuyến không còn lỗi console phông; 830/830 kiểm thử đạt, tsc sạch, build OK
 - 2026-10-11T22:12:22+07:00 R6.2: Bộ ảnh NB + chữ chuẩn + kịch bản chay-app/so-ocr; pipeline thật 8 bộ lọc; OCR tham chiếu (eng) auto 77,7% vs gốc 76,8%; CHƯA gạch (thiếu ảnh Cam cùng trang); cổng R6.1 trên ảnh NB 1/8; không chạy được kiểm thử (mạng chặn npm), mã nguồn app không đổi
 - 2026-10-13 HM-13: Rà 13 mục cũ (S1, S7d, S10d, S10g, S11f/l/n/q, V0, S12c, S13, S13b, S13c): 6 xong, 1 hủy, 6 chờ (Q5/HM-14); đo lại độ nghiêng dòng chữ trên 3 ảnh Q — chưa đạt ≤0,5° ở cấp ô
+- 2026-10-13 (P17) HM-10 và HM-12 đạt, Q6=a (HM-18 hủy): 14 đạt, 3 hủy, 1 chờ (HM-14).
 - 2026-10-13 Đóng phiên: đề án nâng cấp GIAYTO v1.2 — 18 hạng mục: 12 đạt, 2 hủy (HM-02, HM-16), 4 chờ (HM-10/12/14/18); Q2–Q5 đã chốt; Q6 mở

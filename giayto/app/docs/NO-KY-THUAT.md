@@ -1,4 +1,4 @@
-# Nợ kỹ thuật – nâng cấp scan (cập nhật 13/10/2026, sau đề án nâng cấp v1.2; phần A–E bên dưới là bản 07/10/2026)
+# Nợ kỹ thuật – nâng cấp scan (cập nhật 13/10/2026, đóng phiên P17; phần A–E bên dưới là bản 07/10/2026)
 
 ## 0. Cập nhật 13/10/2026 — sau đề án nâng cấp (HM-01…HM-18)
 Nguồn chi tiết: handover/backlog.json (phát hiện F-01…F-14, hạng mục, bằng chứng) và de-an/DE_AN_GIAYTO_v1.2.docx.
@@ -8,6 +8,8 @@ Nguồn chi tiết: handover/backlog.json (phát hiện F-01…F-14, hạng mụ
 | --- | --- | --- |
 | F-01 | Vitest thoát mã 1 dù 830 đạt (thiếu IndexedDB trong app-routing.test) | HM-01 |
 | F-14 | App không bắt lỗi khi IndexedDB bị chặn/không có | HM-15 |
+| F-08 | Màn rộng chỉ 1 cột 430 px (màn Tài liệu) | HM-10 (P17) |
+| R6.2 phần 2 | So OCR với CamScanner: app Auto 98,68% vs Cam tốt nhất 98,88% (chênh −0,2 ≥ −2) — ĐẠT, xem TD-42/43 | HM-12 (P17) |
 | F-04 | 13 hàm AI không giới hạn, không cần đăng nhập | HM-03 (60 lượt/giờ/IP, Q1=b) |
 | F-06 | Thanh công cụ màn tài liệu gãy hàng | HM-04 |
 | F-07 | 78 vùng chạm < 40 px | HM-05 |
@@ -27,7 +29,7 @@ Nguồn chi tiết: handover/backlog.json (phát hiện F-01…F-14, hạng mụ
 | TD-26 | Mọi kiểm chứng chạy trên Chromium + localhost/giả lập; chưa Cloudflare thật, Safari, Firefox, máy Android/iPhone thật, AI thật | Cao | HM-14 (UAT máy thật B13) — việc của người dùng |
 | TD-27 | Button/Input dùng chung cao hơn 4–8 px trên TOÀN app (HM-05); mới soi hình vài màn + đo tràn ngang | Trung | Xem từng màn (Chỉnh tay, Ký/Vẽ, hộp thoại) trên máy thật; hoàn tác về ZIP P09 nếu chật |
 | TD-28 | Giới hạn AI đếm trong bộ nhớ từng bản chạy máy chủ (không bền, không chia sẻ); chung IP chung hạn mức; chưa miễn trừ người đã đăng nhập; con số 60 là lựa chọn của trợ lý; không xác định được IP thì không giới hạn | Trung | Nâng cấp bộ đếm bền (bảng Supabase) nếu cần hạn mức chính xác; chỉnh AI_RATE_LIMIT_PER_HOUR |
-| TD-29 | Cổng R6.1: 5 ca ảnh NB còn trượt (magic, sharp, mono, gray, eco) vì app không dò được mép giấy (quad=null), góc trên-trái là mặt bàn tối; sharp lệch nền 9% có từ trước | Trung | Q6: (a) chấp nhận / (b) HM-18 dò mép cho ảnh tạp chí / (c) nới cổng |
+| TD-29 | [Q6=a, 13/10: chấp nhận; HM-18 hủy] Cổng R6.1: 5 ca ảnh NB còn trượt (magic, sharp, mono, gray, eco) vì app không dò được mép giấy (quad=null), góc trên-trái là mặt bàn tối; sharp lệch nền 9% có từ trước | Trung | Q6: (a) chấp nhận / (b) HM-18 dò mép cho ảnh tạp chí / (c) nới cổng |
 | TD-30 | Service worker theo bản build: chưa thử nâng cấp từ SW cũ thật (/sw.js không query, cache gn-v6) ở trình duyệt; phần chuyển gn-v6-ocr→gn-ocr-v1 chỉ kiểm V2; chưa biết Lovable có đặt BUILD_ID/GITHUB_SHA (mặc định dùng thời điểm build → mỗi bản phát hành hiện toast "Đã có bản mới") | Trung | Thử khi triển khai; đặt BUILD_ID |
 | TD-31 | OCR lần đầu cần mạng (không tự lưu gói; Q4=không): mất mạng ngay lần đầu thì báo rõ + nút "Tải sẵn" ở mục Tôi | Thấp | Quyết định chủ dự án; nếu đổi: +~13 MB lõi + dữ liệu ngôn ngữ |
 | TD-32 | OCR nền sau khi quét (post-capture.ts) vẫn im lặng khi lỗi; thao tác lưu khi IndexedDB bị chặn vẫn báo lỗi chung | Thấp | Ghi nhận, chưa xử lý |
@@ -37,8 +39,12 @@ Nguồn chi tiết: handover/backlog.json (phát hiện F-01…F-14, hạng mụ
 | TD-36 | Độ nghiêng dòng chữ cấp ô chưa đạt ≤0,5° trên 3 ảnh Q (nửa trên 2,25/1,75/0,75°; nửa dưới 1,25/1,00/1,00°); người dùng chấp nhận (Q5=a) | Thấp | Mở lại nếu máy thật thấy chữ nghiêng; số đo cũ không so trực tiếp được (kịch bản đo cũ không còn) |
 | TD-37 | Nhập ảnh từ thư viện không tự chạy dò khung/nắn (phải bấm "Tự dò góc"); đúng theo R4.1 nhưng dễ gây hiểu nhầm | Thấp | Cân nhắc gợi ý trên UI |
 | TD-38 | bun.lock sửa tay 1 dòng (workspace devDependency) cho khớp package.json; chưa chạy bun install đầy đủ (registry 403 ngoài Lovable) | Thấp | Lovable sẽ xác nhận khi cài |
-| TD-39 | Chưa commit/đẩy lên nhánh GitHub claude/web-app-upgrade-o0g6az (thao tác từng bị từ chối); toàn bộ ở các ZIP bàn giao | Trung | Người dùng cho phép → trợ lý commit từ ZIP mới nhất |
+| TD-39 | ĐÃ ĐÓNG 13/10/2026: mã đã commit/đẩy lên nhánh claude/read-content-continue-progress-1a7044 (thư mục giayto/ của repo twin30101981-collab/No). Lưu ý: nhánh khác nhánh cũ web-app-upgrade-o0g6az; chưa tạo PR | — | Tạo PR khi người dùng yêu cầu |
 | TD-40 | scripts/dong-bo-tien-do.py ghi đè TIEP-THEO.md/LO-TRINH.md; tien-do.json nay có thêm 18 mục HM-xx nên chạy lại script có thể lệch | Thấp | Không chạy khi chưa đọc; ghi chú trong TIEP-THEO.md |
+| TD-42 | HM-12 chấm OCR bằng shim CLI dùng tesseract.js 7.0.0 + dữ liệu vie 4.0.0_best_int (sandbox không có tesseract gốc, apt/tải traineddata bị chặn); số đo (app 98,68% vs Cam 98,88%) là tham chiếu cùng động cơ cho cả hai phía | Thấp | Chạy lại so-ocr.py trên máy có tesseract-ocr-vie nếu cần chặt chẽ |
+| TD-43 | Chữ chuẩn chỉ 1 trang NB (666 từ); trợ lý chép + tự rà (13/10), chưa người dùng rà; nhãn Cam "Thần kỳ"→magic là suy đoán; cổng R6.1 trên trang NB 2/8 bộ lọc (liên quan TD-29) | Thấp | Thêm trang mẫu khác/người dùng rà chữ chuẩn |
+| TD-44 | HM-10 chỉ mở rộng màn Tài liệu (AppShell prop wide, 880 px từ 1024 px); Trang chủ/Công cụ/Tôi và trình soạn thảo toàn màn hình vẫn 430 px; kiểm bằng vite dev + Chromium, chưa bản build/máy thật | Thấp | Mở rộng thêm cần duyệt thiết kế riêng |
+| TD-45 | Mã app nằm ở thư mục con giayto/ của repo No (cạnh app cũ ở gốc repo); script kiểm cần chạy từ giayto/app; vite dev trong sandbox cần --host 127.0.0.1 (không có IPv6); playwright python phải khớp bản trình duyệt (1.56.0 cho chromium-1194) | Thấp | Ghi nhận |
 | TD-41 | Đề án docx nền (v4) của gói R vẫn thiếu (xem TIEP-THEO R6.5); đề án nâng cấp v1.2 là tài liệu RIÊNG | Thấp | Gửi đề án mới nhất khi làm R6.5 |
 
 ### 0.3 Còn chờ người dùng (không có việc nào khác trợ lý làm một mình ngoài HM-10)
