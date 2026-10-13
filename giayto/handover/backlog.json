@@ -2734,5 +2734,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01, CS-02 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01, CS-02 xong; người dùng dừng, đóng phiên"
 }
