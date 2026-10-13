@@ -1,0 +1,18 @@
+camera giả: /tmp/claude-0/cam/user.y4m · CPU chậm 6×
+ĐẠT  chụp 3 lần liên tiếp → đủ 3 trang, màn cắt không tự bật  {"pages":3,"jobs":0,"unsure":3,"crop":false,"dialog":false,"path":"/scan"} (19712 ms)
+ĐẠT  trang máy chưa chắc mép có dấu “Kiểm mép” (không chặn màn hình)  unsure=3
+ĐẠT  chạm “Kiểm mép” mở màn cắt
+ĐẠT  Áp dụng khung → vẫn 3 trang, bớt 1 dấu “Kiểm mép”  {"pages":3,"jobs":0,"unsure":2,"crop":false,"dialog":false,"path":"/scan"}
+ĐẠT  chụp lại trang 2 → vẫn 3 trang  {"pages":3,"jobs":0,"unsure":2,"crop":false,"dialog":false,"path":"/scan"}
+ĐẠT  xoá trang 3 → còn 2  {"pages":2,"jobs":0,"unsure":1,"crop":false,"dialog":false,"path":"/scan"}
+ĐẠT  đang có thông báo vẫn chạm được nút Đóng  {"toast":true,"onClose":true}
+ĐẠT  Đóng khi còn trang → hỏi trước khi bỏ  {"pages":2,"jobs":1,"unsure":1,"crop":false,"dialog":true,"path":"/scan"}
+ĐẠT  Huỷ → ở lại, giữ trang  {"pages":3,"jobs":0,"unsure":2,"crop":false,"dialog":false,"path":"/scan"}
+ĐẠT  Bỏ trang → về Trang chủ  {"pages":3,"jobs":0,"unsure":2,"crop":false,"dialog":false,"path":"/"}
+ĐẠT  không có pageerror
+ĐẠT  chụp 2 trang  {"pages":2,"jobs":0,"unsure":2,"crop":false,"dialog":false,"path":"/scan"}
+ĐẠT  bấm Xong → thấy ngay “Đang lưu…” (không im lặng)  {"path":"/scan","saving":true}
+      (lưu xong sau ~22 s)
+ĐẠT  Xong → mở tài liệu 2 trang  Tài liệu 13-10 11:23 Trang 1/2 · Tài liệu · đang xử lý 0% Tự
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT

@@ -24,6 +24,16 @@ de-an-nang-cap-scan/kiem-chung/P18/ (ky-so, bo-cuc) và R6.2/tesseract-goc/. npm
 | TD-22 | ĐÓNG: CI GitHub Actions .github/workflows/giayto-check.yml (npm ci --legacy-peer-deps + npm run check) khi đẩy mã vào giayto/app | V3 (chạy trên GitHub) |
 | TD-45 | ĐÓNG phần mẹo: apt-get chạy được ở sandbox P18 (tesseract, poppler); bẫy pgrep/pkill -f tự khớp lệnh bash → dùng mẫu "[h]ttp…" hoặc pgrep -x | — |
 
+HM-24 (P19, lỗi máy thật 13/10 "chụp xong không chụp tiếp, không Đóng được") — ĐÃ SỬA, V3 (camera giả từ ảnh người dùng, CPU 1×/6×):
+| Gốc | Sửa | Chống tái diễn |
+| --- | --- | --- |
+| bgQueue.flush(): việc đang chạy → step() trả ngay → vòng while quay microtask, không nhường ảnh/timer → treo cứng khi bấm Xong | flush chờ lượt đang chạy (current) | test p2-bg-queue (mã cũ treo) |
+| Màn cắt toàn màn hình bật từ hàng đợi nền vài giây sau khi bấm chụp → chạm Đóng/Chụp rơi vào "Chụp lại" (mất ảnh); nhiều ảnh chờ duyệt ghi đè nhau | Ảnh chưa chắc mép thêm thẳng + dấu "Kiểm mép" (người dùng tự mở); nhập 1 ảnh vẫn mở màn cắt | kiem-quy-trinh-chup.mjs |
+| Toast top-center phủ nút Đóng (và hàng nút đầu) | offset/mobileOffset top 64 px + safe-area | kiem-quy-trinh-chup.mjs (elementFromPoint) |
+| Đóng bỏ trang không hỏi; Xong im lặng 10–30 s | Hộp hỏi "Bỏ N trang"; nút "Đang lưu…" + toast tiến độ | kiem-quy-trinh-chup.mjs |
+
+| TD-47 (MỚI) | Lưu ở màn chụp chậm: 2 trang ≈ 11 s (CPU 1×), 22–28 s (CPU 6×); ~60% thời gian chờ (idle) — chưa rõ chờ gì (IndexedDB/hàng đợi) | Trung | Đo chi tiết saveAll/bgQueue.flush/journal.commit |
+
 Còn mở sau P18:
 | Mã | Vì sao chưa làm | Ai |
 | --- | --- | --- |

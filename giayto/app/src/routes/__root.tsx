@@ -159,7 +159,8 @@ function RootComponent() {
       <OcrDock />
       <OfflineBanner />
       <AiQueueDock />
-      <Toaster position="top-center" richColors closeButton />
+      {/* Thông báo nằm DƯỚI hàng nút đầu màn (Đóng, đèn, lưu…): trước đây toast phủ lên nút Đóng của màn chụp → chạm trúng toast */}
+      <Toaster position="top-center" richColors closeButton offset={{ top: "calc(env(safe-area-inset-top) + 64px)" }} mobileOffset={{ top: "calc(env(safe-area-inset-top) + 64px)" }} />
       <AppDialog />
       <Onboarding />
     </QueryClientProvider>

@@ -129,7 +129,7 @@ e0fd2b4d2c3c215cc318951d9af29cef692f7dc78f90cba1ebd280514ded48b0  app/src/test/s
 00467fcd8f8565fad2a6c30aa3afef32f4a68b2bb4dbe32ae3d1e65de44a45ea  app/src/test/b8-content-crop.test.ts
 271e66208c25a174057d3e06bec5b4f4fdd79e01dd91e3df443587dbbf5739ab  app/src/test/s11k-line-skew-top.test.ts
 47fc38afb68a6f4077ef8479cf15cd783a439e8266c1fdfad7904803e4ad606d  app/src/test/s15i-skew-field.test.ts
-a646cc250ac5496dd809d9d4eff9a3a15d09bb56aa51f26cdd92e32aa955e785  app/src/test/p2-bg-queue.test.ts
+af3ed4b764f61b78f42c09f648ec3568db681e579eaf4f66d8c0a53a879e8828  app/src/test/p2-bg-queue.test.ts
 6787c38ab9e1a2e3c30792baf5796b06e11f42d3e26b7d85dea9bfb5db09bdee  app/src/test/s13-edit-session.test.ts
 d657d52d6e74121f40c765e212c7439ba2ba8c81252ba31cc415cd7a84ade5d7  app/src/test/v5b-band.test.ts
 cc942d04cf8ce51c39a59cdcacbc220727e9c31df8c5c688934ed29a1dcb40dd  app/src/test/b10-sign-lines.test.ts
@@ -414,7 +414,7 @@ c289a03e8d0d783f71dd952ded0f0226a7c13a0864c66a9e25c327d00c0f75d6  app/src/lib/xl
 b93226f0fee5c5e1b0bd5ea65679ae7763d4895ddbd4be4ed3b985228f3cfa29  app/src/lib/fast-capture.ts
 fb47efc440f1b36643e4a0e614deda7bc1df78610355897492bb49a2cba011e7  app/src/lib/pair.ts
 959b23cf3a09ccbaffef2fba2e61ebef82614350d3a9f2252997fca8946704d1  app/src/lib/page-review.ts
-62faa9063f56ba5db5d84187280e2e8162e2f34b63edc26cd21640f378f40cff  app/src/lib/bg-queue.ts
+209c8e64923bb91070efc7270a9fb2984467ec0da239c5a2f5e83c33a7a619fe  app/src/lib/bg-queue.ts
 6514e007f8699d2bc7145d6104aecea42e5393974c4778c9919bac38675e424e  app/src/lib/error-page.ts
 590378260b92e0e4ff6739a6f669833ca870a50957233f62cb1ff20734cf3888  app/src/lib/install.ts
 ca6e1098bfb0ef662c1b03cf646eadb990c1505308f241362cab184470fec5ae  app/src/lib/trash.ts
@@ -458,9 +458,9 @@ f301091e3ca9245b4ef4c14deac02fddf4b71fc383bbca1e7b36715390ad745e  app/src/lib/ha
 1d2b6543b4421ed03f72ae391d677200a1948bfd79cb53af142b9d58d44c1432  app/src/lib/importer-trung.test.ts
 d350387cf8cd6e0853b0ceacb29b01e11117fff25f7ddc9e09fbf4fc88b5292b  app/src/start.ts
 33987486068eee8a3136e54c6270df77f460d736038b86d38b6b08a8c24ab784  app/src/routes/tools_.history.tsx
-1d1159d9f77a42ab1f41d1efabb36a95a30af9fbc1f4e76c7ee8c6192ec632c3  app/src/routes/__root.tsx
+da469198c5b2f9a992197d190c0bd0c537a5e0c584264846634cac22c844884f  app/src/routes/__root.tsx
 ae0942984524e0aaef556d67dc6c9511032f985467a1dab3f3856ad5f7a8c21c  app/src/routes/photo-check.tsx
-e9f1fe53c5936d3ca7c13d2bf6e9561ba95576e41f690065b351cd64a98fc594  app/src/routes/scan.tsx
+fb3f8b9473efb182731cfc1c8a081a6b9ec1138357b3410e0ddb8c21ff7694f6  app/src/routes/scan.tsx
 976a85cb5f20a22d05d49110785dfa37fd4b75e2aa1e1ec8e0b36c810c6d7093  app/src/routes/s.$token.tsx
 f4798937a47c070937f464c04c6763817b216b7a9650eb74724c5850d6f5ed09  app/src/routes/auth.tsx
 799f992f19f8101c3acf76c229897d18cbf5aa514669d1edfd8486cb2438cebc  app/src/routes/tools.tsx
@@ -520,6 +520,7 @@ c665d54d137b139fc53290ba61e5a877d463f0bfc21cff29be22efd8fe671920  app/scripts/pl
 90173ee598f5ac0e5886da8f33dbb1e313f257a8bd5cdb06b5341b8c497bdd78  app/scripts/playwright/kiem-vung-cham.mjs
 a9b5479fe8949323557d520dc2131148450976c1161280f92cf9ab24835690f1  app/scripts/playwright/kiem-quet-camera-gia.mjs
 cd0ee55879088c2d554904198b622e3b737736be5b027fc690236cb1f05ea60d  app/scripts/playwright/kiem-cat-man-thap.mjs
+734d3c8d6a699f1e02713cfc99bd1892e7453e2ac279694048363bc7c28fd767  app/scripts/playwright/kiem-quy-trinh-chup.mjs
 ca415270627352f155b85e0aea622e2a6f8541d2198d420c01db78adf942be0d  app/scripts/playwright/kiem-bo-cuc-p18.mjs
 1bcc7d3a904450581003d58145089dd7c23afe9b64065321e4bf0f1243eb6014  app/scripts/playwright/kiem-gioi-han-ai.mjs
 3e0eea2b649c3ce6939499a6b303dcf018aba572a8019bbddf3e475d0a50b2d4  app/scripts/playwright/kiem-tai-trang.mjs
@@ -536,6 +537,7 @@ b003cd69591624ec9ef3d176ff9df7a4771b44245f5ff1d5a8085180b43e45ae  app/scripts/pl
 04d1d8d14262348e05cb5d6553a357783287250adccaa064697e4e860b174e2a  app/scripts/playwright/do-nghieng-dong-chu.mjs
 60c54b3cbcefefa4722f944e5abf0da7391e1c11bc98e677ca3d5b483d5db274  app/scripts/playwright/phan-tich-buoc-loc.mjs
 f1337eedb7b5e4aa1a9705980d36a31f3134725ba41dd701b2831896a5a10968  app/scripts/playwright/kiem-nang-cap-sw-cu.mjs
+de8ead536afaf34e9d5a6ab5beb792a470c4562c9bc5b193f259e7ade894961d  app/scripts/playwright/tao-camera-gia.py
 7cf01f0894effb29c656aa01829206c669fd41ad237275735a5614db3369beba  app/scripts/playwright/kiem-cong-r61.mjs
 059cd49a877d6c3760c5ed9d6530a54318d7fa06496e11a17317ee96551fda45  app/scripts/playwright/kiem-ocr-mat-mang.mjs
 e51b745eedebbffaac7c8592bf8a428fccf4bee6c9e815d51929533222eb2d0b  app/scripts/kiem-chung-b2.py
@@ -702,11 +704,11 @@ e32a0d5c606039337b7567b691346372d5498b7f9b8586723e6c239a20f0eb1a  app/drizzle/mi
 70f1b12ec53201c1f494b5ee24dca278df3df413e444fe32a005fd2004b7c763  app/bun.lock
 0da8a26a5ab654de68fb2c30458ef4f16e92fc4870adddeec3edfd37bdeab0b0  app/tsconfig.json
 d60158976cfd63bd4d27a5d4f8143e8d4ed4ddd8c73423d29808fc03eb982b26  app/docs/RA-SOAT-MUC-CU-HM13.md
-82da16d01b11fd3aed7e603b2e87f0a0046f13b4471c8f60b1f2cea961999d37  app/docs/NO-KY-THUAT.md
+e66f9f2f6100e2dee4fa932eec1654d07cea9243784aa84883a4134344de4a80  app/docs/NO-KY-THUAT.md
 f9641d79146c9dc206f126d3f5b7c94bb55aea05bf5be5a87dbe021746ce10e9  app/docs/P6.1-DAN-ANH-HEIC.md
 b9e5d4daead29800685aa3da7536aa4517772ddbba256a6b2792bc7a386ababd  app/roadmap.md
-95e135ade7364525804b53bf1bb71ce02c9db7081882b4c1a9c1cdbaf6355b1b  handover/HANDOVER.md
-19bedbc7c2362563418e18dd6917e2a744eb3267b21251eca93d7cb5c747538e  handover/backlog.json
+2ca8b586969809bf45c20e3d55d88895884adda8a726bd0048ef99a5af70efe2  handover/HANDOVER.md
+fda42145a27c6dccdc90943a3932e2ca8d9b00c45a06783b1b525e5766de95ee  handover/backlog.json
 097a744f091222cad1e029a4155b035bc27fbd2207b65447fff1b3099286c7bc  handover/PROMPT_PHIEN_SAU.md
 da51bdec1afd024bb31a30f6b379e0b3fcb9aff991c68d6614cfbf34a7461de9  handover/TIEN_DO_VA_NO_KY_THUAT.md
 d41c0018b1b31ab75681712f65e77ab5c1107ac19f29cdf85e37790f3795c8c4  de-an/VIEC_CAN_NGUOI_DUNG_P19.docx

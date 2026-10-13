@@ -83,6 +83,8 @@ export class BgQueue {
   private jobs = new Map<string, BgJob>();
   private order: string[] = [];
   private running = false;
+  /** Lượt step đang chạy — flush() phải CHỜ nó, không gọi step() lặp (step() trả về ngay khi running). */
+  private current: Promise<void> | null = null;
   private loaded = false;
   private listeners = new Set<() => void>();
 
@@ -153,7 +155,13 @@ export class BgQueue {
   /** Chạy ngay mọi việc còn lại (khi lưu tài liệu) và chờ xong. */
   async flush() {
     await this.load();
-    while (this.order.length || this.running) await this.step();
+    // Trước đây: while (...) await this.step() — khi có việc đang chạy, step() trả về ngay (Promise đã xong) nên
+    // vòng lặp quay mãi trong hàng microtask, không nhường cho ảnh/timer của việc đang chạy → treo cứng cả trang
+    // (bấm "Xong" lúc ảnh vừa chụp còn đang hoàn thiện: mọi nút không phản hồi).
+    while (this.order.length || this.running) {
+      if (this.running && this.current) await this.current;
+      else await this.step();
+    }
   }
 
   private async load() {
@@ -165,8 +173,14 @@ export class BgQueue {
 
   private kick() { if (!this.running && this.order.length) this.schedule(() => void this.step()); }
 
-  private async step() {
-    if (this.running) return;
+  private step(): Promise<void> {
+    if (this.running) return this.current ?? Promise.resolve();
+    const p = this.runOne();
+    if (this.running) { this.current = p; void p.finally(() => { if (this.current === p) this.current = null; }); }
+    return p;
+  }
+
+  private async runOne() {
     const id = this.order.shift();
     const j = id ? this.jobs.get(id) : undefined;
     if (!j) { if (this.order.length) this.kick(); return; }

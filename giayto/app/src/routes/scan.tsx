@@ -5,9 +5,10 @@ import { readCode } from "@/lib/qr";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { onCameraFrames, useViewfinder, type Tip } from "@/lib/viewfinder";
-import { Check, ClipboardPaste, Copy, ExternalLink, Grid3X3, ImagePlus, Layers, Loader2, RotateCcw, Sparkles, Timer, X, Zap, ZapOff } from "lucide-react";
+import { Check, ClipboardPaste, Copy, Crop, ExternalLink, Grid3X3, ImagePlus, Layers, Loader2, RotateCcw, Sparkles, Timer, X, Zap, ZapOff } from "lucide-react";
 import { toast } from "sonner";
 import { showError } from "@/lib/errors";
+import { confirmDialog } from "@/lib/dialog";
 import { logScan } from "@/lib/scan-log";
 import { setScanActive } from "@/lib/priority-gate";
 import { Button } from "@/components/ui/button";
@@ -99,7 +100,10 @@ function Scan() {
   const lastSigRef = useRef<Float32Array | null>(null);
   const lastQuad = useRef<Quad | null>(null);
   const view = useRef<HTMLDivElement>(null);
-  const [review, setReview] = useState<{ orig: string; quad: Quad | null } | null>(null);
+  // pageId: chỉnh khung một trang ĐÃ có trong dải (người dùng tự mở); không có pageId: duyệt ảnh vừa nhập từ thư viện
+  const [review, setReview] = useState<{ orig: string; quad: Quad | null; pageId?: string } | null>(null);
+  // Trang chụp mà máy chưa chắc mép giấy — đánh dấu "Kiểm mép" thay vì bật màn cắt giữa chừng
+  const [unsure, setUnsure] = useState<Set<string>>(() => new Set());
   const reviewRef = useRef(false);
   useEffect(() => { reviewRef.current = !!review; }, [review]);
   const setTip = useCallback((t: Tip) => updateVf({ tip: t }), [updateVf]);
@@ -230,15 +234,20 @@ function Scan() {
   const setJob = (id: string, v: { state: PageState; orig?: string | undefined; thumb?: string | undefined } | null) =>
     setJobs((js) => { if (!v) for (const j of js) if (j.id === id && j.thumb) URL.revokeObjectURL(j.thumb);
       return v ? js.map((j) => (j.id === id ? { ...j, ...v } : j)) : js.filter((j) => j.id !== id); });
-  const addOrig = useCallback(async (orig: string, quadHint?: Quad | null, askReview = false) => {
+  /** askReview: "modal" = mở màn cắt ngay (chỉ khi người dùng đang chờ, vd. nhập 1 ảnh); "flag" = thêm trang + đánh dấu "Kiểm mép".
+   *  Ảnh chụp xử lý xong ở nền (vài giây sau khi bấm) KHÔNG được bật màn cắt toàn màn hình: nó hiện đúng lúc người dùng
+   *  đang bấm nút khác (Đóng/Chụp) nên cú chạm rơi vào "Chụp lại" của màn cắt → mất ảnh, tưởng app treo. */
+  const addOrig = useCallback(async (orig: string, quadHint?: Quad | null, askReview: false | "modal" | "flag" = false) => {
     if (mode === "id") {
       if (!idFront) { setIdFront(orig); toast("Đã chụp mặt trước — lật thẻ để chụp mặt sau"); return; }
       const composed = await composeIdCard(idFront, orig); setIdFront(null);
       putPages([newPage(composed)]); toast.success("Đã ghép 2 mặt thẻ trên 1 trang A4"); return;
     }
-    if (askReview && !continuous && ["doc", "whiteboard", "passport"].includes(mode)) { setReview({ orig, quad: quadHint ?? null }); return; }
+    const reviewable = !continuous && ["doc", "whiteboard", "passport"].includes(mode);
+    if (askReview === "modal" && reviewable) { setReview({ orig, quad: quadHint ?? null }); return; }
     const next = await process(orig, quadHint);
     putPages(next);
+    if (askReview === "flag" && reviewable) setUnsure((u) => new Set([...u, ...next.map((pg) => pg.id)]));
     // B14: tạo ảnh thu nhỏ riêng cho dải trang — không giải mã ảnh lớn khi cuộn
     for (const pg of next) {
       if (pg.thumb) continue;
@@ -312,7 +321,7 @@ function Scan() {
       }, async (r) => {
         try {
           if (!r) { setJob(jid, null); return; }
-          if (r.pages) putPages(r.pages); else await addOrig(r.o, r.quad, r.ask);
+          if (r.pages) putPages(r.pages); else await addOrig(r.o, r.quad, r.ask ? "flag" : false);
           setJob(jid, null);
         } finally { if ("close" in frame) frame.close(); setPending((n) => n - 1); }
       }, () => { setJob(jid, { state: "error", orig: o }); toast.error("Không xử lý được một tấm ảnh — bấm Thử lại hoặc chụp lại"); if ("close" in frame) frame.close(); setPending((n) => n - 1); });
@@ -423,7 +432,7 @@ function Scan() {
           toast.error(error instanceof Error ? error.message : `Không đọc được ảnh “${f.name}”`);
           return null;
         }
-      }, async (result) => { if (result) await addOrig(result.orig, result.quad, one); });
+      }, async (result) => { if (result) await addOrig(result.orig, result.quad, one ? "modal" : false); });
     } catch (error) { showError(error, "Không nhập được ảnh"); }
     finally { busyRef.current = false; setBusy(false); }
   }
@@ -450,14 +459,30 @@ function Scan() {
     });
     return saved;
   }
+  // Lưu có thể mất hàng chục giây trên máy yếu (dựng bản đầy đủ 300 dpi) — phải hiện rõ "Đang lưu…", chặn bấm lặp.
+  const [saving, setSaving] = useState(false); const savingRef = useRef(false);
+  async function saveWithProgress(): Promise<Doc | null | undefined> {
+    if (savingRef.current) return undefined;
+    savingRef.current = true; setSaving(true);
+    const n = pagesRef.current.length + pending;
+    const tid = n ? toast.loading(`Đang lưu ${n} trang…`, { description: "Đang hoàn thiện ảnh chất lượng đầy đủ, vui lòng chờ." }) : undefined;
+    try { return await saveAll(); }
+    catch (e) { showError(e, "Chưa lưu được tài liệu"); return undefined; }
+    finally { if (tid !== undefined) toast.dismiss(tid); savingRef.current = false; setSaving(false); }
+  }
   async function finish() {
-    const saved = await saveAll();
+    const saved = await saveWithProgress(); if (saved === undefined) return;
     if (!saved) { navigate({ to: "/" }); return; }
     void import("@/lib/post-capture").then((m) => m.runPostCapture(saved, beforeRef.current, newDocRef.current, new Map(saved.pages.flatMap((p) => { const x = metricsCache.get(p.src); return x ? [[p.id, x] as const] : []; })))); // P8 + P8.4
     navigate({ to: "/doc/$id", params: { id: saved.id }, replace: true });
   }
+  async function close() {
+    const n = pagesRef.current.length + pending;
+    if (n && !(await confirmDialog(`Thoát và bỏ ${n} trang chưa lưu?`, { message: "Bấm “Xong” nếu muốn lưu thành tài liệu.", okText: "Bỏ trang", danger: true }))) return;
+    navigate({ to: "/" });
+  }
   async function finishExtract() {
-    const saved = await saveAll();
+    const saved = await saveWithProgress(); if (saved === undefined) return;
     if (!saved) { navigate({ to: "/" }); return; }
     navigate({ to: "/doc/$id", params: { id: saved.id }, search: { tool: "ai-extract", run: "1" }, replace: true });
   }
@@ -473,7 +498,7 @@ function Scan() {
   return (
     <main className="scan-screen fixed inset-0 z-50 mx-auto flex max-w-[430px] flex-col">
       <header className="flex items-center justify-between px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
-        <Button variant="ghost" size="icon" aria-label="Đóng" className="scan-icon" onClick={() => navigate({ to: "/" })}><X /></Button>
+        <Button variant="ghost" size="icon" aria-label="Đóng" className="scan-icon" onClick={() => void close()}><X /></Button>
         <div className="flex gap-1">
           <Button variant="ghost" size="icon" aria-label="Dán ảnh" title="Dán ảnh" disabled={busy || !!review || mode === "qr"} className="scan-icon" onClick={() => void fromClipboard()}><ClipboardPaste /></Button>
           <Button variant="ghost" size="icon" aria-label="Đèn flash" className="scan-icon" onClick={toggleTorch}>{torch ? <Zap /> : <ZapOff />}</Button>
@@ -532,6 +557,7 @@ function Scan() {
                 {retake === i && <span className="absolute inset-0 grid place-items-center bg-background/60"><RotateCcw className="size-5" /></span>}
               </button>
               <GradeBadge src={pg.orig || pg.src} />
+              {unsure.has(pg.id) && pg.orig && <button aria-label={`Kiểm mép trang ${i + 1}`} title="Máy chưa chắc mép giấy — chạm để chỉnh khung" onClick={() => setReview({ orig: pg.orig!, quad: pg.edit.quad ?? null, pageId: pg.id })} className="absolute bottom-0.5 right-0.5 grid size-5 place-items-center rounded-full bg-warning text-warning-foreground"><Crop className="size-3" /></button>}
               <span className="absolute bottom-0.5 left-0.5 rounded bg-background/80 px-1 text-[0.625rem] font-bold">{i + 1}</span>
               <button aria-label={`Xoá trang ${i + 1}`} onClick={() => removePage(i)} className="absolute right-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-destructive text-destructive-foreground"><X className="size-3" /></button>
             </div>
@@ -567,22 +593,29 @@ function Scan() {
             <Button variant="ghost" size="icon" aria-label="Chọn từ thư viện" className="scan-icon size-12" onClick={fromGallery}><ImagePlus className="size-6" /></Button>
           )}
         </div>
-        <button aria-label="Chụp" disabled={busy || camError || mode === "qr"} onClick={() => void capture()} className="shutter mx-auto grid size-[76px] place-items-center rounded-full disabled:opacity-50">
+        <button aria-label="Chụp" disabled={busy || saving || camError || mode === "qr"} onClick={() => void capture()} className="shutter mx-auto grid size-[76px] place-items-center rounded-full disabled:opacity-50">
           <span className="grid size-[60px] place-items-center rounded-full bg-primary text-primary-foreground">{busy && <Loader2 className="animate-spin" />}</span>
         </button>
         <div className="flex flex-col items-end gap-2">
           {pages.length > 0 && mode !== "qr" && (
-            <Button variant="glass" onClick={finishExtract} disabled={busy} className="h-9 rounded-full px-3 text-xs"><Sparkles className="size-3.5" /> Trích xuất</Button>
+            <Button variant="glass" onClick={finishExtract} disabled={busy || saving} className="h-9 rounded-full px-3 text-xs"><Sparkles className="size-3.5" /> Trích xuất</Button>
           )}
-          <Button onClick={finish} disabled={busy} className="h-11 rounded-full px-4"><Check /> {pages.length ? `Xong` : "Thoát"}</Button>
+          <Button onClick={finish} disabled={busy || saving} className="h-11 rounded-full px-4">{saving ? <Loader2 className="animate-spin" /> : <Check />} {saving ? "Đang lưu…" : pages.length ? `Xong` : "Thoát"}</Button>
         </div>
       </div>
       {review && (
-    <CropEditor src={review.orig} quad={review.quad ?? undefined} cancelLabel="Chụp lại" applyLabel="Giữ trang"
+    <CropEditor src={review.orig} quad={review.quad ?? undefined} cancelLabel={review.pageId ? "Huỷ" : "Chụp lại"} applyLabel={review.pageId ? "Áp dụng" : "Giữ trang"}
       onClose={() => setReview(null)}
       onApply={async (q, paper) => {
         const r = review; setReview(null); setBusy(true);
-        try { const next = await process(r.orig, q, paper); putPages(next); } catch (e) { showError(e, "Không cắt được trang"); } finally { setBusy(false); }
+        try {
+          const next = await process(r.orig, q, paper);
+          if (!r.pageId) { putPages(next); return; }
+          // chỉnh khung trang có sẵn: thay đúng chỗ, bỏ việc "hoàn thiện" của bản cũ, bỏ dấu "Kiểm mép"
+          bgQueue.cancelPage(r.pageId, "finish"); finishedRef.current.delete(r.pageId);
+          setPages((ps) => ps.flatMap((x) => (x.id === r.pageId ? next : [x])));
+          setUnsure((u) => { const n = new Set(u); n.delete(r.pageId!); return n; });
+        } catch (e) { showError(e, "Không cắt được trang"); } finally { setBusy(false); }
       }} />
       )}
     </main>
