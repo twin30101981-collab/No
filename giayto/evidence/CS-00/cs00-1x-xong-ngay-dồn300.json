@@ -1,0 +1,47 @@
+{
+ "rate": 1,
+ "n": 10,
+ "capturedAt": "2026-10-13T13:15:48.666Z",
+ "tapToTray_ms": [],
+ "tapToReady_ms": [],
+ "notes": [],
+ "pagesAfterRapidTaps": 10,
+ "tapsLost": 0,
+ "mode": "xong-ngay-dồn300",
+ "captureLoop_ms": 13212,
+ "pendingJobsAtLastTap": 0,
+ "unsureBadges": 10,
+ "tapDone_to_docVisible_ms": 477,
+ "docOpened": true,
+ "docPageShowsProcessingLabel": false,
+ "doc": {
+  "pages": 10,
+  "filters": {
+   "auto": 10
+  },
+  "pagesWithOcrText_at12s": 0,
+  "name": "Tài liệu 13-10 13:16"
+ },
+ "g05": {
+  "metricsStored": 2,
+  "metricsStoredKeysSample": [
+   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU",
+   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU"
+  ],
+  "lookupsAfterSave": 10,
+  "lookupHits": 0,
+  "lookupKeysSample": [
+   "blob:http://127.0.0.1:8081/0c953e45-cf2d-40d8-b066-6a810a26ba69",
+   "blob:http://127.0.0.1:8081/0c953e45-cf2d-40d8-b066-6a810a26ba69"
+  ]
+ },
+ "export_ms": 5113,
+ "exportDownloaded": true,
+ "jsHeapPeak_MB": 43,
+ "jsHeapEnd_MB": 43,
+ "pageErrors": [],
+ "summary": {
+  "tapToTray_median_ms": null,
+  "tapToReady_median_ms": null
+ }
+}

@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00 và BL-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01 và CS-00 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -20,9 +20,14 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Kiểm chứng:** `scripts/playwright/kiem-sao-luu.mjs` — mã cũ **3 ca LỖI**; mã mới **21/21 ĐẠT, 0 pageerror** (khứ hồi 5/5 ảnh trùng byte; GỘP không xoá dữ liệu máy; tệp cũ blob:/rác/sai tổng kiểm bị từ chối hoặc loại đúng tài liệu; THAY THẾ tải bản dự phòng; Huỷ không đổi gì). Test đơn vị 14 ca. `npm run check` = **195 tệp / 913 đạt**, typecheck sạch, lint 0 lỗi, `vite build` OK. Hộp thoại 390×844 không tràn (ảnh trong evidence/BL-01/).
 - **CHƯA xác minh / giới hạn:** máy thật; thư viện lớn (≥200 MB chưa đo thời gian/RAM); tài liệu khoá PIN thật (chỉ test đơn vị); viewport 1280 chưa chụp. **Quan sát ngoài phạm vi (→ BL-03, nghi vấn):** tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục trên máy mới chưa mang theo PIN nên chưa mở được tài liệu khoá.
 
-## Hạng mục kế tiếp (đề xuất theo báo cáo mục 15.8)
-**CS-00 — Kịch bản Playwright cả hành trình + đo gốc (P1, S).** Tạo `scripts/playwright/kiem-hanh-trinh-cs.mjs` (camera giả 10 trang → Xong → thấy trang → Xuất; đo: giữa 2 lần bấm chụp, Xong→thấy tài liệu, tổng xử lý nền, RAM đỉnh; CPU 1× và 6×) và **xác minh G-05** (số đo `metricsCache` tra theo `p.src` nhưng lưu theo `orig`, scan.tsx:476/559/635; `applyRecipes` chỉ đổi tên bộ lọc, recipe-apply.ts:36–43) bằng chạy thật — nếu không tái hiện thì ghi "ĐÃ KHÔNG CÒN". Mẫu có sẵn: `kiem-quy-trinh-chup.mjs` + `tao-camera-gia.py`. Chỉ thêm kịch bản, không đổi mã app.
-Sau đó (phiên 2 của báo cáo): AI-01 → AI-04 → AI-05, TF-01; rồi Đợt 1 CS-01…05. **CS-01 đổi schema IndexedDB → hỏi người dùng trước.**
+## Hạng mục vừa đóng (3): CS-00 — Đo gốc hành trình + xác minh G-05 — ĐẠT-V3 (không đổi mã app)
+- Kịch bản mới `scripts/playwright/kiem-hanh-trinh-cs.mjs` (camera giả 10 trang → Xong → tài liệu → Xuất; CPU 1×/6×; chế độ XONG_NOW, TAP_GAP_MS). Bảng số đo: `evidence/CS-00/BANG-SO-DO-GOC.md`. **Chỉ để so trước/sau** (vite dev, headless, CPU giả lập — không phải máy thật).
+- **Đã xác minh bằng chạy thật:** G-01 (bấm→trang vào khay 1,3 s ở 1× / 9,6 s ở 6×; mục tiêu ≤0,3–0,5 s); G-02 một phần (Xong→tài liệu 0,5–0,7 s ở 1×, 4,7–11,7 s ở 6× với 10 trang); **G-05** (tra cứu số đo 10 lần, trúng 0; mọi trang cùng bộ lọc `auto`) + phát hiện thêm: chỉ 2/10 trang có số đo lưu (giả thuyết: GradeBadge tính lười). G-03 chưa kết luận (khay đã rảnh lúc bấm Xong).
+- 5 cấu hình hoàn tất, 0 pageerror. `npm run check` không đổi (195/913) — không sửa mã app.
+
+## Hạng mục kế tiếp — người dùng chọn
+Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-01 → CS-02 → CS-03 → CS-04 → CS-05**. **CS-01 đổi schema IndexedDB (v3) → cần người dùng cho phép trước** và có sao lưu/rollback (BL-01 đã cho sao lưu an toàn).
+Gợi ý: TF-01 (S, P1, chia sẻ im lặng) là việc nhỏ độc lập; AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").
