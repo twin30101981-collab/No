@@ -1164,16 +1164,16 @@
    "effort": "M",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
-   "effort_change_reason": "",
+   "effort_change_reason": "Giữ medium: phạm vi nhỏ hơn đề án vì KHÔNG nâng phiên bản IndexedDB (xem quyết định)",
    "chi_phi_uoc_tinh_pct": 10,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [
     "CS-00"
    ],
    "pham_vi": "lib/db.ts, lib/disk-pack.ts, lib/page-state.ts (mới)",
-   "hanh_vi_mong_doi": "",
+   "hanh_vi_mong_doi": "Trang có status/progress/quadConfidence/warnings/error/origBlobKey; tài liệu cũ mở bình thường và coi là 'xong'; kho Blob ảnh gốc riêng sẵn sàng cho CS-03",
    "tieu_chi_nghiem_thu": [
     "Tài liệu cũ mở bình thường",
     "Trang mới có status",
@@ -1181,13 +1181,30 @@
    ],
    "rui_ro": "ĐỔI SCHEMA IndexedDB → phải hỏi người dùng (skill Mục 3) và sao lưu/rollback",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "LANG=C.UTF-8 node scripts/playwright/kiem-chuyen-doi-du-lieu.mjs http://127.0.0.1:8086",
+    "pass": 15,
+    "fail": 0,
+    "skip": 0,
+    "ma_moi": "15/15 ĐẠT, 0 pageerror — evidence/CS-01/sau-sua-V3.txt (tài liệu cũ nguyên vẹn + không ghi hàng loạt; kho ghi-nhanh vẫn v2; bản app cũ mở v2 đọc được trường mới; kho Blob ghi/đọc trùng byte, còn sau khi tải lại, dọn mồ côi)",
+    "ma_cu_P19": "KHÔNG chạy lại trên mã cũ: mã cũ không có status/blob-store theo cấu tạo (các ca mới không áp dụng được)",
+    "unit": "src/lib/page-state.test.ts: 9 ca đạt (vòng đời, chuyển hợp lệ/không, dữ liệu cũ, withStatus)",
+    "hoi_quy": "kiem-sao-luu.mjs TẤT CẢ ĐẠT; kiem-hanh-trinh-cs.mjs (6 trang, CPU 1×) hoàn tất",
+    "npm_run_check": "197 tệp / 931 đạt; typecheck sạch; lint 0 lỗi; vite build OK"
+   },
+   "nguyen_nhan_goc": "(hạng mục nền, không phải sửa lỗi) Page không có trạng thái bền nên không thể 'chụp trước – xử lý sau'; ảnh gốc nằm lẫn trong bản ghi tài liệu nên mỗi lần lưu ghi lại mọi ảnh.",
+   "ghi_chu_ban_giao": "Đề án ghi 'nâng IndexedDB lên v3' — ĐÃ KHÔNG NÂNG (giữ ghi-nhanh@2) mà dùng kho riêng ghi-nhanh-blobs@1: nâng phiên bản làm bản app cũ (hoàn tác ZIP cũ) không mở được kho → mất đường lui. Người dùng đã cho phép đổi schema (13/10) nên đây là lựa chọn an toàn hơn trong phạm vi được duyệt; nếu sau này cần v3 thật phải hỏi lại. Chưa dùng: origBlobKey/blob-store chưa được luồng chụp dùng (CS-03). Trang tạo ở màn chụp hiện có status 'xong' từ lúc tạo dù bản đủ còn trong hàng đợi (CS-03/CS-04 sẽ đặt cho/dang). Chưa kiểm trên máy thật; kho khoá PIN (enc) chưa thử với status.",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "src/lib/page-state.ts (MỚI)",
+    "src/lib/page-state.test.ts (MỚI)",
+    "src/lib/blob-store.ts (MỚI)",
+    "src/lib/db.ts (kiểu Page, normalizeDoc khi nạp/lưu, newPage status)",
+    "scripts/playwright/kiem-chuyen-doi-du-lieu.mjs (MỚI)"
+   ]
   },
   {
    "id": "CS-02",
@@ -2678,7 +2695,8 @@
   "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật.",
   "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18.",
   "P20/TF-01: khi hết quyền chia sẻ hiện thẻ 'Tệp đã sẵn sàng — Chia sẻ / Lưu về máy' (chạm lần 2); AbortError = huỷ (im lặng đúng); mọi lỗi khác lưu về máy + báo rõ.",
-  "P20/TF-02: điện thoại luôn dùng bảng chia sẻ cho Email (kể cả có người nhận) + chép người nhận vào bộ nhớ tạm; Zalo PC = tải + hướng dẫn kéo thả + nút 'Mở Zalo' (chat.zalo.me). iOS Lưu vào Tệp để sau (cần máy thật)."
+  "P20/TF-02: điện thoại luôn dùng bảng chia sẻ cho Email (kể cả có người nhận) + chép người nhận vào bộ nhớ tạm; Zalo PC = tải + hướng dẫn kéo thả + nút 'Mở Zalo' (chat.zalo.me). iOS Lưu vào Tệp để sau (cần máy thật).",
+  "P20/CS-01: KHÔNG nâng phiên bản IndexedDB 'ghi-nhanh' (giữ v2; mất đường lui nếu nâng); kho Blob ảnh gốc là DB riêng 'ghi-nhanh-blobs' v1; dữ liệu cũ chuyển đổi trong bộ nhớ (thiếu status = 'xong'), không ghi hàng loạt. Người dùng đã cho phép đổi schema (chọn CS-01 13/10/2026)."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2694,5 +2712,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }

@@ -4,11 +4,15 @@ import { expiredIds } from "./trash";
 import { getVaultKey, openDoc, sealDoc, setVaultKey, deriveKey, newDataKey, wrapDataKey, unwrapDataKey, sealVerified, newRecoveryCode, normRecovery, newSalt, type EncBlob } from "./vault";
 import { getSettings, hashPin, setSettings } from "./settings";
 import { blobifyDoc, inlineDoc, packDoc, revokeDoc, unpackDoc, srcBytes } from "./disk-pack";
+import { normalizeDoc } from "./page-state";
 
 export type Filter = "original" | "magic" | "auto" | "sharp" | "mono" | "gray" | "ink" | "eco" | "vivid" | "bright" | "shadow" | "denoise";
 export type Quad = [number, number][]; // 4 normalized points: TL, TR, BR, BL
 export type PageEdit = { quad?: Quad | undefined; paper?: import("./detect").Paper | undefined; rotation: number; filter: Filter; brightness: number; contrast: number; /** P4/TD-09: nắn phẳng trang cong. undefined = tự động (đo độ cong), false = người dùng tắt, true = người dùng bật. */ flatten?: boolean | undefined; /** P4.3–P4.6: công cụ 3 mức. */ tools?: import("./tool-levels").Tools | undefined; /** R2.4: cấp độ bộ lọc 0–100 (thiếu = 100). */ level?: number | undefined };
-export type Page = { id: string; orig: string; src: string; edit: PageEdit; text?: string; thumb?: string; thumbKey?: string; origW?: number; origH?: number; /** R3.1: người dùng đã sửa tay trang này. */ manual?: boolean; /** R4.1: dấu vân ảnh pHash (16 ký tự hex) để chống trùng. */ phash?: string; /** R4.1: loại ảnh nhập — flat/screenshot không cắt lại. */ importKind?: import("./dedupe-phash").ImportKind };
+export type Page = { id: string; orig: string; src: string; edit: PageEdit; text?: string; thumb?: string; thumbKey?: string; origW?: number; origH?: number; /** R3.1: người dùng đã sửa tay trang này. */ manual?: boolean; /** R4.1: dấu vân ảnh pHash (16 ký tự hex) để chống trùng. */ phash?: string; /** R4.1: loại ảnh nhập — flat/screenshot không cắt lại. */ importKind?: import("./dedupe-phash").ImportKind;
+  /** CS-01: trạng thái bền (thiếu = "xong", xem page-state.ts). */ status?: import("./page-state").PageStatus; /** Tiến độ 0–100 khi status = "dang". */ progress?: number;
+  /** Độ tin cậy của khung đề xuất, 0–1. */ quadConfidence?: number; /** Cảnh báo chất lượng (mờ, lóa, chữ vắt mép…). */ warnings?: string[]; /** Lý do khi status = "loi". */ error?: string;
+  /** Khoá ảnh gốc trong kho blob-store (CS-03 dùng); thiếu = ảnh gốc nằm trong `orig`. */ origBlobKey?: string };
 export type Doc = {
   id: string; name: string; folder: string; kind: string;
   createdAt: number; updatedAt: number; pages: Page[]; locked?: boolean;
@@ -69,7 +73,7 @@ async function toDisk(d: Doc): Promise<Doc> {
 export async function saveDocs(docs: Doc[]) {
   const disk = await Promise.all(docs.map(toDisk));
   await batch((s) => disk.forEach((d) => s.put(d)));
-  const m = new Map(docs.map((d) => [d.id, d.locked ? d : blobifyDoc(d)])); cache = cache.map((d) => m.get(d.id) ?? d); emit();
+  const m = new Map(docs.map((d) => [d.id, normalizeDoc(d.locked ? d : blobifyDoc(d))])); cache = cache.map((d) => m.get(d.id) ?? d); emit();
 }
 
 let cache: Doc[] = [];
@@ -81,7 +85,7 @@ const emit = () => listeners.forEach((l) => l());
 export async function loadDocs() {
   const raw = await Promise.all((await tx<Doc[]>("readonly", (s) => s.getAll())).map(unpackDoc));
   const key = getVaultKey();
-  cache = (await Promise.all(raw.map((d) => (key && d.enc ? openDoc(d, key).catch(() => d) : d)))).sort((a, b) => b.updatedAt - a.updatedAt);
+  cache = (await Promise.all(raw.map((d) => (key && d.enc ? openDoc(d, key).catch(() => d) : d)))).map(normalizeDoc).sort((a, b) => b.updatedAt - a.updatedAt); // CS-01: trang cũ chưa có status → "xong"
   ready = true; emit();
   // Tự dọn: xóa hẳn tài liệu đã ở thùng rác quá 30 ngày.
   const old = expiredIds(cache);
@@ -91,7 +95,7 @@ export async function saveDoc(doc: Doc, touch = true) {
   let next = touch ? { ...doc, updatedAt: Date.now() } : doc;
   const disk = await toDisk(next);
   await tx("readwrite", (s) => s.put(disk));
-  if (!next.locked) next = blobifyDoc(next);
+  next = normalizeDoc(next.locked ? next : blobifyDoc(next));
   void import("./persist").then((m) => m.persistOnce());
   cache = touch ? [next, ...cache.filter((d) => d.id !== doc.id)] : cache.map((d) => (d.id === doc.id ? next : d));
   emit();
@@ -142,7 +146,7 @@ export function useDocs() {
 }
 
 export function newPage(orig: string, src = orig, edit?: Partial<PageEdit>): Page {
-  return { id: uid(), orig, src, edit: { rotation: 0, filter: "original", brightness: 0, contrast: 0, ...edit } };
+  return { id: uid(), orig, src, edit: { rotation: 0, filter: "original", brightness: 0, contrast: 0, ...edit }, status: "xong" };
 }
 
 export function newDoc(pages: Page[], name?: string, kind = "Tài liệu"): Doc {
