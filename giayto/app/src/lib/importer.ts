@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { toast } from "sonner";
 import { getDocs, loadDocs, newDoc, newPage, saveDoc, type Page } from "./db";
 import { findDuplicate, fingerprintImageSource } from "./dedupe-phash";
+import { confirmDialog } from "./dialog";
 import { pdfToImages } from "./files";
 import { normalize } from "./image";
 import { FILE_ACCEPT, IMAGE_ACCEPT, imageBlob, isImageFile } from "./image-input";
@@ -32,7 +33,8 @@ async function existingHashes(): Promise<string[]> {
 /** Khung cắt trùng toàn bộ ảnh — dùng cho ảnh nhập đã phẳng, không cắt lại. */
 const FULL_QUAD: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]];
 
-export async function filesToPages(files: File[]) {
+/** `stats.skipped` đếm ảnh trùng mà người dùng chọn không thêm (để báo đúng, không báo "tệp không hợp lệ"). */
+export async function filesToPages(files: File[], stats?: { skipped: number }) {
   const pages: Page[] = [];
   const hashes = await existingHashes();
   let dupes = 0;
@@ -50,15 +52,15 @@ export async function filesToPages(files: File[]) {
         if (fp.kind !== "photo") page.edit.quad = FULL_QUAD; // ảnh phẳng/chụp màn hình: không cắt lại
         if (findDuplicate(fp.phash, hashes) >= 0) {
           dupes++;
-          // Hỏi người dùng: ảnh này hình như đã có trong kho.
-          if (typeof window !== "undefined" && !window.confirm(`Ảnh “${f.name}” hình như đã nhập trước đây. Vẫn thêm lại?`)) continue;
+          // Hỏi người dùng bằng hộp thoại của app (window.confirm bị trình duyệt/PWA/kiểm thử tự đóng = từ chối).
+          if (!(await confirmDialog(`Ảnh “${f.name}” hình như đã nhập trước đây`, { message: "Vẫn thêm lại?", okText: "Vẫn thêm" }))) { if (stats) stats.skipped++; continue; }
         }
         hashes.push(fp.phash);
       }
       pages.push(page);
     }
   }
-  if (dupes) toast.info(`Phát hiện ${dupes} ảnh trùng với tài liệu đã có`);
+  if (dupes && !stats?.skipped) toast.info(`Phát hiện ${dupes} ảnh trùng với tài liệu đã có`);
   return pages;
 }
 
@@ -70,8 +72,9 @@ export function useImport() {
     if (!files.length) return;
     const id = toast.loading("Đang nhập…");
     try {
-      const pages = await filesToPages(files);
-      if (!pages.length) { toast.error("Không có ảnh hoặc PDF hợp lệ", { id }); return; }
+      const stats = { skipped: 0 };
+      const pages = await filesToPages(files, stats);
+      if (!pages.length) { if (stats.skipped) toast.info("Đã bỏ qua ảnh trùng, không nhập gì", { id }); else toast.error("Không có ảnh hoặc PDF hợp lệ", { id }); return; }
       const name = files.length === 1 ? files[0].name.replace(/\.[^.]+$/, "") : undefined;
       const doc = await saveDoc(newDoc(pages, name, kind));
       toast.success(`Đã nhập ${pages.length} trang`, { id });

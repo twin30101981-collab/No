@@ -4,6 +4,7 @@
 - TD-44 làm xong (HM-21, ĐẠT V3): từ 1024 px Trang chủ/Công cụ/Tôi dùng khung 880 px (lối tắt 8 ô/hàng, 'Gần đây' 2 cột, Tôi 2 cột); dưới 1024 px giữ 430 px.
 - Phần chưa xác minh của HM-20 đã kiểm: giao diện tối + 3 màn × 5 viewport (script kiem-td44-td46.mjs). Phát hiện và sửa lỗi có từ trước: nút Xóa/Chia sẻ lộ sau hàng tài liệu khi nghỉ.
 - theme-color/manifest = #006F59; icon giữ #00BFA5 (chưa đổi, cần thiết kế nếu muốn đồng bộ).
+- HM-22: bẫy 'nhập lần 2 không mở tài liệu' = importer dùng window.confirm (bị tự đóng = từ chối) + báo nhầm lỗi. Đã chuyển sang confirmDialog, báo 'đã bỏ qua ảnh trùng'. Bẫy trong mục Công thức môi trường không còn.
 - PR: mở từ nhánh ccr-76ce5c62-g29arh vào main (không đính kèm ZIP vào cây mã).
 
 ## P19 tóm tắt (đọc trước)
