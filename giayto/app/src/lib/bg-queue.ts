@@ -133,6 +133,13 @@ export class BgQueue {
     }
     this.notify();
   }
+  /** CS-02: đưa việc của trang đang xem lên đầu hàng đợi (việc đang chạy giữ nguyên). Trả true nếu có việc được đưa lên. */
+  prioritize(pageId: string, kind?: JobKind): boolean {
+    const ids = this.order.filter((id) => { const j = this.jobs.get(id); return j && j.pageId === pageId && (!kind || j.kind === kind); });
+    if (!ids.length) return false;
+    this.order = [...ids, ...this.order.filter((id) => !ids.includes(id))];
+    return true;
+  }
   cancelAll() { for (const j of [...this.jobs.values()]) this.cancelPage(j.pageId); }
 
   /** Đọc việc còn dở từ kho (sau khi tải lại): running → queued, error còn lượt → queued. */

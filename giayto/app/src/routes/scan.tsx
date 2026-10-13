@@ -35,6 +35,7 @@ import { captureCue } from "@/lib/capture-cue";
 import { ScanGuide, speakTip, stopSpeaking } from "@/lib/scan-voice";
 import { instantPreview } from "@/lib/instant-preview";
 import { bgQueue } from "@/lib/bg-queue";
+import { finishedStore, pipelineEnabled, startPipeline } from "@/lib/pipeline/runner";
 import { PREVIEW_LONG } from "@/lib/render-cache";
 import { JournalWriter, newJournal, type Journal, type PageState } from "@/lib/scan-journal";
 import { makeThumb } from "@/lib/thumbs";
@@ -176,6 +177,7 @@ function Scan() {
   // P2: hàng đợi nền bền — việc "finish" ghi xuống IndexedDB, tải lại giữa chừng vẫn chạy tiếp
   const finishedRef = useRef(new Map<string, string>());
   const queueFinish = useCallback((pg: Page, orig: string, edit: PageEdit, full: number) => {
+    if (pipelineEnabled()) { startPipeline(); void bgQueue.enqueue(pg.id, "finish", { orig, edit, targetLong: full }); return; } // CS-02: bộ xử lý toàn app (đăng ký ở __root)
     bgQueue.setHandler("finish", async (j) => {
       const src = await timed("finish", () => renderPage(j.payload.orig, j.payload.edit ?? { rotation: 0, filter: "original", brightness: 0, contrast: 0 }, j.payload.targetLong ?? full));
       finishedRef.current.set(j.pageId, src);
@@ -183,7 +185,13 @@ function Scan() {
     });
     void bgQueue.enqueue(pg.id, "finish", { orig, edit, targetLong: full });
   }, []);
-  useEffect(() => () => bgQueue.cancelAll(), []);
+  // CS-02: nhận bản đầy đủ do bộ điều phối toàn app dựng cho trang còn trong khay
+  useEffect(() => {
+    if (!pipelineEnabled()) return;
+    return finishedStore.subscribe((id, src) => { finishedRef.current.set(id, src); setPages((ps) => ps.map((x) => (x.id === id ? { ...x, src } : x))); });
+  }, []);
+  // Cờ tắt (hành vi cũ): rời màn thì huỷ hết việc nền. Cờ bật: việc nền chạy tiếp ở nền; chỉ huỷ trang bị bỏ/xoá rõ ràng.
+  useEffect(() => () => { if (!pipelineEnabled()) bgQueue.cancelAll(); }, []);
 
   // V8: đang bấm liên tục → 1 làn để xem trước ≤1 s; rảnh tay → 2–3 làn
   const queueRef = useRef<Promise<void>>(Promise.resolve()); const lastShotRef = useRef(0); const lanesRef = useRef(new OrderedLanes(() => (performance.now() - lastShotRef.current < 1500 ? 1 : renderLanes()))); const [pending, setPending] = useState(0);
@@ -207,7 +215,7 @@ function Scan() {
             for (const pg of j.pages) if (!bgQueue.has(pg.id, "finish") && pg.orig && pg.edit) queueFinish(pg, pg.orig, pg.edit, full);
           });
         } },
-        cancel: { label: "Bỏ", onClick: () => { void journalW.current.clear(); } },
+        cancel: { label: "Bỏ", onClick: () => { void journalW.current.clear(); for (const pg of j.pages) { bgQueue.cancelPage(pg.id, "finish"); finishedStore.delete(pg.id); } } },
       });
     });
   }, [queueFinish]); // HM-06: queueFinish ổn định (useCallback []) nên vẫn chạy đúng một lần
@@ -224,11 +232,11 @@ function Scan() {
     const at = retakeRef.current;
     if (at === null) { setPages((p) => [...p, ...next]); return; }
     setRetake(null);
-    const gone = pagesRef.current[at]; if (gone) { bgQueue.cancelPage(gone.id, "finish"); finishedRef.current.delete(gone.id); }
+    const gone = pagesRef.current[at]; if (gone) { bgQueue.cancelPage(gone.id, "finish"); finishedRef.current.delete(gone.id); finishedStore.delete(gone.id); }
     setPages((p) => (at < p.length ? [...p.slice(0, at), ...next, ...p.slice(at + 1)] : [...p, ...next]));
     toast.success(`Đã thay trang ${at + 1}`);
   }, []);
-  const removePage = (i: number) => { const gone = pagesRef.current[i]; if (gone) { bgQueue.cancelPage(gone.id, "finish"); finishedRef.current.delete(gone.id); } setPages((p) => p.filter((_, k) => k !== i)); setRetake((r) => (r === i ? null : r !== null && r > i ? r - 1 : r)); };
+  const removePage = (i: number) => { const gone = pagesRef.current[i]; if (gone) { bgQueue.cancelPage(gone.id, "finish"); finishedRef.current.delete(gone.id); finishedStore.delete(gone.id); } setPages((p) => p.filter((_, k) => k !== i)); setRetake((r) => (r === i ? null : r !== null && r > i ? r - 1 : r)); };
   // S8b: trạng thái từng ảnh đang xử lý (chờ / đang xử lý / lỗi) — trang xong hiện như thường
   const [jobs, setJobs] = useState<{ id: string; state: PageState; orig?: string | undefined; thumb?: string | undefined }[]>([]);
   const setJob = (id: string, v: { state: PageState; orig?: string | undefined; thumb?: string | undefined } | null) =>
@@ -446,7 +454,7 @@ function Scan() {
   async function saveAll(): Promise<Doc | null> {
     if (pending) { toast("Đang xử lý ảnh vừa chụp…"); await queueRef.current; await new Promise((r) => setTimeout(r, 50)); }
     if (bgQueue.size) await bgQueue.flush(); // B11/P2: lưu luôn bản đầy đủ
-    const pages = pagesRef.current.map((p) => { const src = finishedRef.current.get(p.id); return src ? { ...p, src } : p; });
+    const pages = pagesRef.current.map((p) => { const src = finishedRef.current.get(p.id) ?? finishedStore.get(p.id); return src ? { ...p, src } : p; });
     if (!pages.length) return null;
     // S8: commit nguyên tử theo id phiên — lưu lại lần nữa không tạo tài liệu/trang trùng
     let saved: Doc | null = null;
@@ -479,6 +487,7 @@ function Scan() {
   async function close() {
     const n = pagesRef.current.length + pending;
     if (n && !(await confirmDialog(`Thoát và bỏ ${n} trang chưa lưu?`, { message: "Bấm “Xong” nếu muốn lưu thành tài liệu.", okText: "Bỏ trang", danger: true }))) return;
+    for (const pg of pagesRef.current) { bgQueue.cancelPage(pg.id, "finish"); finishedStore.delete(pg.id); } // CS-02: không còn cancelAll khi rời màn → huỷ rõ ràng việc của trang bị bỏ
     navigate({ to: "/" });
   }
   async function finishExtract() {
@@ -612,7 +621,7 @@ function Scan() {
           const next = await process(r.orig, q, paper);
           if (!r.pageId) { putPages(next); return; }
           // chỉnh khung trang có sẵn: thay đúng chỗ, bỏ việc "hoàn thiện" của bản cũ, bỏ dấu "Kiểm mép"
-          bgQueue.cancelPage(r.pageId, "finish"); finishedRef.current.delete(r.pageId);
+          bgQueue.cancelPage(r.pageId, "finish"); finishedRef.current.delete(r.pageId); finishedStore.delete(r.pageId);
           setPages((ps) => ps.flatMap((x) => (x.id === r.pageId ? next : [x])));
           setUnsure((u) => { const n = new Set(u); n.delete(r.pageId!); return n; });
         } catch (e) { showError(e, "Không cắt được trang"); } finally { setBusy(false); }

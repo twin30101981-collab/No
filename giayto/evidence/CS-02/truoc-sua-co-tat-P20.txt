@@ -1,0 +1,6 @@
+cờ globalPipeline = off
+TÁI HIỆN LỖI CŨ  A: ngoài màn Chụp, trang đã lưu được hoàn thiện (cạnh dài > 1200 px)  trước [400,400,400] → sau [400,400,400] (60289 ms)
+      (cờ tắt: việc nền kẹt, không ai xử lý) ["error:Chưa có bộ xử lý cho việc \"finish\"","error:Chưa có bộ xử lý cho việc \"finish\""]
+TÁI HIỆN LỖI CŨ  C: rời màn Chụp giữa chừng → bản đầy đủ vẫn được dựng ở nền  bản đầy đủ nhận được: 0 (sau 60 s)
+TÁI HIỆN LỖI CŨ  không có pageerror
+TẤT CẢ ĐẠT

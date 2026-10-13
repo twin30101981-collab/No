@@ -1,0 +1,7 @@
+cờ globalPipeline = on
+ĐẠT  A: ngoài màn Chụp, trang đã lưu được hoàn thiện (cạnh dài > 1200 px)  trước [400,400,400] → sau [2400,2400,2400] (6748 ms)
+ĐẠT  B: tải lại giữa chừng → vẫn hoàn thiện đủ 3 trang  giữa chừng [400,400,400] → [2400,2400,2400] (13461 ms)
+ĐẠT  B: hàng đợi cạn sau khi xong  size=0
+ĐẠT  C: rời màn Chụp giữa chừng → bản đầy đủ vẫn được dựng ở nền  bản đầy đủ nhận được: 1 (sau 5 s)
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT

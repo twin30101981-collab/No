@@ -88,3 +88,19 @@ describe("P2 hàng đợi xử lý nền", () => {
     expect(ran).toBe(1);
   });
 });
+
+describe("CS-02 ưu tiên trang đang xem", () => {
+  it("prioritize đưa việc của trang lên đầu hàng đợi, giữ thứ tự còn lại", async () => {
+    const m = manual(); const done: string[] = [];
+    const q = new BgQueue(memoryJobStore(), { finish: async (j) => { done.push(j.pageId); } }, m.s);
+    await q.enqueue("a", "finish", payload); await q.enqueue("b", "finish", payload); await q.enqueue("c", "finish", payload);
+    expect(q.prioritize("c")).toBe(true);
+    await q.flush();
+    expect(done).toEqual(["c", "a", "b"]);
+  });
+  it("trang không có việc → false, không đổi thứ tự", async () => {
+    const m = manual(); const q = new BgQueue(memoryJobStore(), { finish: async () => {} }, m.s);
+    await q.enqueue("a", "finish", payload);
+    expect(q.prioritize("zzz")).toBe(false);
+  });
+});

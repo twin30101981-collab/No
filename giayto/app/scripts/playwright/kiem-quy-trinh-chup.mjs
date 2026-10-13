@@ -80,7 +80,7 @@ await session(async ({ p, touch, until }) => {
   const fb = await p.evaluate(() => ({ path: location.pathname, saving: /Đang lưu/.test(document.body.innerText) }));
   chk("bấm Xong → thấy ngay “Đang lưu…” (không im lặng)", fb.saving || fb.path.startsWith("/doc"), JSON.stringify(fb));
   const t0 = Date.now(); const ok = await p.waitForURL(/\/doc\//, { timeout: 180000 }).then(() => true, () => false);
-  console.log(`      (lưu xong sau ~${Math.round((Date.now() - t0) / 1000) + 2} s)`); await p.waitForTimeout(1500);
+  console.log(`      (lưu xong sau ~${Math.round((Date.now() - t0) / 1000) + 2} s)`); if (ok) await p.waitForFunction(() => /Trang 1\/2/.test(document.body.innerText), null, { timeout: 30000 }).catch(() => {}); // CPU chậm: màn tài liệu dựng lâu hơn 1,5 s (chờ cố định cũ gây lỗi giả)
   const txt = ok ? await p.locator("body").innerText() : ""; chk("Xong → mở tài liệu 2 trang", ok && /Trang 1\/2/.test(txt), txt.replace(/\s+/g, " ").slice(0, 60));
 });
 await b.close(); console.log(bad ? `LỖI: ${bad}` : "TẤT CẢ ĐẠT"); process.exit(bad ? 1 : 0);

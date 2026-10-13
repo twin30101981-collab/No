@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export type Settings = {
   quality: "normal" | "high"; paper: "a4" | "letter"; ocrLang: "vie+eng" | "vie" | "eng";
-  dark: boolean; pin: string; pinSalt?: string; vaultWrap?: import("./vault").VaultWrap; autoLock: number; autoCapture: boolean; maxQuality: boolean; captureSound: boolean; captureVibrate: boolean; defaultFilter: "magic" | "auto" | "sharp" | "original"; autoName: boolean; autoOcr?: boolean; /** P8.4 */ autoRecipe?: boolean;
+  dark: boolean; pin: string; pinSalt?: string; vaultWrap?: import("./vault").VaultWrap; autoLock: number; autoCapture: boolean; maxQuality: boolean; captureSound: boolean; captureVibrate: boolean; defaultFilter: "magic" | "auto" | "sharp" | "original"; autoName: boolean; autoOcr?: boolean; /** P8.4 */ autoRecipe?: boolean; /** CS-02: bộ điều phối nền toàn app (mặc định bật; false = bộ xử lý cục bộ trong màn Chụp như cũ). */ globalPipeline?: boolean;
   largeText: boolean; onboarded: boolean; voiceGuide: boolean; guideVibrate: boolean;
   nameTemplate: string; folderRules: import("./name-rules").FolderRule[];
 };
