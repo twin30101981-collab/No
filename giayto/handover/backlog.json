@@ -2,7 +2,7 @@
  "du_an": "GIAYTO",
  "app": "Ghi Nhanh — Quét tài liệu (giayto-scan, TanStack Start + React 19 + Tailwind 4, PWA, Lovable)",
  "skill_version": "3.2.0",
- "phien_hien_tai": "P17",
+ "phien_hien_tai": "P18",
  "che_do": 3,
  "de_an": {
   "phien_ban": "1.2",
@@ -905,6 +905,45 @@
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "Tạo từ HM-11: 5 ca NB còn trượt do quad=null. HOAN chờ Q6. | Q6=(a) 13/10/2026: chấp nhận 5 ca NB trượt cổng R6.1 (quad=null), không làm dò mép; mở lại nếu có ảnh thật cần.",
    "zip": ""
+  },
+  {
+   "id": "HM-19",
+   "ten": "P18: xử lý nợ kỹ thuật còn lại (trừ ảnh chụp thật/máy thật)",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "L",
+   "model_version": "claude-opus-5-5 (đổi giữa phiên P18)",
+   "model_effort_recommended": "high",
+   "model_effort_actual": "không xác nhận được",
+   "model_effort_reason": "Nhiều nợ, nhiều lớp (UI, ký số, SW, máy chủ)",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": null,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [],
+   "pham_vi": "TD-04, 13, 14, 17, 19, 22, 27, 30, 32, 33, 34, 37, 38, 40, 42, 45",
+   "hanh_vi_mong_doi": "Đóng các nợ làm được trong sandbox, có kiểm chứng; nợ cần quyết định/máy thật ghi rõ",
+   "tieu_chi_nghiem_thu": [
+    "npm run check thoát 0",
+    "mỗi lỗi sửa có test đỏ trước/xanh sau hoặc đối chứng Playwright mã cũ/mã mới",
+    "CI GitHub chạy xanh"
+   ],
+   "rui_ro": "Đổi bố cục màn Cắt/Chỉnh tay; đổi định dạng chứng thư .p12 do app tạo (CN UTF8String)",
+   "kiem_chung_du_kien": "V3",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "npm run check; scripts/playwright/kiem-*.mjs (P18); pdfsig; so-ocr.py (tesseract 5.3.4)",
+    "pass": 877,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "app/de-an-nang-cap-scan/kiem-chung/P18/ky-so/",
+     "app/de-an-nang-cap-scan/kiem-chung/P18/bo-cuc/",
+     "app/de-an-nang-cap-scan/kiem-chung/R6.2/tesseract-goc/"
+    ]
+   },
+   "nguyen_nhan_goc": "Xem NO-KY-THUAT.md mục P18: test cũ chỉ dùng tên ASCII (ký số); cột flex cuộn + overflow-x → min-height 0 (dải bộ lọc 4 px); ảnh cố định 62dvh (màn Cắt); Radix không commit khi pointercancel; script đồng bộ ghi đè.",
+   "ghi_chu_ban_giao": "Lỗi lớn nhất tìm thấy: (1) chứng thư tạo trong app với tên có dấu không mở lại được → không ký được; (2) dải chọn bộ lọc ở màn Lọc gần như vô hình; (3) nút Áp dụng màn Cắt ngoài đáy ở màn 640 px; (4) thanh trượt hiện 55 nhưng lưu 0 khi cử chỉ bị hủy. Mới phát sinh: TD-46 tương phản màu thương hiệu (cần chủ dự án quyết). Chưa kiểm máy thật/Safari/CA công cộng/Acrobat."
   }
  ],
  "quyet_dinh_can_chot": [
@@ -936,7 +975,11 @@
   "Q4 = không: KHÔNG tự lưu gói nhận chữ; giữ 'báo rõ + nút Tải sẵn'.",
   "Q5 = (a): chấp nhận độ nghiêng dòng chữ hiện tại; chỉ tiêu mới ≤1° ở ô mực ≥500 làm thông tin, không phải cổng. LƯU Ý: số đo 13/10 vẫn vượt ở 2 ô (…555 d0P 2,25°, …556 d0T 1,75°) — chấp nhận theo quyết định vì nhìn thẳng.",
   "HM-11: chọn bảo vệ khối màu ở DẢI MÉP (không toàn trang) vì toàn trang làm ΔL tụt; hướng 'khôi phục theo toạ độ nguồn' bị loại (hình học dịch chuyển).",
-  "Đóng phiên P16: không đổi mã app so với P15; chỉ cập nhật tien-do.json, LO-TRINH.md, docs/NO-KY-THUAT.md, đề án v1.2, hồ sơ bàn giao."
+  "Đóng phiên P16: không đổi mã app so với P15; chỉ cập nhật tien-do.json, LO-TRINH.md, docs/NO-KY-THUAT.md, đề án v1.2, hồ sơ bàn giao.",
+  "13/10/2026 (P18): người dùng yêu cầu 'xử lý phần nợ kỹ thuật còn lại, trừ phần chụp ảnh thật' → làm liền các nợ, commit + đẩy sau từng nhóm thay cho hỏi từng hạng mục.",
+  "P18: TD-27 tương phản màu thương hiệu KHÔNG tự đổi (quyết định thiết kế) → TD-46 chờ chủ dự án.",
+  "P18: TD-28 (bộ đếm AI bền/miễn trừ đăng nhập) KHÔNG làm: đổi schema/nghiệp vụ, cần quyết định.",
+  "P18: .p12 do app tạo dùng CN/O UTF8String + friendlyName UTF-16BE (chuẩn); chứng thư cũ tên ASCII vẫn mở được."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -949,5 +992,5 @@
   "Sandbox thiếu SUPABASE_*: lớp đính kèm đăng nhập phía trình duyệt ném lỗi trước khi gọi máy chủ → thử AI cần build với VITE_SUPABASE_URL/PUBLISHABLE_KEY giả. Production của Lovable có biến này.",
   "Quy trình: TIEP-THEO.md mất ghi chú HM-01/06/13 từ ZIP P12 (chép đè từ thư mục làm việc; replace im lặng không khớp). Đã khôi phục ở P15 và kiểm bằng assert."
  ],
- "lyDoDongPhien": "Người dùng yêu cầu bàn giao ZIP tiến độ + nợ kỹ thuật cho phiên sau (13/10/2026)"
+ "lyDoDongPhien": "P18: xử lý nợ kỹ thuật còn lại theo yêu cầu người dùng (13/10/2026)"
 }

@@ -1,34 +1,30 @@
-# Tiến độ và nợ kỹ thuật — GIAYTO — 13/10/2026, đóng phiên P17 (đọc file này trước)
+# Tiến độ và nợ kỹ thuật — GIAYTO — 13/10/2026, phiên P18 (đọc file này trước)
 
 ## Tiến độ
-- Đề án nâng cấp v1.2: 14/18 hạng mục đạt (V3×11, V2×2, V1×1), 3 hủy (HM-02, HM-16, HM-18), 1 chờ (HM-14).
-- P17: HM-10 (màn Tài liệu 2 cột từ 1024 px) đạt V3; Q6=(a) chấp nhận 5 ca NB trượt → HM-18 hủy; HM-12 (so OCR với CamScanner) đạt V3: app Auto 98,68% vs Cam tốt nhất 98,88% (chênh −0,2, ngưỡng −2; chữ chuẩn đã rà lại, không sai khác).
-- Gói R cũ: còn R6.4 (= HM-14) và R6.5 (đề án cuối). R6.2 xong.
-- Kiểm thử: 189 tệp / 864 đạt, `npm run check` thoát mã 0 (chạy cuối sau HM-10).
-- Mã đã nằm trên GitHub: nhánh claude/read-content-continue-progress-1a7044, thư mục giayto/ (TD-39 đóng). Chưa tạo PR.
+- Đề án nâng cấp v1.2: 14/18 hạng mục đạt, 3 hủy, 1 chờ (HM-14). P18 thêm HM-19 = xử lý nợ kỹ thuật còn lại → ĐẠT V3.
+- P18 đóng 16 nợ: TD-04, 13, 14, 17, 19, 22, 27, 30, 32, 33, 34, 37, 38, 40, 42, 45 (chi tiết: app/docs/NO-KY-THUAT.md mục "P18").
+- Kiểm thử: 190 tệp / 877 đạt, `npm run check` thoát 0; CI GitHub Actions chạy cùng lệnh khi đẩy mã.
+- Mã: nhánh claude/tieu-tuc-thuc-thi-de-an-k1h8nz, thư mục giayto/. Chưa tạo PR.
+
+## Lỗi thật P18 tìm và sửa (người dùng nên biết)
+1. Ký số: chứng thư tạo trong app với tên có dấu KHÔNG mở lại được → không ký được; thêm 5 lỗi (tên vỡ mã, lý do ký mất dấu, PDF reader không tìm ra người ký, ~1/256 chữ ký báo sai, serial âm).
+2. Màn Lọc: dải chọn bộ lọc (Màu gốc/Thần kỳ…) bị bóp còn 4 px — gần như vô hình.
+3. Màn Cắt trên điện thoại thấp (640 px): nút "Áp dụng" nằm ngoài màn hình.
+4. Thanh trượt Độ sáng: hiện 55 nhưng lưu 0 nếu cử chỉ bị hệ thống hủy.
+5. Liên kết chia sẻ có mật khẩu: cho thử không giới hạn → nay 10 lần sai/15 phút.
+6. Script đồng bộ tiến độ ghi đè TIEP-THEO.md (50 → 11 dòng) và lùi ngày cập nhật.
 
 ## Đang chờ (việc của người dùng)
-- **HM-14** R6.4 UAT máy thật + R6.5 đề án cuối — gộp V0 (ảnh 12 MP), S12c (AI thật), TD-01, TD-15.
-- Xác nhận đề án v1.2; mức 60 lượt AI/giờ; tùy chọn: rà chữ chuẩn NB, tạo PR, mở rộng màn rộng cho màn khác.
-
-## Nợ kỹ thuật quan trọng (đủ bảng ở app/docs/NO-KY-THUAT.md mục 0.2)
-| Mã | Nợ | Mức |
+| Mã | Việc | Mức |
 |---|---|---|
-| TD-26 | Chưa kiểm trên máy thật/Cloudflare/Safari/Firefox/AI thật (chỉ Chromium + localhost) | Cao |
-| TD-27 | Button/Input cao hơn 4–8 px toàn app; chưa soi từng màn | Trung |
-| TD-28 | Giới hạn AI đếm trong bộ nhớ; chưa miễn trừ người đăng nhập; 60 là con số tạm | Trung |
-| TD-29 | 5 ca NB trượt cổng R6.1 (quad=null) — ĐÃ CHẤP NHẬN (Q6=a) | Trung→chấp nhận |
-| TD-30 | SW theo build: chưa thử nâng cấp từ SW cũ thật; đặt BUILD_ID | Trung |
-| TD-42 | HM-12 chấm bằng shim tesseract.js, không phải tesseract gốc | Thấp |
-| TD-43 | Chữ chuẩn 1 trang NB, trợ lý tự rà; nhãn Cam "Thần kỳ"=magic là suy đoán | Thấp |
-| TD-44 | HM-10 chỉ màn Tài liệu; kiểm vite dev + Chromium | Thấp |
-| TD-45 | Mã ở thư mục giayto/ của repo; mẹo môi trường sandbox (IPv6, playwright python) | Thấp |
-| TD-31…38, 40, 41 | OCR lần đầu cần mạng; OCR nền im lặng; ký số chưa kiểm .p12; F-05; lint tệp tự sinh; độ nghiêng dòng chữ; nhập ảnh không tự dò khung; bun.lock sửa tay; script đồng bộ tiến độ; đề án nền v4 | Thấp |
-| TD-01, 07, 15, 16 (cũ) | S12c AI thật; hộp chữ ký/bảng; 4 quyết định chủ dự án; ảnh lỗi thật Q/loi | Cao/Trung |
-(TD-39 đã đóng.)
+| HM-14 / TD-26 / TD-01 / TD-16 | Thử máy thật Android/iPhone, ảnh 12 MP thật, AI thật, ảnh lỗi thật | Cao |
+| TD-46 (mới) | Tương phản màu thương hiệu: chữ trắng trên xanh primary 2,40 (chuẩn 4,5) — giữ / làm đậm primary / chữ tối | Trung |
+| TD-28 | Giới hạn AI: giữ 60/giờ? bộ đếm bền (bảng Supabase)? miễn trừ người đăng nhập? | Trung |
+| TD-15, 11, 12, 31, 36, 44, 05–07 | Quyết định chủ dự án / thiết kế | Thấp–Trung |
+| TD-20, TD-41 | Gửi đề án nền v4 nếu muốn làm R6.5 | Thấp |
+| — | Xác nhận đề án v1.2; tạo PR | — |
 
 ## Cách bắt đầu phiên sau
-1. Giải nén ZIP; đọc handover/HANDOVER.md + backlog.json; kiểm MANIFEST.sha256.
+1. Giải nén ZIP; đọc handover/HANDOVER.md (đầu tệp = P18) + backlog.json; kiểm MANIFEST.sha256.
 2. `cd app && npm install --legacy-peer-deps && npm run check` (phải thoát mã 0).
-3. Hỏi người dùng đúng 1 câu: làm tiếp việc nào trong Mục 4 HANDOVER (HM-14 / xác nhận đề án / mở rộng màn rộng / PR).
-4. Công thức môi trường và các bẫy đã gặp: HANDOVER Mục 1.
+3. Hỏi người dùng 1 câu: kết quả HM-14 / quyết TD-46, TD-28 / tạo PR.
