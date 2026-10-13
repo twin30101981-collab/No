@@ -105,6 +105,17 @@ export function CropEditor({ src, quad, paper: paper0, onClose, onApply, cancelL
     setQ(st.q.map((p, i) => (ids.includes(i) ? [clamp(p[0] + dx), clamp(p[1] + dy)] : p)) as Quad);
   }
   const mids = q.map((p, i) => [(p[0] + q[(i + 1) % 4][0]) / 2, (p[1] + q[(i + 1) % 4][1]) / 2]);
+  // TD-27 (P18): vùng ảnh co giãn theo chỗ trống còn lại — trước đây ảnh cố định 62dvh đẩy hàng "Áp dụng"
+  // ra ngoài đáy trên màn thấp (360×640) và lớp phủ cố định không cuộn được.
+  const area = useRef<HTMLDivElement>(null);
+  const [areaH, setAreaH] = useState<number | null>(null);
+  useEffect(() => {
+    const el = area.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setAreaH(el.clientHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const focus = active < 0 ? null : active < 4 ? q[active] : mids[active - 4];
   const bw = box.current?.clientWidth ?? 0, bh = box.current?.clientHeight ?? 0;
   return (
@@ -114,9 +125,10 @@ export function CropEditor({ src, quad, paper: paper0, onClose, onApply, cancelL
         <p className="font-display text-sm font-semibold">Kéo góc hoặc cạnh vào mép giấy</p>
         <span className="w-16" />
       </header>
-      <div className="grid flex-1 place-items-center p-6">
+      <div ref={area} data-testid="crop-area" className="grid min-h-0 flex-1 place-items-center p-6">
         <div ref={box} className="relative touch-none" onPointerMove={move} onPointerUp={up}>
-          <img ref={imgRef} src={src} alt="Ảnh gốc" className="block max-h-[62dvh] max-w-full select-none" draggable={false} onLoad={(e) => setSpread(isLandscapeSpread(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))} />
+          <img ref={imgRef} src={src} alt="Ảnh gốc" className="block max-h-[62dvh] max-w-full select-none" draggable={false}
+            style={areaH ? { maxHeight: Math.max(120, areaH - 48) } : undefined} onLoad={(e) => setSpread(isLandscapeSpread(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))} />
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full">
             <path data-crop-dim fillRule="evenodd" className="scan-dim" d={`M0,0 H100 V100 H0 Z M${q.map(([x, y]) => `${x * 100},${y * 100}`).join(" L")} Z`} />
             <polygon points={q.map(([x, y]) => `${x * 100},${y * 100}`).join(" ")} className="scan-quad" />
@@ -143,7 +155,7 @@ export function CropEditor({ src, quad, paper: paper0, onClose, onApply, cancelL
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-2 px-4 pb-2">
+      <div className="shrink-0 flex items-center justify-between gap-2 px-4 pb-2">
         <div className="flex gap-1" role="group" aria-label="Chọn góc để chỉnh">
           {CORNERS.map((c, i) => (
             <Button key={c} size="sm" variant={sel === i ? "default" : "glass"} className="h-8 rounded-full px-2.5 text-xs" onClick={() => setSel(i)}>{c}</Button>
@@ -157,7 +169,7 @@ export function CropEditor({ src, quad, paper: paper0, onClose, onApply, cancelL
           <span /><Button size="icon" variant="glass" className="size-7" aria-label="Xuống" onClick={() => nudge(0, 1)}><ChevronDown /></Button><span />
         </div>
       </div>
-      <div className="flex items-center justify-center gap-2 px-4 pb-2" role="group" aria-label="Xoay mịn">
+      <div className="shrink-0 flex items-center justify-center gap-2 px-4 pb-2" role="group" aria-label="Xoay mịn">
         <Button size="sm" variant="glass" className="h-8 rounded-full" aria-label="Xoay trái 0,5 độ" disabled={tilt <= -MAX_TILT} onClick={() => rotate(-TILT_STEP)}>↺</Button>
         <span className="w-16 text-center text-xs tabular-nums" aria-live="polite">{tilt.toLocaleString("vi-VN")}°</span>
         <Button size="sm" variant="glass" className="h-8 rounded-full" aria-label="Xoay phải 0,5 độ" disabled={tilt >= MAX_TILT} onClick={() => rotate(TILT_STEP)}>↻</Button>
@@ -173,12 +185,12 @@ export function CropEditor({ src, quad, paper: paper0, onClose, onApply, cancelL
         <p role="alert" className="scan-warn mx-4 mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs"><AlertTriangle className="size-4 shrink-0" /> Khung cắt đi qua {cutCheck.cut.length} từ ở mép — nới khung ra để không mất chữ.</p>
       )}
       {!check.ok && <p role="alert" className="px-4 pb-2 text-center text-xs text-destructive">{check.message}</p>}
-      <div className="flex gap-1.5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]">
+      <div className="shrink-0 flex gap-1.5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]">
         {(Object.keys(PAPER_LABEL) as Paper[]).map((k) => (
           <Button key={k} size="sm" variant={paper === k ? "default" : "glass"} className="shrink-0 rounded-full" onClick={() => setPaper(k)}>{PAPER_LABEL[k]}</Button>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-2 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+      <div className="shrink-0 grid grid-cols-3 gap-2 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <Button variant="glass" disabled={busy} onClick={auto}><Wand2 /> {busy ? "Đang dò…" : "Tự động"}</Button>
         <Button variant="glass" onClick={() => setQ([[0, 0], [1, 0], [1, 1], [0, 1]])}>Toàn ảnh</Button>
         <Button disabled={!check.ok} onClick={() => check.ok && onApply(q, paper)}>{applyLabel}</Button>
