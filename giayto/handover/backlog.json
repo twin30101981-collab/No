@@ -1046,6 +1046,36 @@
    ],
    "nguyen_nhan_goc": "Triệu chứng: nhập ảnh lần 2 không mở tài liệu. Trực tiếp: filesToPages hỏi trùng bằng window.confirm, bị Playwright tự đóng = từ chối → bỏ trang → pages rỗng. Gốc: (1) importer là chỗ sót khi app chuyển sang confirmDialog (dialog.ts ghi 'thay window.confirm'), (2) khi người dùng từ chối hết, hàm báo nhầm 'Không có ảnh hoặc PDF hợp lệ'.",
    "ghi_chu_ban_giao": "Tính năng chống nhập trùng (R4.1) giữ nguyên. Không còn cần 3 ảnh khác nhau khi kiểm, nhưng script td44 vẫn dùng ảnh khác nhau cho đơn giản."
+  },
+  {
+   "id": "HM-23",
+   "ten": "Đồng bộ hồ sơ tồn đọng (R6.2, TD-11/12, S11f/l/n/q) + danh sách việc cần người dùng",
+   "dot": 2,
+   "uu_tien": "P3",
+   "effort": "XS",
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": "không xác nhận được",
+   "model_effort_reason": "Đối chiếu hồ sơ với mã",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 3,
+   "chi_phi_thuc_te_pct": 4,
+   "phu_thuoc": [],
+   "pham_vi": "tien-do.json, NO-KY-THUAT.md, de-an/VIEC_CAN_NGUOI_DUNG_P19.docx",
+   "hanh_vi_mong_doi": "Hồ sơ khớp mã; việc cần người dùng nằm trong một docx",
+   "tieu_chi_nghiem_thu": [
+    "TD-11/12 xác minh trong mã",
+    "docx dựng, render, kiểm tra"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V1",
+   "trang_thai": "DAT_V1",
+   "bac_kiem_chung_dat": "V1",
+   "bang_chung": [
+    "doc.$id.tsx dòng 416-422: AdjustEditor + onApplyAll; adjust-editor.tsx:363 'Áp tất cả trang'"
+   ],
+   "nguyen_nhan_goc": "Hồ sơ không cập nhật khi việc hoàn tất",
+   "ghi_chu_ban_giao": "Mục còn lại đều cần người dùng (máy thật/ảnh thật/AI thật/quyết định/đề án nền v4) — xem docx"
   }
  ],
  "quyet_dinh_can_chot": [
