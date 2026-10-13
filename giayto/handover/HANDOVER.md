@@ -36,7 +36,7 @@ Quy ước: chỉnh style chỉ ở lớp Tailwind/styles.css; không format hà
 | HM-15 | App không bắt lỗi khi IndexedDB không dùng được | P2 | Đạt V3 | GIAYTO_P04_HM15_20261012.zip |
 | HM-16 | Độ nghiêng dòng chữ cấp ô ≤0,5° trên ảnh Q (từ S11f/l/n/q) | P3 | Hủy | — |
 | HM-17 | Q2: khai báo @testing-library/dom + script check, bun.lock khớp | P2 | Đạt V2 | GIAYTO_P14_Q2_20261013.zip |
-| HM-18 | Dò mép giấy cho ảnh tạp chí có mặt bàn tối (NB: quad = null) | P3 | Hoãn | — |
+| HM-18 | Dò mép giấy cho ảnh tạp chí có mặt bàn tối (NB: quad = null) | P3 | Hủy (Q6=a) | — |
 
 ## 3. Việc đã làm (tóm tắt; chi tiết trong ghi_chu_ban_giao của từng hạng mục)
 Bộ kiểm thử thoát mã 0 (189 tệp/864); bắt lỗi IndexedDB; giới hạn AI 60/giờ/IP; thanh công cụ 1 hàng; vùng chạm ≥40 px (78→1); dọn lint; báo rõ khi không tải được gói nhận chữ; service worker theo bản build (giữ gói OCR); bỏ nạp sớm 0,7 MB ở màn Công cụ; giữ khối màu mép (cổng R6.1: NB 1→8/13, 221 ca cũ không hồi quy); package.json/script check; rà 13 mục cũ. Hủy HM-02 (phát hiện sai F-03).
@@ -76,6 +76,7 @@ Không có. Mọi hạng mục đã đóng trọn hoặc hoãn có chủ đích.
 - Q2 = có: sửa package.json (devDependency @testing-library/dom, script typecheck/lint:src/check) + bun.lock khớp.
 - Q3 = (a): HM-11 sửa BỘ LỌC giữ khối màu bão hòa ở mép (không nới cổng đo).
 - Q4 = không: KHÔNG tự lưu gói nhận chữ; giữ 'báo rõ + nút Tải sẵn'.
+- Q6 = (a): chấp nhận 5 ca NB trượt (13/10/2026); HM-18 hủy, TD-29 chấp nhận.
 - Q5 = (a): chấp nhận độ nghiêng dòng chữ hiện tại; chỉ tiêu mới ≤1° ở ô mực ≥500 làm thông tin, không phải cổng. LƯU Ý: số đo 13/10 vẫn vượt ở 2 ô (…555 d0P 2,25°, …556 d0T 1,75°) — chấp nhận theo quyết định vì nhìn thẳng.
 - HM-11: chọn bảo vệ khối màu ở DẢI MÉP (không toàn trang) vì toàn trang làm ΔL tụt; hướng 'khôi phục theo toạ độ nguồn' bị loại (hình học dịch chuyển).
 - Đóng phiên P16: không đổi mã app so với P15; chỉ cập nhật tien-do.json, LO-TRINH.md, docs/NO-KY-THUAT.md, đề án v1.2, hồ sơ bàn giao.

@@ -890,7 +890,7 @@
    ],
    "rui_ro": "Thay đổi dò khung ảnh hưởng mọi ảnh quét",
    "kiem_chung_du_kien": "V2 + V3",
-   "trang_thai": "HOAN",
+   "trang_thai": "HUY",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
     "lenh": "",
@@ -900,7 +900,7 @@
     "artifact": []
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "Tạo từ HM-11: 5 ca NB còn trượt do quad=null. HOAN chờ Q6.",
+   "ghi_chu_ban_giao": "Tạo từ HM-11: 5 ca NB còn trượt do quad=null. HOAN chờ Q6. | Q6=(a) 13/10/2026: chấp nhận 5 ca NB trượt cổng R6.1 (quad=null), không làm dò mép; mở lại nếu có ảnh thật cần.",
    "zip": ""
   }
  ],
