@@ -1,0 +1,313 @@
+{
+ "nguon": "progress/V12/chuan",
+ "phien_ban": "V12",
+ "tong": {
+  "so_anh": 60,
+  "net_tb": 4148.5,
+  "nghieng_tb_tuyet_doi": 0.308,
+  "ocr_tin_cay_tb": 79.49,
+  "ocr_tu": 4736
+ },
+ "anh": {
+  "IMG_20261002_093538_auto.png": {
+   "net": 3810.3,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 365,
+    "tin_cay": 84.69
+   }
+  },
+  "IMG_20261002_093538_mono.png": {
+   "net": 8714.85,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093538_original.png": {
+   "net": 1261.25,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093538_sharp.png": {
+   "net": 4556.98,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093540_auto.png": {
+   "net": 3907.75,
+   "nghieng": 0.5,
+   "ocr": {
+    "tu": 266,
+    "tin_cay": 69.11
+   }
+  },
+  "IMG_20261002_093540_mono.png": {
+   "net": 9610.68,
+   "nghieng": 1.25
+  },
+  "IMG_20261002_093540_original.png": {
+   "net": 1241.28,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093540_sharp.png": {
+   "net": 4126.4,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093541_auto.png": {
+   "net": 4812.0,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 385,
+    "tin_cay": 83.65
+   }
+  },
+  "IMG_20261002_093541_mono.png": {
+   "net": 9250.49,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093541_original.png": {
+   "net": 1312.58,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093541_sharp.png": {
+   "net": 5513.34,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093543_auto.png": {
+   "net": 3416.25,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 347,
+    "tin_cay": 84.5
+   }
+  },
+  "IMG_20261002_093543_mono.png": {
+   "net": 7435.46,
+   "nghieng": -0.25
+  },
+  "IMG_20261002_093543_original.png": {
+   "net": 1158.5,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093543_sharp.png": {
+   "net": 4007.57,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093544_auto.png": {
+   "net": 3929.0,
+   "nghieng": -1.25,
+   "ocr": {
+    "tu": 218,
+    "tin_cay": 72.81
+   }
+  },
+  "IMG_20261002_093544_mono.png": {
+   "net": 7918.0,
+   "nghieng": -2.0
+  },
+  "IMG_20261002_093544_original.png": {
+   "net": 1139.83,
+   "nghieng": 2.75
+  },
+  "IMG_20261002_093544_sharp.png": {
+   "net": 4727.17,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093546_auto.png": {
+   "net": 4512.0,
+   "nghieng": -0.25,
+   "ocr": {
+    "tu": 450,
+    "tin_cay": 84.09
+   }
+  },
+  "IMG_20261002_093546_mono.png": {
+   "net": 9029.43,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093546_original.png": {
+   "net": 1185.37,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093546_sharp.png": {
+   "net": 5084.61,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093547_auto.png": {
+   "net": 940.04,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 45,
+    "tin_cay": 90.72
+   }
+  },
+  "IMG_20261002_093547_mono.png": {
+   "net": 1228.98,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093547_original.png": {
+   "net": 125.82,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093547_sharp.png": {
+   "net": 977.08,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093548_auto.png": {
+   "net": 3485.37,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 348,
+    "tin_cay": 82.35
+   }
+  },
+  "IMG_20261002_093548_mono.png": {
+   "net": 7710.58,
+   "nghieng": 0.5
+  },
+  "IMG_20261002_093548_original.png": {
+   "net": 1053.26,
+   "nghieng": 0.25
+  },
+  "IMG_20261002_093548_sharp.png": {
+   "net": 4041.56,
+   "nghieng": 0.25
+  },
+  "IMG_20261002_093549_auto.png": {
+   "net": 4760.58,
+   "nghieng": -0.5,
+   "ocr": {
+    "tu": 309,
+    "tin_cay": 68.93
+   }
+  },
+  "IMG_20261002_093549_mono.png": {
+   "net": 8958.99,
+   "nghieng": -2.0
+  },
+  "IMG_20261002_093549_original.png": {
+   "net": 1201.9,
+   "nghieng": -1.25
+  },
+  "IMG_20261002_093549_sharp.png": {
+   "net": 5596.63,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093555_auto.png": {
+   "net": 3217.1,
+   "nghieng": -0.5,
+   "ocr": {
+    "tu": 309,
+    "tin_cay": 70.96
+   }
+  },
+  "IMG_20261002_093555_mono.png": {
+   "net": 7027.62,
+   "nghieng": -0.75
+  },
+  "IMG_20261002_093555_original.png": {
+   "net": 780.1,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093555_sharp.png": {
+   "net": 3901.14,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093556_auto.png": {
+   "net": 4451.59,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 391,
+    "tin_cay": 77.84
+   }
+  },
+  "IMG_20261002_093556_mono.png": {
+   "net": 9217.01,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093556_original.png": {
+   "net": 1096.95,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093556_sharp.png": {
+   "net": 5210.53,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093557_auto.png": {
+   "net": 3434.39,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 364,
+    "tin_cay": 84.98
+   }
+  },
+  "IMG_20261002_093557_mono.png": {
+   "net": 7239.74,
+   "nghieng": 0.25
+  },
+  "IMG_20261002_093557_original.png": {
+   "net": 1057.3,
+   "nghieng": 0.25
+  },
+  "IMG_20261002_093557_sharp.png": {
+   "net": 4001.56,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093606_auto.png": {
+   "net": 3700.7,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 361,
+    "tin_cay": 85.21
+   }
+  },
+  "IMG_20261002_093606_mono.png": {
+   "net": 7623.07,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093606_original.png": {
+   "net": 1206.39,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093606_sharp.png": {
+   "net": 4336.96,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093607_auto.png": {
+   "net": 3228.71,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 251,
+    "tin_cay": 71.32
+   }
+  },
+  "IMG_20261002_093607_mono.png": {
+   "net": 7457.4,
+   "nghieng": -0.25
+  },
+  "IMG_20261002_093607_original.png": {
+   "net": 933.91,
+   "nghieng": -0.25
+  },
+  "IMG_20261002_093607_sharp.png": {
+   "net": 3803.42,
+   "nghieng": 0.0
+  },
+  "IMG_20261002_093608_auto.png": {
+   "net": 3358.32,
+   "nghieng": 0.0,
+   "ocr": {
+    "tu": 327,
+    "tin_cay": 81.19
+   }
+  },
+  "IMG_20261002_093608_mono.png": {
+   "net": 6267.07,
+   "nghieng": -0.5
+  },
+  "IMG_20261002_093608_original.png": {
+   "net": 765.02,
+   "nghieng": 0.25
+  },
+  "IMG_20261002_093608_sharp.png": {
+   "net": 3851.91,
+   "nghieng": 0.0
+  }
+ }
+}
