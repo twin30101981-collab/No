@@ -22,9 +22,26 @@ export interface KeyPairP12 {
   info: CertInfo;
 }
 
+// TD-33: forge giữ giá trị thuộc tính dạng byte thô — UTF8String (vd CN "Nguyễn…" do openssl tạo) phải giải mã,
+// BMPString là UTF-16BE. Không giải mã thì tên có dấu hiện vỡ mã ("Nguyá»n…").
+export function fieldText(field: unknown): string {
+  const f = field as { value?: unknown; valueTagClass?: number } | null | undefined;
+  if (!f || typeof f.value !== "string") return "";
+  if (f.valueTagClass === forge.asn1.Type.UTF8) { try { return forge.util.decodeUtf8(f.value); } catch { return f.value; } }
+  if (f.valueTagClass === forge.asn1.Type.BMPSTRING) {
+    let out = ""; for (let i = 0; i + 1 < f.value.length; i += 2) out += String.fromCharCode((f.value.charCodeAt(i) << 8) | f.value.charCodeAt(i + 1));
+    return out;
+  }
+  return f.value;
+}
+/** Chuỗi JS → byte UTF-16BE (dạng chuỗi nhị phân của forge) cho BMPString (friendlyName của .p12). */
+function toBmp(s: string): string {
+  let out = ""; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); out += String.fromCharCode(c >> 8, c & 0xff); }
+  return out;
+}
+
 function certInfo(cert: forge.pki.Certificate): CertInfo {
-  const get = (name: string) =>
-    (cert.subject.getField(name)?.value as string) ?? "";
+  const get = (name: string) => fieldText(cert.subject.getField(name));
   const md = forge.md.sha256.create();
   md.update(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes());
   return {
@@ -57,19 +74,22 @@ export function createP12(opts: CreateCertOptions): KeyPairP12 {
   const keys = forge.pki.rsa.generateKeyPair(2048);
   const cert = forge.pki.createCertificate();
   cert.publicKey = keys.publicKey;
-  cert.serialNumber = forge.util.bytesToHex(forge.random.getBytesSync(16));
+  // P18: số serial phải DƯƠNG (RFC 5280); byte đầu ≥ 0x80 bị hiểu là số âm ("-7AE8…" khi openssl đọc).
+  const sn = forge.random.getBytesSync(16);
+  cert.serialNumber = forge.util.bytesToHex(String.fromCharCode((sn.charCodeAt(0) & 0x7f) | 0x40) + sn.slice(1));
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
   cert.validity.notAfter.setDate(
     cert.validity.notAfter.getDate() + (opts.days ?? 825),
   );
   const attrs: forge.pki.CertificateField[] = [
-    { name: "commonName", value: opts.commonName.trim() },
+    // TD-33: UTF8String để tên có dấu không bị cắt byte (mặc định forge dùng PrintableString).
+    { name: "commonName", value: opts.commonName.trim(), valueTagClass: forge.asn1.Type.UTF8 as number },
   ];
   if (opts.organization?.trim())
-    attrs.push({ name: "organizationName", value: opts.organization.trim() });
+    attrs.push({ name: "organizationName", value: opts.organization.trim(), valueTagClass: forge.asn1.Type.UTF8 as number });
   if (opts.email?.trim())
-    attrs.push({ name: "emailAddress", value: opts.email.trim() });
+    attrs.push({ name: "emailAddress", value: opts.email.trim(), valueTagClass: forge.asn1.Type.IA5STRING as number });
   cert.setSubject(attrs);
   cert.setIssuer(attrs);
   cert.setExtensions([
@@ -81,7 +101,7 @@ export function createP12(opts: CreateCertOptions): KeyPairP12 {
 
   const p12Asn1 = forge.pkcs12.toPkcs12Asn1(keys.privateKey, [cert], opts.password, {
     algorithm: "3des",
-    friendlyName: opts.commonName.trim(),
+    friendlyName: toBmp(opts.commonName.trim()), // BMPString = UTF-16BE
   });
   const der = forge.asn1.toDer(p12Asn1).getBytes();
   const p12Bytes = new Uint8Array(der.length);

@@ -59,3 +59,50 @@ describe("verifyPdfSignature", () => {
     expect(verifyPdfSignature(await samplePdf()).status).toBe("none");
   });
 });
+
+describe("pdf-sign – chữ tiếng Việt trong từ điển chữ ký (TD-33)", () => {
+  it("Reason/Location/Name giữ đúng dấu khi đọc lại", async () => {
+    const { PDFDict, PDFName, PDFString, PDFHexString } = await import("pdf-lib");
+    const k = importP12(createP12({ commonName: "Nguyễn Văn Thử", password: "matkhau1" }).p12Bytes, "matkhau1");
+    const out = await signPdf(await samplePdf(), k, { reason: "Duyệt tài liệu", location: "Hà Nội" });
+    const doc = await PDFDocument.load(out);
+    const sig = doc.context.enumerateIndirectObjects().map(([, o]) => o).find((o) => o instanceof PDFDict && o.get(PDFName.of("Type"))?.toString() === "/Sig") as import("pdf-lib").PDFDict;
+    const text = (n: string) => { const v = sig.get(PDFName.of(n)); return v instanceof PDFString || v instanceof PDFHexString ? v.decodeText() : undefined; };
+    expect(text("Reason")).toBe("Duyệt tài liệu");
+    expect(text("Location")).toBe("Hà Nội");
+    expect(text("Name")).toBe("Nguyễn Văn Thử");
+    const v = verifyPdfSignature(out);
+    expect(v.status).toBe("valid");
+    expect(v.signer).toBe("Nguyễn Văn Thử");
+  });
+});
+
+describe("readSignature – DER kết thúc bằng byte 0x00 (P18)", () => {
+  it("không cắt mất byte 00 cuối của chữ ký (trước đây bỏ mọi '00' ở cuối → ~1/256 chữ ký bị báo sai)", () => {
+    const a = forge.asn1;
+    const der = a.toDer(a.create(a.Class.UNIVERSAL, a.Type.SEQUENCE, true, [a.create(a.Class.UNIVERSAL, a.Type.OCTETSTRING, false, "ab\x00\x00")])).getBytes();
+    expect(der.endsWith("\x00")).toBe(true);
+    const hex = forge.util.bytesToHex(der).padEnd(64, "0");
+    const head = "%PDF-1.7\n/ByteRange [0 0000000000 0000000000 0000000000] /Contents <";
+    const start = head.length - 1, end = start + hex.length + 2;
+    const tail = "> >>\n%%EOF\n";
+    const pad = (n: number) => String(n).padStart(10, "0");
+    const text = `%PDF-1.7\n/ByteRange [0 ${pad(start)} ${pad(end)} ${pad(tail.length - 1)}] /Contents <${hex}${tail}`;
+    const s = readSignature(new TextEncoder().encode(text))!;
+    expect(s.der).toBe(der);
+  });
+});
+
+describe("SignerInfo khớp chứng thư khi tên có dấu (TD-33)", () => {
+  it("issuerAndSerialNumber dùng đúng byte tên issuer của chứng thư (không mã UTF-8 hai lần)", async () => {
+    const k = importP12(createP12({ commonName: "Nguyễn Văn Thử", password: "matkhau1" }).p12Bytes, "matkhau1");
+    const out = await signPdf(await samplePdf(), k);
+    const der = readSignature(out)!.der;
+    const cert = forge.pki.certificateFromPem(k.certPem) as forge.pki.Certificate & { tbsCertificate: forge.asn1.Asn1 };
+    // TBSCertificate: [version, serial, sigAlg, issuer, …] → issuer ở vị trí 3
+    const issuerDer = forge.asn1.toDer((cert.tbsCertificate.value as forge.asn1.Asn1[])[3]!).getBytes();
+    const count = (h: string) => h.split(issuerDer).length - 1;
+    const inCert = count(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes()); // tự ký: issuer + subject
+    expect(count(der)).toBe(inCert + 1); // + 1 lần trong SignerInfo
+  });
+});
