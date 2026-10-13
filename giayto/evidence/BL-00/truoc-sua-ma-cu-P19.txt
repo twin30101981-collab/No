@@ -1,0 +1,13 @@
+LỖI  GG-01 sau khi quay về trang chủ → tự sang /me  url=http://127.0.0.1:8082/#access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDAwYWEiL
+LỖI  GG-01 màn Tôi hiện email đã đăng nhập
+LỖI  GG-01 URL không còn mã phiên  http://127.0.0.1:8082/#access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDAwYWEiLCJlbWFpbCI6Im5ndW9pLmR1bm
+LỖI  GG-01 tải lại vẫn đăng nhập
+LỖI  GG-01b vào thẳng /#access_token rồi mở Tôi → đã đăng nhập  url=http://127.0.0.1:8082/me
+LỖI  GG-07 hiện thông báo lỗi tiếng Việt  G |  | Ghi Nhanh |  | Quét · Nhận chữ · PDF |  | 0 tài liệu | OCR | Quét | Công cụ PDF | Nhập ảnh | Nhập tập tin | Thẻ ID 
+LỖI  GG-07 URL không còn error=  http://127.0.0.1:8082/?error=access_denied&error_description=User+cancelled
+LỖI  GG-03 nút Google bị khoá trong Zalo
+LỖI  GG-03 có hướng dẫn mở bằng Chrome/Safari
+LỖI  GG-03 có nút sao chép liên kết
+ĐẠT  GG-03 Chrome thường: nút Google dùng được
+ĐẠT  không có pageerror
+10 ca lỗi

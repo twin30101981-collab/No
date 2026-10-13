@@ -1,0 +1,51 @@
+# Lộ trình thực thi đề án "Chụp trước – Xử lý sau" v4
+
+## Đã xong
+- [x] Dựng lại app Giấy tờ Scan (Ghi Nhanh) từ gói S13d: 146 tệp / 561 kiểm thử đạt, build OK
+- [x] P0.1 Chuẩn hoá tien-do.json (66 bước, 7 trạng thái chuẩn) + app-tien-do.html bỏ cache localStorage
+- [x] P0.2 scripts/dong-goi.sh xuất ZIP chuẩn + LO-TRINH.md + TIEP-THEO.md
+- [x] P0.3 scripts/playwright/khung-chung.py + bộ ảnh vàng V1/V13/Q — kịch bản chung xanh 2 viewport
+- [x] P0.4 Ghi số hồi quy mới vào tien-do.json; đóng TD-21
+
+## Tiếp theo
+- [x] P1.1 Baseline perf-stats (phần 1) — số đo 3 bộ ảnh tại kiem-chung/P1.1/; còn thiếu mẫu render đủ nhiều
+- [x] P1.2 Cảnh báo thiếu sáng khi chụp (mờ/rung đã có)
+- [x] P1.3 Bắt khung 4 góc thời gian thực (marker 4 góc + bản dò leo 320→480)
+- [x] P1.4 Cảnh báo chất lượng khi chụp (capture-quality.ts, cảnh báo đúng nguyên nhân khi bấm)
+- [x] P2 Hàng đợi xử lý nền — bg-queue.ts bền trên IndexedDB, resume sau tải lại; 150 tệp / 583 kiểm thử đạt
+- [x] P3.1 Khung cắt an toàn + hút góc — 151 tệp / 591 kiểm thử đạt
+- [x] P3.2 Hút cạnh theo mép giấy + xoay mịn ±5°
+- [x] P4 Gợi ý nắn cong + độ tin cậy (TD-09 đóng) — 152 tệp / 600 kiểm thử đạt
+- [x] P5 Bộ lọc & chất lượng
+- [x] P6 Danh sách trang & Thêm
+- [x] P7 phần 1 Gói đầy đủ ZIP (PDF + ảnh + chữ)
+- [x] P7 phần 2 Gói đầy đủ hàng loạt
+- [x] P8 Tự động hoá sau chụp/thêm
+- [x] P8.4 Tự áp công thức xử lý cho trang mới
+- [x] P8.5 Áp dụng cho trang tương tự
+- [x] P8.6 Học theo người dùng
+- [ ] P8.7 Chế độ Tự động bật mặc định (Thêm → Xuất)
+- [x] P4.3–P4.6 Công cụ 3 mức; P3.1 kính lúp; P3.4 trang báo ngang — 161 tệp / 664 kiểm thử đạt
+- [x] P6.1 Dán ảnh/HEIC — nút Dán ảnh + sự kiện paste ở trang chính/màn quét/tài liệu; HEIC/HEIF theo tên, MIME, chữ ký; 163 tệp / 689 kiểm thử đạt, tsgo sạch, build OK; HEIC thật và lưu lại đã kiểm chứng trên Chromium.
+- [x] R2.4 Xem trước bộ lọc WebGL2 + thanh cấp độ 0–100 (kéo = GPU tức thì, thả tay = dựng đầy đủ) — 170 tệp / 729 kiểm thử đạt
+- [x] R3.2 “Phương án khác”: 3 biến thể Sắc nét/Màu đậm/Đen trắng dựng theo chỉ số trang, chạm 1 lần đổi ảnh ngay — 171 tệp / 737 kiểm thử đạt
+- [x] R3.3 Học theo người dùng: sửa tay 1 lần → lô sau cùng loại tài liệu tự dùng bộ lọc đó — 172 tệp / 747 kiểm thử đạt
+- [x] R3.4 Nhận loại tài liệu theo ảnh (màu, dấu đỏ, tỉ lệ khung) bổ sung doc-type theo chữ — 173 tệp / 761 kiểm thử đạt
+- [x] R4.1 Chống ảnh trùng (pHash 64 bit) + phân loại ảnh nhập (phẳng/chụp màn hình không cắt lại) — 174 tệp / 776 kiểm thử đạt, tsgo sạch
+- [x] R4.2 Lưới trang kéo-thả + chọn nhiều (xoay/nhân bản/xoá hàng loạt) + ô “+ Thêm” nét đứt + nhãn tiến độ % và nút Xuất mờ khi còn việc nền — 174 tệp / 781 kiểm thử đạt
+- [ ] P7.4 đề án bản cuối
+- [ ] B13 UAT điện thoại thật — chờ người dùng chụp & đánh giá
+- [x] R2.2 Bể worker chung đợt 2: gom page-pipeline + compress-page vào bể chung (6 loại việc, ưu tiên tương tác trước, việc nền sau); xóa 2 worker riêng — 174 tệp / 782 kiểm thử đạt
+- [x] R2.3 Cache theo khoá (đã có Lru + geoKey/resultKey) + tile.ts chia ô 1024 px chồng lấn cho ảnh > 12 MP (chống trắng canvas iPhone) — 175 tệp / 791 kiểm thử đạt
+- [x] R2.5 Baseline S1/P1.1 sau R2.2: 3 video camera giả (V1/V13/Q) × 10 trang = 30 mẫu, 0 lỗi, RAM đỉnh 60–70 MB, nhả nút p90 ≤ 235 ms — đạt toàn bộ ngân sách 17.1 (ngan-sach-17.1.json + bao-cao-R2.5.md)
+- [x] R2.6 Dọn thuật toán cũ -vN: xoá flattenApplyRef/sampleBg khỏi pixels.ts, v8bStats/__v8b → previewStats/__previewStats; 7 kiểm thử -vN → bộ hồi quy src/lib/regression/ — 175 tệp / 791 kiểm thử đạt, tsgo sạch
+- [x] R3.5 Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại” kèm nút Xem lại; nút Xuất = 1 chạm, Tùy chọn mở bảng đầy đủ — 176 tệp / 795 kiểm thử đạt, tsgo sạch, build OK
+- [x] R4.3 Bảng Thêm đủ 5 nguồn + vị trí chèn Đầu/Sau/Cuối; kéo-thả toàn cửa sổ; phím tắt Delete/←/→/R; PDF tách trang — 177 tệp / 800 kiểm thử đạt, tsgo sạch, build OK
+- [x] R6.1a (R6.1 đợt 3, mục con 1) Tinh chỉnh đường cong mực 6 bộ lọc giữ xám/màu (auto/sharp/magic/gray/ink/eco) để ΔL ≥ 60 — 180 tệp / 822 kiểm thử đạt, tsgo sạch; báo cáo kiem-chung/R6.1/bao-cao-R6.1a.md
+- [x] R6.1b-1 đo nền (40/221) · [x] R6.1b-2 tinh chỉnh mực · [x] R6.1b-3 cornerShadowLift + chạy lại 221 ca: 163/221 (73,8%); góc tối còn lại là chữ thật sát mép — 826/826 kiểm thử đạt; báo cáo kiem-chung/R6.1/bao-cao-R6.1b3.md
+- [x] R6.1c Nới cổng góc tối 0,2% → 5% (người dùng chọn) — 212/221
+- [x] R6.3 Nghiệm thu 5 tiêu chí mục 9: 5/5 đạt trên bản phát hành chạy bằng Wrangler; sửa lỗi sw.js bỏ sót tệp có “__”, thêm warmShellCache và cờ ?sw=on — báo cáo kiem-chung/R6.3/bao-cao.md
+- [x] R6.1d Ảnh mực nhạt 093540: đậm hoá mực auto/sharp/gray — 221/221 ca đạt (100%), 830/830 kiểm thử, tsgo không lỗi; báo cáo kiem-chung/R6.1/bao-cao-R6.1d.md
+- [ ] R6.2 Bộ ảnh NB + Cam — chờ người dùng gửi ảnh
+- [ ] R6.4 UAT máy thật — chờ người dùng thử
+- [ ] R6.5 Đề án bản cuối v5 — sau R6.2/R6.4

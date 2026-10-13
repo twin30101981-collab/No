@@ -1,0 +1,13 @@
+ĐẠT  GG-01 sau khi quay về trang chủ → tự sang /me  url=http://127.0.0.1:8082/me
+ĐẠT  GG-01 màn Tôi hiện email đã đăng nhập
+ĐẠT  GG-01 URL không còn mã phiên  http://127.0.0.1:8082/me
+ĐẠT  GG-01 tải lại vẫn đăng nhập
+ĐẠT  GG-01b vào thẳng /#access_token rồi mở Tôi → đã đăng nhập  url=http://127.0.0.1:8082/me
+ĐẠT  GG-07 hiện toast lỗi tiếng Việt (không phải tiếng Anh thô)  Đăng nhập Google chưa hoàn tất (đã huỷ hoặc không được cho phép) — bấm lại để thử
+ĐẠT  GG-07 URL không còn error=  http://127.0.0.1:8082/auth
+ĐẠT  GG-03 nút Google bị khoá trong Zalo
+ĐẠT  GG-03 có hướng dẫn mở bằng Chrome/Safari
+ĐẠT  GG-03 có nút sao chép liên kết
+ĐẠT  GG-03 Chrome thường: nút Google dùng được
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT
