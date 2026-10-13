@@ -108,7 +108,7 @@ function Documents() {
   }
 
   return (
-    <AppShell title={selectMode ? `Đã chọn ${selected.length}` : "Tài liệu"} action={
+    <AppShell wide title={selectMode ? `Đã chọn ${selected.length}` : "Tài liệu"} action={
       selectMode
         ? <Button variant="glass" size="icon" aria-label="Bỏ chọn" onClick={() => setSelected([])}><X /></Button>
         : <div className="flex gap-1.5">
@@ -158,7 +158,7 @@ function Documents() {
       )}
       <p className="px-5 pt-2 text-[0.6875rem] text-muted-foreground">{list.length} tài liệu · {SORT_LABEL[sort]} · Giữ lâu để chọn nhiều</p>
 
-      <div className={`rise rise-2 px-5 pt-3 ${grid ? "grid grid-cols-2 gap-2.5" : "flex flex-col gap-2.5"}`}>
+      <div className={`rise rise-2 px-5 pt-3 ${grid ? "grid grid-cols-2 gap-2.5 lg:grid-cols-4" : "flex flex-col gap-2.5 lg:grid lg:grid-cols-2"}`}>
         {list.slice(0, limit).map((doc) => (
           <DocRow key={doc.id} doc={doc} grid={grid} selectMode={selectMode} selected={selected.includes(doc.id)}
             onLongPress={() => toggle(doc.id)} onToggle={() => toggle(doc.id)}
@@ -166,7 +166,7 @@ function Documents() {
             onShare={async () => { await shareOrDownload(await docToPdf(doc), `${safeName(doc.name)}.pdf`); }} />
         ))}
         {list.length > limit && <LoadMore onMore={() => setLimit((n) => n + PAGE)} />}
-        {!list.length && <p className="col-span-2 py-16 text-center text-sm text-muted-foreground">Không có tài liệu phù hợp</p>}
+        {!list.length && <p className="col-span-full py-16 text-center text-sm text-muted-foreground">Không có tài liệu phù hợp</p>}
       </div>
 
       {selectMode && (
@@ -201,5 +201,5 @@ function LoadMore({ onMore }: { onMore: () => void }) {
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) onMore(); }, { rootMargin: "400px" });
     io.observe(el); return () => io.disconnect();
   }, [onMore]);
-  return <div ref={ref} className="col-span-2 h-8" />;
+  return <div ref={ref} className="col-span-full h-8" />;
 }
