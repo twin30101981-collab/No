@@ -1,0 +1,23 @@
+camera giả: /tmp/claude-0/cam/user.y4m · CPU chậm 6×
+LỖI  chụp 3 lần liên tiếp → đủ 3 trang, màn cắt không tự bật  {"pages":0,"jobs":2,"unsure":0,"crop":true,"dialog":false,"path":"/scan"} (6224 ms)
+LỖI  trang máy chưa chắc mép có dấu “Kiểm mép” (không chặn màn hình)  unsure=0
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.boundingBox: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('button[aria-label="Chụp lại trang 2"]').first()[22m
+
+    at touch (/tmp/claude-0/pw/kiem-quy-trinh-chup.mjs:23:74)
+    at /tmp/claude-0/pw/kiem-quy-trinh-chup.mjs:54:9
+    at async session (/tmp/claude-0/pw/kiem-quy-trinh-chup.mjs:27:3)
+    at async file:///tmp/claude-0/pw/kiem-quy-trinh-chup.mjs:33:1 {
+  log: [
+    `  - waiting for locator('button[aria-label="Chụp lại trang 2"]').first()`
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0
+exit 1
