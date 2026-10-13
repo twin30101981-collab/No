@@ -35,3 +35,24 @@ describe("G3-07 thu hồi", () => {
     expect(linkStatus({ expires_at: "2099-01-01T00:00:00Z", revoked_at: "2026-10-03T00:00:00Z" }, Date.parse("2026-10-03T01:00:00Z"))).toBe("revoked");
   });
 });
+
+describe("createFailGate (TD-34)", () => {
+  it("chỉ chặn sau N lần SAI; đúng thì xoá đếm; hết cửa sổ thì cho lại", async () => {
+    const { createFailGate, shareFailKey, tooManyFailsMessage } = await import("./share-links");
+    let t = 0; const g = createFailGate({ limit: 3, windowMs: 60_000, now: () => t });
+    const k = shareFailKey("1.2.3.4", "tok");
+    for (let i = 0; i < 3; i++) { expect(g.check(k).ok).toBe(true); g.fail(k); }
+    const r = g.check(k); expect(r.ok).toBe(false);
+    if (!r.ok) expect(tooManyFailsMessage(r.retryAfterSec)).toContain("1 phút");
+    expect(g.check(shareFailKey("5.6.7.8", "tok")).ok).toBe(true); // khách khác không bị khoá
+    t = 60_001; expect(g.check(k).ok).toBe(true);
+    g.fail(k); g.fail(k); g.reset(k); g.fail(k); g.fail(k); expect(g.check(k).ok).toBe(true);
+    expect(shareFailKey(null, "tok")).toBe("?|tok");
+  });
+  it("giới hạn số khoá trong bộ nhớ", async () => {
+    const { createFailGate } = await import("./share-links");
+    const g = createFailGate({ limit: 1, windowMs: 1000, now: () => 0, maxKeys: 3 });
+    for (let i = 0; i < 10; i++) g.fail("k" + i);
+    expect(g.size()).toBe(3);
+  });
+});

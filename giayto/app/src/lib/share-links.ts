@@ -61,3 +61,39 @@ export function linkStatus(l: LinkState, now: number): "active" | "expired" | "r
 }
 
 export const shareUrl = (origin: string, token: string) => `${origin.replace(/\/$/, "")}/s/${token}`;
+
+/** TD-34 (F-05): chặn đoán mật khẩu liên kết — chỉ đếm lần SAI, theo khách (IP) + mã liên kết.
+ *  Bộ đếm trong bộ nhớ từng máy chủ (giống giới hạn AI HM-03): lớp chặn cơ bản, không phải hạn mức chính xác. */
+export const SHARE_PW_MAX_FAILS = 10;
+export const SHARE_PW_WINDOW_MS = 15 * 60_000;
+
+export function createFailGate(o: { limit: number; windowMs: number; now?: () => number; maxKeys?: number }) {
+  const now = o.now ?? Date.now, maxKeys = o.maxKeys ?? 5000;
+  const m = new Map<string, { start: number; fails: number }>();
+  const live = (k: string, t: number) => { const e = m.get(k); if (e && e.start + o.windowMs <= t) { m.delete(k); return undefined; } return e; };
+  return {
+    /** Còn được thử không; nếu bị chặn trả số giây phải chờ. */
+    check(key: string): { ok: true } | { ok: false; retryAfterSec: number } {
+      const t = now(), e = live(key, t);
+      if (!e || e.fails < o.limit) return { ok: true };
+      return { ok: false, retryAfterSec: Math.max(1, Math.ceil((e.start + o.windowMs - t) / 1000)) };
+    },
+    fail(key: string) {
+      const t = now(); const e = live(key, t);
+      if (e) { e.fails++; return; }
+      m.set(key, { start: t, fails: 1 });
+      if (m.size > maxKeys) {
+        for (const [k, v] of m) if (v.start + o.windowMs <= t) m.delete(k);
+        while (m.size > maxKeys) m.delete(m.keys().next().value as string);
+      }
+    },
+    /** Nhập đúng thì xoá đếm. */
+    reset(key: string) { m.delete(key); },
+    size: () => m.size,
+  };
+}
+
+export const shareFailKey = (ip: string | null, token: string) => `${ip ?? "?"}|${token}`;
+export function tooManyFailsMessage(retryAfterSec: number) {
+  return `Thử sai quá nhiều lần. Hãy đợi khoảng ${Math.max(1, Math.ceil(retryAfterSec / 60))} phút rồi thử lại.`;
+}
