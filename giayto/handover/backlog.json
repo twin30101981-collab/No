@@ -2396,7 +2396,7 @@
    "effort": "S",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
@@ -2411,13 +2411,26 @@
    ],
    "rui_ro": "Cần máy thật",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "LANG=C.UTF-8 node scripts/playwright/kiem-gui-toi.mjs http://127.0.0.1:8085 (giả lập share/clipboard; route chat.zalo.me)",
+    "ma_cu_P19": "7 ca LỖI/12 — evidence/TF-02/truoc-sua-ma-cu-P20.txt",
+    "ma_moi": "12/12 ĐẠT, 0 pageerror — evidence/TF-02/sau-sua-V3.txt; kiem-chia-se.mjs (TF-01) vẫn TẤT CẢ ĐẠT",
+    "pass": 12,
+    "fail": 0,
+    "skip": 0,
+    "npm_run_check": "196 tệp / 921 đạt; lint 0 lỗi; vite build OK"
+   },
+   "nguyen_nhan_goc": "sendFile bỏ qua bảng chia sẻ khi Email có người nhận (điều kiện !(email && to)) → tải PDF rồi mở mailto KHÔNG đính kèm, toast nói sai 'đính kèm vào thư vừa mở'; Zalo trên máy tính chỉ tải về và toast chung chung, không hướng dẫn. [Đã xác minh bằng giả lập share/clipboard]",
+   "ghi_chu_ban_giao": "CHƯA làm/xác minh: iOS 'Lưu vào Tệp' (TF-05) — cần iPhone thật, không đoán mã; sao chép ảnh PNG vào bộ nhớ tạm cho Zalo PC (bỏ qua: ClipboardItem không hỗ trợ JPEG); phiếu thử 3 nền tảng × 4 kênh trên máy thật. Chép địa chỉ người nhận cần quyền bộ nhớ tạm — nếu bị chặn chỉ hiện nhắc nhập tay. Không có test đơn vị riêng cho sendFile (Playwright bao).",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "src/lib/send-to.ts",
+    "src/routes/doc.$id.tsx (bỏ toast trùng)",
+    "scripts/playwright/kiem-gui-toi.mjs (MỚI)"
+   ]
   },
   {
    "id": "TF-03",
@@ -2664,7 +2677,8 @@
   "P20: BL-00 chỉ làm A–D; phần E (OAuth trực tiếp Supabase) chờ QD-9.",
   "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật.",
   "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18.",
-  "P20/TF-01: khi hết quyền chia sẻ hiện thẻ 'Tệp đã sẵn sàng — Chia sẻ / Lưu về máy' (chạm lần 2); AbortError = huỷ (im lặng đúng); mọi lỗi khác lưu về máy + báo rõ."
+  "P20/TF-01: khi hết quyền chia sẻ hiện thẻ 'Tệp đã sẵn sàng — Chia sẻ / Lưu về máy' (chạm lần 2); AbortError = huỷ (im lặng đúng); mọi lỗi khác lưu về máy + báo rõ.",
+  "P20/TF-02: điện thoại luôn dùng bảng chia sẻ cho Email (kể cả có người nhận) + chép người nhận vào bộ nhớ tạm; Zalo PC = tải + hướng dẫn kéo thả + nút 'Mở Zalo' (chat.zalo.me). iOS Lưu vào Tệp để sau (cần máy thật)."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2680,5 +2694,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }

@@ -671,9 +671,9 @@ function ExportPanel({ doc, page }: { doc: Doc; page: Page }) {
         <p className="mt-1 text-xs text-muted-foreground">Gửi PDF qua email, Zalo hoặc ứng dụng khác trên máy. Trên máy tính, tệp được tải về rồi mở thư để bạn đính kèm.</p>
         <Input className="mt-2 h-11" type="email" placeholder="Email người nhận (tùy chọn)" value={sendTo} onChange={(e) => setSendTo(e.target.value)} />
         <div className="mt-2 grid grid-cols-3 gap-2">
-          <Button disabled={busy} variant="glass" onClick={go(async () => { const r = await sendFile("email", await pdfOut(), name, { title: doc.name, pages: doc.pages.length, to: sendTo }); if (r === "fallback") toast("Đã tải PDF — đính kèm vào thư vừa mở"); })}>Email</Button>
-          <Button disabled={busy} variant="glass" onClick={go(async () => { const r = await sendFile("zalo", await pdfOut(), name, { title: doc.name, pages: doc.pages.length }); if (r === "fallback") toast("Đã tải PDF — mở Zalo và gửi tệp này"); })}>Zalo</Button>
-          <Button disabled={busy} variant="glass" onClick={go(async () => { const r = await sendFile("system", await pdfOut(), name, { title: doc.name, pages: doc.pages.length }); if (r === "fallback") toast("Máy này không có bảng chia sẻ — đã tải PDF về"); })}>Khác…</Button>
+          <Button disabled={busy} variant="glass" onClick={go(async () => { await sendFile("email", await pdfOut(), name, { title: doc.name, pages: doc.pages.length, to: sendTo }); })}>Email</Button>
+          <Button disabled={busy} variant="glass" onClick={go(async () => { await sendFile("zalo", await pdfOut(), name, { title: doc.name, pages: doc.pages.length }); })}>Zalo</Button>
+          <Button disabled={busy} variant="glass" onClick={go(async () => { await sendFile("system", await pdfOut(), name, { title: doc.name, pages: doc.pages.length }); })}>Khác…</Button>
         </div>
         <Button className="mt-2 w-full" disabled={busy} variant="glass" onClick={go(async () => {
           if (!driveReady()) { toast.error("Chưa bật kết nối Google Drive cho ứng dụng"); return; }
