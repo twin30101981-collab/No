@@ -1,7 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { linkStatus, verifyPassword } from "./share-links";
+import { createFailGate, linkStatus, SHARE_PW_MAX_FAILS, SHARE_PW_WINDOW_MS, shareFailKey, tooManyFailsMessage, verifyPassword } from "./share-links";
+
+// TD-34: giới hạn số lần nhập sai mật khẩu (theo IP + mã liên kết), sống theo bản chạy máy chủ.
+const pwGate = createFailGate({ limit: SHARE_PW_MAX_FAILS, windowMs: SHARE_PW_WINDOW_MS });
 
 // G3-07: xem công khai qua mã liên kết. Kiểm tra mã/hạn/thu hồi/mật khẩu trước, rồi mới đọc bằng quyền quản trị.
 export const openSharedDoc = createServerFn({ method: "POST" })
@@ -15,7 +18,12 @@ export const openSharedDoc = createServerFn({ method: "POST" })
     if (st === "expired") return { ok: false as const, code: "expired" as const, message: "Liên kết đã hết hạn." };
     if (link.password_hash) {
       if (!data.password) return { ok: false as const, code: "password" as const, message: "Nhập mật khẩu để xem tài liệu." };
-      if (!(await verifyPassword(data.password, link.password_hash))) return { ok: false as const, code: "password" as const, message: "Sai mật khẩu, thử lại." };
+      const [{ getRequest }, { clientKey }] = await Promise.all([import("@tanstack/react-start/server"), import("./ai-limit")]);
+      const fk = shareFailKey(clientKey(getRequest()?.headers), data.token);
+      const gate = pwGate.check(fk);
+      if (!gate.ok) return { ok: false as const, code: "password" as const, message: tooManyFailsMessage(gate.retryAfterSec) };
+      if (!(await verifyPassword(data.password, link.password_hash))) { pwGate.fail(fk); return { ok: false as const, code: "password" as const, message: "Sai mật khẩu, thử lại." }; }
+      pwGate.reset(fk);
     }
     const { data: doc } = await supabaseAdmin.from("documents").select("name, deleted_at").eq("id", link.document_id).maybeSingle();
     if (!doc || doc.deleted_at) return { ok: false as const, code: "missing" as const, message: "Tài liệu không còn nữa." };
