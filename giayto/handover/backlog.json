@@ -1914,27 +1914,46 @@
    "effort": "S",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên; skill không đổi được)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [],
    "pham_vi": "routes/me.tsx, lib/disk-pack.ts, lib/db.ts",
-   "hanh_vi_mong_doi": "",
+   "hanh_vi_mong_doi": "Sao lưu có ảnh thật (không blob:), có tổng kiểm từng tài liệu; khôi phục kiểm cấu trúc, mặc định GỘP, THAY THẾ có bản dự phòng + xác nhận; tệp cũ/hỏng bị từ chối mà không đổi dữ liệu",
    "tieu_chi_nghiem_thu": [
     "Sao lưu → xoá → khôi phục: từng ảnh trùng byte",
     "Không có 'blob:' trong tệp sao lưu"
    ],
    "rui_ro": "Dữ liệu người dùng: phải sao lưu/rollback; thay thế chỉ khi chọn + có bản dự phòng",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node scripts/playwright/kiem-sao-luu.mjs http://127.0.0.1:8083 (vite dev cổng 8083, IndexedDB gieo ảnh thật)",
+    "ma_cu_P19": "3 ca LỖI: có blob: trong tệp (1 KB), không có version/tổng kiểm, ảnh trùng byte 0/5 — evidence/BL-01/truoc-sua-ma-cu-P20.txt",
+    "ma_moi": "21/21 ĐẠT, 0 pageerror: khứ hồi 5/5 ảnh trùng byte; GỘP giữ dữ liệu máy + bản mới hơn; tệp cũ blob:/rác/sai tổng kiểm bị từ chối hoặc loại đúng tài liệu; THAY THẾ tải bản dự phòng; Huỷ không đổi gì — evidence/BL-01/sau-sua-V3.txt",
+    "pass": 21,
+    "fail": 0,
+    "skip": 0,
+    "unit": "src/lib/backup.test.ts: 14 ca đạt",
+    "npm_run_check": "195 tệp / 913 đạt; typecheck sạch; lint 0 lỗi (10 cảnh báo có từ trước); vite build OK",
+    "viewport": "390×844: hộp thoại 3 nút Huỷ/Thay thế/Gộp không tràn (evidence/BL-01/hop-thoai-390.png); chưa chụp 1280×800"
+   },
+   "nguyen_nhan_goc": "Sao lưu ghi `docs: all` — bộ nhớ giữ ảnh là object URL blob: (chỉ sống trong phiên) nên tệp chỉ chứa chuỗi địa chỉ; khôi phục replaceAll(docs) THAY THẾ toàn bộ kho bằng địa chỉ chết, không kiểm cấu trúc, không bản dự phòng. [Đã xác minh bằng tái hiện: tệp 1 KB, 0/5 ảnh còn sau khôi phục]",
+   "ghi_chu_ban_giao": "CHƯA xác minh: máy thật (Android/iPhone), thư viện lớn (≥200 MB: chưa đo thời gian/RAM khi sao lưu/khôi phục; JSON.parse cả tệp như trước), tài liệu khoá PIN thật (chỉ kiểm bằng test đơn vị). Quan sát ngoài phạm vi (BL-03): tài liệu khoá PIN đang MỞ khoá sẽ được ghi vào tệp sao lưu ở dạng chữ rõ; khôi phục trên máy mới chưa mang theo mã PIN (pin/pinSalt) nên chưa mở được tài liệu khoá — nghi vấn cần xác minh.",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "src/lib/backup.ts (MỚI)",
+    "src/lib/backup.test.ts (MỚI)",
+    "src/routes/me.tsx",
+    "src/lib/dialog.ts",
+    "src/components/app-dialog.tsx",
+    "src/lib/db.ts (replaceAll ghi nhị phân)",
+    "scripts/playwright/kiem-sao-luu.mjs (MỚI)"
+   ]
   },
   {
    "id": "BL-02",
@@ -2610,7 +2629,8 @@
   "P18: TD-28 (bộ đếm AI bền/miễn trừ đăng nhập) KHÔNG làm: đổi schema/nghiệp vụ, cần quyết định.",
   "P18: .p12 do app tạo dùng CN/O UTF8String + friendlyName UTF-16BE (chuẩn); chứng thư cũ tên ASCII vẫn mở được.",
   "P20 (13/10/2026): báo cáo rà soát 'BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx' = đề án v2.0; mã hiệu mới CS/BL/AI/TF/FX (QD-6 theo khuyến nghị); QD-10…QD-13 đã chốt trong báo cáo (Xuất 1 chạm 'Chuẩn – khớp ảnh'; HD nhẹ tuỳ chọn; khoá AI trong app; Lovable→Claude→Mistral→Gemini).",
-  "P20: BL-00 chỉ làm A–D; phần E (OAuth trực tiếp Supabase) chờ QD-9."
+  "P20: BL-00 chỉ làm A–D; phần E (OAuth trực tiếp Supabase) chờ QD-9.",
+  "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2623,7 +2643,8 @@
   "Cảnh báo React 'href rỗng' và '<html> trong <div>' trong app-routing.test (chỉ trong môi trường test).",
   "Sandbox thiếu SUPABASE_*: lớp đính kèm đăng nhập phía trình duyệt ném lỗi trước khi gọi máy chủ → thử AI cần build với VITE_SUPABASE_URL/PUBLISHABLE_KEY giả. Production của Lovable có biến này.",
   "Quy trình: TIEP-THEO.md mất ghi chú HM-01/06/13 từ ZIP P12 (chép đè từ thư mục làm việc; replace im lặng không khớp). Đã khôi phục ở P15 và kiểm bằng assert.",
-  "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn."
+  "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
+  "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: hạng mục BL-00 xong (đăng nhập Google); chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00 và BL-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }

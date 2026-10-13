@@ -114,8 +114,10 @@ export async function purgeDocs(ids: string[]) {
   const keep = new Set(cache.flatMap((d) => d.pages.flatMap((p) => [p.orig, p.src])));
   dead.forEach((d) => revokeDoc(d, keep));
 }
+/** Thay toàn bộ kho bằng `docs` trong MỘT giao dịch (lỗi giữa chừng → giữ nguyên kho cũ). Ảnh ghi dạng nhị phân như saveDocs. */
 export async function replaceAll(docs: Doc[]) {
-  await batch((s) => { s.clear(); docs.forEach((d) => s.put(d)); });
+  const disk = docs.map((d) => (d.enc ? d : packDoc(d)));
+  await batch((s) => { s.clear(); disk.forEach((d) => s.put(d)); });
   await loadDocs();
 }
 
