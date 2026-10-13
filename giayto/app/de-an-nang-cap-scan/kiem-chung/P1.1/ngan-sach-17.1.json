@@ -1,0 +1,17 @@
+{
+  "ma": "17.1",
+  "ten": "Ngân sách hiệu năng chuỗi chụp một trang (grab → detect1 → normalize → detect2 → render → release)",
+  "don_vi": "ms",
+  "ghi_chu": "Ngân sách cho máy tầm trung; median là mục tiêu thường, p90 là trần cho phép.",
+  "cong_doan": {
+    "grab":      { "median": 50,  "p90": 150 },
+    "detect1":   { "median": 400, "p90": 800 },
+    "normalize": { "median": 500, "p90": 1000 },
+    "detect2":   { "median": 400, "p90": 800 },
+    "render":    { "median": 400, "p90": 800 },
+    "release":   { "median": 300, "p90": 600 }
+  },
+  "tong_10_trang_ms": 10000,
+  "ram_dinh_MB": 250,
+  "loi_trang_toi_da": 0
+}

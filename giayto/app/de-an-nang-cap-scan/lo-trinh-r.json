@@ -1,0 +1,247 @@
+[
+  {
+    "ma": "R0.1",
+    "dot": "R0 – Đồng bộ trạng thái",
+    "viec": "Đồng bộ trạng thái: gộp B13 trùng mã trong tien-do.json, cập nhật trạng thái theo tài liệu này, thay LO-TRINH-CON-LAI cũ (đã lỗi thời: ghi 13 mục thiếu nhưng 9 mục đã xong).",
+    "tep": "tien-do.json, LO-TRINH.md, TIEP-THEO.md",
+    "kiem_chung": "Trang tiến độ hiện đúng số mục Xong/Chưa",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R1.1",
+    "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+    "viec": "Một cửa chỉnh: chuyển FilterPanel vào AdjustEditor, xoá luồng áp ngay (TD-11, TD-12).",
+    "tep": "doc.$id.tsx, adjust-editor.tsx",
+    "kiem_chung": "Chỉ còn 1 cửa chỉnh; đổi bộ lọc → Lưu → ảnh đổi đúng",
+    "phu_thuoc": "R0.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R1.2",
+    "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+    "viec": "So sánh giữ để xem gốc, “Áp dụng cho tất cả”, hỏi khi rời màn chưa lưu (TD-23).",
+    "tep": "adjust-editor.tsx, image-compare.tsx",
+    "kiem_chung": "Back khi chưa lưu hiện hộp hỏi; Áp dụng tất cả đổi mọi trang",
+    "phu_thuoc": "R1.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R1.3",
+    "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+    "viec": "Bỏ data URL đợt 1 (8 tệp giao diện): Blob/ImageBitmap + close() (TD-04).",
+    "tep": "components/*",
+    "kiem_chung": "Mở 20 trang, RAM đỉnh không tăng dần",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R1.4",
+    "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+    "viec": "Bỏ data URL đợt 2 (7 tệp lib) + kiểm rò rỉ bitmap.",
+    "tep": "lib/*",
+    "kiem_chung": "Như R1.3 + kiểm thử rò rỉ",
+    "phu_thuoc": "R1.3",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R1.5",
+    "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+    "viec": "Màn Cắt tô mờ vùng sắp bị cắt + cảnh báo cam khi chữ vắt mép (TD-05); OCR trả hộp điểm ảnh + độ tin cậy (TD-06).",
+    "tep": "crop-editor.tsx, ocr-worker.ts",
+    "kiem_chung": "Ảnh Q3 hiện cảnh báo đúng mép phải",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.1",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Bể worker chung đợt 1: gom detect/preview/normalize/image vào 1 bể có ưu tiên, giữ API cũ qua worker-call.ts.",
+    "tep": "lib/pipeline/worker-hub.ts",
+    "kiem_chung": "Hồi quy đạt; số worker đồng thời ≤ 4",
+    "phu_thuoc": "R1.4",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.2",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Bể worker chung đợt 2: gom ocr, compress-page, page-pipeline; đo RAM đỉnh trước/sau.",
+    "tep": "lib/pipeline/*",
+    "kiem_chung": "Chụp 20 trang không treo",
+    "phu_thuoc": "R2.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.3",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Cache kết quả theo khoá (ảnh, tham số); xử lý theo ô 1024 px khi ảnh > 12 MP (giới hạn canvas iPhone).",
+    "tep": "lib/pipeline/cache.ts, tile.ts",
+    "kiem_chung": "Ảnh 48 MP giả lập không trắng trang",
+    "phu_thuoc": "R2.2",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.4",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Xem trước bộ lọc bằng WebGL2 + thanh cấp độ 0–100, ảnh đầy đủ chỉ tính khi thả tay.",
+    "tep": "lib/webgl-filter.ts",
+    "kiem_chung": "Kéo thanh ≤ 16 ms/khung, không lỗi console",
+    "phu_thuoc": "R1.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.5",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Hoàn tất baseline S1/P1.1 bằng video trang thay đổi; ghi số từng công đoạn so ngân sách 17.1.",
+    "tep": "scripts/do-chuan-s1.py",
+    "kiem_chung": "Đủ ≥ 10 mẫu dựng trang/bộ ảnh",
+    "phu_thuoc": "R2.2",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R2.6",
+    "dot": "R2 – Hiệu năng & pipeline",
+    "viec": "Dọn thuật toán cũ -vN không còn dùng; chuyển kiểm thử -vN thành bộ hồi quy.",
+    "tep": "lib/*-v*.ts",
+    "kiem_chung": "Hồi quy giữ nguyên số đạt",
+    "phu_thuoc": "R2.5",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R3.1",
+    "dot": "R3 – Tự động hoá “2 thao tác”",
+    "viec": "Nhật ký quyết định theo trang (“nền tối 18% → Sáng nền Mạnh”), nhãn cam “Cần xem lại” khi điểm < 70, thẻ lọc Tất cả / Cần xem lại / Đã sửa tay.",
+    "tep": "scan-journal.ts, doc.$id.tsx",
+    "kiem_chung": "Thẻ lọc chỉ hiện trang điểm < 70",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R3.2",
+    "dot": "R3 – Tự động hoá “2 thao tác”",
+    "viec": "“Phương án khác”: 3 biến thể dựng sẵn, chọn 1 chạm.",
+    "tep": "recipe.ts, adjust-editor.tsx",
+    "kiem_chung": "Chọn biến thể đổi ảnh trong 1 chạm",
+    "phu_thuoc": "R3.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R3.3",
+    "dot": "R3 – Tự động hoá “2 thao tác”",
+    "viec": "Học theo người dùng (P8.6): ghi lựa chọn sửa tay theo loại tài liệu, lần sau ưu tiên.",
+    "tep": "lib/user-recipe.ts",
+    "kiem_chung": "Sửa tay 1 lần → lô sau dùng công thức mới",
+    "phu_thuoc": "R3.2",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R3.4",
+    "dot": "R3 – Tự động hoá “2 thao tác”",
+    "viec": "Nhận loại tài liệu theo ảnh (màu, dấu đỏ, tỉ lệ khung) bổ sung cho doc-type theo chữ.",
+    "tep": "doc-type.ts",
+    "kiem_chung": "Đúng loại ≥ 85% bộ ảnh vàng",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R3.5",
+    "dot": "R3 – Tự động hoá “2 thao tác”",
+    "viec": "Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại”.",
+    "tep": "post-capture.ts, batch-export.tsx",
+    "kiem_chung": "Luồng Thêm → Xuất chạy xanh 2 thao tác",
+    "phu_thuoc": "R3.1, R5.1",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R4.1",
+    "dot": "R4 – Mục Thêm & Danh sách trang",
+    "viec": "Chống ảnh trùng bằng dấu vân ảnh + phân loại ảnh nhập (có nền / đã phẳng / chụp màn hình).",
+    "tep": "lib/dedupe-phash.ts, importer.ts",
+    "kiem_chung": "Ảnh trùng bị hỏi; ảnh phẳng không bị cắt",
+    "phu_thuoc": "—",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R4.2",
+    "dot": "R4 – Mục Thêm & Danh sách trang",
+    "viec": "Lưới trang kéo-thả, chọn nhiều thao tác hàng loạt, ô “+ Thêm” nét đứt cuối lưới, nhãn trạng thái % và nút xuất mờ khi còn trang đang xử lý.",
+    "tep": "doc.$id.tsx, page-list.ts",
+    "kiem_chung": "Đổi thứ tự được; nhãn đổi theo tiến độ",
+    "phu_thuoc": "R3.1",
+    "trang_thai": "xong"
+  },
+  {
+    "ma": "R4.3",
+    "dot": "R4 – Mục Thêm & Danh sách trang",
+    "viec": "Bảng Thêm đủ 5 nguồn + vị trí chèn; kéo-thả toàn cửa sổ, phím tắt PC Delete/←/→/R; PDF tách trang.",
+    "tep": "importer.ts, app-shell.tsx",
+    "kiem_chung": "Kéo 20 ảnh thành công; phím tắt chạy",
+    "phu_thuoc": "R4.2",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R5.1",
+    "dot": "R5 – Xuất",
+    "viec": "PDF 3 mức Nhỏ/Chuẩn/Cao + kiểm tự động khung PDF khớp xem trước (TD-10).",
+    "tep": "batch-export.tsx, export-bundle.ts",
+    "kiem_chung": "20 trang Chuẩn ≤ 5 MB; tỉ lệ khớp ≤ 0,5%",
+    "phu_thuoc": "R2.3",
+    "trang_thai": "xong",
+    "bang_chung": "pdf-frame-check.test.ts: 14 kiểm thử đạt; PDF 20 trang Chuẩn 4,6 MB ≤ 5 MB; lệch khung ≤ 0,5% (7 tỉ lệ ảnh); 178 tệp / 814 kiểm thử đạt; tsgo sạch"
+  },
+  {
+    "ma": "R5.2",
+    "dot": "R5 – Xuất",
+    "viec": "Lớp chữ OCR ẩn trong PDF (tìm và chọn được chữ tiếng Việt).",
+    "tep": "lib/pdf-text-layer.ts",
+    "kiem_chung": "Tìm được từ trên PDF tải về",
+    "phu_thuoc": "R5.1, R1.5",
+    "trang_thai": "xong",
+    "bang_chung": "pdf-text-layer.test.ts: pdfjs trích đúng 3 cụm tiếng Việt có dấu từ PDF dựng thật; sửa lỗi charSpace phá tìm kiếm; 179 tệp / 817 kiểm thử đạt; tsgo sạch"
+  },
+  {
+    "ma": "R6.1",
+    "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+    "viec": "Tinh chỉnh 7 bộ lọc + Khử bóng, Khử nhiễu 3 cấp theo chỉ số 17.4; thêm cổng chất lượng: không đạt thì không gạch mục.",
+    "tep": "tool-levels.ts, chat-luong.py",
+    "kiem_chung": "Độ lệch nền ≤ 8%, ΔL ≥ 60, góc tối ≤ 0,2%",
+    "phu_thuoc": "R2.4",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R6.2",
+    "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+    "viec": "Bộ ảnh NB (bài báo Ninh Bình) + ảnh Cam mẫu; so tỉ lệ OCR đúng ký tự.",
+    "tep": "kiem-chung/bo-anh-NB/",
+    "kiem_chung": "OCR ≥ bản Cam − 2%",
+    "phu_thuoc": "Cần người dùng gửi ảnh",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R6.3",
+    "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+    "viec": "Kiểm 5 tiêu chí mục 9 tự động: 20 trang không chặn, 20 ảnh PC + 20 ảnh thư viện, chế độ máy bay, đo chỉ tiêu 19.5.",
+    "tep": "scripts/playwright/nghiem-thu.py",
+    "kiem_chung": "Báo cáo 5/5 tiêu chí",
+    "phu_thuoc": "R3.5, R5.2",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R6.4",
+    "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+    "viec": "UAT máy thật Android/iPhone/PC (B13/P7.3), hiệu chỉnh ngưỡng điểm trang theo kết quả.",
+    "tep": "UAT-B13-*.md, page-grade.ts",
+    "kiem_chung": "Báo cáo số đo trên máy thật",
+    "phu_thuoc": "Cần người dùng thử",
+    "trang_thai": "cho"
+  },
+  {
+    "ma": "R6.5",
+    "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+    "viec": "Đề án bản cuối v5 + bàn giao tổng.",
+    "tep": "de-an-*_v5.docx",
+    "kiem_chung": "—",
+    "phu_thuoc": "Tất cả",
+    "trang_thai": "cho"
+  }
+]
