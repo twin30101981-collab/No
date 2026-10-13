@@ -98,3 +98,4 @@ de-an-nang-cap-scan/tien-do.json (+18 mục HM-xx), LO-TRINH.md (bảng đếm),
 - P16: cập nhật tiến độ, nợ kỹ thuật, đề án v1.2, hồ sơ bàn giao; kiểm ZIP bằng MANIFEST.
 
 - P17 (13/10/2026): HM-10 xong — /documents 2 cột từ 1024 px (AppShell prop wide). Mã đã commit lên nhánh claude/read-content-continue-progress-1a7044 (thư mục giayto/); TD-39 đóng.
+- P17: nhận 2 PDF "Ảnh gốc bài báo Ninh Bình": tệp 1 trùng byte với goc/IMG_NB_01.jpg; tệp 2 (2197×3009, đã xử lý) đặt vào cam/IMG_NB_01_cam-chua-ro-che-do.pdf. Sandbox không có tesseract (apt không có gói; tải vie.traineddata bị 403) → HM-12 chưa chấm được; cần máy có tesseract-ocr-vie. 6 PDF + JPG về biên bản thế chấp là SAI trang và có dữ liệu cá nhân — không đưa vào repo.
