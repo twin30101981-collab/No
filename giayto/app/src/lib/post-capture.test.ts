@@ -21,3 +21,13 @@ describe("planPostCapture (P8)", () => {
     expect(planPostCapture({ pages: [pg("a")], locked: true } as never, new Set(), true, on, true)).toEqual({ ocrPageIds: [], autoName: false });
   });
 });
+
+describe("bgOcrFailure (TD-32)", () => {
+  it("đếm lỗi thật, bỏ qua hủy; không lỗi thì null", async () => {
+    const { bgOcrFailure } = await import("./post-capture");
+    const { CancelledError } = await import("./ocr-queue");
+    const boom = new Error("không tải được gói");
+    expect(await bgOcrFailure([{ status: "fulfilled", value: "a" }, { status: "rejected", reason: new CancelledError() }])).toBeNull();
+    expect(await bgOcrFailure([{ status: "rejected", reason: boom }, { status: "rejected", reason: boom }, { status: "fulfilled", value: "a" }])).toEqual({ count: 2, error: boom });
+  });
+});

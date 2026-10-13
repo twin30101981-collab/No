@@ -15,6 +15,11 @@
 
 export type ImportKind = "flat" | "screenshot" | "photo";
 
+/** TD-37: ảnh chụp nhập từ thư viện không tự dò khung (R4.1) → gợi ý bấm "Tự dò góc" khi chưa cắt. */
+export function needsCornerHint(p: { importKind?: ImportKind | undefined; manual?: boolean | undefined; edit: { quad?: unknown } }): boolean {
+  return p.importKind === "photo" && !p.edit.quad && !p.manual;
+}
+
 const SAMPLE = 32;
 const BLOCK = 8;
 

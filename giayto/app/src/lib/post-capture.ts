@@ -22,8 +22,22 @@ export async function runPostCapture(doc: Doc, before: Set<string>, isNewDoc: bo
   const { ocrQueue } = await import("./ocr-queue");
   const idx = new Map(doc.pages.map((p, i) => [p.id, i]));
   const tasks = ocrQueue().add(plan.ocrPageIds.map((id) => ({ docId: doc.id, pageId: id, label: `${doc.name} · trang ${(idx.get(id) ?? 0) + 1}`, src: doc.pages[idx.get(id)!]!.src })));
-  void Promise.allSettled(tasks);
+  void Promise.allSettled(tasks).then(async (rs) => {
+    const f = await bgOcrFailure(rs);
+    if (!f) return;
+    // TD-32: trước đây lỗi nhận chữ nền bị nuốt im lặng → người dùng tưởng đã có chữ.
+    const [{ logScan }, { showError }] = await Promise.all([import("./scan-log"), import("./errors")]);
+    logScan({ code: "OCR_BG_FAIL", message: `${f.count}/${rs.length} trang: ${f.error instanceof Error ? f.error.message : String(f.error)}` });
+    showError(f.error, `Nhận chữ tự động lỗi ${f.count} trang (mở tài liệu → Nhận diện chữ để thử lại)`);
+  });
   return plan;
+}
+
+/** TD-32: lỗi thật (bỏ qua hủy) của một đợt nhận chữ nền; null nếu không có. */
+export async function bgOcrFailure(rs: PromiseSettledResult<unknown>[]): Promise<{ count: number; error: unknown } | null> {
+  const { CancelledError } = await import("./ocr-queue");
+  const bad = rs.filter((r): r is PromiseRejectedResult => r.status === "rejected" && !(r.reason instanceof CancelledError));
+  return bad.length ? { count: bad.length, error: bad[0]!.reason } : null;
 }
 
 /** P8.4: áp công thức xử lý cho trang mới (đọc lại bản mới nhất để không đè thay đổi của người dùng). */

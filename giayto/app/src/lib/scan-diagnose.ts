@@ -32,10 +32,15 @@ export function guardImage(i: { width: number; height: number; bytes: number; on
 
 /** Khoá phiên bản ảnh: cùng trang + cùng bộ lọc + cùng nội dung → cùng khoá. */
 export function imageVersion(pageId: string, filter: string, data: string): string {
-  let h = 2166136261;
-  const step = Math.max(1, Math.floor(data.length / 4096));
-  for (let k = 0; k < data.length; k += step) { h ^= data.charCodeAt(k); h = Math.imul(h, 16777619); }
-  return `${pageId}:${filter}:${data.length}:${(h >>> 0).toString(36)}`;
+  // TD-17: băm đủ mọi ký tự (2 luồng FNV-1a, ~64 bit) — trước đây chỉ lấy mẫu ~4096 điểm
+  // nên hai ảnh cùng độ dài khác nhau ở chỗ không lấy mẫu bị trùng khoá. Gọi trong useMemo theo src.
+  let h1 = 2166136261, h2 = 0x811c9dc5 ^ 0x5bd1e995;
+  for (let k = 0; k < data.length; k++) {
+    const c = data.charCodeAt(k);
+    h1 = Math.imul(h1 ^ c, 16777619);
+    h2 = Math.imul(h2 ^ c, 2246822519);
+  }
+  return `${pageId}:${filter}:${data.length}:${(h1 >>> 0).toString(36)}${(h2 >>> 0).toString(36)}`;
 }
 
 /** Kết quả chỉ được gắn khi phiên bản còn khớp ảnh hiện tại. */

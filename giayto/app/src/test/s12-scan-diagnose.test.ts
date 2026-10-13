@@ -15,6 +15,10 @@ describe("S12 scan-diagnose", () => {
     expect(imageVersion("p1", "auto", "data:abc".repeat(100))).toBe(a);
     expect(imageVersion("p1", "bw", "data:abc".repeat(100))).not.toBe(a);
     expect(imageVersion("p1", "auto", "data:abd".repeat(100))).not.toBe(a);
+    // TD-17: khác 1 ký tự ở vị trí không lấy mẫu, cùng độ dài → vẫn phải khác khoá
+    const big = "A".repeat(1 << 20);
+    const big2 = big.slice(0, 1001) + "B" + big.slice(1002);
+    expect(imageVersion("p1", "auto", big2)).not.toBe(imageVersion("p1", "auto", big));
     expect(matchesVersion({ version: a, issues: [], summary: "" }, a)).toBe(true);
     expect(matchesVersion({ version: a, issues: [], summary: "" }, "x")).toBe(false);
   });

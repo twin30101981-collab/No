@@ -100,6 +100,16 @@ export function AdjustEditor({ page, onClose, onApply, onApplyAll, onApplySimila
   const [crop, setCrop] = useState(false);
   const [live, setLive] = useState<{ b?: number; c?: number; lv?: number }>({});
   const d = s.draft;
+  // TD-14: Radix chỉ gọi onValueCommit khi pointerup; pointercancel (cử chỉ hệ thống, chạm
+  // đa điểm) bỏ qua bước này → số đang hiện lệch bản nháp. Khi hủy, ghi giá trị đang hiện.
+  const liveRef = useRef(live);
+  liveRef.current = live;
+  function commitLive(key: "b" | "c" | "lv") {
+    const v = liveRef.current[key];
+    if (v === undefined) return;
+    setLive((l) => { const { [key]: _drop, ...rest } = l; return rest; });
+    setS((cur) => applyEdit(cur, key === "b" ? { brightness: v } : key === "c" ? { contrast: v } : { level: v }));
+  }
   // R2.4: ảnh gốc giải mã sẵn để xem trước WebGL2 tức thì khi kéo thanh cấp độ.
   const glImg = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
@@ -336,13 +346,14 @@ export function AdjustEditor({ page, onClose, onApply, onApplyAll, onApplySimila
       </div>
       <div className="px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <label id="adj-brightness-label" className="mt-4 block text-xs font-semibold">Độ sáng ({b})</label>
-        <Slider aria-labelledby="adj-brightness-label" className="mt-2" min={-80} max={80} step={5} value={[b]} onValueChange={([v]) => setLive((l) => ({ ...l, b: v ?? 0 }))} onValueCommit={([v]) => { setLive((l) => { const { b: _drop, ...rest } = l; return rest; }); setS((cur) => applyEdit(cur, { brightness: v ?? 0 })); }} />
+        <Slider aria-labelledby="adj-brightness-label" className="mt-2" onPointerCancel={() => commitLive("b")} min={-80} max={80} step={5} value={[b]} onValueChange={([v]) => setLive((l) => ({ ...l, b: v ?? 0 }))} onValueCommit={([v]) => { setLive((l) => { const { b: _drop, ...rest } = l; return rest; }); setS((cur) => applyEdit(cur, { brightness: v ?? 0 })); }} />
         <label id="adj-contrast-label" className="mt-4 block text-xs font-semibold">Tương phản ({c})</label>
-        <Slider aria-labelledby="adj-contrast-label" className="mt-2" min={-80} max={80} step={5} value={[c]} onValueChange={([v]) => setLive((l) => ({ ...l, c: v ?? 0 }))} onValueCommit={([v]) => { setLive((l) => { const { c: _drop, ...rest } = l; return rest; }); setS((cur) => applyEdit(cur, { contrast: v ?? 0 })); }} />
+        <Slider aria-labelledby="adj-contrast-label" className="mt-2" onPointerCancel={() => commitLive("c")} min={-80} max={80} step={5} value={[c]} onValueChange={([v]) => setLive((l) => ({ ...l, c: v ?? 0 }))} onValueCommit={([v]) => { setLive((l) => { const { c: _drop, ...rest } = l; return rest; }); setS((cur) => applyEdit(cur, { contrast: v ?? 0 })); }} />
         <label id="adj-level-label" className="mt-4 block text-xs font-semibold">Cấp độ bộ lọc ({lv})</label>
         <Slider
           aria-labelledby="adj-level-label" className="mt-2" min={0} max={100} step={5} value={[lv]}
           data-testid="filter-level"
+          onPointerCancel={() => commitLive("lv")}
           onValueChange={([v]) => { const n = clampFilterLevel(v); setLive((l) => ({ ...l, lv: n })); glPreview(n); }}
           onValueCommit={([v]) => { const n = clampFilterLevel(v); setLive((l) => { const { lv: _drop, ...rest } = l; return rest; }); setS((cur) => applyEdit(cur, { level: n })); }}
         />

@@ -113,3 +113,14 @@ describe("classifyImportImage", () => {
     expect(classifyImportImage(img, 100, 100)).toBe("photo");
   });
 });
+
+describe("needsCornerHint (TD-37)", () => {
+  it("chỉ gợi ý cho ảnh chụp nhập, chưa cắt, chưa sửa tay", async () => {
+    const { needsCornerHint } = await import("./dedupe-phash");
+    expect(needsCornerHint({ importKind: "photo", edit: {} })).toBe(true);
+    expect(needsCornerHint({ importKind: "photo", edit: { quad: [] } })).toBe(false);
+    expect(needsCornerHint({ importKind: "photo", manual: true, edit: {} })).toBe(false);
+    expect(needsCornerHint({ importKind: "flat", edit: {} })).toBe(false);
+    expect(needsCornerHint({ edit: {} })).toBe(false);
+  });
+});
