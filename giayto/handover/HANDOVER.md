@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01, TF-02 và CS-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01 và CS-02 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -43,9 +43,14 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Kiểm chứng:** `scripts/playwright/kiem-chuyen-doi-du-lieu.mjs` **15/15 ĐẠT**; test đơn vị 9 ca; hồi quy `kiem-sao-luu.mjs` + `kiem-hanh-trinh-cs.mjs` đạt; `npm run check` 197/931, build OK. (Không chạy "mã cũ" làm đối chứng — mã cũ không có các trường này theo cấu tạo.)
 - **Lưu ý cho CS-02…04:** `origBlobKey`/blob-store chưa được luồng chụp dùng; trang tạo ở màn chụp đang có status `xong` ngay dù bản đủ còn trong hàng đợi — CS-03/CS-04 sẽ đặt `cho/dang`.
 
+## Hạng mục vừa đóng (7): CS-02 — Bộ điều phối nền toàn app — ĐẠT-V3 (có 1 ca hồi quy nghi flaky)
+- **Nguyên nhân gốc (G-03):** bộ xử lý "finish" chỉ có trong màn Chụp và bị huỷ khi rời màn. **Đã sửa:** `lib/pipeline/runner.ts` (MỚI) đăng ký ở `__root`, chạy tiếp sau tải lại (`bgQueue.resume`), ghi bản đầy đủ thẳng vào tài liệu đã lưu (bỏ qua nếu người dùng đã sửa trang / tài liệu khoá / thùng rác), trang chưa lưu thì giữ trong `finishedStore` để màn Chụp nhận; `scan.tsx` không `cancelAll` khi rời màn (chỉ huỷ trang bị bỏ ở Đóng/Bỏ journal); `bgQueue.prioritize`; `ensureDocsLoaded`. **Sau cờ** `globalPipeline` (mặc định bật; tắt trong Tôi → Quét).
+- **Kiểm chứng:** `kiem-dieu-phoi-nen.mjs` — cờ tắt (= mã cũ) tái hiện lỗi; cờ bật A/B/C đạt, 0 pageerror. Test đơn vị 8 ca. Hồi quy `kiem-quy-trinh-chup` CPU 6×: "Xong→mở tài liệu" đạt 3/3 (đã sửa chờ cứng 1,5 s của kịch bản); **1/4 lần lỗi ca "Đóng khi còn trang → hỏi" — chưa rõ nguyên nhân** (nghi nhiễu CPU 6×, chưa đủ mẫu so cờ tắt) → xem lại ở CS-03.
+- **CHƯA:** nhiều làn, chuyển status cho/dang (CS-03/04), gắn `prioritize` vào màn Tài liệu, máy thật.
+
 ## Hạng mục kế tiếp — người dùng chọn
-Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-02 → CS-03 → CS-04 → CS-05** (CS-01 đã xong).
-Gợi ý: CS-02 (bộ điều phối nền toàn app, M, P1 — đặt sau cờ bật/tắt) hoặc TF-03 (M, P3) hoặc BL-06/BL-04 (S, độc lập); AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
+Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-03 → CS-04 → CS-05** (CS-01, CS-02 đã xong).
+Gợi ý: CS-03 (bấm chụp = ghi gốc, trang vào khay ngay; M, P1) hoặc TF-03 (M, P3) hoặc BL-06/BL-04 (S, độc lập); AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").
