@@ -28,7 +28,7 @@ Quy ước: chỉnh style chỉ ở lớp Tailwind/styles.css; không format hà
 | HM-07 | OCR: báo rõ khi không tải được gói nhận chữ (không tự lưu gói) | P2 | Đạt V3 | GIAYTO_P07_HM07_20261012.zip |
 | HM-08 | Service worker: phiên bản theo build, không nuốt lỗi precache | P2 | Đạt V3 | GIAYTO_P08_HM08_20261012.zip |
 | HM-09 | Đo tải trang; bỏ ~0,7 MB nạp sớm ở màn Công cụ | P3 | Đạt V3 | GIAYTO_P11_HM09_20261012.zip |
-| HM-10 | Bố cục màn rộng (đề xuất) | P3 | Chưa làm | — |
+| HM-10 | Bố cục màn rộng (đề xuất) | P3 | Đạt V3 (P17; chưa đóng ZIP) | — |
 | HM-11 | R6.1e: giữ khối màu bão hoà ở mép trang (Q3=a) | P2 | Đạt V3 | GIAYTO_P15_HM11_20261013.zip |
 | HM-12 | R6.2 phần 2: so OCR với CamScanner | P2 | Chưa làm | — |
 | HM-13 | Rà 13 mục S/V cũ đang dở | P3 | Đạt V1 | GIAYTO_P12_HM13_20261013.zip |
@@ -95,3 +95,5 @@ de-an-nang-cap-scan/tien-do.json (+18 mục HM-xx), LO-TRINH.md (bảng đếm),
 ## 11. Nhật ký ngắn
 - Đề án P01–P15: S0 → 15 ZIP hạng mục (xem Mục 2).
 - P16: cập nhật tiến độ, nợ kỹ thuật, đề án v1.2, hồ sơ bàn giao; kiểm ZIP bằng MANIFEST.
+
+- P17 (13/10/2026): HM-10 xong — /documents 2 cột từ 1024 px (AppShell prop wide). Mã đã commit lên nhánh claude/read-content-continue-progress-1a7044 (thư mục giayto/); TD-39 đóng.
