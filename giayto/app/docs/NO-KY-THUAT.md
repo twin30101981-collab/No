@@ -1,4 +1,40 @@
-# Nợ kỹ thuật – nâng cấp scan (cập nhật 13/10/2026, đóng phiên P17; phần A–E bên dưới là bản 07/10/2026)
+# Nợ kỹ thuật – nâng cấp scan (cập nhật 13/10/2026, phiên P18; phần A–E bên dưới là bản 07/10/2026)
+
+## P18 — 13/10/2026: xử lý nợ còn lại (trừ phần chụp ảnh thật / máy thật)
+Bằng chứng: commit trên nhánh claude/tieu-tuc-thuc-thi-de-an-k1h8nz; script ở scripts/playwright/ (kiem-no-p18, kiem-nang-cap-sw-cu,
+kiem-mat-khau-chia-se + mock-supabase, kiem-ky-so-p12, kiem-bo-cuc-p18, kiem-cat-man-thap, do-xem-chu-nho);
+de-an-nang-cap-scan/kiem-chung/P18/ (ky-so, bo-cuc) và R6.2/tesseract-goc/. npm run check: 190 tệp / 877 đạt (trước P18: 189 / 864).
+
+| Mã | Kết quả P18 | Mức kiểm |
+| --- | --- | --- |
+| TD-13 | ĐÓNG: SafeBoundary nhận title/onClose/overlay; bọc màn Chỉnh tay ("Màn chỉnh sửa gặp sự cố." + nút Đóng) | V2 (lỗi) + V3 (mở bình thường) |
+| TD-14 | ĐÓNG: lỗi THẬT — pointercancel (cử chỉ hệ thống) bỏ onValueCommit → hiện 55 nhưng Lưu ghi 0. Nay ghi giá trị đang hiện. Đối chứng mã cũ LỖI / mã mới ĐẠT bằng chạm CDP | V3 Chromium |
+| TD-17 | ĐÓNG: imageVersion băm đủ mọi ký tự (2 luồng FNV, ~16 ms/4 MB) | V2 |
+| TD-32 | ĐÓNG: OCR nền lỗi → ghi scan-log OCR_BG_FAIL + thông báo "Nhận chữ tự động lỗi N trang" (bỏ qua hủy) | V2 |
+| TD-37 | ĐÓNG: ảnh chụp nhập từ thư viện chưa cắt → gợi ý "bấm Tự dò góc"; ẩn sau khi dò | V3 |
+| TD-30 | ĐÓNG phần trình duyệt: SW cũ DỰNG LẠI (/sw.js, gn-v6-shell + gn-v6-ocr) → bản mới: toast Cập nhật, SW mới kiểm soát, gói OCR chuyển gn-ocr-v1, gn-v6-* xoá, ngoại tuyến OK. Không cần sửa mã (nghi vấn race updatefound không tái hiện). BUILD_ID đã tự lấy GITHUB_SHA/CF_PAGES_COMMIT_SHA, thiếu thì dùng thời điểm build. Còn: SW cũ thật trên tên miền thật, Safari | V3 Chromium + wrangler |
+| TD-34 | ĐÓNG: giới hạn 10 lần nhập SAI mật khẩu liên kết / 15 phút theo IP + mã liên kết; đúng thì xoá đếm; khi bị chặn mật khẩu đúng cũng phải chờ. Bộ đếm trong bộ nhớ (như TD-28) | V3 wrangler + Supabase giả |
+| TD-33 | ĐÓNG: ký .p12 thật (openssl AES-256/PBES2 và 3DES legacy, có chuỗi CA) + chứng thư tạo trong app → pdfsig "Signature is Valid". Tìm và sửa 6 lỗi: (1) .p12 app tạo với tên có dấu KHÔNG mở lại được; (2) tên UTF-8 hiện vỡ mã; (3) /Reason "Duyệt"→"DuyÇt", /Name vỡ mã; (4) issuer mã UTF-8 hai lần → pdfsig không tìm ra người ký; (5) ~1/256 chữ ký bị app báo "không hợp lệ" (cắt byte 00 cuối DER); (6) serial âm. Còn: CA công cộng thật, Adobe Acrobat | V3 Chromium + pdfsig |
+| TD-27 | ĐÓNG: soi 14 trạng thái × 360×640/390×844. Sửa 3 lỗi thật: dải chọn bộ lọc ở Chỉnh tay bị bóp còn 4/44 px (gần như vô hình); màn Cắt 360×640 hàng "Áp dụng" ngoài đáy (không bấm được); thẻ Phương án khác/Chẩn đoán AI tương phản 1,02–1,50. Còn: máy thật, chữ lớn, giao diện tối — và TD-46 | V3 Chromium |
+| TD-04 | ĐÓNG (không cần sửa): app thu ảnh về ≤ 2000 px khi nhập; 1500×2000, CPU chậm 4×: 1,0–1,3 s/lần cập nhật (gồm debounce 300 ms), long task tối đa 175 ms, heap ≤ 69 MB | V3 Chromium (giả lập CPU) |
+| TD-42 | ĐÓNG: so-ocr.py chạy lại bằng tesseract GỐC 5.3.4 + vie (apt 4.1.0): app Auto 98,68% vs Cam tốt nhất 99,07% → −0,39 (ngưỡng −2) ĐẠT; kết luận HM-12 giữ nguyên | V3 |
+| TD-38 | ĐÓNG: bun 1.4.2 `install --frozen-lockfile` (đổi URL sang registry npm công khai trên BẢN SAO) thoát 0 + `bun run check` 190/877. Mirror Lovable vẫn 403 ngoài Lovable | V2+ |
+| TD-19 | ĐÓNG (đã xong từ P0.1, kiểm lại): 118 mục trong `buoc`, trạng thái chuẩn, app-tien-do.html hiện 87/118 + S11p/S13b/HM, không cache | V3 |
+| TD-40 | ĐÓNG: dong-bo-tien-do.py mặc định CHẠY THỬ; --ghi mới ghi, Markdown vào *.sinh.md (trước: TIEP-THEO.md 50→11 dòng); cap_nhat không lùi; giữ mọi trường lo_trinh_r (trước: mất canh_bao/bang_chung R6.1/R6.2) | V2 |
+| TD-22 | ĐÓNG: CI GitHub Actions .github/workflows/giayto-check.yml (npm ci --legacy-peer-deps + npm run check) khi đẩy mã vào giayto/app | V3 (chạy trên GitHub) |
+| TD-45 | ĐÓNG phần mẹo: apt-get chạy được ở sandbox P18 (tesseract, poppler); bẫy pgrep/pkill -f tự khớp lệnh bash → dùng mẫu "[h]ttp…" hoặc pgrep -x | — |
+
+Còn mở sau P18:
+| Mã | Vì sao chưa làm | Ai |
+| --- | --- | --- |
+| TD-26, TD-01, TD-16, HM-14 (V0 ảnh 12 MP, S12c AI thật, UAT máy thật) | Cần máy thật/ảnh chụp thật/AI thật — người dùng loại khỏi P18 | Người dùng |
+| TD-46 (MỚI) | Tương phản màu thương hiệu: chữ trắng trên primary 2,40; chữ primary/muted nhỏ trên nền sáng 2,07–2,31 (WCAG AA 4,5) — đổi bảng màu là quyết định thiết kế | Chủ dự án chọn: giữ / làm đậm primary / chữ tối trên primary |
+| TD-28 | Bộ đếm AI bền (bảng Supabase = đổi schema), miễn trừ người đăng nhập, mức 60 — đổi nghiệp vụ, cần quyết định | Chủ dự án |
+| TD-15, TD-11, TD-12, TD-31, TD-36, TD-44 | Quyết định chủ dự án / thiết kế (đã ghi trước) | Chủ dự án |
+| TD-05/06/07 | Hộp chữ ký/bảng chưa có nguồn — cần thiết kế (TD-05/06 phần OCR đã làm ở R1.5) | Thiết kế |
+| TD-20, TD-41 | Cần đề án nền v4 (không có trong ZIP) | Người dùng gửi |
+| TD-29, TD-35, TD-43, TD-18 | Đã chấp nhận / tệp tự sinh / cần người rà chữ chuẩn / theo TD-01 | — |
+
 
 ## 0. Cập nhật 13/10/2026 — sau đề án nâng cấp (HM-01…HM-18)
 Nguồn chi tiết: handover/backlog.json (phát hiện F-01…F-14, hạng mục, bằng chứng) và de-an/DE_AN_GIAYTO_v1.2.docx.

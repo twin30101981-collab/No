@@ -1,4 +1,17 @@
-# BÀN GIAO ĐÓNG PHIÊN — GIAYTO — Phiên P17 — 2026-10-13
+# BÀN GIAO — GIAYTO — Phiên P18 — 2026-10-13 (phần P17 bên dưới giữ nguyên làm lịch sử)
+
+## P18 tóm tắt (đọc trước)
+Yêu cầu người dùng: "Thực thi xử lý phần nợ kỹ thuật còn lại, trừ phần chụp ảnh thật". Skill v3.2.0, chế độ 3.
+- Mã: nhánh **claude/tieu-tuc-thuc-thi-de-an-k1h8nz** (fast-forward từ claude/read-content-continue-progress-1a7044), thư mục giayto/. Chưa tạo PR.
+- Đóng 16 nợ (chi tiết + mức kiểm: app/docs/NO-KY-THUAT.md mục "P18"): TD-04, 13, 14, 17, 19, 22, 27, 30, 32, 33, 34, 37, 38, 40, 42, 45.
+- Lỗi thật đáng chú ý đã sửa: chứng thư tạo trong app với tên có dấu không mở lại được (không ký được) + 5 lỗi ký số khác;
+  dải chọn bộ lọc màn Lọc bị bóp còn 4 px; nút Áp dụng màn Cắt ngoài đáy ở màn 640 px; thanh trượt hiện 55 lưu 0 khi cử chỉ bị hủy;
+  liên kết chia sẻ cho đoán mật khẩu không giới hạn; script đồng bộ tiến độ ghi đè TIEP-THEO.md.
+- Kiểm: npm run check 190 tệp / 877 đạt; bun run check cũng đạt; CI GitHub Actions mới (.github/workflows/giayto-check.yml).
+- MỚI: TD-46 tương phản màu thương hiệu (chủ dự án quyết). Còn mở: HM-14/TD-26/TD-01/TD-16 (máy thật, ảnh thật, AI thật), TD-28, TD-15… (quyết định).
+- Môi trường P18: apt-get dùng được (đã cài tesseract-ocr-vie, poppler-utils); bun 1.4.2 có sẵn; playwright-core/wrangler cài ở thư mục riêng.
+  Bẫy mới: `pgrep -f "mẫu"`/`pkill -f` khớp chính lệnh bash → mã 144; dùng `pgrep -f "[m]ẫu"` hoặc `pgrep -x`.
+
 Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng phiên: người dùng yêu cầu đóng phiên + bàn giao (P17 đã làm HM-10, Q6, HM-12)
 
 ## 1. Dự án và môi trường
@@ -86,10 +99,12 @@ Không có. Mọi hạng mục đã đóng trọn hoặc hoãn có chủ đích.
 Đầy đủ ở `app/docs/NO-KY-THUAT.md` (mục 0 cập nhật 13/10: đã đóng + TD-26…TD-41 còn mở) và tóm tắt ở `handover/TIEN_DO_VA_NO_KY_THUAT.md`. Nhắc các nợ quan trọng nhất: TD-26 (chưa máy thật/Cloudflare/AI thật), TD-27 (Button cao hơn toàn app), TD-28 (giới hạn AI trong bộ nhớ), TD-29 (5 ca NB), TD-30 (SW: chưa thử nâng cấp từ SW cũ thật; đặt BUILD_ID), TD-39 (chưa commit).
 
 ## 8. Việc người dùng cần làm
+(P18) Còn lại: thử máy thật HM-14 (gồm màn Cắt/Lọc đã sửa bố cục, ký số với chứng thư thật) • quyết TD-46 (màu thương hiệu) • TD-28 (giữ 60/giờ? bộ đếm bền?) • xác nhận đề án v1.2 • tạo PR từ nhánh claude/tieu-tuc-thuc-thi-de-an-k1h8nz nếu muốn.
 (P17) Còn lại: xác nhận đề án v1.2 • mức 60 lượt AI/giờ • thử máy thật (HM-14) • tùy chọn: đọc rà chữ chuẩn trang NB, tạo PR. (Danh sách cũ bên dưới đã xử lý: Q6, đẩy GitHub, ảnh Cam.)
 Xác nhận đề án v1.2 • Q6 • mức 60 lượt AI/giờ có phù hợp • cho phép đẩy GitHub • gửi ảnh Cam + chạy tesseract tiếng Việt (HM-12) • thử máy thật (HM-14) • đặt BUILD_ID khi build (tuỳ chọn).
 
 ## 9. Đường lui
+P18: mỗi nhóm là một commit riêng trên nhánh claude/tieu-tuc-thuc-thi-de-an-k1h8nz (git revert từng commit được); ZIP GIAYTO_P18_NOKYTHUAT_20261013.zip. Chứng thư .p12 do app tạo ở bản mới dùng CN UTF8String — bản cũ vẫn đọc được.
 Mã app = ZIP P17 (P17 đổi app-shell.tsx + documents.tsx so với P15/P16; hoàn tác HM-10: về ZIP P15/P16). Hoàn tác từng hạng mục: dùng ZIP của hạng mục trước (bảng ở Mục 2 + de-an Mục 10). Bản gốc: GIAYTO_P01_KHOITAO_20261012.zip (checksum baseline/BASELINE.sha256 trong ZIP đó).
 
 ## 10. File đã chạm trong phiên P17
@@ -106,3 +121,4 @@ de-an-nang-cap-scan/tien-do.json (+18 mục HM-xx), LO-TRINH.md (bảng đếm),
 - P17: nhận 2 PDF "Ảnh gốc bài báo Ninh Bình": tệp 1 trùng byte với goc/IMG_NB_01.jpg; tệp 2 (2197×3009, đã xử lý) đặt vào cam/IMG_NB_01_cam-chua-ro-che-do.pdf. Sandbox không có tesseract (apt không có gói; tải vie.traineddata bị 403) → HM-12 chưa chấm được; cần máy có tesseract-ocr-vie. 6 PDF + JPG về biên bản thế chấp là SAI trang và có dữ liệu cá nhân — không đưa vào repo.
 - P17: nhận thêm 7 PDF "CSN" (đúng trang NB, 1271×1800) đặt vào cam/: thang-xam, sinh-thai, den-trang, khong-bong, than-ky-magic, tang-cuong, lam-sang. Dữ liệu Cam đã đủ; còn thiếu duy nhất tesseract tiếng Việt để chạy chay-app.py + so-ocr.py (HM-12).
 - P17: HM-12 chạy xong bằng shim tesseract.js (xem backlog). Kết quả ĐẠT (chênh −0,2 điểm, ngưỡng −2). Nên xác nhận lại trên tesseract CLI gốc nếu muốn chặt chẽ.
+- P18 (13/10/2026): xử lý 16 nợ kỹ thuật (xem đầu tệp + NO-KY-THUAT.md mục P18); CI GitHub; ZIP P18.

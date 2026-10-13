@@ -6,7 +6,7 @@
 - **HM-13 (13/10):** đã rà 13 mục S/V cũ → `docs/RA-SOAT-MUC-CU-HM13.md` (6 xong, 1 hủy, 6 chờ). Đo lại độ nghiêng dòng chữ: chưa đạt ≤0,5°/ô nhưng người dùng chấp nhận (Q5=a).
 - **HM-06 (12/10):** lint thật = `npx eslint . --rule 'prettier/prettier: off'` (hoặc `npm run lint:src`): kỳ vọng 0 lỗi + 10 cảnh báo react-refresh (chỉ ảnh hưởng tải nóng khi dev). Không chạy `prettier --write` toàn dự án (7.518 dòng lệch định dạng).
 - **HM-01 (12/10):** `npx vitest run` thoát **mã 0** (trước đó 830 đạt nhưng mã 1 do app-routing.test thiếu IndexedDB). Khi chạy kiểm thử luôn kiểm cả mã thoát, không chỉ số đạt.
-- Không chạy `scripts/dong-bo-tien-do.py` khi chưa đọc: nó ghi đè TIEP-THEO.md.
+- `scripts/dong-bo-tien-do.py` (TD-40, P18): mặc định chỉ chạy thử; `--ghi` ghi tien-do.json và *.sinh.md, KHÔNG ghi đè TIEP-THEO.md/LO-TRINH.md.
 
 Gói R: 25/27 xong — **R6.2 ĐÃ XONG 13/10/2026 (P17, HM-12: app 98,68% vs Cam 98,88%, đạt; xem TD-42/43)**. Còn R6.4 (= HM-14) và R6.5 — chờ người dùng.
 
