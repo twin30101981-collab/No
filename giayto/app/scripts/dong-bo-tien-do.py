@@ -7,9 +7,13 @@ tien-do.json là nguồn sự thật duy nhất. Kịch bản này:
 3. Ghi lộ trình 27 gói R0.1…R6.5 vào khoá `lo_trinh_r`.
 4. Sinh lại LO-TRINH.md (phần trạng thái) và TIEP-THEO.md từ tien-do.json.
 Chạy lại nhiều lần cho kết quả như nhau (idempotent).
-Dùng: python3 scripts/dong-bo-tien-do.py
+Dùng: python3 scripts/dong-bo-tien-do.py          # CHẠY THỬ: chỉ in thay đổi, không ghi tệp nào
+      python3 scripts/dong-bo-tien-do.py --ghi    # ghi tien-do.json + LO-TRINH.sinh.md, TIEP-THEO.sinh.md
+TD-40 (P18): trước đây chạy là ghi đè ngay TIEP-THEO.md/LO-TRINH.md (mất ghi chú viết tay: 50 → 11 dòng) và kéo
+cap_nhat lùi về 11/10. Nay: mặc định chạy thử; Markdown sinh ra ghi tệp *.sinh.md riêng; cap_nhat không lùi.
 """
 import json
+import sys
 from datetime import date
 
 PATH = "de-an-nang-cap-scan/tien-do.json"
@@ -136,35 +140,42 @@ def sinh_tiep(d):
     return "\n".join(L) + "\n"
 
 
-def main():
-    d = json.load(open(PATH, encoding="utf-8"))
+def main(ghi=False):
+    goc = json.load(open(PATH, encoding="utf-8"))
+    d = json.loads(json.dumps(goc))
     d["buoc"] = ap_v5(gop_trung(d["buoc"]))
     r = doc_r()
     # Giữ trạng thái/kiểm chứng đã ghi trong tien-do.json (nguồn sự thật) — chỉ dùng lo-trinh-r.json làm mẫu
     # cho gói chưa có; tránh chạy lại làm tụt gói đã xong về "cho" (lỗi lệch từ R2.6/R6.1/R6.3).
     cu = {g["ma"]: g for g in d.get("lo_trinh_r", [])}
-    for g in r:
+    for i, g in enumerate(r):
         if g["ma"] in cu:
-            g["trang_thai"] = cu[g["ma"]]["trang_thai"]
-            g["kiem_chung"] = cu[g["ma"]].get("kiem_chung", g["kiem_chung"])
+            # TD-40: giữ MỌI trường đã ghi (canh_bao, bang_chung, phu_thuoc…), mẫu chỉ bổ sung trường còn thiếu.
+            r[i] = g = {**g, **cu[g["ma"]]}
         if g["ma"] in R_XONG:
             g["trang_thai"] = "xong"
     d["lo_trinh_r"] = r
     d["phien_ban_de_an"] = "v5"
-    d["cap_nhat"] = NGAY
+    d["cap_nhat"] = max(str(d.get("cap_nhat") or ""), NGAY)  # TD-40: không kéo ngày cập nhật lùi lại
     d["ket_thuc"] = False
     d.setdefault("buoc_ke_tiep", "R2.6 hoặc R3.5 (song song được: R4.3, R5.1, R6.1)")  # không ghi đè giá trị đã cập nhật
     d.setdefault("nhat_ky", [])
     for log in NHAT_KY:
         if log not in d["nhat_ky"]:
             d["nhat_ky"].append(log)
-    json.dump(d, open(PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-    open("LO-TRINH.md", "w", encoding="utf-8").write(sinh_md(d))
-    open("TIEP-THEO.md", "w", encoding="utf-8").write(sinh_tiep(d))
     ma = [b["ma"] for b in d["buoc"]]
     assert len(ma) == len(set(ma)), "còn mã trùng"
-    print(f"OK: {len(ma)} mục cũ, {len(r)} gói R, kế tiếp {d['buoc_ke_tiep']}")
+    doi = [k for k in sorted(set(goc) | set(d)) if goc.get(k) != d.get(k)]
+    print(f"{'GHI' if ghi else 'CHẠY THỬ (thêm --ghi để ghi)'}: {len(ma)} mục cũ, {len(r)} gói R; khoá đổi: {', '.join(doi) or 'không'}")
+    if not ghi:
+        return d
+    json.dump(d, open(PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    # Không ghi đè LO-TRINH.md / TIEP-THEO.md (có ghi chú viết tay) — chép tay phần cần từ bản sinh.
+    open("LO-TRINH.sinh.md", "w", encoding="utf-8").write(sinh_md(d))
+    open("TIEP-THEO.sinh.md", "w", encoding="utf-8").write(sinh_tiep(d))
+    print(f"Đã ghi {PATH}, LO-TRINH.sinh.md, TIEP-THEO.sinh.md; kế tiếp {d['buoc_ke_tiep']}")
+    return d
 
 
 if __name__ == "__main__":
-    main()
+    main(ghi="--ghi" in sys.argv[1:])
