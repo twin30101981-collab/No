@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01 và CS-00 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00 và TF-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -25,9 +25,15 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Đã xác minh bằng chạy thật:** G-01 (bấm→trang vào khay 1,3 s ở 1× / 9,6 s ở 6×; mục tiêu ≤0,3–0,5 s); G-02 một phần (Xong→tài liệu 0,5–0,7 s ở 1×, 4,7–11,7 s ở 6× với 10 trang); **G-05** (tra cứu số đo 10 lần, trúng 0; mọi trang cùng bộ lọc `auto`) + phát hiện thêm: chỉ 2/10 trang có số đo lưu (giả thuyết: GradeBadge tính lười). G-03 chưa kết luận (khay đã rảnh lúc bấm Xong).
 - 5 cấu hình hoàn tất, 0 pageerror. `npm run check` không đổi (195/913) — không sửa mã app.
 
+## Hạng mục vừa đóng (4): TF-01 — Chia sẻ không còn im lặng — ĐẠT-V3 (giả lập share)
+- **Nguyên nhân gốc:** PDF dựng lâu rồi mới gọi `navigator.share` → trình duyệt ném `NotAllowedError` (hết quyền của lần chạm); `shareOrDownload` coi mọi lỗi là "đã huỷ" → không tải, không báo; `sendFile` coi lỗi đó là "không có bảng chia sẻ" và báo sai; không kiểm `canShare` đúng tệp.
+- **Đã sửa:** `lib/share.ts` (MỚI: phân loại lỗi, `canShareThisFile`, `shareOrSave`, thẻ "Tệp đã sẵn sàng — Chia sẻ / Lưu về máy" cho lần chạm thứ hai, nút ≥ 40 px); `lib/files.ts` `shareOrDownload` dùng nó (mọi nơi gọi: hộp Xuất, danh sách, Trang chủ); `lib/send-to.ts` `sendFile` (Email/Khác… không im lặng; trả thêm `"pending"`). AbortError vẫn là huỷ (không báo). Lỗi khác/không hỗ trợ loại tệp/không có API → lưu về máy + toast rõ.
+- **Kiểm chứng:** `scripts/playwright/kiem-chia-se.mjs` — mã cũ **9/18 LỖI**; mã mới **20/20 ĐẠT**, 0 pageerror. Test đơn vị 8 ca. `npm run check` = **196 tệp / 921 đạt**, lint 0 lỗi, build OK.
+- **CHƯA xác minh:** máy thật (Android Chrome, iPhone Safari/PWA) — Chromium Linux không có bảng chia sẻ nên `navigator.share` được GIẢ LẬP. Chưa làm TF-02 (Zalo PC, Email có người nhận trên điện thoại không đính kèm, iOS Lưu vào Tệp) và TF-03.
+
 ## Hạng mục kế tiếp — người dùng chọn
 Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-01 → CS-02 → CS-03 → CS-04 → CS-05**. **CS-01 đổi schema IndexedDB (v3) → cần người dùng cho phép trước** và có sao lưu/rollback (BL-01 đã cho sao lưu an toàn).
-Gợi ý: TF-01 (S, P1, chia sẻ im lặng) là việc nhỏ độc lập; AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
+Gợi ý: TF-02 (S, P2) tiếp nối TF-01; AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").
@@ -36,6 +42,7 @@ Gợi ý: TF-01 (S, P1, chia sẻ im lặng) là việc nhỏ độc lập; AI-0
 - Model phiên: claude-sonnet-5-5, effort phiên "medium" (cấu hình nền tảng; skill không đổi được).
 
 ## Việc người dùng cần làm (P20)
+00. **Kiểm tay TF-01 trên máy thật** (≈2 phút): mở tài liệu nhiều trang → Xuất → Tùy chọn → "Chia sẻ PDF" → mong đợi: hoặc mở bảng chia sẻ ngay, hoặc hiện thẻ "Tệp đã sẵn sàng" — chạm "Chia sẻ" thì bảng mở; thử Zalo/Gmail xem nhận được tệp PDF. Báo lại nếu nút vẫn không làm gì.
 0. **Kiểm tay BL-01 trên máy thật** (≈3 phút): Tôi → Sao lưu ra tệp → mong đợi: thông báo "Đã sao lưu N tài liệu (… MB)" và tệp có dung lượng cỡ ảnh thật (không phải vài KB); sau đó thử Khôi phục từ tệp → chọn **Gộp** → mong đợi: báo "Đã gộp: thêm 0, cập nhật 0, giữ nguyên N", mọi ảnh vẫn xem được. Chỉ thử **Thay thế** khi đã giữ tệp sao lưu (app tự tải thêm bản dự phòng).
 1. **Kiểm tay BL-00 trên bản thật** (≈5 phút): (a) Android Chrome mở app → Tôi → Đăng nhập → Tiếp tục với Google → chọn tài khoản → mong đợi: về app, thấy "Đã đăng nhập", màn Tôi hiện email, địa chỉ không còn `#access_token`; tải lại vẫn đăng nhập. (b) Gửi link app qua Zalo, mở trong Zalo → mong đợi: khung "Đang mở trong Zalo", nút Google mờ, "Sao chép liên kết" chép được. (c) iPhone (Safari và app đã thêm Màn hình chính): ghi lại đăng nhập được hay không. Nếu lỗi: gửi ảnh chụp màn hình + địa chỉ thanh trình duyệt.
 2. **Trả lời QD-9:** app mở ở địa chỉ nào (…lovable.app / tên miền riêng / Cloudflare tự triển khai)? Lỗi Google gặp ở đâu (Chrome, Safari, PWA, Zalo) và thông báo chính xác? Lovable Cloud → Users → Authentication → Google đã bật chưa?

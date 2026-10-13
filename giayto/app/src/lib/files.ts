@@ -23,13 +23,10 @@ export function download(blob: Blob, name: string) {
 export async function dataUrlToBlob(src: string) { return (await fetch(src)).blob(); }
 export const safeName = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim() || "ghi-nhanh";
 
-/** Share via the phone's share sheet (Zalo, Messenger, mail…), falling back to download. */
-export async function shareOrDownload(blob: Blob, name: string) {
-  const file = new File([blob], name, { type: blob.type });
-  if (navigator.canShare?.({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: name }); return "shared"; } catch { return "cancelled"; }
-  }
-  download(blob, name); return "downloaded";
+/** Chia sẻ qua bảng chia sẻ của máy (Zalo, Messenger, thư…); không được thì lưu về máy và BÁO RÕ (TF-01). */
+export async function shareOrDownload(blob: Blob, name: string): Promise<"shared" | "cancelled" | "downloaded" | "needs-tap"> {
+  const { shareOrSave } = await import("./share");
+  return shareOrSave(blob, name, download);
 }
 
 // R5.1: PDF đúng 3 mức Nhỏ / Chuẩn / Cao (mặc định Chuẩn).

@@ -2350,7 +2350,7 @@
    "effort": "S",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
@@ -2363,13 +2363,30 @@
    ],
    "rui_ro": "Cần máy thật Android để xác nhận",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "LANG=C.UTF-8 node scripts/playwright/kiem-chia-se.mjs http://127.0.0.1:8084 (vite dev; giả lập navigator.share/canShare)",
+    "ma_cu_P19": "9 ca LỖI/18 (NotAllowedError im lặng, không tải, không báo; lỗi khác không tải; canShare=false không báo; 'Khác…' báo sai) — evidence/TF-01/truoc-sua-ma-cu-P20.txt",
+    "ma_moi": "20/20 ĐẠT, 0 pageerror — evidence/TF-01/sau-sua-V3.txt",
+    "pass": 20,
+    "fail": 0,
+    "skip": 0,
+    "unit": "src/lib/share.test.ts: 8 ca đạt",
+    "npm_run_check": "196 tệp / 921 đạt; typecheck sạch; lint 0 lỗi; vite build OK",
+    "viewport": "390×844: thẻ 'Tệp đã sẵn sàng' không tràn, nút ≥ 40 px (evidence/TF-01/the-chia-se-390.png); 1280 chưa chụp"
+   },
+   "nguyen_nhan_goc": "App dựng PDF xong (lâu) mới gọi navigator.share; trình duyệt chỉ cho chia sẻ ngay sau cú chạm nên ném NotAllowedError; shareOrDownload coi MỌI lỗi là 'đã huỷ' → không tải, không báo (nút như không làm gì). sendFile coi NotAllowedError là 'không có bảng chia sẻ' và báo sai. Không kiểm canShare đúng tệp. [Đã xác minh bằng giả lập navigator.share; hành vi trình duyệt thật chưa xác minh]",
+   "ghi_chu_ban_giao": "CHƯA xác minh trên máy thật: Android Chrome/iPhone Safari/PWA (hành vi user-activation thật; Chromium Linux không có bảng chia sẻ). Mô hình giả lập: lần share đầu NotAllowedError, lần chạm thẻ thì ok. Chưa làm: TF-02 (Zalo PC hướng dẫn + sao chép ảnh, Email có người nhận trên điện thoại vẫn tải rồi mailto không đính kèm — send-to.ts !(email && to), iOS 'Lưu vào Tệp'); TF-03. Cách khác 'dựng trước rồi mới cho chạm' (khoá tệp từ lúc mở hộp Xuất) chưa làm: chấp nhận thẻ chạm lần 2.",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "src/lib/share.ts (MỚI)",
+    "src/lib/share.test.ts (MỚI)",
+    "src/lib/files.ts (shareOrDownload)",
+    "src/lib/send-to.ts (sendFile, trả thêm 'pending')",
+    "scripts/playwright/kiem-chia-se.mjs (MỚI)"
+   ]
   },
   {
    "id": "TF-02",
@@ -2646,7 +2663,8 @@
   "P20 (13/10/2026): báo cáo rà soát 'BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx' = đề án v2.0; mã hiệu mới CS/BL/AI/TF/FX (QD-6 theo khuyến nghị); QD-10…QD-13 đã chốt trong báo cáo (Xuất 1 chạm 'Chuẩn – khớp ảnh'; HD nhẹ tuỳ chọn; khoá AI trong app; Lovable→Claude→Mistral→Gemini).",
   "P20: BL-00 chỉ làm A–D; phần E (OAuth trực tiếp Supabase) chờ QD-9.",
   "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật.",
-  "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18."
+  "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18.",
+  "P20/TF-01: khi hết quyền chia sẻ hiện thẻ 'Tệp đã sẵn sàng — Chia sẻ / Lưu về máy' (chạm lần 2); AbortError = huỷ (im lặng đúng); mọi lỗi khác lưu về máy + báo rõ."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2662,5 +2680,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00, BL-01, CS-00 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }

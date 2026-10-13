@@ -1,0 +1,20 @@
+ĐẠT  NotAllowedError: KHÔNG im lặng — hiện thẻ “Tệp đã sẵn sàng”  Tệp đã sẵn sàng “Hợp đồng thử.pdf” — chạm Chia s�
+ĐẠT  NotAllowedError: chưa tự tải về (chờ người dùng chạm)  []
+ĐẠT  nút “Chia sẻ” trên thẻ đủ vùng chạm (cao ≥ 40 px)  78×40
+ĐẠT  chạm “Chia sẻ” → gọi share lần 2 với đúng tệp PDF  [["Hợp đồng thử.pdf|application/pdf|6591"],["Hợp đồng thử.pdf|appli
+ĐẠT  sau khi chia sẻ được: không tải về thêm
+ĐẠT  thẻ: “Lưu về máy” tải được PDF  ["Hợp đồng thử.pdf"]
+ĐẠT  AbortError: coi là huỷ — không tải về
+ĐẠT  AbortError: không báo lỗi
+ĐẠT  lỗi khác: tự tải PDF về  ["Hợp đồng thử.pdf"]
+ĐẠT  lỗi khác: báo rõ đã lưu về máy  Không mở được bảng chia sẻ Đã lưu “Hợp đồng thử.pdf” về máy để bạn gửi th�
+ĐẠT  canShare=false: tải về
+ĐẠT  canShare=false: báo “không chia sẻ được loại tệp này”  Máy không chia sẻ được loại tệp này — đã lưu “Hợp đồng 
+ĐẠT  không có API chia sẻ: tải về
+ĐẠT  không có API chia sẻ: báo “Đã lưu”  Đã lưu “Hợp đồng thử.pdf”
+ĐẠT  share ok: gọi 1 lần với PDF  [["Hợp đồng thử.pdf|application/pdf|6591"]]
+ĐẠT  share ok: không tải về
+ĐẠT  Gửi tới → Khác…: hết quyền → hiện thẻ chạm lần 2  Tệp đã sẵn sàng “Hợp đồng thử.pdf” — chạm Chia sẻ để
+ĐẠT  Gửi tới → Khác…: chưa tải về
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT

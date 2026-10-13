@@ -1,0 +1,19 @@
+LỖI  NotAllowedError: KHÔNG im lặng — hiện thẻ “Tệp đã sẵn sàng”
+ĐẠT  NotAllowedError: chưa tự tải về (chờ người dùng chạm)  []
+LỖI  chạm “Chia sẻ” → gọi share lần 2 với đúng tệp PDF  [["Hợp đồng thử.pdf|application/pdf|6591"]]
+ĐẠT  sau khi chia sẻ được: không tải về thêm
+LỖI  thẻ: “Lưu về máy” tải được PDF  []
+ĐẠT  AbortError: coi là huỷ — không tải về
+ĐẠT  AbortError: không báo lỗi
+LỖI  lỗi khác: tự tải PDF về  []
+LỖI  lỗi khác: báo rõ đã lưu về máy
+ĐẠT  canShare=false: tải về
+LỖI  canShare=false: báo “không chia sẻ được loại tệp này”
+ĐẠT  không có API chia sẻ: tải về
+LỖI  không có API chia sẻ: báo “Đã lưu”
+ĐẠT  share ok: gọi 1 lần với PDF  [["Hợp đồng thử.pdf|application/pdf|6591"]]
+ĐẠT  share ok: không tải về
+LỖI  Gửi tới → Khác…: hết quyền → hiện thẻ chạm lần 2  Máy này không có bảng chia sẻ — đã tải PDF về
+LỖI  Gửi tới → Khác…: chưa tải về
+ĐẠT  không có pageerror
+9 ca lỗi

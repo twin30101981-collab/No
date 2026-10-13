@@ -1,5 +1,6 @@
 /** G4-21: send a document to other services (email, Zalo, system share). Pure helpers + thin browser glue. */
 import { download } from "./files";
+import { canShareThisFile, offerTapToShare, tryShare } from "./share";
 
 export type SendTarget = "system" | "email" | "zalo";
 
@@ -33,13 +34,16 @@ export function canShareFiles(file?: File) {
  * Send a file. With a share sheet (phones), files are attached directly — the user picks Mail, Zalo, Messenger…
  * Without it (desktop), the file is saved and the mail app opens so the user attaches it.
  */
-export async function sendFile(target: SendTarget, blob: Blob, name: string, meta: { title: string; pages: number; to?: string | undefined; link?: string | undefined }): Promise<"shared" | "cancelled" | "fallback"> {
+export async function sendFile(target: SendTarget, blob: Blob, name: string, meta: { title: string; pages: number; to?: string | undefined; link?: string | undefined }): Promise<"shared" | "cancelled" | "fallback" | "pending"> {
   const file = new File([blob], name, { type: blob.type || "application/pdf" });
   const text = sendMessage(meta.title, meta.pages, meta.link);
   if (target === "zalo" && meta.link) { window.open(zaloShareUrl(meta.link), "_blank", "noopener"); return "shared"; }
-  if (canShareFiles(file) && !(target === "email" && meta.to)) {
-    try { await navigator.share({ files: [file], title: meta.title, text }); return "shared"; }
-    catch (e) { if ((e as Error)?.name === "AbortError") return "cancelled"; }
+  if (canShareThisFile(file) && !(target === "email" && meta.to)) {
+    const r = await tryShare(file, { title: meta.title, text });
+    if (r === "shared") return "shared";
+    if (r === "cancelled") return "cancelled";
+    // TF-01: hết quyền chia sẻ của lần chạm (dựng PDF lâu) → thẻ "Tệp đã sẵn sàng — Chia sẻ" để chạm lần 2, không im lặng
+    if (r === "needs-tap") { offerTapToShare(file, { title: meta.title, text }, download); return "pending"; }
   }
   download(blob, name);
   if (target === "email") window.location.href = mailtoUrl({ to: meta.to, subject: meta.title, body: sendMessage(meta.title, meta.pages, meta.link) + `\n\n(Đính kèm tệp ${name} vừa tải về.)` });
