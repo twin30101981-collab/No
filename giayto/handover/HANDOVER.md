@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01 và TF-02 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01, TF-02 và CS-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -37,9 +37,15 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Kiểm chứng:** `scripts/playwright/kiem-gui-toi.mjs` mã cũ **7/12 LỖI** → mới **12/12 ĐẠT**; `kiem-chia-se.mjs` (TF-01) vẫn đạt; `npm run check` 196/921, build OK.
 - **CHƯA:** iOS "Lưu vào Tệp" (cần iPhone thật); sao chép ảnh PNG cho Zalo PC; phiếu thử 3 nền tảng × 4 kênh trên máy thật; mọi thứ ở trên chạy với share/clipboard GIẢ LẬP.
 
+## Hạng mục vừa đóng (6): CS-01 — Mô hình trang có status + kho Blob ảnh gốc — ĐẠT-V3
+- **Đã làm:** `Page` thêm `status/progress/quadConfidence/warnings/error/origBlobKey` (db.ts); `lib/page-state.ts` (MỚI: 6 trạng thái + vòng đời `moi→cho→dang→xong|xem-lai|loi`, `withStatus` kiểm chuyển hợp lệ, `normalizeDoc`); `lib/blob-store.ts` (MỚI: kho riêng `ghi-nhanh-blobs`, put/get/delete/prune); `loadDocs/saveDoc/saveDocs` chuẩn hoá trang cũ → `xong` **trong bộ nhớ** (không ghi hàng loạt); `newPage` có `status: "xong"`.
+- **QUYẾT ĐỊNH LỆCH ĐỀ ÁN (đã nêu):** đề án ghi "nâng IndexedDB lên v3" — **không nâng**, giữ `ghi-nhanh@2`: nâng phiên bản làm bản app cũ (hoàn tác về ZIP trước) không mở được kho → mất đường lui. Kiểm chứng: bản "app cũ" mở v2 vẫn đọc được dữ liệu có trường mới.
+- **Kiểm chứng:** `scripts/playwright/kiem-chuyen-doi-du-lieu.mjs` **15/15 ĐẠT**; test đơn vị 9 ca; hồi quy `kiem-sao-luu.mjs` + `kiem-hanh-trinh-cs.mjs` đạt; `npm run check` 197/931, build OK. (Không chạy "mã cũ" làm đối chứng — mã cũ không có các trường này theo cấu tạo.)
+- **Lưu ý cho CS-02…04:** `origBlobKey`/blob-store chưa được luồng chụp dùng; trang tạo ở màn chụp đang có status `xong` ngay dù bản đủ còn trong hàng đợi — CS-03/CS-04 sẽ đặt `cho/dang`.
+
 ## Hạng mục kế tiếp — người dùng chọn
-Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-01 → CS-02 → CS-03 → CS-04 → CS-05**. **CS-01 đổi schema IndexedDB (v3) → cần người dùng cho phép trước** và có sao lưu/rollback (BL-01 đã cho sao lưu an toàn).
-Gợi ý: TF-03 (M, P3, lưu vào thư mục) hoặc BL-06/BL-04 (S, độc lập); AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
+Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-02 → CS-03 → CS-04 → CS-05** (CS-01 đã xong).
+Gợi ý: CS-02 (bộ điều phối nền toàn app, M, P1 — đặt sau cờ bật/tắt) hoặc TF-03 (M, P3) hoặc BL-06/BL-04 (S, độc lập); AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").

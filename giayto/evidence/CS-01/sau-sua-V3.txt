@@ -1,0 +1,14 @@
+ĐẠT  tài liệu cũ vẫn nguyên (tên, 2 trang, chữ, xoay)
+ĐẠT  mở app KHÔNG ghi hàng loạt xuống ổ (trang cũ chưa có status trong kho)  [null,null]
+ĐẠT  kho “ghi-nhanh” vẫn là phiên bản 2 (bản app cũ còn mở được)  v2
+ĐẠT  tài liệu cũ mở bình thường (Trang 1/2)  Tài liệu cũ P19 Trang 1/2 · Tài liệu ảnh có vùng chói/bóng đ
+ĐẠT  trong bộ nhớ, trang cũ có trạng thái “xong” (thấy qua tệp sao lưu)  ["xong","xong"]
+ĐẠT  bản app cũ (mở kho v2) vẫn đọc được dữ liệu có trường mới  {"status":"xem-lai","q":0.42,"w":["chữ vắt mép"],"k":"orig:x:1"}
+ĐẠT  trang mới tạo bằng newPage có status khi lưu (mặc định xong)
+ĐẠT  kho Blob: ghi rồi đọc trùng byte
+ĐẠT  kho Blob: khoá không tồn tại → undefined (không ném lỗi)
+ĐẠT  kho Blob là DB riêng, “ghi-nhanh” không bị nâng  ghi-nhanh-blobs@1, ghi-nhanh@2
+ĐẠT  kho Blob: còn nguyên sau khi tải lại trang
+ĐẠT  kho Blob: dọn mồ côi chỉ xoá khoá không được trỏ tới  {"stillC":true,"removed":1,"aGone":true,"cKept":true,"left":1}
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT
