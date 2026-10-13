@@ -37,7 +37,7 @@ vi.mock("@tanstack/react-router", () => ({
 
 // Giả lập Slider ở mức props để kiểm đúng ràng buộc: kéo (onValueChange) chỉ đổi
 // nhãn tạm, thả tay (onValueCommit) mới ghi lịch sử — không phụ thuộc nội bộ Radix/jsdom.
-type SliderProps = { min: number; max: number; step: number; value: number[]; onValueChange: (v: number[]) => void; onValueCommit: (v: number[]) => void };
+type SliderProps = { min: number; max: number; step: number; value: number[]; onValueChange: (v: number[]) => void; onValueCommit: (v: number[]) => void; onPointerCancel?: () => void };
 const sliderProps: SliderProps[] = [];
 vi.mock("@/components/ui/slider", () => ({
   Slider: (p: SliderProps) => {
@@ -155,6 +155,17 @@ describe("AdjustEditor (TD-03)", () => {
     expect(screen.getByRole("button", { name: "Hoàn tác" })).toBeEnabled();
     fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
     expect(onApply).toHaveBeenCalledTimes(1);
+    expect(onApply.mock.calls[0]![0]).toMatchObject({ brightness: 40 });
+  });
+
+  it("Kéo bị hủy giữa chừng (pointercancel) vẫn ghi giá trị đang hiện (TD-14)", () => {
+    const onApply = vi.fn();
+    render(<AdjustEditor page={makePage()} onClose={vi.fn()} onApply={onApply} />);
+    act(() => sliderProps[0]!.onValueChange([40]));
+    act(() => sliderProps.at(-3)!.onPointerCancel?.());
+    expect(screen.getByText("Độ sáng (40)")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Hoàn tác" })).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
     expect(onApply.mock.calls[0]![0]).toMatchObject({ brightness: 40 });
   });
 

@@ -52,6 +52,7 @@ import { getVaultKey } from "@/lib/vault";
 import { confirmDialog, pinDialog } from "@/lib/dialog";
 import { showError } from "@/lib/errors";
 import { SafeBoundary } from "@/components/safe-boundary";
+import { needsCornerHint } from "@/lib/dedupe-phash";
 import { AiPanel, type AiTab } from "@/components/ai-panel";
 import { aiLayout } from "@/lib/ai.functions";
 import { imagesToWord } from "@/lib/word";
@@ -337,6 +338,7 @@ function Editor({ doc, initial, autoRun = false }: { doc: Doc; initial: Panel; a
 
         {busy && <p className="mx-auto mb-2 flex items-center gap-2 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background"><Loader2 className="size-3.5 animate-spin" />{busy}</p>}
 
+        {!busy && needsCornerHint(page) && <p className="px-4 pb-1 text-center text-xs text-muted-foreground" data-testid="corner-hint">Ảnh nhập chưa được cắt khung — bấm “Tự dò góc” để cắt và nắn.</p>}
         {!busy && (
           <div className="flex justify-center gap-2 px-4 pb-2">
             <Button size="sm" variant="glass" className="rounded-full" onClick={run("Đang dò góc…", () => autoCorners(false))}><Wand2 /> Tự dò góc</Button>
@@ -410,7 +412,7 @@ function Editor({ doc, initial, autoRun = false }: { doc: Doc; initial: Panel; a
         await save({ pages: doc.pages.map((x, k) => k === active ? { ...x, orig: src, src, edit: { rotation: 0, filter: "original", brightness: 0, contrast: 0 } } : x) });
       }} />}
 
-      {(panel === "adjust" || panel === "filter") && <AdjustEditor key={page.id} page={page} onClose={() => setPanel(null)}
+      {(panel === "adjust" || panel === "filter") && <SafeBoundary key={page.id} overlay title="Màn chỉnh sửa gặp sự cố." onClose={() => setPanel(null)}><AdjustEditor page={page} onClose={() => setPanel(null)}
         onApply={async (edit) => { setPanel(null); await run("Đang lưu chỉnh sửa…", () => editPage(active, edit))(); }}
         onApplyAll={doc.pages.length > 1 ? async (edit) => {
           setPanel(null);
@@ -433,7 +435,7 @@ function Editor({ doc, initial, autoRun = false }: { doc: Doc; initial: Panel; a
             toast.success(ids.size > 1 ? `Đã áp dụng cho ${ids.size} trang tương tự` : "Không thấy trang tương tự — chỉ áp trang này");
           })();
         } : undefined}
-        extra={<ScanDiagnosePanel pageId={page.id} filter={page.edit.filter} src={page.src} />} />}
+        extra={<ScanDiagnosePanel pageId={page.id} filter={page.edit.filter} src={page.src} />} /></SafeBoundary>}
 
       <Sheet open={panel === "ocr"} onClose={() => setPanel(null)} title="Nhận diện chữ">
         <div className="flex gap-2">

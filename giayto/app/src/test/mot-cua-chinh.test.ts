@@ -11,7 +11,8 @@ describe("R1.1 một cửa chỉnh", () => {
     expect(route).not.toMatch(/<FilterPanel/);
   });
   it("nút Lọc mở cùng màn Chỉnh tay", () => {
-    expect(route).toMatch(/panel === "adjust" \|\| panel === "filter"\) && <AdjustEditor/);
+    // TD-13: AdjustEditor được bọc SafeBoundary (lớp phủ lỗi riêng), vẫn là cùng một màn.
+    expect(route).toMatch(/panel === "adjust" \|\| panel === "filter"\) && <SafeBoundary [^\n]*?\}><AdjustEditor /);
   });
   it("Chỉnh tay có gợi ý bộ lọc, Áp tất cả và Trang tương tự", () => {
     expect(editor).toMatch(/suggestFilter/);
