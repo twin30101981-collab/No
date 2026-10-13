@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01 và CS-02 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: người dùng yêu cầu bàn giao ZIP tiến độ sau khi BL-00, BL-01, CS-00, TF-01, TF-02, CS-01, CS-02 xong (không còn việc dở dang)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
