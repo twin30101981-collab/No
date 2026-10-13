@@ -651,17 +651,20 @@
    ],
    "rui_ro": "Chặn bởi dữ liệu người dùng",
    "kiem_chung_du_kien": "V2",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "python3 scripts/kiem-chung-r62/chay-app.py; python3 scripts/kiem-chung-r62/so-ocr.py (vite dev + Chromium + tesseract.js shim)",
+    "pass": 1,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "evidence/hm12-bang-so-sanh.md",
+     "app/de-an-nang-cap-scan/kiem-chung/R6.2/ket-qua-ocr.json"
+    ]
    },
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "Từ phát hiện F-13",
+   "nguyen_nhan_goc": "Không có lỗi; hạng mục là phép đo đối chứng R6.2 (cần ảnh Cam + OCR tiếng Việt).",
+   "ghi_chu_ban_giao": "13/10/2026: dựng ảnh qua pipeline app bằng Playwright (chay-app.py), chấm OCR bằng so-ocr.py. App Auto 98,68% ký tự đúng vs Cam tốt nhất (Sinh thái) 98,88% → chênh −0,2 điểm, ngưỡng ≥ −2 → ĐẠT. Giới hạn: máy OCR là shim CLI dùng tesseract.js 7.0.0 + dữ liệu vie 4.0.0_best_int (không phải tesseract CLI gốc); mới 1 trang NB; chữ chuẩn do trợ lý chép tay chưa được người dùng rà; cổng R6.1 trên ảnh NB vẫn 2/8 bộ lọc (liên quan Q6, đã chấp nhận); 'Thần kỳ' gắn 'magic' theo suy đoán.",
    "zip": ""
   },
   {
