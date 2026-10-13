@@ -107,7 +107,7 @@ function Me() {
   }
 
   return (
-    <AppShell title="Tôi">
+    <AppShell wide title="Tôi">
       <section className="rise rise-1 px-5 pt-4">
         <div className="document-row flex items-center gap-3 rounded-[16px] p-4">
           <div className="brand-mark grid size-12 shrink-0 place-items-center rounded-[12px] bg-primary font-display text-lg font-bold text-primary-foreground">G</div>
@@ -115,6 +115,7 @@ function Me() {
         </div>
       </section>
 
+      <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-4">
       <Group title="Quét">
         <Choice label="Chất lượng ảnh" value={s.quality} options={[["normal", "Thường"], ["high", "Cao"]]} onChange={(v) => setSettings({ quality: v as never })} />
         <Choice label="Bộ lọc mặc định" value={s.defaultFilter} options={[["magic", "Thần kỳ"], ["auto", "Tự động"], ["sharp", "Sắc nét"], ["original", "Gốc"]]} onChange={(v) => setSettings({ defaultFilter: v as never })} />
@@ -187,6 +188,7 @@ function Me() {
           : inst.canPrompt ? <button onClick={async () => { if (await inst.install()) toast.success("Đã cài Ghi Nhanh"); }} className="w-full"><Row label="Cài Ghi Nhanh lên màn hình chính" icon={<Smartphone />}><span className="text-xs font-semibold text-primary">Cài</span></Row></button>
           : <Row label={inst.ios ? "Bấm nút Chia sẻ của Safari → “Thêm vào MH chính”" : "Mở menu trình duyệt → “Cài ứng dụng” / “Thêm vào màn hình chính”"} icon={<Smartphone />}><span /></Row>}
       </Group>
+      </div>
     </AppShell>
   );
 }

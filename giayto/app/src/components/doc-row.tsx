@@ -56,7 +56,7 @@ export const DocRow = memo(function DocRow({ doc, selectMode, selected, onLongPr
   }
   return (
     <div className="relative overflow-hidden rounded-[16px]">
-      <div className="absolute inset-y-0 right-0 flex w-[132px]">
+      <div className={`absolute inset-y-0 right-0 flex w-[132px] transition-opacity ${dx < 0 ? "" : "pointer-events-none opacity-0"}`} inert={dx < 0 ? undefined : true}>
         <button aria-label="Chia sẻ" onClick={() => { setDx(0); onShare?.(); }} className="grid flex-1 place-items-center bg-secondary text-primary"><Share2 className="size-5" /></button>
         <button aria-label="Xóa" onClick={() => { setDx(0); onDelete?.(); }} className="grid flex-1 place-items-center bg-destructive text-destructive-foreground"><Trash2 className="size-5" /></button>
       </div>

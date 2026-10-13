@@ -82,7 +82,7 @@ function Home() {
   ];
 
   return (
-    <AppShell>
+    <AppShell wide>
       <header className="rise grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 pt-[max(1.25rem,env(safe-area-inset-top))]">
         <div className="flex min-w-0 items-center gap-2.5">
           <div className="brand-mark grid size-9 shrink-0 place-items-center rounded-[10px] bg-primary font-display text-sm font-bold text-primary-foreground">G</div>
@@ -101,7 +101,7 @@ function Home() {
 
       {!query && (
         <section className="rise rise-2 px-5 pt-5">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2 lg:grid-cols-8">
             {shortcuts.map(({ label, icon: Icon, primary, run }) => (
               <button key={label} onClick={run} className="shortcut-tile flex h-[78px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 active:scale-95">
                 <span className={`grid size-9 place-items-center rounded-[10px] ${primary ? "bg-primary text-primary-foreground" : "bg-secondary text-primary"}`}><Icon className="size-[18px]" /></span>
@@ -142,7 +142,7 @@ function Home() {
           <h2 className="font-display text-[0.875rem] font-semibold">{query ? `Kết quả (${results.length})` : "Gần đây"}</h2>
           <Link to="/documents" className="inline-flex min-h-10 items-center text-[0.75rem] font-semibold text-primary">Xem tất cả</Link>
         </div>
-        <div className="mt-3 flex flex-col gap-2.5">
+        <div className="mt-3 flex flex-col gap-2.5 lg:grid lg:grid-cols-2 lg:gap-3">
           {results.map((doc) => (
             <DocRow key={doc.id} doc={doc}
               onDelete={async () => { await deleteDocs([doc.id]); toast("Đã chuyển vào thùng rác", { action: { label: "Hoàn tác", onClick: () => void restoreDocs([doc.id]) } }); }}

@@ -1,5 +1,11 @@
 # BÀN GIAO — GIAYTO — Phiên P19 — 2026-10-13 (P18 bên dưới giữ nguyên)
 
+## P19 bổ sung (đọc trước): HM-21 + PR
+- TD-44 làm xong (HM-21, ĐẠT V3): từ 1024 px Trang chủ/Công cụ/Tôi dùng khung 880 px (lối tắt 8 ô/hàng, 'Gần đây' 2 cột, Tôi 2 cột); dưới 1024 px giữ 430 px.
+- Phần chưa xác minh của HM-20 đã kiểm: giao diện tối + 3 màn × 5 viewport (script kiem-td44-td46.mjs). Phát hiện và sửa lỗi có từ trước: nút Xóa/Chia sẻ lộ sau hàng tài liệu khi nghỉ.
+- theme-color/manifest = #006F59; icon giữ #00BFA5 (chưa đổi, cần thiết kế nếu muốn đồng bộ).
+- PR: mở từ nhánh ccr-76ce5c62-g29arh vào main (không đính kèm ZIP vào cây mã).
+
 ## P19 tóm tắt (đọc trước)
 Người dùng giao "thực hiện theo đề xuất tối ưu toàn bộ". Quyết định đã chốt P19:
 - TD-46 = làm đậm primary (sáng oklch(0.48 0.1 174); tối giữ teal cũ + chữ tối) — HM-20 ĐẠT V3, 191 tệp/879 đạt.
