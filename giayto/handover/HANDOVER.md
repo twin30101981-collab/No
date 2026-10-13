@@ -6,6 +6,7 @@
 - theme-color/manifest = #006F59; icon giữ #00BFA5 (chưa đổi, cần thiết kế nếu muốn đồng bộ).
 - HM-22: bẫy 'nhập lần 2 không mở tài liệu' = importer dùng window.confirm (bị tự đóng = từ chối) + báo nhầm lỗi. Đã chuyển sang confirmDialog, báo 'đã bỏ qua ảnh trùng'. Bẫy trong mục Công thức môi trường không còn.
 - HM-23: đồng bộ hồ sơ (R6.2 xong; TD-11/12 đóng; S11f/l/n/q = chấp nhận Q5=a). Mọi việc còn lại cần người dùng: de-an/VIEC_CAN_NGUOI_DUNG_P19.docx (15 việc: 4 máy/ảnh/AI thật, 6 quyết định, 3 tài liệu, 2 xác nhận).
+- HM-24 (P1, ĐẠT V3): lỗi máy thật 'chụp xong không chụp tiếp, không Đóng được'. Gốc: bgQueue.flush treo vòng microtask (Xong lúc ảnh đang hoàn thiện → treo cứng); màn cắt bật từ nền đè lên ngón tay (chạm rơi vào 'Chụp lại' → mất ảnh); toast phủ nút Đóng; Xong im lặng 10–30 s. Sửa: flush chờ việc đang chạy; ảnh chưa chắc mép → dấu 'Kiểm mép' trên ảnh thu nhỏ; toast dưới hàng nút đầu (64 px); Đóng hỏi trước khi bỏ trang; Xong hiện 'Đang lưu…'. Kiểm: scripts/playwright/kiem-quy-trinh-chup.mjs (camera giả từ ảnh người dùng, tao-camera-gia.py). Nợ mới TD-47: lưu chậm.
 - PR: mở từ nhánh ccr-76ce5c62-g29arh vào main (không đính kèm ZIP vào cây mã).
 
 ## P19 tóm tắt (đọc trước)

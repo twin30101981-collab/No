@@ -24,6 +24,18 @@ describe("P2 hàng đợi xử lý nền", () => {
     expect(done).toEqual(["a", "b"]);
   });
 
+  it("flush() lúc có việc ĐANG chạy (chờ ảnh/timer) → chờ việc đó xong, không treo vòng microtask", async () => {
+    // Lỗi máy thật 13/10: bấm "Xong" khi ảnh vừa chụp còn đang hoàn thiện → cả trang treo cứng.
+    const m = manual(); const done: string[] = [];
+    const q = new BgQueue(memoryJobStore(), { finish: async (j) => { await new Promise((r) => setTimeout(r, 30)); done.push(j.pageId); } }, m.s);
+    await q.enqueue("a", "finish", payload); await q.enqueue("b", "finish", payload);
+    await m.tick(); // "a" bắt đầu chạy (đang chờ timer 30 ms)
+    expect(done).toEqual([]);
+    await q.flush();
+    expect(done).toEqual(["a", "b"]);
+    expect(q.size).toBe(0);
+  });
+
   it("lỗi → thử lại 1 lần rồi đánh dấu error, việc sau vẫn chạy", async () => {
     const store = memoryJobStore(); const m = manual(); const done: string[] = [];
     let calls = 0;
