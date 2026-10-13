@@ -331,7 +331,7 @@ export function AdjustEditor({ page, onClose, onApply, onApplyAll, onApplySimila
               data-testid={`variant-${v.id}`}
               aria-pressed={variantActive(v, d)}
               onClick={() => pickVariant(v)}
-              className={`rounded-[10px] border px-2 py-2 text-left ${variantActive(v, d) ? "border-primary bg-primary/10" : "border-border bg-muted"}`}
+              className={`rounded-[10px] border px-2 py-2 text-left ${variantActive(v, d) ? "border-primary bg-primary/10" : "border-border bg-muted text-foreground"}`}
             >
               <span className="block text-xs font-semibold">{v.label}</span>
               <span className="mt-0.5 block text-[10px] leading-snug opacity-70">{v.desc}</span>
@@ -339,7 +339,8 @@ export function AdjustEditor({ page, onClose, onApply, onApplyAll, onApplySimila
           ))}
         </div>
       </div>
-      <div className="mt-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]" data-testid="filter-strip">
+      {/* P18: shrink-0 — trong cột flex cuộn, phần tử overflow-x có min-height 0 nên bị bóp còn 4 px (mất dải chọn bộ lọc). */}
+      <div className="mt-3 flex shrink-0 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]" data-testid="filter-strip">
         {(Object.keys(FILTER_LABEL) as Filter[]).map((f) => (
           <Button key={f} size="sm" variant={d.filter === f ? "default" : "glass"} className="shrink-0 rounded-full" onClick={() => setS(applyEdit(s, { filter: f }))}>{FILTER_LABEL[f]}</Button>
         ))}

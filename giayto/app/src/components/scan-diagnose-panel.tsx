@@ -40,12 +40,12 @@ export function ScanDiagnosePanel({ pageId, filter, src }: { pageId: string; fil
   };
 
   return (
-    <section className="space-y-3 rounded-2xl border bg-card p-3">
+    <section className="space-y-3 rounded-2xl border bg-card p-3 text-card-foreground">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">Chẩn đoán AI</h3>
         <Button size="sm" variant="glass" disabled={busy} onClick={run}>{busy ? <Loader2 className="animate-spin" /> : <ScanSearch />} {shown ? "Chẩn đoán lại" : "Chẩn đoán"}</Button>
       </div>
-      <Button size="sm" variant="outline" onClick={() => downloadBaseline()}><Download /> Xuất số đo</Button>
+      <Button size="sm" variant="outline" className="text-foreground" onClick={() => downloadBaseline()}><Download /> Xuất số đo</Button>
       <SlowPerfNotice />
       {msg && <p className="text-xs text-muted-foreground" role="status">{msg}</p>}
       {res && !shown && <p className="text-xs text-muted-foreground">Ảnh đã đổi – kết quả cũ không còn áp dụng.</p>}
