@@ -1,0 +1,67 @@
+{
+ "rate": 1,
+ "n": 10,
+ "capturedAt": "2026-10-13T13:12:37.377Z",
+ "tapToTray_ms": [
+  2692,
+  1753,
+  1214,
+  1761,
+  1394,
+  1310,
+  1292,
+  1262,
+  1333,
+  1462
+ ],
+ "tapToReady_ms": [
+  2714,
+  1769,
+  1251,
+  1765,
+  1404,
+  1348,
+  1295,
+  1265,
+  1348,
+  1476
+ ],
+ "notes": [],
+ "mode": "xong-ngay",
+ "captureLoop_ms": 15635,
+ "pendingJobsAtLastTap": 0,
+ "unsureBadges": 10,
+ "tapDone_to_docVisible_ms": 661,
+ "docOpened": true,
+ "docPageShowsProcessingLabel": false,
+ "doc": {
+  "pages": 10,
+  "filters": {
+   "auto": 10
+  },
+  "pagesWithOcrText_at12s": 0,
+  "name": "Tài liệu 13-10 13:12"
+ },
+ "g05": {
+  "metricsStored": 2,
+  "metricsStoredKeysSample": [
+   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU",
+   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU"
+  ],
+  "lookupsAfterSave": 10,
+  "lookupHits": 0,
+  "lookupKeysSample": [
+   "blob:http://127.0.0.1:8081/532e57fc-e596-4510-8a92-91e2adb92ef2",
+   "blob:http://127.0.0.1:8081/532e57fc-e596-4510-8a92-91e2adb92ef2"
+  ]
+ },
+ "export_ms": 3490,
+ "exportDownloaded": true,
+ "jsHeapPeak_MB": 43,
+ "jsHeapEnd_MB": 43,
+ "pageErrors": [],
+ "summary": {
+  "tapToTray_median_ms": 1394,
+  "tapToReady_median_ms": 1404
+ }
+}

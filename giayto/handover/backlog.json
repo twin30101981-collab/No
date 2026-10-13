@@ -1119,7 +1119,7 @@
    "effort": "S",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
@@ -1133,13 +1133,28 @@
    ],
    "rui_ro": "Thấp: chỉ thêm kịch bản đo",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "Y4M=canh.y4m RATE={1,6} [XONG_NOW=1] [TAP_GAP_MS=300] N=10 node scripts/playwright/kiem-hanh-trinh-cs.mjs http://127.0.0.1:8081",
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/CS-00/BANG-SO-DO-GOC.md",
+     "evidence/CS-00/cs00-*.json",
+     "evidence/CS-00/cs00-*-khay.jpg"
+    ],
+    "so_do_goc": "bấm→trang vào khay 1,3 s (CPU 1×) / 9,6 s (6×); Xong→tài liệu 0,5–0,7 s (1×) / 4,7–11,7 s (6×, 10 trang); G-05: lưu 2/10 số đo, tra cứu 10, trúng 0; JS heap đỉnh 43–45 MB; 5 cấu hình hoàn tất, 0 pageerror"
+   },
+   "nguyen_nhan_goc": "(đo, không sửa) G-01, G-02 (một phần), G-05 xác nhận bằng chạy thật; G-03 chưa kết luận",
+   "ghi_chu_ban_giao": "Số đo từ vite dev + Chromium headless + camera giả + CPU giả lập — chỉ để so trước/sau, KHÔNG phải số máy thật. Bổ sung cho CS-05: số đo chất lượng chỉ được lưu cho ~2/10 trang (GradeBadge tính lười cho ô hiển thị — giả thuyết). G-03 cần ca thử riêng (Xong khi còn việc nền) ở CS-02. Đề án nói 'Xong 11–28 s cho 2 trang' (TD-47): ở 6× với 10 trang đo 4,7–11,7 s; ở 1× không chậm.",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "scripts/playwright/kiem-hanh-trinh-cs.mjs (MỚI)",
+    "evidence/CS-00/"
+   ]
   },
   {
    "id": "CS-01",
@@ -2630,7 +2645,8 @@
   "P18: .p12 do app tạo dùng CN/O UTF8String + friendlyName UTF-16BE (chuẩn); chứng thư cũ tên ASCII vẫn mở được.",
   "P20 (13/10/2026): báo cáo rà soát 'BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx' = đề án v2.0; mã hiệu mới CS/BL/AI/TF/FX (QD-6 theo khuyến nghị); QD-10…QD-13 đã chốt trong báo cáo (Xuất 1 chạm 'Chuẩn – khớp ảnh'; HD nhẹ tuỳ chọn; khoá AI trong app; Lovable→Claude→Mistral→Gemini).",
   "P20: BL-00 chỉ làm A–D; phần E (OAuth trực tiếp Supabase) chờ QD-9.",
-  "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật."
+  "P20/BL-01: khôi phục mặc định GỘP (QD-4 theo khuyến nghị): thêm mới, trùng mã giữ bản updatedAt mới hơn, không xoá; THAY THẾ là lựa chọn riêng, tự tải bản dự phòng + xác nhận lần hai. Định dạng sao lưu v4 (index SHA-256 từng tài liệu; src giống orig ghi '='); đọc được v3 nếu có ảnh thật.",
+  "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2646,5 +2662,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00 và BL-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }
