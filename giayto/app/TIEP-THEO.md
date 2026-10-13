@@ -1,5 +1,5 @@
 # Bước kế tiếp (P20, 13/10/2026) — đọc trước
-Lộ trình hiện hành = đề án v2.0 (báo cáo rà soát, mã CS/BL/AI/TF/FX; xem de-an/ và handover/backlog.json). BL-00 (đăng nhập Google) và BL-01 (sao lưu/khôi phục an toàn) , CS-00 (đo gốc, evidence/CS-00) , TF-01 (chia sẻ không im lặng) , TF-02 (Email/Zalo) và CS-01 (mô hình trang + kho Blob) xong ở P20; kế tiếp do người dùng chọn (CS-01…05 / TF-01 / AI-01…). Các mục "HM-xx" bên dưới là lịch sử của đề án v1.2.
+Lộ trình hiện hành = đề án v2.0 (báo cáo rà soát, mã CS/BL/AI/TF/FX; xem de-an/ và handover/backlog.json). BL-00 (đăng nhập Google) và BL-01 (sao lưu/khôi phục an toàn) , CS-00 (đo gốc, evidence/CS-00) , TF-01 (chia sẻ không im lặng) , TF-02 (Email/Zalo) , CS-01 (mô hình trang + kho Blob) và CS-02 (điều phối nền) xong ở P20; kế tiếp do người dùng chọn (CS-01…05 / TF-01 / AI-01…). Các mục "HM-xx" bên dưới là lịch sử của đề án v1.2.
 
 # Bước kế tiếp (cập nhật sau R6.2, 11/10/2026)
 

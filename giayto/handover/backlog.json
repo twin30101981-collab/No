@@ -1214,9 +1214,9 @@
    "effort": "M",
    "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium (cấu hình phiên)",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2 (Sonnet 5.5); xác nhận lại khi mở",
-   "effort_change_reason": "",
+   "effort_change_reason": "Giữ medium; làm 1 làn (chưa nhiều làn) và chưa chuyển trạng thái trang cho/dang (để CS-03/04)",
    "chi_phi_uoc_tinh_pct": 10,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [
@@ -1230,13 +1230,34 @@
    ],
    "rui_ro": "Cao: đụng hàng đợi dùng chung; đặt sau cờ bật/tắt",
    "kiem_chung_du_kien": "V3",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {},
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "[FLAG=off] Y4M=canh.y4m LANG=C.UTF-8 node scripts/playwright/kiem-dieu-phoi-nen.mjs http://127.0.0.1:8087",
+    "ma_cu": "cờ globalPipeline=false: ca A (trang đã lưu 400→400 px, việc kẹt) và C (0 bản đầy đủ sau 60 s) tái hiện lỗi — evidence/CS-02/truoc-sua-co-tat-P20.txt",
+    "ma_moi": "A/B/C đạt: ngoài màn Chụp 400→2400 px trong ~7 s; tải lại giữa chừng vẫn xong đủ 3 trang (~13 s) + hàng đợi cạn; rời màn Chụp vẫn dựng nền (1 bản sau 5 s); 0 pageerror — evidence/CS-02/sau-sua-V3.txt",
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "unit": "pipeline/runner.test.ts 6 ca + p2-bg-queue prioritize 2 ca",
+    "npm_run_check": "xem HANDOVER (≥ 198 tệp)",
+    "hoi_quy": "kiem-quy-trinh-chup.mjs CPU 6× cờ bật: 3 lần 'Xong→mở tài liệu' đạt sau khi sửa chờ cứng 1,5 s của kịch bản; 1/4 lần lỗi ca 'Đóng khi còn trang → hỏi' (nguyên nhân CHƯA rõ, nghi nhiễu thời gian CPU 6×; chưa so cờ tắt đủ mẫu); kiem-hanh-trinh-cs (6 trang, CPU 1×) hoàn tất"
+   },
+   "nguyen_nhan_goc": "Bộ xử lý việc 'finish' chỉ đăng ký trong scan.tsx và hàng đợi bị cancelAll khi rời màn → rời màn/tải lại thì không ai hoàn thiện trang; ghi kết quả chỉ vào state của màn Chụp. [Đã xác minh: cờ tắt = hành vi cũ: việc kẹt 'Chưa có bộ xử lý', rời màn không dựng được bản đầy đủ]",
+   "ghi_chu_ban_giao": "CHƯA: nhiều làn (đề án 2–4) — cần đo trước; chuyển status cho/dang; ưu tiên trang đang xem mới có phương thức bgQueue.prioritize (chưa gắn vào màn Tài liệu). Cờ tắt: Tôi → Quét → 'Xử lý ảnh nền khi rời màn chụp'. Việc nền của trang bị bỏ ở journal/Đóng được huỷ rõ ràng; trang mồ côi sau tải lại vẫn bị dựng rồi bỏ (tốn CPU, không hỏng dữ liệu). Ca 'Đóng→hộp hỏi' nghi flaky cần xem lại ở CS-03. Chưa thử máy thật.",
    "nguon": "BAO-CAO-RA-SOAT-LO-TRINH-GhiNhanh-20261013.docx",
-   "zip": ""
+   "zip": "",
+   "tep_cham": [
+    "src/lib/pipeline/runner.ts (+test) MỚI",
+    "src/lib/bg-queue.ts (prioritize)",
+    "src/lib/db.ts (ensureDocsLoaded)",
+    "src/lib/settings.ts (globalPipeline)",
+    "src/routes/__root.tsx",
+    "src/routes/scan.tsx",
+    "src/routes/me.tsx (công tắc)",
+    "scripts/playwright/kiem-dieu-phoi-nen.mjs MỚI",
+    "scripts/playwright/kiem-quy-trinh-chup.mjs (bỏ chờ cứng)"
+   ]
   },
   {
    "id": "CS-03",
@@ -2696,7 +2717,8 @@
   "P20/CS-00: số đo gốc trong evidence/CS-00/BANG-SO-DO-GOC.md là mốc so cho CS-02…CS-05, CS-16…CS-18.",
   "P20/TF-01: khi hết quyền chia sẻ hiện thẻ 'Tệp đã sẵn sàng — Chia sẻ / Lưu về máy' (chạm lần 2); AbortError = huỷ (im lặng đúng); mọi lỗi khác lưu về máy + báo rõ.",
   "P20/TF-02: điện thoại luôn dùng bảng chia sẻ cho Email (kể cả có người nhận) + chép người nhận vào bộ nhớ tạm; Zalo PC = tải + hướng dẫn kéo thả + nút 'Mở Zalo' (chat.zalo.me). iOS Lưu vào Tệp để sau (cần máy thật).",
-  "P20/CS-01: KHÔNG nâng phiên bản IndexedDB 'ghi-nhanh' (giữ v2; mất đường lui nếu nâng); kho Blob ảnh gốc là DB riêng 'ghi-nhanh-blobs' v1; dữ liệu cũ chuyển đổi trong bộ nhớ (thiếu status = 'xong'), không ghi hàng loạt. Người dùng đã cho phép đổi schema (chọn CS-01 13/10/2026)."
+  "P20/CS-01: KHÔNG nâng phiên bản IndexedDB 'ghi-nhanh' (giữ v2; mất đường lui nếu nâng); kho Blob ảnh gốc là DB riêng 'ghi-nhanh-blobs' v1; dữ liệu cũ chuyển đổi trong bộ nhớ (thiếu status = 'xong'), không ghi hàng loạt. Người dùng đã cho phép đổi schema (chọn CS-01 13/10/2026).",
+  "P20/CS-02: bộ điều phối toàn app sau cờ globalPipeline (mặc định bật), 1 làn; kết quả của trang chưa lưu giữ trong finishedStore, trang đã lưu được ghi thẳng vào tài liệu (bỏ qua nếu người dùng đã sửa trang/tài liệu khoá)."
  ],
  "khong_lam": [
   "Không format prettier toàn dự án (7.518 lỗi chỉ là định dạng) — tránh diff khổng lồ, xung đột với Lovable.",
@@ -2712,5 +2734,5 @@
   "P20: tsconfig.tsbuildinfo trong ZIP gây TS7016 giả khi chạy tsc → đã xoá, .gitignore chặn.",
   "P20/BL-01: (nghi vấn, chuyển BL-03) tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục không mang theo pin/pinSalt."
  ],
- "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
+ "lyDoDongPhien": "P20: BL-00, BL-01, CS-00, TF-01, TF-02, CS-01, CS-02 xong; chờ người dùng chọn hạng mục kế (skill 4.4)"
 }
