@@ -1,0 +1,21 @@
+ĐẠT  tệp sao lưu không chứa địa chỉ blob:  kích thước 55 KB
+ĐẠT  tệp sao lưu là JSON hợp lệ có 2 tài liệu
+ĐẠT  tệp ghi số phiên bản mới + tổng kiểm  version=4
+ĐẠT  sau khôi phục có đủ 2 tài liệu đúng tên  ["Hợp đồng thuê nhà","Hoá đơn điện"]
+ĐẠT  ảnh trùng byte với bản gốc (5/5)
+ĐẠT  chữ nhận dạng (có dấu) giữ nguyên
+ĐẠT  GỘP: giữ tài liệu chỉ có trên máy
+ĐẠT  GỘP: bản mới hơn trên máy không bị tệp cũ đè  doc-a|Hợp đồng (bản MỚI trên máy) ; doc-b|Hoá đơn điện ; doc-c|Chỉ có trên máy
+ĐẠT  GỘP: tài liệu mới từ tệp được thêm  3 tài liệu
+ĐẠT  GỘP: báo rõ thêm/cập nhật/giữ nguyên  Đã gộp: thêm 1, cập nhật 0, giữ nguyên 1
+ĐẠT  tệp cũ chứa blob: bị từ chối kèm lý do dễ hiểu  Không khôi phục được Không có tài liệu nào khôi phục được: Tài liệu cũ — tệp sao lưu cũ chỉ l�
+ĐẠT  tệp cũ: dữ liệu trên máy không đổi
+ĐẠT  tệp không phải JSON: báo lỗi tiếng Việt
+ĐẠT  tệp rác: dữ liệu không đổi
+ĐẠT  sai tổng kiểm: hộp thoại nêu tài liệu hỏng bị bỏ qua
+ĐẠT  sai tổng kiểm: chỉ khôi phục tài liệu nguyên vẹn  doc-a|Hợp đồng thuê nhà
+ĐẠT  THAY THẾ: tải về bản dự phòng chứa dữ liệu cũ  ghi-nhanh-du-phong-truoc-khoi-phuc-2026-10-13.json
+ĐẠT  THAY THẾ: kho chỉ còn đúng nội dung tệp  doc-a|Hợp đồng thuê nhà ; doc-b|Hoá đơn điện
+ĐẠT  Huỷ ở hộp chọn: dữ liệu không đổi
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT

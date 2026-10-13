@@ -1,5 +1,5 @@
 # Bước kế tiếp (P20, 13/10/2026) — đọc trước
-Lộ trình hiện hành = đề án v2.0 (báo cáo rà soát, mã CS/BL/AI/TF/FX; xem de-an/ và handover/backlog.json). BL-00 (đăng nhập Google) xong ở P20; kế tiếp BL-01 (sao lưu/khôi phục an toàn). Các mục "HM-xx" bên dưới là lịch sử của đề án v1.2.
+Lộ trình hiện hành = đề án v2.0 (báo cáo rà soát, mã CS/BL/AI/TF/FX; xem de-an/ và handover/backlog.json). BL-00 (đăng nhập Google) và BL-01 (sao lưu/khôi phục an toàn) xong ở P20; kế tiếp CS-00 (đo gốc hành trình chụp). Các mục "HM-xx" bên dưới là lịch sử của đề án v1.2.
 
 # Bước kế tiếp (cập nhật sau R6.2, 11/10/2026)
 

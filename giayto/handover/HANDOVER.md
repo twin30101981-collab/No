@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: hạng mục BL-00 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00 và BL-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -14,9 +14,15 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Kiểm chứng:** `scripts/playwright/kiem-dang-nhap-google.mjs` — mã cũ P19: **10/12 LỖI** (tái hiện GG-01, GG-07, GG-03); mã mới: **12/12 ĐẠT, 0 pageerror**. Test đơn vị 19 ca (auth-callback, in-app-browser, auth). `npm run check` = **194 tệp / 899 đạt**, typecheck sạch, lint 0 lỗi. `vite build` thành công. Viewport 390×844 và 1280×800 không tràn ngang. Bằng chứng: `evidence/BL-00/`.
 - **CHƯA xác minh / giới hạn:** Google + Lovable THẬT; Android Chrome, iPhone Safari, PWA iPhone, Zalo thật. **GG-02** (app chạy ngoài Lovable → không có `/~oauth`) và **GG-09** (chưa bật Google trong Lovable Cloud) là cấu hình ngoài mã — cần **QD-9**. Không làm phương án E (OAuth trực tiếp Supabase) khi chưa có QD-9.
 
-## Hạng mục kế tiếp (đề xuất theo báo cáo mục 15.8, phiên 1 còn lại)
-**BL-01 — Sao lưu/khôi phục an toàn (RS-20, P1, S).** Mục tiêu: sao lưu → xoá → khôi phục, từng ảnh trùng byte; tệp sao lưu không chứa `blob:`; khôi phục mặc định GỘP (QD-4). File: `routes/me.tsx:96–105`, `lib/disk-pack.ts`, `lib/db.ts`. Bước đầu: tái hiện RS-20 bằng Playwright (tạo tài liệu có ảnh → Sao lưu → mở tệp JSON xem có `blob:`). Rủi ro: dữ liệu người dùng → sao lưu file trước khi sửa, có đường lui.
-Sau đó: CS-00 (đo gốc hành trình), rồi AI-01/AI-04/AI-05/TF-01 (phiên 2), rồi Đợt 1 CS-01…05. **CS-01 đổi schema IndexedDB → hỏi người dùng trước.**
+## Hạng mục vừa đóng (2): BL-01 — Sao lưu/khôi phục an toàn (RS-20) — ĐẠT-V3
+- **Nguyên nhân gốc:** sao lưu ghi `docs: all`, mà bộ nhớ giữ ảnh là địa chỉ `blob:` (chỉ sống trong phiên) → tệp chỉ chứa chuỗi địa chỉ (1 KB trong ca thử); khôi phục thì THAY THẾ toàn bộ kho bằng địa chỉ chết, không kiểm cấu trúc, không bản dự phòng. (Đã xác minh: mã cũ khôi phục xong 0/5 ảnh.)
+- **Đã sửa:** `lib/backup.ts` (MỚI: `toPortableDoc` đổi ảnh về dữ liệu thật, `buildBackup` v4 có `index` SHA-256 từng tài liệu và không bao giờ ghi tệp thiếu ảnh, `parseBackup` kiểm cấu trúc/phiên bản/tổng kiểm/blob:, `planMerge` + `mergeLibrary`); `routes/me.tsx` (Sao lưu có tiến độ + lỗi rõ; Khôi phục: hộp **Gộp (mặc định) / Thay thế / Huỷ**; Thay thế tự tải bản dự phòng + xác nhận lần hai; tài liệu khoá PIN khác khoá của máy bị bỏ qua và báo); `lib/dialog.ts` + `components/app-dialog.tsx` (hộp 3 lựa chọn `choiceDialog`); `lib/db.ts` (`replaceAll` ghi nhị phân như `saveDocs`, vẫn một giao dịch).
+- **Kiểm chứng:** `scripts/playwright/kiem-sao-luu.mjs` — mã cũ **3 ca LỖI**; mã mới **21/21 ĐẠT, 0 pageerror** (khứ hồi 5/5 ảnh trùng byte; GỘP không xoá dữ liệu máy; tệp cũ blob:/rác/sai tổng kiểm bị từ chối hoặc loại đúng tài liệu; THAY THẾ tải bản dự phòng; Huỷ không đổi gì). Test đơn vị 14 ca. `npm run check` = **195 tệp / 913 đạt**, typecheck sạch, lint 0 lỗi, `vite build` OK. Hộp thoại 390×844 không tràn (ảnh trong evidence/BL-01/).
+- **CHƯA xác minh / giới hạn:** máy thật; thư viện lớn (≥200 MB chưa đo thời gian/RAM); tài liệu khoá PIN thật (chỉ test đơn vị); viewport 1280 chưa chụp. **Quan sát ngoài phạm vi (→ BL-03, nghi vấn):** tài liệu khoá PIN đang mở khoá vào tệp sao lưu ở dạng chữ rõ; khôi phục trên máy mới chưa mang theo PIN nên chưa mở được tài liệu khoá.
+
+## Hạng mục kế tiếp (đề xuất theo báo cáo mục 15.8)
+**CS-00 — Kịch bản Playwright cả hành trình + đo gốc (P1, S).** Tạo `scripts/playwright/kiem-hanh-trinh-cs.mjs` (camera giả 10 trang → Xong → thấy trang → Xuất; đo: giữa 2 lần bấm chụp, Xong→thấy tài liệu, tổng xử lý nền, RAM đỉnh; CPU 1× và 6×) và **xác minh G-05** (số đo `metricsCache` tra theo `p.src` nhưng lưu theo `orig`, scan.tsx:476/559/635; `applyRecipes` chỉ đổi tên bộ lọc, recipe-apply.ts:36–43) bằng chạy thật — nếu không tái hiện thì ghi "ĐÃ KHÔNG CÒN". Mẫu có sẵn: `kiem-quy-trinh-chup.mjs` + `tao-camera-gia.py`. Chỉ thêm kịch bản, không đổi mã app.
+Sau đó (phiên 2 của báo cáo): AI-01 → AI-04 → AI-05, TF-01; rồi Đợt 1 CS-01…05. **CS-01 đổi schema IndexedDB → hỏi người dùng trước.**
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").
@@ -25,16 +31,18 @@ Sau đó: CS-00 (đo gốc hành trình), rồi AI-01/AI-04/AI-05/TF-01 (phiên 
 - Model phiên: claude-sonnet-5-5, effort phiên "medium" (cấu hình nền tảng; skill không đổi được).
 
 ## Việc người dùng cần làm (P20)
+0. **Kiểm tay BL-01 trên máy thật** (≈3 phút): Tôi → Sao lưu ra tệp → mong đợi: thông báo "Đã sao lưu N tài liệu (… MB)" và tệp có dung lượng cỡ ảnh thật (không phải vài KB); sau đó thử Khôi phục từ tệp → chọn **Gộp** → mong đợi: báo "Đã gộp: thêm 0, cập nhật 0, giữ nguyên N", mọi ảnh vẫn xem được. Chỉ thử **Thay thế** khi đã giữ tệp sao lưu (app tự tải thêm bản dự phòng).
 1. **Kiểm tay BL-00 trên bản thật** (≈5 phút): (a) Android Chrome mở app → Tôi → Đăng nhập → Tiếp tục với Google → chọn tài khoản → mong đợi: về app, thấy "Đã đăng nhập", màn Tôi hiện email, địa chỉ không còn `#access_token`; tải lại vẫn đăng nhập. (b) Gửi link app qua Zalo, mở trong Zalo → mong đợi: khung "Đang mở trong Zalo", nút Google mờ, "Sao chép liên kết" chép được. (c) iPhone (Safari và app đã thêm Màn hình chính): ghi lại đăng nhập được hay không. Nếu lỗi: gửi ảnh chụp màn hình + địa chỉ thanh trình duyệt.
 2. **Trả lời QD-9:** app mở ở địa chỉ nào (…lovable.app / tên miền riêng / Cloudflare tự triển khai)? Lỗi Google gặp ở đâu (Chrome, Safari, PWA, Zalo) và thông báo chính xác? Lovable Cloud → Users → Authentication → Google đã bật chưa?
 3. Trả lời QD-1…QD-5, QD-8 (có thể ghi "theo khuyến nghị") và cho phép đổi schema IndexedDB (CS-01) khi tới lượt.
 
 ## Đường lui
-Hoàn tác về ZIP `GIAYTO_P19_HM24_20261013.zip` (trước P20). Mã P20 = một commit riêng trên nhánh `ccr-9baac120-n3o90c`; BL-00 chỉ chạm: routes/__root.tsx, routes/auth.tsx, lib/auth.ts, lib/auth.test.ts, lib/auth-callback.ts(+test), lib/in-app-browser.ts(+test), scripts/playwright/kiem-dang-nhap-google.mjs.
+Hoàn tác BL-01: về ZIP `GIAYTO_P20_BL00_20261013.zip` (hoặc `git revert` commit BL-01). Hoàn tác cả P20: về `GIAYTO_P19_HM24_20261013.zip`. Mã P20 = các commit riêng trên nhánh `ccr-9baac120-n3o90c`; BL-00 chỉ chạm: routes/__root.tsx, routes/auth.tsx, lib/auth.ts, lib/auth.test.ts, lib/auth-callback.ts(+test), lib/in-app-browser.ts(+test), scripts/playwright/kiem-dang-nhap-google.mjs.
 
 ## Nhật ký P20 (write-ahead)
 - S-OPEN: giải nén, MANIFEST P19 khớp (116 tệp bằng chứng ảnh bị lược khỏi ZIP, 0 tệp mã lệch); skill v3.2.0 khớp; môi trường V3 có.
 - Đọc báo cáo + skill; nạp backlog; mở BL-00 → tái hiện mã cũ 10/12 LỖI → sửa → 12/12 ĐẠT → check 194/899 → build OK → đóng.
+- Người dùng chọn BL-01 → tái hiện RS-20 (mã cũ 3 ca LỖI: tệp 1 KB, 0/5 ảnh) → sửa → 21/21 ĐẠT → check 195/913 → build OK → đóng.
 
 ---
 

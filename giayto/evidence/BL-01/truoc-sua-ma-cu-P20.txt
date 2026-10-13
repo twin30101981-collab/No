@@ -1,0 +1,8 @@
+LỖI  tệp sao lưu không chứa địa chỉ blob:  kích thước 1 KB
+ĐẠT  tệp sao lưu là JSON hợp lệ có 2 tài liệu
+LỖI  tệp ghi số phiên bản mới + tổng kiểm  version=3
+ĐẠT  sau khôi phục có đủ 2 tài liệu đúng tên  ["Hợp đồng thuê nhà","Hoá đơn điện"]
+LỖI  ảnh trùng byte với bản gốc (0/5)  doc-a/p1/orig: không có ảnh (orig=blob:http://127.0.0.1 | doc-a/p1/src: không có ảnh (src=blob:http://127.0.0.1:
+ĐẠT  chữ nhận dạng (có dấu) giữ nguyên
+ĐẠT  không có pageerror
+3 ca lỗi

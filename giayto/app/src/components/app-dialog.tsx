@@ -10,7 +10,7 @@ export function AppDialog() {
   useEffect(() => { setValue(d?.defaultValue ?? ""); }, [d]);
   if (!d) return null;
   const pinBad = d.kind === "pin" && !/^\d{4,6}$/.test(value);
-  const ok = () => { if (d.kind === "confirm") d.resolve(true); else if (!pinBad && (d.kind !== "prompt" || value.trim())) d.resolve(value); };
+  const ok = () => { if (d.kind === "choice") d.resolve("ok"); else if (d.kind === "confirm") d.resolve(true); else if (!pinBad && (d.kind !== "prompt" || value.trim())) d.resolve(value); };
   return (
     <AlertDialog open onOpenChange={(o) => { if (!o) d.resolve(d.kind === "confirm" ? false : null); }}>
       <AlertDialogContent className="max-w-[92vw] rounded-[20px] sm:max-w-sm">
@@ -23,6 +23,7 @@ export function AppDialog() {
           {d.kind === "pin" && <Input autoFocus inputMode="numeric" type="password" maxLength={6} className="mt-4 h-14 text-center text-2xl tracking-[0.5em]" value={value} onChange={(e) => setValue(e.target.value.replace(/\D/g, ""))} />}
           <AlertDialogFooter className="mt-5 flex-row gap-2">
             <Button type="button" variant="outline" className="flex-1" onClick={() => d.resolve(d.kind === "confirm" ? false : null)}>Huỷ</Button>
+            {d.kind === "choice" && <Button type="button" variant="destructive" className="flex-1" onClick={() => d.resolve("alt")}>{d.altText}</Button>}
             <Button type="submit" variant={d.danger ? "destructive" : "default"} className="flex-1" disabled={pinBad || (d.kind === "prompt" && !value.trim())}>{d.okText ?? "Đồng ý"}</Button>
           </AlertDialogFooter>
         </form>

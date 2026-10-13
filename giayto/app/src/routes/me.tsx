@@ -6,15 +6,16 @@ import { syncAll } from "@/lib/cloud-sync";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { Switch } from "@/components/ui/switch";
-import { type Doc, replaceAll, saveDocs, useDocs } from "@/lib/db";
+import { replaceAll, saveDocs, useDocs } from "@/lib/db";
+import { BackupError, buildBackup, mergeLibrary, parseBackup, planMerge } from "@/lib/backup";
 import { breakdown, cleanTemp, fmtBytes, level, type Level } from "@/lib/storage";
-import { getLibrary, type Library, setLibrary } from "@/lib/library";
+import { getLibrary, setLibrary } from "@/lib/library";
 import { download } from "@/lib/files";
 import { pickFiles } from "@/lib/importer";
 import { getPinSalt, getSettings, hashPin, lockNow, setSettings, useSettings } from "@/lib/settings";
-import { newSalt, type VaultWrap } from "@/lib/vault";
+import { newSalt } from "@/lib/vault";
 import { promptDialog } from "@/lib/dialog";
-import { confirmDialog, pinDialog } from "@/lib/dialog";
+import { choiceDialog, confirmDialog, pinDialog } from "@/lib/dialog";
 import { showError } from "@/lib/errors";
 import { useInstall } from "@/lib/install";
 import { offlineOcrReady, prepareOfflineOcr } from "@/lib/offline";
@@ -94,16 +95,49 @@ function Me() {
     else toast.error("Mã khôi phục không đúng", { description: "Kiểm tra lại từng ký tự rồi thử lại." });
   }
   async function backup() {
-    download(new Blob([JSON.stringify({ app: "ghi-nhanh", version: 3, docs: all, vault: getSettings().vaultWrap, library: getLibrary(), conversions: await historyForBackup() })], { type: "application/json" }), `ghi-nhanh-sao-luu-${new Date().toISOString().slice(0, 10)}.json`);
+    const id = toast.loading("Đang tạo tệp sao lưu…");
+    try {
+      const blob = await buildBackup({ docs: all, vault: getSettings().vaultWrap, library: getLibrary(), conversions: await historyForBackup() });
+      download(blob, `ghi-nhanh-sao-luu-${new Date().toISOString().slice(0, 10)}.json`);
+      toast.success(`Đã sao lưu ${all.length} tài liệu (${fmtBytes(blob.size)})`, { id });
+    } catch (e) {
+      console.error(e);
+      toast.error(e instanceof BackupError ? e.message : "Không sao lưu được", { id, description: "Chưa tải tệp nào về. Thử lại; nếu vẫn lỗi hãy tải lại trang rồi sao lưu." });
+    }
   }
   async function restore() {
     const [f] = await pickFiles("application/json,.json", false); if (!f) return;
+    const id = toast.loading("Đang kiểm tra tệp sao lưu…");
     try {
-      const data = JSON.parse(await f.text()) as { docs: Doc[]; vault?: VaultWrap; library?: Library; conversions?: Parameters<typeof restoreHistory>[0] };
-      if (!Array.isArray(data.docs)) throw new Error();
-      if (!(await confirmDialog(`Khôi phục ${data.docs.length} tài liệu?`, { message: "Dữ liệu hiện tại sẽ được thay thế.", okText: "Khôi phục", danger: true }))) return;
-      if (data.vault) setSettings({ vaultWrap: data.vault }); await replaceAll(data.docs); if (data.library) setLibrary(data.library); if (data.conversions) await restoreHistory(data.conversions); toast.success("Đã khôi phục");
-    } catch (e) { showError(e instanceof SyntaxError || (e as Error).message === "" ? new Error("json") : e, "Không khôi phục được"); }
+      const r = await parseBackup(await f.text()); toast.dismiss(id);
+      if (!r.ok) { toast.error("Không khôi phục được", { description: r.error }); return; }
+      const mine = getSettings().vaultWrap, theirs = r.data.vault;
+      const sameVault = !theirs || !mine || JSON.stringify(mine) === JSON.stringify(theirs);
+      const bad = r.skipped.length ? `\n\n${r.skipped.length} tài liệu hỏng bị bỏ qua (${r.skipped.slice(0, 2).map((x) => `${x.name}: ${x.why}`).join("; ")}${r.skipped.length > 2 ? "…" : ""}).` : "";
+      const pick = await choiceDialog(`Khôi phục ${r.docs.length} tài liệu?`, {
+        message: `Gộp (khuyên dùng): thêm tài liệu mới, giữ bản mới hơn khi trùng, không xoá gì trên máy này.\nThay thế: bỏ toàn bộ dữ liệu hiện tại, dùng đúng như tệp (app tự tải bản dự phòng trước).${bad}`,
+        okText: "Gộp", altText: "Thay thế",
+      });
+      if (!pick) return;
+      if (pick === "ok") {
+        const plan = planMerge(all, r.docs, { sameVault });
+        if (plan.toSave.length) await saveDocs(plan.toSave);
+        if (theirs && !mine) setSettings({ vaultWrap: theirs });
+        if (r.data.library) setLibrary(mergeLibrary(getLibrary(), r.data.library));
+        if (r.data.conversions) await restoreHistory(r.data.conversions as Parameters<typeof restoreHistory>[0]);
+        toast.success(`Đã gộp: thêm ${plan.added}, cập nhật ${plan.updated}, giữ nguyên ${plan.kept}`, { description: plan.skippedLocked ? `${plan.skippedLocked} tài liệu khoá PIN bỏ qua vì khác khoá của máy này — dùng Thay thế nếu muốn lấy về.` : undefined });
+        return;
+      }
+      if (all.length) {
+        download(await buildBackup({ docs: all, vault: mine, library: getLibrary(), conversions: await historyForBackup() }), `ghi-nhanh-du-phong-truoc-khoi-phuc-${new Date().toISOString().slice(0, 10)}.json`);
+      }
+      if (!(await confirmDialog("Thay thế toàn bộ?", { message: `${all.length} tài liệu hiện có sẽ được thay bằng ${r.docs.length} tài liệu trong tệp.${all.length ? " Bản dự phòng vừa được tải về máy." : ""}`, okText: "Thay thế", danger: true }))) return;
+      if (theirs) setSettings({ vaultWrap: theirs });
+      await replaceAll(r.docs);
+      if (r.data.library) setLibrary(r.data.library);
+      if (r.data.conversions) await restoreHistory(r.data.conversions as Parameters<typeof restoreHistory>[0]);
+      toast.success(`Đã thay thế bằng ${r.docs.length} tài liệu`);
+    } catch (e) { toast.dismiss(id); showError(e, "Không khôi phục được"); }
   }
 
   return (
