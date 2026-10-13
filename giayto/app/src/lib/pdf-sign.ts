@@ -5,7 +5,7 @@
  */
 import forge from "node-forge";
 import { PDFArray, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFString } from "pdf-lib";
-import type { ImportedP12 } from "./p12";
+import { fieldText, type ImportedP12 } from "./p12";
 
 const SIG_BYTES = 8192; // chỗ trống cho chữ ký (hex = ×2)
 const BR_PLACEHOLDER = 9999999999;
@@ -43,9 +43,10 @@ export async function signPdf(
     SubFilter: "adbe.pkcs7.detached",
     ByteRange: byteRange,
     Contents: PDFHexString.of("0".repeat(SIG_BYTES * 2)),
-    Reason: PDFString.of(opts.reason ?? "Ký số"),
-    Location: PDFString.of(opts.location ?? ""),
-    Name: PDFString.of(opts.name ?? key.info.commonName),
+    // TD-33: chuỗi văn bản PDF có dấu tiếng Việt phải mã UTF-16BE (fromText); PDFString.of cắt ký tự > 255 ("DuyÇt").
+    Reason: PDFHexString.fromText(opts.reason ?? "Ký số"),
+    Location: PDFHexString.fromText(opts.location ?? ""),
+    Name: PDFHexString.fromText(opts.name ?? key.info.commonName),
     M: PDFString.fromDate(date),
   });
   const sigRef = ctx.register(sig);
@@ -97,14 +98,19 @@ export async function signPdf(
   p7.addCertificate(cert);
   p7.addSigner({
     key: forge.pki.privateKeyFromPem(key.privateKeyPem) as forge.pki.rsa.PrivateKey,
-    certificate: cert,
+    // TD-33: forge đọc tên UTF8String thành byte thô rồi khi dựng issuerAndSerialNumber lại encodeUtf8 lần nữa
+    // → tên issuer có dấu không khớp chứng thư, trình đọc PDF (NSS/pdfsig) không tìm ra người ký.
+    // Truyền issuer đã giải mã để forge mã hoá đúng một lần. KHÔNG truyền `certificate` (forge sẽ lấy lại issuer
+    // từ chứng thư, đè mất bản đã sửa); chứng thư vẫn được nhúng qua addCertificate ở trên.
+    issuer: cert.issuer.attributes.map((a) => ((a as { valueTagClass?: number }).valueTagClass === forge.asn1.Type.UTF8 ? { ...a, value: fieldText(a) } : a)),
+    serialNumber: cert.serialNumber,
     digestAlgorithm: forge.pki.oids["sha256"]!,
     authenticatedAttributes: [
       { type: forge.pki.oids["contentType"]!, value: forge.pki.oids["data"]! },
       { type: forge.pki.oids["messageDigest"]! },
       { type: forge.pki.oids["signingTime"]!, value: date as unknown as string },
     ],
-  });
+  } as unknown as Parameters<typeof p7.addSigner>[0]); // @types/node-forge thiếu issuer/serialNumber (forge có hỗ trợ)
   p7.sign({ detached: true });
   const hex = forge.util.bytesToHex(forge.asn1.toDer(p7.toAsn1()).getBytes());
   if (hex.length > SIG_BYTES * 2) throw new Error("Chữ ký quá lớn.");
@@ -120,8 +126,21 @@ export function readSignature(pdf: Uint8Array): { ranges: number[]; der: string 
   const last = all[all.length - 1];
   if (!last) return null;
   const ranges = last.slice(1, 5).map(Number);
-  const hex = text.slice(ranges[1] + 1, ranges[2] - 1).replace(/(00)+$/, "");
-  return { ranges, der: forge.util.hexToBytes(hex) };
+  const raw = forge.util.hexToBytes(text.slice(ranges[1] + 1, ranges[2] - 1));
+  return { ranges, der: raw.slice(0, derLength(raw)) };
+}
+
+/** Độ dài một phần tử DER (thẻ + độ dài + nội dung) ở đầu chuỗi. P18: trước đây cắt mọi "00" ở cuối hex
+ *  → chữ ký có byte cuối 0x00 (~1/256) bị cắt cụt và báo "không hợp lệ". Không đọc được thì giữ cả chuỗi. */
+function derLength(b: string): number {
+  if (b.length < 2) return b.length;
+  const l0 = b.charCodeAt(1);
+  if (l0 < 0x80) return Math.min(b.length, 2 + l0);
+  const n = l0 & 0x7f;
+  if (n === 0 || n > 4 || b.length < 2 + n) return b.length;
+  let len = 0;
+  for (let i = 0; i < n; i++) len = len * 256 + b.charCodeAt(2 + i);
+  return Math.min(b.length, 2 + n + len);
 }
 
 export interface SignatureCheck {
@@ -173,7 +192,7 @@ export function verifyPdfSignature(pdf: Uint8Array, at: Date = new Date()): Sign
     const timeNode = attrVal(oids["signingTime"]!);
     let signedAt: Date | undefined;
     if (timeNode) try { signedAt = timeNode.type === forge.asn1.Type.UTCTIME ? forge.asn1.utcTimeToDate(timeNode.value as string) : forge.asn1.generalizedTimeToDate(timeNode.value as string); } catch { /* bỏ qua */ }
-    const signer = (cert.subject.getField("CN")?.value as string) ?? "";
+    const signer = fieldText(cert.subject.getField("CN")); // TD-33: giải mã UTF8String (tên có dấu)
     let selfSigned = false;
     try { selfSigned = cert.isIssuer(cert) && cert.verify(cert); } catch { selfSigned = false; }
     const ref = signedAt ?? at;
