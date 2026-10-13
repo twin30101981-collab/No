@@ -1,0 +1,40 @@
+# TD-22 (P18): chạy bộ kiểm tra của GIAYTO (giayto/app) trên máy CI sau mỗi lần đẩy mã,
+# để phiên sau không phải tự dựng môi trường mới biết mã còn "xanh".
+# Kiểm: typecheck + vitest + lint:src (npm run check). Không chạy Playwright/AI thật.
+name: GIAYTO check
+
+on:
+  push:
+    paths:
+      - "giayto/app/**"
+      - ".github/workflows/giayto-check.yml"
+  pull_request:
+    paths:
+      - "giayto/app/**"
+      - ".github/workflows/giayto-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: giayto-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: giayto/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: giayto/app/package-lock.json
+      # npm (không dùng bun.lock: registry trong lockfile là mirror riêng của Lovable, trả 403 ngoài Lovable)
+      - run: npm ci --legacy-peer-deps
+      - run: npm run check
