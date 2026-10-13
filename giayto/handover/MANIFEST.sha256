@@ -681,7 +681,7 @@ c75efd2d83e75b0716baa448beb75ff3624a1fcb6d7988786588f5059857517a  app/de-an-nang
 ea548fca07545d20a06b5293360959197772f81a211aa654a9a680aee1aa82b8  app/de-an-nang-cap-scan/kiem-chung/bo-anh-NB/chuan-chu/IMG_NB_01.txt
 8deee34ff8ceba74ab05780f3e2a2eb9d2105e8e8a33470e7adbc560be891b2b  app/de-an-nang-cap-scan/kiem-chung/bo-anh-NB/goc/IMG_NB_01.jpg
 13e6fdd59ee9e6052ecba29348da45c44dc32cb51da5a042104c60f7536145eb  app/de-an-nang-cap-scan/LO-TRINH-LICH-SU-P.md
-96bcf0870697c5127e20cac5590ef34078a3b440c0b122db2de3242118f5be38  app/de-an-nang-cap-scan/tien-do.json
+df3347a2095dccd716589124b0250fa6b31834c87efe015b78371d2b4d0de653  app/de-an-nang-cap-scan/tien-do.json
 03d26d8f8a9b2b17c689454788e43c484d7778c066f6194d70b0eb3317aa7e66  app/de-an-nang-cap-scan/lo-trinh-r.json
 3c5b10cd0d2d7ce56f1b526555b039b6b5d0766a7b41b51470514249f5f1da88  app/de-an-nang-cap-scan/app-tien-do.html
 0ada3660b75a11b38c5cf0afe3f936770b34f27d0087067783a2cebbbb223763  app/.gitignore
@@ -702,11 +702,12 @@ e32a0d5c606039337b7567b691346372d5498b7f9b8586723e6c239a20f0eb1a  app/drizzle/mi
 70f1b12ec53201c1f494b5ee24dca278df3df413e444fe32a005fd2004b7c763  app/bun.lock
 0da8a26a5ab654de68fb2c30458ef4f16e92fc4870adddeec3edfd37bdeab0b0  app/tsconfig.json
 d60158976cfd63bd4d27a5d4f8143e8d4ed4ddd8c73423d29808fc03eb982b26  app/docs/RA-SOAT-MUC-CU-HM13.md
-5c0e0c387427bcbb860057ff0d625aa1f1ee45efe542b33550da3959e0003cb3  app/docs/NO-KY-THUAT.md
+82da16d01b11fd3aed7e603b2e87f0a0046f13b4471c8f60b1f2cea961999d37  app/docs/NO-KY-THUAT.md
 f9641d79146c9dc206f126d3f5b7c94bb55aea05bf5be5a87dbe021746ce10e9  app/docs/P6.1-DAN-ANH-HEIC.md
 b9e5d4daead29800685aa3da7536aa4517772ddbba256a6b2792bc7a386ababd  app/roadmap.md
-63499d43f4b1929837d52c2b5f71a4ee1dd3bd87869c4edbb23c4b05b20c8dd1  handover/HANDOVER.md
-ffe7beb4268e03b9192745cebec768d66ee968122ca9dc580a86fd24b5341aad  handover/backlog.json
+95e135ade7364525804b53bf1bb71ce02c9db7081882b4c1a9c1cdbaf6355b1b  handover/HANDOVER.md
+19bedbc7c2362563418e18dd6917e2a744eb3267b21251eca93d7cb5c747538e  handover/backlog.json
 097a744f091222cad1e029a4155b035bc27fbd2207b65447fff1b3099286c7bc  handover/PROMPT_PHIEN_SAU.md
 da51bdec1afd024bb31a30f6b379e0b3fcb9aff991c68d6614cfbf34a7461de9  handover/TIEN_DO_VA_NO_KY_THUAT.md
+d41c0018b1b31ab75681712f65e77ab5c1107ac19f29cdf85e37790f3795c8c4  de-an/VIEC_CAN_NGUOI_DUNG_P19.docx
 684da675324f88e492d1e42e061ffa37e990078e3302863f5df32b98f16e0e97  de-an/DE_AN_GIAYTO_v1.2.docx

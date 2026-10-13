@@ -1,1297 +1,1301 @@
 {
-  "du_an": "Ghi Nhanh – nâng cấp scan PDF A4",
-  "phien_ban_de_an": "v5",
-  "cap_nhat": "2026-10-13",
-  "credit_moi_buoc": 4,
-  "buoc": [
-    {
-      "ma": "B0",
-      "ten": "Phân tích nguyên nhân gốc rễ + đề án v2",
-      "trang_thai": "xong",
-      "nghiem_thu": "Đề án docx v2"
-    },
-    {
-      "ma": "B0b",
-      "ten": "Phân tích điểm nghẽn, đề án v3, đề xuất O1–O12",
-      "trang_thai": "xong",
-      "nghiem_thu": "Đề án docx v3",
-      "bang_chung": "De-an-nang-cap-scan-PDF-v3.docx"
-    },
-    {
-      "ma": "B1",
-      "ten": "Khổ đích A4 300/200 dpi, nén JPEG một lần, mặc định Nét nhất",
-      "trang_thai": "xong",
-      "nghiem_thu": "PDF mẫu ≥ 300 dpi",
-      "bang_chung": "Đo 317 ppi (2473×3478 px, 593 KB); 277/277 kiểm thử đạt; 16 trang Playwright 0 lỗi trang – kiem-chung/"
-    },
-    {
-      "ma": "B2",
-      "ten": "Chụp độ phân giải cao, giữ ảnh gốc",
-      "trang_thai": "xong",
-      "nghiem_thu": "Ảnh gốc ≥ 3000 px",
-      "bang_chung": "Camera giả 3840×2160 giữ nguyên 3840 px (= tối đa camera); ảnh thư viện 4000×3000 giữ nguyên; 283/283 kiểm thử đạt"
-    },
-    {
-      "ma": "B2b",
-      "ten": "Dựng 2 tầng + Blob/ImageBitmap + bộ đệm + giới hạn RAM (O2,O3,O4,O10)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Chỉnh bộ lọc < 300 ms; RAM đỉnh −50%",
-      "bang_chung": "Ảnh 4096×3072: xem trước lần đầu 1,4 s; đổi bộ lọc khi đã có đệm: Xám 58, Mực 156, Nét 230, Màu kỳ diệu 313, Tiết kiệm mực 362 ms (máy thử không GPU); quay lại bộ lọc cũ 0 ms; chụp 10 trang: giải mã đồng thời tối đa 2 (trước 10, −80%); 286/286 kiểm thử đạt"
-    },
-    {
-      "ma": "B3",
-      "ten": "Tinh chỉnh góc trên ảnh gốc + bộ đo chuẩn (O1)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Sai số góc ≤ 2 px",
-      "bang_chung": "Bộ đo chuẩn 8 ảnh 1536×2048 (xoay ±12°, phối cảnh, tương phản thấp, nhiễu): sai số góc TB 13,4 px (dò nhanh) → 0,75 px sau tinh chỉnh; chỉ đọc 4 dải cạnh từ ảnh đã giải mã; 289/289 kiểm thử đạt"
-    },
-    {
-      "ma": "B4",
-      "ten": "Mặt nạ giấy + xoá nêm góc (O6)",
-      "trang_thai": "xong",
-      "nghiem_thu": "0 vùng tối > 3 mm",
-      "bang_chung": "Bộ đo B3 với khung lệch 1–2 % (nêm tối 297 mm trước xử lý): sau mặt nạ giấy 0 vùng tối > 3 mm trên 8/8 ảnh (bản cũ còn sót 2 ảnh tương phản thấp); nội dung giữa trang không đổi; 293/293 kiểm thử đạt; Playwright 0 lỗi trang"
-    },
-    {
-      "ma": "B5",
-      "ten": "Đổi thứ tự xoay → cắt → làm sạch",
-      "trang_thai": "xong",
-      "nghiem_thu": "Không sinh góc mới"
-    },
-    {
-      "ma": "B6",
-      "ten": "Chuẩn hoá nền đa tỉ lệ + Sauvola",
-      "trang_thai": "xong",
-      "nghiem_thu": "Nền 250–255"
-    },
-    {
-      "ma": "B7",
-      "ten": "Lưới ánh xạ GPU + bicubic + pool Worker (O5,O8)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Cong dòng ≤ 0,5%",
-      "bang_chung": "Lưới ánh xạ 8 px lệch < 0,05 px; cong dòng sau nắn ≤ 0,5 % (trước > 2 %); GPU khớp CPU: lệch TB 0,04–0,06, tối đa 2/255 trên 2 ảnh thật; GPU 136–140 ms (700×990, SwiftShader); pool 4 Worker; 75 tệp / 302 kiểm thử đạt; Playwright 0 lỗi trang"
-    },
-    {
-      "ma": "B8",
-      "ten": "Cắt theo nội dung, vừa A4, PDF 1-bit (O11)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Không kéo giãn chữ",
-      "bang_chung": "content-crop.ts: cắt theo hộp mực đậm + lề 4%, bỏ dải xám/vạch mép; vừa A4 giữ tỉ lệ (sai số < 0,5 %); PNG 1-bit: PDF Đen trắng 68 KB/85 KB so với 175 KB/203 KB (−61 %/−58 %) trên 2 ảnh thật; 306/306 kiểm thử; Playwright 0 lỗi trang – kiem-chung/b8_*"
-    },
-    {
-      "ma": "B9",
-      "ten": "Chữ ký: tách nền, đổi cỡ 2 trục, chụm ngón",
-      "trang_thai": "xong",
-      "nghiem_thu": "Kéo xuống cuối trang được",
-      "bang_chung": "Chữ ký từ ảnh: nền trong suốt 94 %, 4 góc alpha 0, chấm nhiễu bị xoá (despeckleAlpha); kéo cạnh đổi 1 trục, kéo góc giữ tỉ lệ, chụm 2 ngón phóng/xoay, chữ ký xoay kéo xuống đáy vẫn nằm trọn trang; 312/312 kiểm thử; Playwright 0 lỗi trang – kiem-chung/b9_*.png"
-    },
-    {
-      "ma": "B10",
-      "ten": "Chữ ký: neo vào dòng ký",
-      "trang_thai": "xong",
-      "nghiem_thu": "Gợi ý đúng ≥ 80%",
-      "bang_chung": "Bộ mẫu 30 trang tổng hợp (đường liền, chấm chấm, chỉ nhãn GIÁM ĐỐC, nhiễu đường kẻ bảng): ≥ 80 % gợi ý đúng; Playwright trang thật + 2 dòng ký: tìm đủ cả 2, chân chữ ký lệch dòng 2 px, lưu vào trang, 0 lỗi trang; 316/316 kiểm thử đạt"
-    },
-    {
-      "ma": "B11",
-      "ten": "Tự chụp theo độ nét",
-      "trang_thai": "xong",
-      "nghiem_thu": "Ảnh mờ < 5%",
-      "bang_chung": "focus-gate.ts (phương sai Laplacian vùng giấy + cổng nét ổn định, khởi động 5 khung); bộ mẫu 40 chuỗi: ảnh mờ được chụp 0 % (< 5 %); 79 tệp / 320 kiểm thử đạt; Playwright camera giả mờ→nét: 0–2,5 s mờ (thanh 9 %) không chụp, tự chụp ảnh nét lúc 3 s, 0 lỗi trang – kiem-chung/b11_*.png"
-    },
-    {
-      "ma": "B12",
-      "ten": "Chấm điểm trang, OCR một Worker, nhật ký sạch (O7,O9), hồi quy tổng",
-      "trang_thai": "xong",
-      "nghiem_thu": "Đạt tiêu chí mục 6 đề án v3",
-      "bang_chung": "page-grade.ts chấm 4 tiêu chí (nét, lóa, nghiêng, nền) hiện huy hiệu điểm trên hàng ảnh nhỏ (ảnh thật: 94 'tốt'); ocr-worker.ts: một Worker Tesseract dùng chung cho nhận chữ nền, PDF tìm được chữ, OCR lô, tải ngoại tuyến (O7); nhật ký gộp lỗi trùng trong 60 s có đếm (O9); 80 tệp / 328 kiểm thử đạt, kiểm tra kiểu sạch; Playwright hồi quy 16 trang đều 200, 0 lỗi trang – kiem-chung/b12_*.png"
-    },
-    {
-      "ma": "B13",
-      "ten": "UAT điện thoại thật & hiệu chỉnh ngưỡng điểm trang",
-      "trang_thai": "cho",
-      "nghiem_thu": "Điểm trang khớp đánh giá người dùng ≥ 80 %",
-      "ghi_chu": "Người dùng chọn bỏ qua; có thể làm sau khi có ảnh chụp thật | CHẶN – chờ ảnh/máy thật → R6.4"
-    },
-    {
-      "ma": "CHOT",
-      "ten": "Hồi quy tổng & bàn giao cuối",
-      "trang_thai": "xong",
-      "nghiem_thu": "Toàn bộ kiểm thử đạt, 16 trang không lỗi",
-      "bang_chung": "Build OK; 80 tệp / 328 kiểm thử đạt; 16/16 trang trả 200, 0 lỗi trang (Playwright)"
-    },
-    {
-      "ma": "C1",
-      "ten": "Tự dò góc: không cắt mất dòng ghi chú dưới bảng, nắn thẳng trang nghiêng",
-      "trang_thai": "xong",
-      "nghiem_thu": "Cạnh dưới là mép giấy, không phải đường kẻ đáy bảng",
-      "bang_chung": "detect.ts: tiêu chí 'còn giấy ngoài cạnh' (spill); detect-footer.test.ts 4 ca (thẳng/tràn/nghiêng/nghiêng+tràn); 81 tệp / 332 kiểm thử đạt"
-    },
-    {
-      "ma": "S1",
-      "ten": "Đo chuẩn chuỗi grab/detect/normalize/render/release (đã xong phần đo 10/30 trang)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Bảng số đo gốc median/p90, RAM đỉnh, thời gian nhả nút",
-      "bang_chung": "10 trang camera giả: nhả nút 3924/4441 ms, render 2172/2552, detect2 239/259, detect1 157/212, normalize 107/123, grab 302/370 ms; tổng 47,6 s; RAM 162 MB; 82 tệp/335 kiểm thử; 0 lỗi trang – kiem-chung/s1_*; 30 trang: tổng 199 s (6,6 s/trang), nhả nút 4754/5991 ms, render 2774/3737 ms, RAM 183 MB, 0 lỗi trang (25/30 mẫu cuối do trần 200 mục của perf-stats)",
-      "con_lai": "Đóng băng bộ ảnh Q1–Q6: cần 3 ảnh gốc KTRA_DOANH_NGHIỆP + nhóm ảnh lỗi thật từ người dùng; công đoạn save đo ở S4",
-      "trang_thai_cu": "dang-lam",
-      "ket_luan_hm13": "HM-13: XONG — baseline chuỗi grab→release hoàn tất ở R2.5 (30 mẫu, 0 lỗi, RAM đỉnh 60–70 MB, đạt ngân sách 17.1). Phần 'đóng băng Q1–Q6' cần ảnh lỗi thật của người dùng → ghi ở HM-14.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S6",
-      "ten": "Chụp nhanh: tái dùng ImageCapture, timeout 1,2 s, burst khi chưa nét, fallback khung video",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "Thời gian chụp −40%; không tăng ảnh mờ; có fallback",
-      "bang_chung": "progress/S6/README-S6.md; 4 kiểm thử mới đạt; tsgo sạch",
-      "con_lai": "S6b đo lại"
-    },
-    {
-      "ma": "S7c",
-      "ten": "Xuất PDF song song – dựng trang song song, ghép đúng thứ tự",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "4 kiểm thử orderedPool đạt; b8 đạt; tsgo sạch tệp sửa",
-      "bang_chung": "progress/S7/README-S7.md",
-      "ke_tiep": "S7d đo xuất PDF 10/30 trang"
-    },
-    {
-      "ma": "S7d",
-      "ten": "Đo xuất PDF 1 làn vs 3 làn",
-      "trang_thai": "bo-qua",
-      "nghiem_thu": "10 trang 592→519 ms TB, 30 trang 1207→1224 ms; mục tiêu −30% chưa đạt; 0 lỗi",
-      "bang_chung": "progress/S7/s7d-pdf.jsonl",
-      "ke_tiep": "S7e dựng trang trong Worker",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: HỦY — đã đo chưa đạt −30% (10 trang 592→519 ms, 30 trang 1207→1224 ms); hướng nhiều làn bị thay bằng S7e/S7f (dựng trang trong Worker), R2.2 (bể worker) và R5.1 (PDF Chuẩn 20 trang 4,6 MB, lệch khung ≤0,5%).",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S7e",
-      "ten": "Dựng trang PDF trong Worker",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "compressPage chạy trong pool Worker, rơi về luồng chính khi lỗi; 3 kiểm thử mới đạt",
-      "bang_chung": "progress/S7/README-S7.md",
-      "ke_tiep": "S7f đo với ảnh 4000×3000, Worker bật/tắt"
-    },
-    {
-      "ma": "S7f",
-      "ten": "Đo xuất PDF ảnh cỡ thật, Worker tắt/bật",
-      "trang_thai": "xong",
-      "nghiem_thu": "10 trang 3566→1867 ms (−48%), 30 trang 10323→4478 ms (−57%); nghẽn 550→14 ms; 0 lỗi",
-      "bang_chung": "progress/S7/s7f-pdf.jsonl",
-      "ke_tiep": "S8 Quét hàng loạt + khôi phục"
-    },
-    {
-      "ma": "S9",
-      "ten": "Hồi quy hiệu năng + chức năng sau S1–S8",
-      "trang_thai": "xong",
-      "nghiem_thu": "361/361 kiểm thử; nhả nút median 30 trang 258 ms (S1 4754); tổng 30 trang 199→17,3 s; RAM đỉnh 157 MB; 32 màn hình 0 lỗi",
-      "bang_chung": "progress/S9/",
-      "ke_tiep": "S10 Chất lượng hình học Q1–Q3"
-    },
-    {
-      "ma": "S10c",
-      "ten": "Q3 – khung cắt không lấn chữ mép phải",
-      "trang_thai": "xong",
-      "nghiem_thu": "Khung bám mép giấy khi có chữ đậm sát mép",
-      "bang_chung": "s10c-edge-outermost.test.ts: 393 → 401 px (mép thật 400); 364 kiểm thử đạt; B3 góc ≤ 2 px"
-    },
-    {
-      "ma": "S10d",
-      "ten": "Kiểm Q1–Q3 trên 3 ảnh gốc trong app",
-      "trang_thai": "xong",
-      "nghiem_thu": "0 lỗi Q1–Q3",
-      "bang_chung": "Trang 1 đạt; trang 3 chữ bị che trên ảnh gốc; trang 2 khung dính trang kế + rác mép – progress/S10/s10d/",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: XONG — thay bởi S10c/S10e và nghiệm thu S10l (0 lỗi Q1–Q3 trên 3 ảnh gốc).",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S10e",
-      "ten": "Tách trang kế cùng màu giấy ở mép (trang 2)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Trang 2 khung bỏ trang kế; trang 1, 3 không đổi; 363 kiểm thử đạt",
-      "bang_chung": "progress/S10/s10e/khung-3-trang.jpg"
-    },
-    {
-      "ma": "S10j",
-      "ten": "Khung mảnh, vạch liền, mảng xám",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "Trang 6 hết vạch/khung, chữ nguyên",
-      "bang_chung": "progress/S10/s10j/; 371 kiểm thử đạt"
-    },
-    {
-      "ma": "S10l",
-      "ten": "Nghiệm thu Q1–Q3 trong app trên 3 ảnh gốc",
-      "trang_thai": "xong",
-      "nghiem_thu": "Q1 đạt; Q3 đạt (…556 giấy che thật); Q2 còn 2 vết nhỏ trang …555; 0 lỗi trang",
-      "bang_chung": "progress/S10/s10l/"
-    },
-    {
-      "ma": "S10m",
-      "ten": "Xoá vệt nhỏ ở góc trang (edgeCornerClean)",
-      "trang_thai": "xong",
-      "nghiem_thu": "Q1–Q3 đạt trên 3 ảnh gốc",
-      "bang_chung": "progress/S10/s10m/; 375/375 kiểm thử đạt"
-    },
-    {
-      "ma": "S11",
-      "ten": "Đo nền giấy Q4 (paperStats)",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "Trung vị nền ≥ 245 ở Tự động",
-      "bang_chung": "progress/S11/README-S11.md: 255/255/255; P10=255 cần soi Q5"
-    },
-    {
-      "ma": "S11d",
-      "ten": "S11d",
-      "trang_thai": "xong-phan-1",
-      "ngay": "2026-10-06",
-      "ket_qua": "showThroughLift làm nhạt chữ hằn mặt sau, giữ mực màu; 381 kiểm thử đạt",
-      "ke_tiep": "S11e"
-    },
-    {
-      "ma": "S11e",
-      "ten": "S11e",
-      "trang_thai": "xong",
-      "ngay": "2026-10-06",
-      "ket_qua": "Nền 247/P10 247 trên 3 ảnh thật; chữ hằn trang 555 hết, không mất nét",
-      "ke_tiep": "S11f"
-    },
-    {
-      "ma": "S11f",
-      "ten": "S11f",
-      "trang_thai": "cho",
-      "ngay": "2026-10-06",
-      "ket_qua": "lineSkewMap: nửa dưới lệch tới 1,25°; chỉ tiêu ≤0,5°",
-      "ke_tiep": "S11g",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp vào thẻ HM-16. Đo lại 13/10 trên 3 ảnh Q qua 'Tự dò góc': nửa dưới tối đa 1,25°/1,00°/1,00° (chỉ tiêu ≤0,5°).",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S11k",
-      "ten": "Nắn dòng nửa trên (lọc nhiễu tiêu đề/bảng)",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "Cong nửa trên ≤ 0,5°",
-      "bang_chung": "lineSkewRefineTop; 18/18 kiểm thử S11"
-    },
-    {
-      "ma": "S11l",
-      "ten": "Đo nửa trên ảnh thật sau S11k",
-      "trang_thai": "cho",
-      "nghiem_thu": "Cong nửa trên ≤ 0,5°",
-      "bang_chung": "…556 0,25°, …557 0,25° đạt; …555 1,75°",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16. Đo lại 13/10 nửa trên: …555 2,25° (ô trên-phải, mực 860), …556 1,75°, …557 0,75° (chỉ tiêu ≤0,5°; trước 0,25/0,25/1,75). Mắt thường thấy dòng chữ thẳng.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S11m",
-      "ten": "Nắn riêng nửa lệch nhất của dải trên (lineSkewRefineTopSide)",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "21/21 kiểm thử S11; nửa dưới không đổi",
-      "bang_chung": "progress/S11/README-S11.md"
-    },
-    {
-      "ma": "S11n",
-      "ten": "Đo lại nửa trên 3 ảnh thật sau S11m",
-      "trang_thai": "cho",
-      "nghiem_thu": "…555 cong trên 1,75° (chỉ tiêu ≤ 0,5°); …556/…557 đạt; 0 lỗi trang",
-      "bang_chung": "progress/S11/README-S11.md",
-      "ghi_chu": "Số đo lấy khi app chưa nạp mã mới – xem S11o",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16; S11o…S11r + S15c đã thêm nắn dải 0/1 (có kiểm thử), nhưng số đo cấp ô vẫn chưa đạt ≤0,5°.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S11o",
-      "ten": "Nhật ký nắn một nửa, đo lại …555",
-      "trang_thai": "xong-phan-1",
-      "nghiem_thu": "…555 dải trên phải −1,75 → −0,25°; dải 2 phải còn −1,5°; 21/21 kiểm thử S11; 0 lỗi trang",
-      "bang_chung": "progress/S11/README-S11.md"
-    },
-    {
-      "ma": "V0",
-      "ten": "Đo thật ảnh 12 MP",
-      "trang_thai": "cho",
-      "nghiem_thu": "Bảng số đo gốc 12 MP; máy thật Android + iPhone",
-      "bang_chung": "Máy chủ, 3 ảnh Q phóng lên 3000×4000: dò khung 0,5–0,6 s; xem trước 1200 px 2,9–3,6 s; bản đầy đủ 10,6–13,9 s (warp 1,6–2,0 s, làm sạch mép 5,1–7,6 s, flatten 1,3–2,1 s, bộ lọc 3,9–4,0 s). 0 lỗi trang. kiem-chung/V0/so-do-V0.json",
-      "con_thieu": "Chưa có ảnh 12 MP gốc (ảnh Q chỉ 960×1280); chưa đo trên Android/iPhone thật",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: CHUYỂN HM-14 — cần ảnh 12 MP gốc + máy thật Android/iPhone; số đo máy chủ (3000×4000: bản đầy đủ 10,6–13,9 s) giữ làm tham chiếu.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "V3",
-      "ten": "Bỏ sao chép bộ đệm 35 MB",
-      "trang_thai": "xong",
-      "nghiem_thu": "RAM đỉnh −≥30 %; truyền ≈ 0",
-      "bang_chung": "RAM đỉnh 273,9→136,5 MB (−50 %); postMessage ≈0,2 ms; 3/3 trang, 0 lỗi; 481/481 kiểm thử"
-    },
-    {
-      "ma": "V4",
-      "ten": "warp() đọc ảnh gốc một lần",
-      "trang_thai": "xong",
-      "nghiem_thu": "1 lần đọc 12 MP/trang; ảnh ra không đổi",
-      "bang_chung": "3→1 lần đọc; SHA-256 trùng 3/3 ảnh; 0 lỗi trang; 481/481 kiểm thử"
-    },
-    {
-      "ma": "TD-02",
-      "ten": "Chạy kiểm thử/kiểm kiểu/build thật trên môi trường có bun",
-      "trang_thai": "xong",
-      "nghiem_thu": "bunx vitest run, tsgo --noEmit, vite build đều đạt",
-      "bang_chung": "142 tệp / 538 kiểm thử đạt (19,7 s); tsgo --noEmit 0 lỗi; vite build OK (dist + nitro); môi trường sandbox Lovable 10/10/2026"
-    },
-    {
-      "ma": "TD-03",
-      "ten": "Kiểm thử giao diện màn Chỉnh tay (adjust-editor)",
-      "trang_thai": "xong",
-      "nghiem_thu": "6 kiểm thử thành phần đạt: Hủy sạch đóng thẳng; Hủy khi đổi hỏi xác nhận (đồng ý/từ chối); Lưu sạch không gọi onApply; Lưu khi đổi gọi onApply đúng 1 lần với bản nháp; Hoàn tác/Làm lại/Đặt lại bật-tắt đúng; thanh trượt chỉ ghi lịch sử khi thả tay",
-      "bang_chung": "src/components/adjust-editor.test.tsx (mock @/lib/image, @/lib/dialog, CropEditor, Slider; polyfill ResizeObserver); hồi quy 143 tệp / 544 kiểm thử đạt; tsgo --noEmit 0 lỗi"
-    },
-    {
-      "ma": "S2",
-      "ten": "S2",
-      "trang_thai": "xong-phan-1",
-      "ngay": "2026-10-05",
-      "ke_tiep": "S3"
-    },
-    {
-      "ma": "S5",
-      "ten": "S5",
-      "trang_thai": "xong",
-      "ngay": "2026-10-05",
-      "ke_tiep": "S6"
-    },
-    {
-      "ma": "S8",
-      "ten": "Nhat ky phien IndexedDB, tu luu, khoi phuc sau tai lai, commit khong trung; 5/5 test",
-      "trang_thai": "xong",
-      "ngay": "05/10/2026",
-      "ke_tiep": "S9"
-    },
-    {
-      "ma": "S8b",
-      "ten": "O trang thai tung anh + Thu lai/Bo",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "S10f",
-      "ten": "S10f",
-      "trang_thai": "xong-phan-1",
-      "kiem_thu": "366/366",
-      "ke_tiep": "S10g"
-    },
-    {
-      "ma": "S10g",
-      "ten": "S10g",
-      "trang_thai": "xong",
-      "kiem_thu": "367/367",
-      "ke_tiep": "S10h",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: XONG (bước trung gian) — 367/367 kiểm thử; kết quả gộp vào S10h…S10m (S10m xong).",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S10h",
-      "ten": "S10h",
-      "trang_thai": "xong-phan-1",
-      "bang_chung": "progress/S10/s10h/out_5..7.jpg – vệt xiên dài mép phải trang 5 đã xoá, chữ giữ nguyên; trang 6, 7 không đổi",
-      "kiem_thu": "366/366 (app-routing cần routeTree.gen.ts tự sinh)",
-      "ke_tiep": "S10i"
-    },
-    {
-      "ma": "S10i",
-      "ten": "S10i",
-      "trang_thai": "xong-phan-1",
-      "bang_chung": "progress/S10/s10i/out_5..7.jpg – trang 5 hết vệt đứt nét xiên phía trên; trang 6 hết phần lớn vạch dọc mép trái dưới; chữ, dòng chấm, bảng không đổi; trang 7 không đổi",
-      "kiem_thu": "369/370 (app-routing cần routeTree.gen.ts tự sinh)",
-      "ke_tiep": "S10j"
-    },
-    {
-      "ma": "S10k",
-      "ten": "S10k",
-      "trang_thai": "xong-phan-1",
-      "bang_chung": "progress/S10/s10k/out_5..7.jpg – trang 6 hết mép sắc mảng xám (x≈449 từ 199–217 lên 255); trang 5 bảng, chữ giữ nguyên; trang 7 không đổi",
-      "kiem_thu": "372/372 (app-routing cần routeTree.gen.ts tự sinh)",
-      "ke_tiep": "S10l"
-    },
-    {
-      "ma": "S11p",
-      "ten": "trustTopCells: ô dải trên mực 60–149 được nắn khi góc khớp ô cùng bên dải kề (≤ 0,75°)",
-      "trang_thai": "xong-phan-1",
-      "kiem_thu": "24/24 kiểm thử S11 (3 mới)",
-      "ke_tiep": "S11q"
-    },
-    {
-      "ma": "S11q",
-      "ten": "…555: ô dải 2 phải (mực 84) nay được nắn −1,125 → −0,625°, nhưng ô dải 1 phải xấu đi −1,625 → −2,375° nên lượt bị bỏ; thêm thử ½ góc (còn tệ hơn −2,875°). …556/…557 không đổi, nền 247, 0 lỗi trang",
-      "trang_thai": "cho",
-      "bang_chung": "progress/S11/s11q/r555.txt",
-      "kiem_thu": "S11 đạt hết",
-      "ke_tiep": "S11r",
-      "trang_thai_cu": "da-do-chua-dat",
-      "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16; bước kế 'S11r' đã có trong mã (lineSkewRefineBand0 + s11r-band0.test.ts) nhưng chưa ghi vào tiến độ.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S12",
-      "ten": "scan-diagnose.ts + aiScanDiagnose",
-      "trang_thai": "xong-phan-1",
-      "kiem_thu": "4/4",
-      "ke_tiep": "S12b"
-    },
-    {
-      "ma": "S12b",
-      "ten": "Khung Chẩn đoán AI trong bảng Bộ lọc: xác nhận, vùng đánh dấu, gắn phiên bản",
-      "trang_thai": "xong",
-      "ke_tiep": "S12c"
-    },
-    {
-      "ma": "S12c",
-      "ten": "S12c",
-      "trang_thai": "cho",
-      "ngay": "2026-10-07",
-      "kiem_thu": "s12-scan-diagnose 5/5 bằng bộ chạy thay thế (không có bun/vitest); tsc strict sạch scan-diagnose.ts; chưa chạy hồi quy đầy đủ, tsgo, vite build",
-      "con_lai": "Hồi quy đầy đủ; chạy run_s12c.py với AI thật (3 lời gọi); kiểm UI (xác nhận/Hủy/đổi bộ lọc/ngoại tuyến); soi log máy chủ; điền bảng Q1–Q4",
-      "da_lam": "Rà soát S12/S12b theo tiêu chí đề án; sửa lệch trần dung lượng (cổng chặn 8 MB, máy chủ ≈ 3 MB → một hằng MAX_DATA_CHARS dùng chung); thêm 1 kiểm thử; soạn progress/S12/s12c/run_s12c.py (chưa chạy thử)",
-      "ke_tiep": "S12c",
-      "trang_thai_cu": "dang-lam",
-      "ket_luan_hm13": "HM-13: CHUYỂN HM-14/TD-01 — hồi quy đầy đủ nay đã chạy (860/860, tsc, build); còn thiếu: chạy AI thật 3 lời gọi, kiểm UI Chẩn đoán, 4 quyết định chủ dự án (TD-15).",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S13",
-      "ten": "src/lib/edit-session.ts: phiên chỉnh tay (bản nháp tách khỏi bản đã lưu, hoàn tác/làm lại, đặt lại, hủy, lưu chỉ báo changed khi khác), cropSafety (hộp chữ/chữ ký/bảng có bị khung cắt không), sameAspect (ảnh xuất ↔ xem trước); S13 phần 2 – src/lib/edit-view.ts: fitScale/actualScale (phóng 100% theo dpr), clampPan, zoomAt (điểm neo đứng yên), centerOn (nhảy tới vùng bị báo cắt), boxFromPixels/boxFromLine (OCR/dòng chữ → hộp nội dung cho cropSafety)",
-      "trang_thai": "xong",
-      "ngay": "2026-10-07",
-      "kiem_thu": "s13-edit-session 14 + s13b-edit-view 8 = 22/22 bằng bộ chạy thay thế (lần chạy đầu 2 lỗi do kỳ vọng sai trong test, đã sửa test, mã không đổi); tsc strict sạch edit-session.ts, edit-view.ts; CHƯA chạy vitest, tsgo toàn dự án, build",
-      "con_lai": "Hồi quy đầy đủ (cùng S12c); nối giao diện vào doc.$id.tsx (Hủy/Hoàn tác/Đặt lại/Lưu, xem vùng cắt, phóng 100% bằng edit-view, nguồn hộp nội dung từ recognizeWords/detectTextLines, hộp chữ ký/bảng chưa có nguồn); xoay chỉnh nghiêng; gợi ý nắn cong + độ tin cậy; kiểm ảnh xuất + PDF sau nén khớp xem trước; Playwright/UAT",
-      "ghi_chu": "đang làm – lõi thuần (S13/S13b/S13c) và màn Chỉnh tay đã viết; CHƯA kiểm chứng, thiếu vùng cắt trên giao diện, xoay mịn, đối chiếu xuất/PDF",
-      "ke_tiep": "S12c (chạy thật) rồi S13b: nối giao diện",
-      "trang_thai_cu": "dang-lam",
-      "ket_luan_hm13": "HM-13: XONG — edit-session.ts/edit-view.ts đang được AdjustEditor dùng; 22 kiểm thử S13 + hồi quy đầy đủ đạt.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S13b",
-      "ten": "src/components/adjust-editor.tsx (AdjustEditor) nối vào doc.$id.tsx: nút 'Chỉnh tay đầy đủ' trong khung Bộ lọc mở màn toàn khung; So sánh (ImageCompare) / Xem chữ nhỏ (dựng đầy đủ, Vừa khung ↔ 100%, kéo dịch); Hoàn tác/Làm lại/Đặt lại; Cắt/4 góc (CropEditor lồng, đi qua bản nháp); Xoay 90°; bộ lọc; sáng/tương phản ghi lịch sử khi thả tay; Hủy hỏi xác nhận khi có thay đổi; Lưu chỉ gọi editPage khi changed; Hủy/rời màn hình không đổi trang đã lưu",
-      "trang_thai": "xong",
-      "ngay": "2026-10-07",
-      "kiem_thu": "tsc strict với kiểu giả cho react/lucide/UI: adjust-editor.tsx không lỗi (đã chèn lỗi cố ý để chứng minh kiểm kiểu chạy); cú pháp doc.$id.tsx và adjust-editor.tsx sạch; KHÔNG có kiểm thử vitest mới cho màn hình; chưa chạy build, Playwright, thiết bị thật",
-      "ghi_chu": "đã viết, CHƯA kiểm chứng (chưa chạy trình duyệt/vitest/build)",
-      "ke_tiep": "S13c: vùng cắt an toàn + xoay mịn + đối chiếu xuất/PDF; trước đó chạy S12c/hồi quy trên máy có bun",
-      "trang_thai_cu": "dang-lam",
-      "ket_luan_hm13": "HM-13: XONG — AdjustEditor đã nối doc.$id.tsx (R1.1/R1.2), có 6 kiểm thử thành phần (adjust-editor.test.tsx), build OK, hồi quy V3 mở/lưu/xuất đạt; chưa thử máy thật → HM-14.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S13c",
-      "ten": "Đo nguồn hộp nội dung cho cảnh báo cắt trên 3 ảnh gốc: detectTextLines KHÔNG dùng được (7–9 dòng/~25, nối sai, thiếu nửa dải hai đầu, dính hình mờ XIAOMI/trang kế); OCR dùng được (…555: 233 từ trong, 66 hẳn ngoài, 8 vắt ngang mép khi thử khung lẹm). Thêm edgeCutCheck (edit-session.ts) và boxFromOcrWord (edit-view.ts)",
-      "trang_thai": "xong",
-      "ngay": "2026-10-07",
-      "bang_chung": "progress/S13/s13c/ocr-555-cat-ngang.png, progress/S13/s13c/textlines-3-anh-goc.png, progress/S13/README-S13.md",
-      "kiem_thu": "28/28 kiểm thử S13 bằng bộ chạy thay thế (+6 mới); tsc strict sạch; chưa vitest/tsgo/build",
-      "con_lai": "ocr.ts trả hộp điểm ảnh + độ tin cậy; nối cảnh báo vùng cắt vào AdjustEditor (chạy nền, hủy khi đóng); hộp chữ ký/bảng; xoay mịn; nắn cong; đối chiếu xuất/PDF",
-      "ghi_chu": "đã đo nguồn hộp + viết phần thuần, CHƯA nối giao diện, CHƯA kiểm chứng đầy đủ",
-      "ke_tiep": "S12c chạy thật + hồi quy; sau đó S13d: nối cảnh báo cắt (OCR) vào AdjustEditor",
-      "trang_thai_cu": "dang-lam",
-      "ket_luan_hm13": "HM-13: XONG — nguồn hộp bằng OCR đã nối (recognizeWordBoxes, boxFromOcrWord, edgeCutCheck dùng ở AdjustEditor/CropEditor; S13d, R1.5); phần còn lại là TD-07 (hộp chữ ký/bảng) vẫn mở ở docs/NO-KY-THUAT.md.",
-      "ngay_ra_soat": "2026-10-13"
-    },
-    {
-      "ma": "S13b_UI",
-      "ten": "S13b_UI",
-      "trang_thai": "xong",
-      "ngay": "07/10/2026",
-      "ket_qua": "12/12 Playwright"
-    },
-    {
-      "ma": "S13d",
-      "ten": "Nối cảnh báo cắt chữ bằng OCR vào AdjustEditor (đã có trong mã); đóng TD-23 (useBlocker chặn rời màn khi có nháp), TD-24 (aria-pressed/aria-labelledby), TD-25 (chuẩn hoá góc xoay % 360). Kiểm thử: 146 tệp / 561 đạt, tsgo sạch, vite build OK.",
-      "trang_thai": "xong",
-      "ngay": "10/10/2026"
-    },
-    {
-      "ma": "P0",
-      "ten": "Nền tảng đề án v4: chuẩn hoá tiến độ, đóng gói, khung Playwright, số hồi quy",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "Trang tiến độ hiện đủ S11p→S13d; ZIP sạch node_modules/.git; kịch bản Playwright chung xanh 2 viewport",
-      "kiem_thu": "146 tệp / 561 kiểm thử đạt; build OK",
-      "bang_chung": "de-an-nang-cap-scan/kiem-chung/P0.3/ (4 ảnh chụp + ket-qua.json); /mnt/documents/giayto-scan-P0.2-20261010.zip",
-      "ke_tiep": "P1.1"
-    },
-    {
-      "ma": "P1.1",
-      "ten": "Baseline perf-stats",
-      "trang_thai": "xong-phan-1",
-      "ngay": "2026-10-10",
-      "kiem_thu": "b09 3/3; hồi quy 146 tệp / 561 kiểm thử đạt",
-      "con_lai": "Ảnh tĩnh lặp lại nên app chỉ dựng 1–2 trang/10 lần bấm (render 2,7–2,9 s; bộ Q chưa có số render) – cần video có trang thay đổi hoặc máy thật để có median/p90 render/normalize đủ mẫu",
-      "bang_chung": "kiem-chung/P1.1/ (s1-V1/V13/Q.json, ảnh chụp, ket-qua.json). Camera giả từ ảnh vàng, 10 lần bấm/bộ, 390×844: nhả nút trung vị 24/33/31 ms (p90 31/54/56); tổng 3,9/6,2/5,3 s; RAM đỉnh 119/135/55 MB; nhập ảnh 2 viewport 0 lỗi console; 0 lỗi trang",
-      "ke_tiep": "P1.2",
-      "ghi_chu": "Thiếu số trên điện thoại tầm trung → R2.5"
-    },
-    {
-      "ma": "P1.2",
-      "ten": "Chụp liên tục + cảnh báo mờ/rung/thiếu sáng",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "Cảnh báo thiếu sáng hiện khi cảnh tối, không hiện khi đủ sáng; mờ/rung (focus-gate) đã có",
-      "bang_chung": "kiem-chung/P1.2/ (dark.mjpeg.png, V1.mjpeg.png); p12-low-light.test.ts 3/3; hồi quy 147 tệp / 564 kiểm thử đạt; 0 lỗi trang",
-      "ke_tiep": "P1.3"
-    },
-    {
-      "ma": "P1.3",
-      "ten": "Bắt khung 4 góc thời gian thực trên ảnh nhỏ 320–480 px",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "Marker 4 góc hiện theo khung dò được mỗi nhịp camera, sáng mạnh khi khoá khung; bản dò tự leo 320→480 khi mất khung ≥6 nhịp, về 320 khi khoá",
-      "bang_chung": "live-detect.test.ts 5/5; hồi quy 148 tệp / 569 kiểm thử đạt; build OK",
-      "ke_tiep": "P1.4"
-    },
-    {
-      "ma": "P1.4",
-      "ten": "Cảnh báo chất lượng khi chụp",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "Bấm chụp khi khung kém (tối/lóa/mờ/nghiêng/xa) hiện cảnh báo đúng nguyên nhân, mức reject nói rõ ảnh có thể kém; tự chụp không bắn khi tối nặng",
-      "bang_chung": "capture-quality.test.ts 7/7; hồi quy 149 tệp / 576 kiểm thử đạt; build OK",
-      "ke_tiep": "P2"
-    },
-    {
-      "ma": "P3.1",
-      "ten": "Khung cắt an toàn + hút góc",
-      "trang_thai": "xong",
-      "nghiem_thu": "Chặn khung chéo/nhỏ/méo; hút góc ≤ 2%",
-      "bang_chung": "crop-quad.ts + crop-quad.test.ts 8/8; hồi quy 151 tệp / 591 kiểm thử đạt; tsgo sạch"
-    },
-    {
-      "ma": "P3.2",
-      "ten": "Hút cạnh theo mép giấy + xoay mịn ±5°",
-      "trang_thai": "xong",
-      "nghiem_thu": "Hút cạnh ≤ 3%; xoay ±5° bước 0,5°",
-      "bang_chung": "crop-quad.test.ts 13/13; hồi quy 151 tệp / 596 kiểm thử đạt; tsgo sạch; đóng TD-08"
-    },
-    {
-      "ma": "P4",
-      "ten": "Nắn phẳng/dewarp — gợi ý nắn cong + độ tin cậy, người dùng quyết định",
-      "trang_thai": "xong",
-      "nghiem_thu": "Gợi ý hiện khi trang cong, kèm độ tin cậy; Áp dụng/Giữ nguyên ghi vào bản nháp",
-      "bang_chung": "dewarp-suggest.ts (gộp độ cong mép giấy + dòng chữ, ngưỡng 0,35) + dewarp-suggest.test.ts 4/4; PageEdit.flatten (auto/bật/tắt) luồng qua renderGeometry→warp; màn Chỉnh tay hiện thẻ gợi ý + nút Tự động; hồi quy 152 tệp / 600 kiểm thử đạt; tsgo sạch; build OK; đóng TD-09"
-    },
-    {
-      "ma": "P5",
-      "ten": "Bộ lọc & chất lượng — gợi ý bộ lọc theo chỉ số chất lượng + độ tin cậy",
-      "trang_thai": "xong",
-      "nghiem_thu": "filter-suggest.test.ts 10/10; hồi quy 153 tệp / 610 kiểm thử đạt; tsgo sạch; build OK"
-    },
-    {
-      "ma": "P6",
-      "ten": "Danh sách trang & Thêm",
-      "trang_thai": "xong",
-      "nghiem_thu": "page-list.ts: dời/xóa/chèn/nhân bản trang giữ đúng trang đang xem; Nhập thêm chèn sau trang hiện tại; 154 tệp / 620 kiểm thử đạt, tsgo sạch"
-    },
-    {
-      "ma": "P8.2",
-      "ten": "Nhận loại tài liệu từ chữ OCR",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "doc-type.ts: chấm điểm từ khoá + mẫu định dạng (biển số/MST/GPLX) theo 6 mẫu VN_TEMPLATES, bỏ dấu bền lỗi OCR, null khi không đủ chắc; P8.1 xác nhận đã có (page-grade.ts)",
-      "kiem_thu": "doc-type.test.ts 9/9; hồi quy 157 tệp / 638 kiểm thử đạt",
-      "ke_tiep": "P8.3 bộ chọn công thức xử lý + tự kiểm"
-    },
-    {
-      "ma": "P8.3",
-      "ten": "Bộ chọn công thức xử lý + tự kiểm",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "recipe.ts: pickRecipe kết hợp page-grade + filter-suggest + doc-type (giữ màu cho giấy tờ có dấu/ảnh, làm rõ chữ cho hợp đồng/hoá đơn); selfCheck so điểm trước/sau, lùi công thức an toàn hoặc ảnh gốc khi tụt",
-      "kiem_thu": "recipe.test.ts 8/8; hồi quy 158 tệp / 646 kiểm thử đạt",
-      "ke_tiep": "P8.4 theo đề án v4; song song B13 UAT điện thoại thật"
-    },
-    {
-      "ma": "P8.4",
-      "ten": "Tự áp công thức xử lý cho trang mới sau khi quét",
-      "trang_thai": "xong",
-      "ngay": "2026-10-10",
-      "nghiem_thu": "recipe-apply.ts: planRecipes chỉ đổi bộ lọc trang mới còn bộ lọc mặc định và đã có số đo; theo loại giấy tờ (doc-type); applyRecipes bỏ qua trang người dùng đã đổi; nối vào runPostCapture (công tắc settings.autoRecipe, mặc định bật)",
-      "kiem_thu": "recipe-apply.test.ts 4/4; hồi quy 159 tệp / 650 kiểm thử đạt",
-      "ke_tiep": "P8.5 theo đề án v4; song song B13 UAT điện thoại thật"
-    },
-    {
-      "ma": "P8.5",
-      "ten": "Áp dụng cho trang tương tự",
-      "trang_thai": "xong",
-      "ket_qua": "similar-pages.ts; 160 tệp / 654 kiểm thử đạt",
-      "ke_tiep": "P8.6 Học theo người dùng; song song B13 UAT"
-    },
-    {
-      "ma": "P2",
-      "ten": "Hàng đợi nền bền IndexedDB",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "P2.1",
-      "ten": "Gom worker thành 1 bể",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R2.1, R2.2 | R2.1, R2.2 xong (đồng bộ 11/10/2026)",
-      "bang_chung": "R2.2: gom page + compress vào bể worker chung (6 loại việc, ưu tiên detect>preview>normalize>pixels>page>compress); xóa 2 worker riêng; 174 tệp / 782 kiểm thử đạt"
-    },
-    {
-      "ma": "P2.2",
-      "ten": "Bỏ data URL (TD-04)",
-      "trang_thai": "xong",
-      "ghi_chu": "Còn 15 tệp → R1.3, R1.4 | R1.3, R1.4 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P2.3",
-      "ten": "Cache theo khoá + xử lý theo ô",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R2.3 | R2.3 xong (đồng bộ 11/10/2026)",
-      "bang_chung": "R2.3: tile.ts chia ô 1024 px chồng lấn ≥32 px cho ảnh >12 MP / cạnh >4096 (ruột các ô phủ kín không chồng, kể cả kích thước lẻ); cache theo khoá đã có ở render-cache.ts (Lru + geoKey/resultKey); 175 tệp / 791 kiểm thử đạt"
-    },
-    {
-      "ma": "P2.4",
-      "ten": "Xoá thuật toán cũ",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R2.6 | R2.6 xong 11/10/2026"
-    },
-    {
-      "ma": "P3.3",
-      "ten": "Tô vùng sắp cắt (TD-05) + hộp OCR (TD-06)",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R1.5 | R1.5 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P3.4",
-      "ten": "Trang báo ngang",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "P5.1",
-      "ten": "Một cửa chỉnh (TD-11/12)",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R1.1 | R1.1 xong 11/10/2026"
-    },
-    {
-      "ma": "P5.2",
-      "ten": "Xem trước WebGL + thanh 0–100",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R2.4 | R2.4 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P5.3",
-      "ten": "Tinh chỉnh 7 bộ lọc theo 17.4",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R6.1 | R6.1 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P5.4",
-      "ten": "So sánh, Áp dụng tất cả, chặn rời màn (TD-23)",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R1.2 | R1.2 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P6.1",
-      "ten": "Dán ảnh, HEIC",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "P6.2",
-      "ten": "Phân loại ảnh nhập + pHash",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R4.1 (đã xong) | R4.1 xong (đồng bộ 11/10/2026)",
-      "bang_chung": "R4.1: lib/dedupe-phash.ts (pHash 64 bit + phân loại flat/screenshot/photo), tích hợp importer.ts; 174 tệp / 776 kiểm thử đạt, tsgo sạch"
-    },
-    {
-      "ma": "P6.3",
-      "ten": "Lưới kéo-thả, chọn nhiều, ô Thêm",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R4.2 | R4.2 xong (đồng bộ 11/10/2026)",
-      "bang_chung": "R4.2: lưới kéo-thả + chọn nhiều + ô + Thêm + nhãn tiến độ; 174 tệp / 781 kiểm thử đạt"
-    },
-    {
-      "ma": "P7",
-      "ten": "Gói đầy đủ ZIP, xuất hàng loạt",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "P7.1",
-      "ten": "Xuất 1 chạm + PDF 3 mức + khớp xem trước",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R5.1, R3.5 | R5.1, R3.5 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P7.2",
-      "ten": "OCR ẩn trong PDF",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R5.2 | R5.2 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P7.3",
-      "ten": "UAT máy thật",
-      "trang_thai": "cho",
-      "ghi_chu": "CHẶN – chờ người dùng thử máy thật → R6.4"
-    },
-    {
-      "ma": "P7.4",
-      "ten": "Đề án bản cuối",
-      "trang_thai": "cho",
-      "ghi_chu": "→ R6.5"
-    },
-    {
-      "ma": "P8.1",
-      "ten": "Chấm điểm trang (page-grade.ts)",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "P8.6",
-      "ten": "Học theo người dùng",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R3.3 | R3.3 xong (đồng bộ 11/10/2026)"
-    },
-    {
-      "ma": "P8.7",
-      "ten": "Chế độ Tự động mặc định",
-      "trang_thai": "xong",
-      "ghi_chu": "→ R3.5 | R3.5 xong 11/10/2026"
-    },
-    {
-      "ma": "HM-01",
-      "ten": "Bộ kiểm thử thoát mã 0 + cài đặt tái lập",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V2",
-      "uu_tien": "P1",
-      "nghiem_thu": "npx vitest run thoát mã 0, 0 unhandled error, số kiểm thử ≥ 830; tsc --noEmit sạch, vite build OK; Lệnh cài đặt ghi rõ trong README/TIEP-THEO, chạy được trên npm",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P02_HM01_20261012.zip",
-      "bang_chung": "Sửa: src/test/app-routing.test.tsx (stub indexedDB rỗng beforeAll/afterAll). Chống tái diễn: vitest tự đỏ (mã 1) nếu còn unhandled error; lệnh + yêu cầu kiểm mã thoát ghi ở TIEP-THEO.md. Test ĐỎ với mã cũ (2 passed + 1 error, EXIT 1), XANH với mã mới (183 tệp/830, EXIT 0). Khai báo @testing-library/dom trong package.json chờ Q2."
-    },
-    {
-      "ma": "HM-02",
-      "ten": "Xin lưu trữ bền vững + hiện dung lượng",
-      "trang_thai": "bo-qua",
-      "nhan_chi_tiet": "Hủy",
-      "uu_tien": "P1",
-      "nghiem_thu": "Gọi navigator.storage.persist() một lần, có kiểm thử; Mục Tôi hiện đã dùng/khả dụng (storage.estimate), cảnh báo khi > 80%; Trình duyệt không hỗ trợ: im lặng có chủ đích, không lỗi console",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P03_HM02_20261012.zip",
-      "bang_chung": "Đã có sẵn: src/lib/persist.ts (persistOnce, gọi từ db.ts:92 sau saveDoc và offline.ts:128; test hồi quy) và src/routes/me.tsx:56,172-173 (storage.estimate, cảnh báo ≥80% / ≥95%). Không đổi mã. Chưa xác minh trên trình duyệt thật việc persist() được cấp (tùy trình duyệt)."
-    },
-    {
-      "ma": "HM-03",
-      "ten": "Bảo vệ server function AI",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P1",
-      "nghiem_thu": "Theo phương án bạn chọn ở Q1: gọi AI khi chưa đăng nhập bị từ chối hoặc bị giới hạn N lần/giờ; Thông báo tiếng Việt rõ, không mất ảnh đang làm; Kiểm thử cho nhánh từ chối/giới hạn",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P06_HM03_20261012.zip",
-      "bang_chung": "Q1=(b) do người dùng chốt. Mới: src/lib/ai-limit.ts (bộ đếm cửa sổ cố định theo IP, clientKey cf-connecting-ip→x-real-ip→x-forwarded-for, limitFromEnv, limitedFail), ai-limit.test.ts (10 ca). Sửa: ai.server.ts (aiGate), ai.functions.ts (13 hàm gọi aiGate đầu handler), scan-errors.ts (mã AI_LIMIT, không tự thử lại), errors.ts (friendlyError nhận 'hết lượt AI'). Mặc định 60 lần/giờ/IP (số này do mình chọn — chỉnh bằng biến môi trường AI_RATE_LIMIT_PER_HOUR; 0 = tắt). V3 (máy chủ wrangler, giới hạn 3): lần 1–3 qua, lần 4–5 trả 429 'Hết lượt AI…', UI hiện 'Đã hết lượt AI trong giờ này' (trước khi "
-    },
-    {
-      "ma": "HM-04",
-      "ten": "Thanh công cụ màn tài liệu không gãy hàng",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "360/390/1366 px: mọi nút trên 1 hàng hoặc cuộn ngang có chủ đích, không khoảng trống thừa; Không tràn ngang, không che nội dung; Ảnh trước/sau trong evidence/",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P05_HM04_20261012.zip",
-      "bang_chung": "Sửa src/routes/doc.$id.tsx (+3/−3): nav grid-cols-8; span Xuất/Tùy chọn thành 'col-span-2 grid grid-cols-2' (giữ opacity khi đang xử lý); Tool thêm whitespace-nowrap. V3 trước: 4/4 viewport LỖI (2 hàng, cao 130); sau: 4/4 ĐẠT (1 hàng, cao 66, nút hẹp nhất 44 px ở 360, không cắt chữ, không tràn ngang). Chống tái diễn: scripts/playwright/kiem-thanh-cong-cu.mjs (cần playwright-core; xem đầu tệp). Hồi quy: vitest EXIT 0 833 đạt; V3 54 lượt 0 pageerror/0 tràn ngang, nhập→xuất PDF, ngoại tuyến 4/4. Chưa kiểm: thiết bị thật; trạng thái 'đang xử lý' (opacity) chỉ rà mã, chưa chụp."
-    },
-    {
-      "ma": "HM-05",
-      "ten": "Vùng chạm và nhãn nút (Tôi, So sánh, Đăng nhập)",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P3",
-      "nghiem_thu": "Vùng chạm chính ≥ 40 px (ngoại lệ ghi lý do); Không đổi bố cục ngoài phạm vi",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P10_HM05_20261012.zip",
-      "bang_chung": "78 → 1 vùng chạm < 40 px (ngoại lệ duy nhất: liên kết 'Đăng nhập' nằm giữa câu ở /sync). Sửa chỉ lớp Tailwind, 14 tệp: ui/button.tsx (default h-10, sm h-10, icon h-10 w-10, lg h-11 — tăng 4–8 px toàn app), ui/input.tsx (h-10), ui/switch.tsx (vùng chạm vô hình 44×44 bằng ::after, hình dạng không đổi), me.tsx, naming-rules.tsx, compare.tsx, id-photo.tsx, auth.tsx, convert-progress.tsx, documents.tsx, library-ui.tsx, index.tsx. Không đổi nhãn/logic. V3: hồi quy 54 lượt 0 pageerror/0 tràn ngang (390/360/1366), thanh công cụ màn tài liệu vẫn đạt 4/4 viewport, nhập→xuất OK, ngoại tuyến 4/4; xem ảnh "
-    },
-    {
-      "ma": "HM-06",
-      "ten": "Rà hook thiếu phụ thuộc + lỗi lint thật",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "Mỗi cảnh báo: sửa có kiểm thử hoặc ghi lý do giữ (eslint-disable có chú thích); eslint còn 0 lỗi ngoài prettier; 830+ kiểm thử đạt",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P09_HM06_20261012.zip",
-      "bang_chung": "eslint (bỏ prettier): trước 9 lỗi + 17 cảnh báo (7 hooks + 10 react-refresh); sau 1 lỗi (tệp tự sinh) + 10 cảnh báo react-refresh. Tệp sửa: scan.tsx (deps queueFinish, setTip; biến ring), priority-gate.ts, docx.ts/pptx.ts/xlsx.ts (chú thích lý do + xlsx tách const base), adjust-editor.tsx, share-link-panel.tsx, signature-placer.tsx, s.$token.tsx (eslint-disable có lý do), b08-priority.test.ts, edge-dash.regression.test.ts, s13-edit-session.test.ts (let→const). KHÔNG đổi hành vi (sửa thuần lint/ghi chú) nên không thêm test mới; chống tái diễn = lệnh eslint ghi ở TIEP-THEO.md (chưa có CI; thêm n"
-    },
-    {
-      "ma": "HM-07",
-      "ten": "OCR: báo rõ khi không tải được gói nhận chữ (không tự lưu gói)",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "Mất mạng ngay lần đầu vẫn OCR được (hoặc báo rõ 'cần tải gói nhận chữ' kèm nút tải); 0 pageerror trong luồng OCR khi CDN bị chặn; Kích thước tăng thêm ghi rõ",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P07_HM07_20261012.zip",
-      "bang_chung": "Mới: ocr-unavailable.test.ts (6 ca, ĐỎ→XANH). Sửa: ocr-worker.ts (OcrUnavailableError, ocrWorkerUrl, assertOcrReachable chạy trước createWorker, dùng chung cho sharedOcr/extraOcr), ocr-queue.ts (firstOcrFailure), errors.ts (nhận biết lỗi gói nhận chữ), doc.$id.tsx (báo lỗi cả khi tất cả trang lỗi). V3 trước: bấm 'Trang này' khi CDN không tới → pageerror=1, không thông báo (kết luận 'im lặng' dựa trên mã + test; chưa chụp toast ở mốc 2,5 s trước khi sửa). Sau: pageerror=0, toast 'Chưa tải được gói nhận chữ… vào Tôi → Tải sẵn…'. CDN tới được (mô phỏng): không bị chặn nhầm, 0 lỗi. Hồi quy V3 54 l"
-    },
-    {
-      "ma": "HM-08",
-      "ten": "Service worker: phiên bản theo build, không nuốt lỗi precache",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "VERSION đổi tự động mỗi bản build; Precache lỗi được ghi nhận, không cài SW hỏng; Kiểm V3: cập nhật bản mới, ngoại tuyến 4 route",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P08_HM08_20261012.zip",
-      "bang_chung": "Sửa: public/sw.js (VERSION từ ?v=; install: '/' và manifest bắt buộc, tệp phụ allSettled + console.warn; activate: chuyển gn-vN-ocr→gn-ocr-v1 rồi dọn bộ đệm khác, giữ gn-share và gn-ocr-v1, so tiền tố `${VERSION}-`; staleWhileRevalidate trả Response.error() thay vì undefined), src/lib/offline.ts (swScriptUrl, isAppSwUrl; unregisterAppSw nhận ?v=), vite.config.ts (define __BUILD_ID__ từ BUILD_ID/GITHUB_SHA/CF_PAGES_COMMIT_SHA hoặc thời điểm build), src/build-id.d.ts. Test mới: sw-behavior.test.ts (7 ca chạy sw.js trong sandbox Node; 6 ca ĐỎ với sw.js cũ), sw-register.test.ts (2 ca). V3 (trình d"
-    },
-    {
-      "ma": "HM-09",
-      "ten": "Đo tải trang; bỏ ~0,7 MB nạp sớm ở màn Công cụ",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P3",
-      "nghiem_thu": "Có số đo trước/sau trên cùng máy; Không gói > 500 KB tải ở trang chủ trừ khi cần",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P11_HM09_20261012.zip",
-      "bang_chung": "SỐ ĐO (cùng máy, 1 lần chạy mỗi mốc — chưa lặp nhiều lần nên sai số ~±100 ms): /tools JS 1.630→930 KB, truyền 575→326 KB (−43%), LCP mạng chậm 3.972→3.264 ms (−18%); / và /doc không đổi (LCP ~3,23 s và ~3,43 s ở mạng chậm giả lập). Sửa: src/routes/tools.tsx (React.lazy cho DigitalSignDialog trong Suspense, import() verifyPdfSignature tại điểm dùng, prefetchSigning: tải trước sau 4 s khi rảnh, bỏ qua nếu saveData — để ký số vẫn dùng được ngoại tuyến), src/lib/heavy-imports.test.ts (mới, 2 ca, ĐỎ→XANH: cấm import tĩnh thư viện nặng; allowlist pdf-sign/p12; cấm routes import tĩnh mô-đun ký số). V"
-    },
-    {
-      "ma": "HM-10",
-      "ten": "Bố cục màn rộng (đề xuất)",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3 (P17)",
-      "uu_tien": "P3",
-      "nghiem_thu": "Chỉ làm nếu bạn muốn; 360–1366 px không hồi quy",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "con_lai": "Tùy chọn — làm nếu bạn muốn (bố cục màn rộng)"
-    },
-    {
-      "ma": "HM-11",
-      "ten": "R6.1e: giữ khối màu bão hoà ở mép trang (Q3=a)",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "Ảnh NB đạt cổng R6.1 ≥ 7/8, 221 ca cũ vẫn đạt; 830+ kiểm thử đạt",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P15_HM11_20261013.zip",
-      "bang_chung": "Sửa: src/lib/ink-deepen.ts (SAT_FLOOR 0,6; EDGE_BAND 8%; edgeSaturatedMask; inkDeepen nhận mặt nạ tuỳ chọn — KHÔNG có mặt nạ thì hành vi cũ), pixels.ts (docChain truyền mặt nạ), image.ts (auto/sharp lượt hai, gray: mặt nạ lập trước khi xám hoá, mono: điểm màu mép hiện xám 110 thay vì đen, magic: sàn 0,6). Test: ink-deepen.test.ts +4 ca (ĐỎ→XANH). KẾT QUẢ: 221 ca cũ 221/221 (không hồi quy; ΔL đổi tb −0,03, tệ nhất −2,66 ở 8 ca); NB 1/13 → 8/13 (auto, 6 tổ hợp auto+công cụ, ink); NB auto: góc dưới-trái 42,6% → 0,5%, ΔL 83,5→80,4. TIÊU CHÍ ĐỀ ÁN 'NB ≥ 7/8 cấu hình' CHƯA ĐẠT: 5 ca NB trượt (magic "
-    },
-    {
-      "ma": "HM-12",
-      "ten": "R6.2 phần 2: so OCR với CamScanner",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3 (P17): app 98,68% vs Cam 98,88%",
-      "uu_tien": "P2",
-      "nghiem_thu": "Có ảnh Cam cùng trang + tesseract vie; OCR app ≥ Cam − 2%",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "con_lai": "Chờ ảnh CamScanner cùng trang + máy có tesseract tiếng Việt"
-    },
-    {
-      "ma": "HM-13",
-      "ten": "Rà 13 mục S/V cũ đang dở",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V1",
-      "uu_tien": "P3",
-      "nghiem_thu": "Mỗi mục: xong / hủy / chuyển thành thẻ mới, có lý do",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P12_HM13_20261013.zip",
-      "bang_chung": "Kết quả: 6 XONG (S1, S10d, S10g, S13, S13b, S13c), 1 HỦY (S7d), 6 CHỜ (S11f/l/n/q → Q5/HM-16; V0, S12c → HM-14). Cập nhật de-an-nang-cap-scan/tien-do.json (trang_thai, trang_thai_cu, ket_luan_hm13, ngay_ra_soat), LO-TRINH.md (bảng đếm: xong 73, xong-phan-1 17, cho 9, bo-qua 1), TIEP-THEO.md, tệp mới docs/RA-SOAT-MUC-CU-HM13.md. KHÔNG đổi mã app. ĐO LẠI nhóm S11 trên 3 ảnh Q (bản build hiện tại, qua 'Tự dò góc'): nửa trên max|góc| 2,25°/1,75°/0,75°, nửa dưới 1,25°/1,00°/1,00° (chỉ tiêu ≤0,5°/ô → CHƯA đạt); nhìn ảnh …555 dòng chữ thẳng, chỉ tiêu đề bên phải hơi cụp. GIỚI HẠN: kịch bản đo cũ khôn"
-    },
-    {
-      "ma": "HM-14",
-      "ten": "R6.4 UAT máy thật + R6.5 đề án cuối",
-      "trang_thai": "cho",
-      "nhan_chi_tiet": "Chưa làm",
-      "uu_tien": "P2",
-      "nghiem_thu": "Bạn chấm Đạt/Không đạt; lỗi phát sinh thành thẻ mới",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "con_lai": "Chờ bạn thử máy thật (12 tình huống B13), AI thật, ảnh 12 MP; gộp V0, S12c"
-    },
-    {
-      "ma": "HM-15",
-      "ten": "App không bắt lỗi khi IndexedDB không dùng được",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V3",
-      "uu_tien": "P2",
-      "nghiem_thu": "Test: indexedDB.open lỗi → useDocs ready=true, docs rỗng, có thông báo, 0 unhandled; dbPromise không kẹt trạng thái từ chối (thử lại được); V3: chặn IndexedDB bằng init script, trang / mở được, không treo",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P04_HM15_20261012.zip",
-      "bang_chung": "Sửa src/lib/db.ts (+13/−1): open() bỏ cache khi lỗi; useDocs → loadDocs().catch(onLoadFailed): ready=true, danh sách rỗng, toast riêng 1 lần. Test mới src/lib/db-unavailable.test.ts (3 ca, ĐỎ với mã cũ, XANH với mã mới). V3 trước: pe=1–2/route, spinner ở /doc; sau: pe=0, không spinner. Hồi quy V3: 54 lượt 0 pageerror 0 tràn ngang; console.error y hệt baseline; nhập→xuất PDF OK; ngoại tuyến 4/4. Còn lại: pageerror CDN tesseract (F-09, có từ baseline). Chưa kiểm: Safari/Firefox riêng tư thật; lưu mới khi kho bị chặn vẫn báo lỗi chung ở thao tác lưu (ngoài phạm vi)."
-    },
-    {
-      "ma": "HM-16",
-      "ten": "Độ nghiêng dòng chữ cấp ô ≤0,5° trên ảnh Q (từ S11f/l/n/q)",
-      "trang_thai": "bo-qua",
-      "nhan_chi_tiet": "Hủy",
-      "uu_tien": "P3",
-      "nghiem_thu": "Tùy chọn Q5; Nếu (b): |góc| ≤0,5° ở ô mực ≥500 trên 3 ảnh Q; 860+ kiểm thử đạt; cổng R6.1 không hồi quy",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "bang_chung": "Đóng theo Q5=(a) (13/10/2026): chấp nhận. 2 ô còn vượt ≤1° (…555 d0P 2,25° mực 860; …556 d0T 1,75° mực 776). Mở lại nếu thử máy thật thấy chữ nghiêng."
-    },
-    {
-      "ma": "HM-17",
-      "ten": "Q2: khai báo @testing-library/dom + script check, bun.lock khớp",
-      "trang_thai": "xong",
-      "nhan_chi_tiet": "Đạt V2",
-      "uu_tien": "P2",
-      "nghiem_thu": "npm install --legacy-peer-deps đủ để chạy vitest; npm run check thoát mã 0; bun install --frozen-lockfile không báo thay đổi",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "zip": "GIAYTO_P14_Q2_20261013.zip",
-      "bang_chung": "package.json (+3 script, +1 devDependency, +0 đổi khác), bun.lock (+1 dòng workspace; gói đã được khoá sẵn @10.4.2), lint:src bỏ qua previewAuthStorage.ts (tệp tự sinh 'Do not edit'). Không chạy được bun install đầy đủ ở đây (registry 403) nhưng --frozen-lockfile OK. Chưa thử trong Lovable thật."
-    },
-    {
-      "ma": "HM-18",
-      "ten": "Dò mép giấy cho ảnh tạp chí có mặt bàn tối (NB: quad = null)",
-      "trang_thai": "bo-qua",
-      "nhan_chi_tiet": "Hủy (Q6=a)",
-      "uu_tien": "P3",
-      "nghiem_thu": "Nếu (b): detectQuadInfo trả khung giấy cho ảnh NB; cổng R6.1 trên NB ≥ 12/13; 221 ca cũ không đổi",
-      "ngay": "2026-10-12/13",
-      "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
-      "con_lai": "Chờ Q6: dò mép giấy ảnh mặt bàn tối"
-    }
-  ],
-  "ket_thuc": false,
-  "de_an_v4": {
-    "buoc_ke_tiep": "S6",
-    "buoc": [
-      {
-        "ma": "S0",
-        "ten": "Phân tích điểm nghẽn + đề án v4",
-        "trang_thai": "xong"
-      },
-      {
-        "ma": "S1",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S2",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S3",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S4",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S5",
-        "trang_thai": "xong"
-      },
-      {
-        "ma": "S6",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S7",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S8",
-        "trang_thai": "chờ"
-      },
-      {
-        "ma": "S9",
-        "trang_thai": "chờ"
-      }
-    ]
+ "du_an": "Ghi Nhanh – nâng cấp scan PDF A4",
+ "phien_ban_de_an": "v5",
+ "cap_nhat": "2026-10-13",
+ "credit_moi_buoc": 4,
+ "buoc": [
+  {
+   "ma": "B0",
+   "ten": "Phân tích nguyên nhân gốc rễ + đề án v2",
+   "trang_thai": "xong",
+   "nghiem_thu": "Đề án docx v2"
   },
-  "buoc_ke_tiep": "Đề án v1.2 (P17, 13/10/2026): 14/18 đạt, 3 hủy (HM-02, HM-16, HM-18), 1 chờ: HM-14 (máy thật/AI thật/ảnh 12 MP; gộp V0, S12c) rồi R6.5 đề án cuối. Q6=a.",
-  "no_ky_thuat": "docs/NO-KY-THUAT.md",
-  "lo_trinh_r": [
-    {
-      "ma": "R0.1",
-      "dot": "R0 – Đồng bộ trạng thái",
-      "viec": "Đồng bộ trạng thái: gộp B13 trùng mã trong tien-do.json, cập nhật trạng thái theo tài liệu này, thay LO-TRINH-CON-LAI cũ (đã lỗi thời: ghi 13 mục thiếu nhưng 9 mục đã xong).",
-      "tep": "tien-do.json, LO-TRINH.md, TIEP-THEO.md",
-      "kiem_chung": "Trang tiến độ hiện đúng số mục Xong/Chưa",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R1.1",
-      "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
-      "viec": "Một cửa chỉnh: chuyển FilterPanel vào AdjustEditor, xoá luồng áp ngay (TD-11, TD-12).",
-      "tep": "doc.$id.tsx, adjust-editor.tsx",
-      "kiem_chung": "Chỉ còn 1 cửa chỉnh; đổi bộ lọc → Lưu → ảnh đổi đúng",
-      "phu_thuoc": "R0.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R1.2",
-      "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
-      "viec": "So sánh giữ để xem gốc, “Áp dụng cho tất cả”, hỏi khi rời màn chưa lưu (TD-23).",
-      "tep": "adjust-editor.tsx, image-compare.tsx",
-      "kiem_chung": "Back khi chưa lưu hiện hộp hỏi; Áp dụng tất cả đổi mọi trang",
-      "phu_thuoc": "R1.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R1.3",
-      "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
-      "viec": "Bỏ data URL đợt 1 (8 tệp giao diện): Blob/ImageBitmap + close() (TD-04).",
-      "tep": "components/*",
-      "kiem_chung": "Mở 20 trang, RAM đỉnh không tăng dần",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R1.4",
-      "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
-      "viec": "Bỏ data URL đợt 2 (7 tệp lib) + kiểm rò rỉ bitmap.",
-      "tep": "lib/*",
-      "kiem_chung": "Như R1.3 + kiểm thử rò rỉ",
-      "phu_thuoc": "R1.3",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R1.5",
-      "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
-      "viec": "Màn Cắt tô mờ vùng sắp bị cắt + cảnh báo cam khi chữ vắt mép (TD-05); OCR trả hộp điểm ảnh + độ tin cậy (TD-06).",
-      "tep": "crop-editor.tsx, ocr-worker.ts",
-      "kiem_chung": "Ảnh Q3 hiện cảnh báo đúng mép phải",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.1",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Bể worker chung đợt 1: gom detect/preview/normalize/image vào 1 bể có ưu tiên, giữ API cũ qua worker-call.ts.",
-      "tep": "lib/pipeline/worker-hub.ts",
-      "kiem_chung": "Hồi quy đạt; số worker đồng thời ≤ 4",
-      "phu_thuoc": "R1.4",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.2",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Bể worker chung đợt 2: gom ocr, compress-page, page-pipeline; đo RAM đỉnh trước/sau.",
-      "tep": "lib/pipeline/*",
-      "kiem_chung": "Chụp 20 trang không treo",
-      "phu_thuoc": "R2.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.3",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Cache kết quả theo khoá (ảnh, tham số); xử lý theo ô 1024 px khi ảnh > 12 MP (giới hạn canvas iPhone).",
-      "tep": "lib/pipeline/cache.ts, tile.ts",
-      "kiem_chung": "Ảnh 48 MP giả lập không trắng trang",
-      "phu_thuoc": "R2.2",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.4",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Xem trước bộ lọc bằng WebGL2 + thanh cấp độ 0–100, ảnh đầy đủ chỉ tính khi thả tay.",
-      "tep": "lib/webgl-filter.ts",
-      "kiem_chung": "Kéo thanh ≤ 16 ms/khung, không lỗi console",
-      "phu_thuoc": "R1.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.5",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Hoàn tất baseline S1/P1.1 bằng video trang thay đổi; ghi số từng công đoạn so ngân sách 17.1.",
-      "tep": "scripts/do-chuan-s1.py",
-      "kiem_chung": "Đủ ≥ 10 mẫu dựng trang/bộ ảnh",
-      "phu_thuoc": "R2.2",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R2.6",
-      "dot": "R2 – Hiệu năng & pipeline",
-      "viec": "Dọn thuật toán cũ -vN không còn dùng; chuyển kiểm thử -vN thành bộ hồi quy.",
-      "tep": "lib/*-v*.ts",
-      "kiem_chung": "Hồi quy giữ nguyên số đạt",
-      "phu_thuoc": "R2.5",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R3.1",
-      "dot": "R3 – Tự động hoá “2 thao tác”",
-      "viec": "Nhật ký quyết định theo trang (“nền tối 18% → Sáng nền Mạnh”), nhãn cam “Cần xem lại” khi điểm < 70, thẻ lọc Tất cả / Cần xem lại / Đã sửa tay.",
-      "tep": "scan-journal.ts, doc.$id.tsx",
-      "kiem_chung": "Thẻ lọc chỉ hiện trang điểm < 70",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R3.2",
-      "dot": "R3 – Tự động hoá “2 thao tác”",
-      "viec": "“Phương án khác”: 3 biến thể dựng sẵn, chọn 1 chạm.",
-      "tep": "recipe.ts, adjust-editor.tsx",
-      "kiem_chung": "Chọn biến thể đổi ảnh trong 1 chạm",
-      "phu_thuoc": "R3.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R3.3",
-      "dot": "R3 – Tự động hoá “2 thao tác”",
-      "viec": "Học theo người dùng (P8.6): ghi lựa chọn sửa tay theo loại tài liệu, lần sau ưu tiên.",
-      "tep": "lib/user-recipe.ts",
-      "kiem_chung": "Sửa tay 1 lần → lô sau dùng công thức mới",
-      "phu_thuoc": "R3.2",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R3.4",
-      "dot": "R3 – Tự động hoá “2 thao tác”",
-      "viec": "Nhận loại tài liệu theo ảnh (màu, dấu đỏ, tỉ lệ khung) bổ sung cho doc-type theo chữ.",
-      "tep": "doc-type.ts",
-      "kiem_chung": "Đúng loại ≥ 85% bộ ảnh vàng",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R3.5",
-      "dot": "R3 – Tự động hoá “2 thao tác”",
-      "viec": "Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại”.",
-      "tep": "post-capture.ts, batch-export.tsx",
-      "kiem_chung": "Luồng Thêm → Xuất chạy xanh 2 thao tác",
-      "phu_thuoc": "R3.1, R5.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R4.1",
-      "dot": "R4 – Mục Thêm & Danh sách trang",
-      "viec": "Chống ảnh trùng bằng dấu vân ảnh + phân loại ảnh nhập (có nền / đã phẳng / chụp màn hình).",
-      "tep": "lib/dedupe-phash.ts, importer.ts",
-      "kiem_chung": "Ảnh trùng bị hỏi; ảnh phẳng không bị cắt",
-      "phu_thuoc": "—",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R4.2",
-      "dot": "R4 – Mục Thêm & Danh sách trang",
-      "viec": "Lưới trang kéo-thả, chọn nhiều thao tác hàng loạt, ô “+ Thêm” nét đứt cuối lưới, nhãn trạng thái % và nút xuất mờ khi còn trang đang xử lý.",
-      "tep": "doc.$id.tsx, page-list.ts",
-      "kiem_chung": "Đổi thứ tự được; nhãn đổi theo tiến độ",
-      "phu_thuoc": "R3.1",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R4.3",
-      "dot": "R4 – Mục Thêm & Danh sách trang",
-      "viec": "Bảng Thêm đủ 5 nguồn + vị trí chèn; kéo-thả toàn cửa sổ, phím tắt PC Delete/←/→/R; PDF tách trang.",
-      "tep": "importer.ts, app-shell.tsx",
-      "kiem_chung": "Kéo 20 ảnh thành công; phím tắt chạy",
-      "phu_thuoc": "R4.2",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R5.1",
-      "dot": "R5 – Xuất",
-      "viec": "PDF 3 mức Nhỏ/Chuẩn/Cao + kiểm tự động khung PDF khớp xem trước (TD-10).",
-      "tep": "batch-export.tsx, export-bundle.ts",
-      "kiem_chung": "20 trang Chuẩn ≤ 5 MB; tỉ lệ khớp ≤ 0,5%",
-      "phu_thuoc": "R2.3",
-      "trang_thai": "xong",
-      "bang_chung": "pdf-frame-check.test.ts: 14 kiểm thử đạt; PDF 20 trang Chuẩn 4,6 MB ≤ 5 MB; lệch khung ≤ 0,5% (7 tỉ lệ ảnh); 178 tệp / 814 kiểm thử đạt; tsgo sạch"
-    },
-    {
-      "ma": "R5.2",
-      "dot": "R5 – Xuất",
-      "viec": "Lớp chữ OCR ẩn trong PDF (tìm và chọn được chữ tiếng Việt).",
-      "tep": "lib/pdf-text-layer.ts",
-      "kiem_chung": "Tìm được từ trên PDF tải về",
-      "phu_thuoc": "R5.1, R1.5",
-      "trang_thai": "xong",
-      "bang_chung": "pdf-text-layer.test.ts: pdfjs trích đúng 3 cụm tiếng Việt có dấu từ PDF dựng thật; sửa lỗi charSpace phá tìm kiếm; 179 tệp / 817 kiểm thử đạt; tsgo sạch"
-    },
-    {
-      "ma": "R6.1",
-      "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
-      "viec": "Tinh chỉnh 7 bộ lọc + Khử bóng, Khử nhiễu 3 cấp theo chỉ số 17.4; thêm cổng chất lượng: không đạt thì không gạch mục.",
-      "tep": "tool-levels.ts, chat-luong.py",
-      "kiem_chung": "221/221 ca đạt (R6.1d): độ lệch nền ≤ 8%, ΔL ≥ 60, góc tối ≤ 5% (R6.1c nới từ 0,2% vì góc tối còn lại là chữ thật)",
-      "phu_thuoc": "R2.4",
-      "trang_thai": "xong",
-      "canh_bao": "R6.2: cổng R6.1 trên ảnh thật NB (trang tạp chí in màu) đạt 1/8 – góc tối do nội dung in màu; xem kiem-chung/R6.2/bao-cao.md, đề xuất R6.1e"
-    },
-    {
-      "ma": "R6.2",
-      "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
-      "viec": "Bộ ảnh NB (bài báo Ninh Bình) + ảnh Cam mẫu; so tỉ lệ OCR đúng ký tự.",
-      "tep": "kiem-chung/bo-anh-NB/",
-      "kiem_chung": "OCR ≥ bản Cam − 2%",
-      "phu_thuoc": "Cần người dùng gửi ảnh Cam cùng trang",
-      "trang_thai": "xong-phan-1",
-      "bang_chung": "R6.2 (11/10/2026): dựng bo-anh-NB (ảnh gốc + chữ chuẩn 4.082 ký tự) + scripts/kiem-chung-r62 (chay-app.py, so-ocr.py, nhánh Cam jpg/pdf đã thử). CHƯA gạch: thiếu ảnh Cam cùng trang; máy chỉ có tesseract 'eng' (số tham chiếu: app auto 77,7% vs gốc 76,8% đúng ký tự). Cổng R6.1 trên ảnh thật NB đạt 1/8 (góc tối do khối đỏ số trang/logo bị đẩy đen) → đề xuất R6.1e. Không chạy được vitest/tsc/build (mạng chặn npm)."
-    },
-    {
-      "ma": "R6.3",
-      "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
-      "viec": "Kiểm 5 tiêu chí mục 9 tự động: 20 trang không chặn, 20 ảnh PC + 20 ảnh thư viện, chế độ máy bay, đo chỉ tiêu 19.5.",
-      "tep": "scripts/playwright/nghiem-thu.py",
-      "kiem_chung": "Báo cáo 5/5 tiêu chí (R6.3b; chạy lại R6.3c trên bản R6.1d vẫn 5/5, cần cờ NGHIEM_THU_CHAN_FONT=1 khi không có internet)",
-      "phu_thuoc": "R3.5, R5.2",
-      "trang_thai": "xong"
-    },
-    {
-      "ma": "R6.4",
-      "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
-      "viec": "UAT máy thật Android/iPhone/PC (B13/P7.3), hiệu chỉnh ngưỡng điểm trang theo kết quả.",
-      "tep": "UAT-B13-*.md, page-grade.ts",
-      "kiem_chung": "Báo cáo số đo trên máy thật",
-      "phu_thuoc": "Cần người dùng thử",
-      "trang_thai": "cho"
-    },
-    {
-      "ma": "R6.5",
-      "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
-      "viec": "Đề án bản cuối v5 + bàn giao tổng.",
-      "tep": "de-an-*_v5.docx",
-      "kiem_chung": "—",
-      "phu_thuoc": "Tất cả",
-      "trang_thai": "cho"
-    }
-  ],
-  "nhat_ky": [
-    "- 2026-10-11 R0.1: Đồng bộ trạng thái theo lộ trình v5; gộp mã trùng B13, S10e; thêm 27 gói R",
-    "- 2026-10-11 R1.1: Một cửa chỉnh – nút Lọc mở Chỉnh tay; gợi ý bộ lọc, Áp tất cả, Trang tương tự, chẩn đoán chuyển vào; xoá FilterPanel áp ngay (TD-11/12); 164 tệp / 692 kiểm thử đạt; tsgo sạch; build OK",
-    "- 2026-10-11 R1.2: Nút “Giữ để xem ảnh gốc” trên màn Chỉnh tay (giữ = thấy 100% gốc, thả = về vị trí cũ); hộp hỏi khi rời màn chưa lưu và Áp tất cả trang đã có từ R1.1/TD-23; 164 tệp / 694 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11 R3.1: Nhật ký quyết định theo trang (page-review.ts), nhãn cam “Xem lại” khi điểm < 70, thẻ lọc Tất cả / Cần xem lại / Đã sửa tay trên màn tài liệu; 165 tệp / 699 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11 R1.3: Bỏ data URL ở giao diện (bộ tẩy, bút vẽ) – canvas-url.ts xuất Blob/object URL, giải phóng canvas, thu hồi URL tạm; adoptBlob đăng ký với kho; còn QR nhỏ (giữ); 166 tệp / 703 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11 R1.4: Bỏ data URL đợt 2 ở 7 tệp lib (moire, redact, signatures, sr-enhance, translate-overlay, files, id-watermark) – trang trả về object URL đã đăng ký, canvas giải phóng ngay; thêm r14-leak.test.ts kiểm rò rỉ bitmap/object URL; 167 tệp / 714 kiểm thử đạt; tsgo sạch; build OK",
-    "- 2026-10-11 R2.6: Dọn thuật toán cũ -vN; 7 kiểm thử -vN thành bộ hồi quy src/lib/regression/; 175 tệp / 791 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11 R3.5: Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm PDF Chuẩn, tên tự động, nhắc trang cần xem lại; 176 tệp / 795 kiểm thử đạt; tsgo sạch; build OK",
-    "- 2026-10-11 R5.1: PDF đúng 3 mức Nhỏ/Chuẩn/Cao (bỏ mức Gốc/Nhẹ nhất cũ) + pdf-frame-check.ts kiểm tự động khung PDF khớp xem trước (đóng TD-10); kiểm chứng: PDF thật 20 trang Chuẩn 4,6 MB ≤ 5 MB, tỉ lệ lệch khung ≤ 0,5% trên 7 tỉ lệ ảnh; 178 tệp / 814 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11 R5.2: Lớp chữ OCR ẩn trong PDF – tách textLayerOps/writeTextLayer thuần, phát hiện & sửa lỗi giãn ký tự khiến trình đọc tách từng ký tự (mất tìm kiếm); kiểm chứng: pdfjs trích đúng 'VIỆT NAM', 'Hạnh phúc', 'quyền sử dụng đất' từ PDF dựng thật; 179 tệp / 817 kiểm thử đạt; tsgo sạch",
-    "- 2026-10-11T05:11:33+00:00 R2.5: Baseline S1/P1.1 sau R2.2: 3 video × 10 trang = 30 mẫu, 0 lỗi, RAM đỉnh 60-70MB, đạt ngân sách 17.1",
-    "- [x] R2.6 Dọn thuật toán cũ -vN: xoá flattenApplyRef/sampleBg khỏi pixels.ts (bản tham chiếu nằm trong kiểm thử), v8bStats/__v8b → previewStats/__previewStats; 7 kiểm thử -vN → bộ hồi quy src/lib/regression/*.regression.test.ts — 175 tệp / 791 kiểm thử đạt, tsgo sạch",
-    "- [x] R3.5 Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại” kèm nút Xem lại; nút Xuất = 1 chạm, Tùy chọn mở bảng đầy đủ — 176 tệp / 795 kiểm thử đạt, tsgo sạch, build OK",
-    "- 2026-10-11T05:26:04+00:00 R3.5: Tự động mặc định (P8.7) + Xuất 1 chạm PDF Chuẩn, tên tự động, nhắc trang cần xem lại; 176 tệp / 795 kiểm thử đạt, tsgo sạch, build OK",
-    "- 2026-10-11 R4.3: Bảng Thêm đủ 5 nguồn (Thư viện/Chụp/PDF tách trang/Dán/Quét) + vị trí chèn Đầu/Sau trang/Cuối; kéo-thả ảnh/PDF vào toàn cửa sổ có lớp phủ báo thả; phím tắt PC Delete xoá trang, ←/→ chuyển trang, R xoay 90°; 177 tệp / 800 kiểm thử đạt, tsgo sạch, build OK",
-    "- 2026-10-11T05:31:30+00:00 R4.3: Bảng Thêm 5 nguồn + vị trí chèn; kéo-thả cửa sổ; phím tắt Delete/←/→/R; PDF tách trang; 177 tệp / 800 kiểm thử đạt",
-    "- 2026-10-11T05:50:16+00:00 R5.2: Lớp chữ OCR ẩn trong PDF, tìm được chữ tiếng Việt; sửa lỗi giãn ký tự phá tìm kiếm; 817 kiểm thử đạt",
-    "- 2026-10-11T07:49:15+00:00 R6.1a: Tinh chỉnh đường cong mực 6 bộ lọc (auto/sharp/magic/gray/ink/eco) để ΔL ≥ 60; 822 kiểm thử đạt, tsgo sạch",
-    "- 2026-10-11T09:13:26+00:00 R6.1b3: R6.1b-3: cornerShadowLift xoá bóng góc + khối đen đặc; 826/826 kiểm thử; kiểm chứng 221 ca đạt 73,8%, góc tối còn lại là chữ thật — đề xuất R6.1c nới cổng",
-    "- 2026-10-11T10:13:11+00:00 R6.1c: Nới cổng góc tối 0,2%→5%; kiểm chứng lại 212/221 ca đạt (95,9%); 826/826 kiểm thử đạt",
-    "- 2026-10-11T11:47:36+00:00 R6.3b: Nghiệm thu 5/5; sửa sw.js bỏ sót tệp có __, warmShellCache, ?sw=on",
-    "- 2026-10-11T12:50:42+00:00 R6.1d: Đậm hoá mực auto/sharp/gray; 221/221 ca kiểm chứng đạt (100%); 830/830 kiểm thử, tsgo sạch",
-    "- 2026-10-11 R6.3c: Chạy lại nghiệm thu R6.3 trên bản build R6.1d – 5/5 (cần NGHIEM_THU_CHAN_FONT=1 khi sandbox không có internet; lỗi duy nhất không cờ là phông Google không tải được); 830/830 kiểm thử, tsc sạch; chưa chạy lại cổng R6.1",
-    "- 2026-10-11 R6.2: Dựng bộ ảnh NB + chữ chuẩn + kịch bản chay-app.py/so-ocr.py; chạy pipeline thật 8 bộ lọc; OCR tham chiếu (eng) auto 77,7% vs gốc 76,8%; thiếu ảnh Cam nên CHƯA gạch; cổng R6.1 trên ảnh NB 1/8; không chạy được kiểm thử (mạng chặn npm), mã nguồn app không đổi"
+  {
+   "ma": "B0b",
+   "ten": "Phân tích điểm nghẽn, đề án v3, đề xuất O1–O12",
+   "trang_thai": "xong",
+   "nghiem_thu": "Đề án docx v3",
+   "bang_chung": "De-an-nang-cap-scan-PDF-v3.docx"
+  },
+  {
+   "ma": "B1",
+   "ten": "Khổ đích A4 300/200 dpi, nén JPEG một lần, mặc định Nét nhất",
+   "trang_thai": "xong",
+   "nghiem_thu": "PDF mẫu ≥ 300 dpi",
+   "bang_chung": "Đo 317 ppi (2473×3478 px, 593 KB); 277/277 kiểm thử đạt; 16 trang Playwright 0 lỗi trang – kiem-chung/"
+  },
+  {
+   "ma": "B2",
+   "ten": "Chụp độ phân giải cao, giữ ảnh gốc",
+   "trang_thai": "xong",
+   "nghiem_thu": "Ảnh gốc ≥ 3000 px",
+   "bang_chung": "Camera giả 3840×2160 giữ nguyên 3840 px (= tối đa camera); ảnh thư viện 4000×3000 giữ nguyên; 283/283 kiểm thử đạt"
+  },
+  {
+   "ma": "B2b",
+   "ten": "Dựng 2 tầng + Blob/ImageBitmap + bộ đệm + giới hạn RAM (O2,O3,O4,O10)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Chỉnh bộ lọc < 300 ms; RAM đỉnh −50%",
+   "bang_chung": "Ảnh 4096×3072: xem trước lần đầu 1,4 s; đổi bộ lọc khi đã có đệm: Xám 58, Mực 156, Nét 230, Màu kỳ diệu 313, Tiết kiệm mực 362 ms (máy thử không GPU); quay lại bộ lọc cũ 0 ms; chụp 10 trang: giải mã đồng thời tối đa 2 (trước 10, −80%); 286/286 kiểm thử đạt"
+  },
+  {
+   "ma": "B3",
+   "ten": "Tinh chỉnh góc trên ảnh gốc + bộ đo chuẩn (O1)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Sai số góc ≤ 2 px",
+   "bang_chung": "Bộ đo chuẩn 8 ảnh 1536×2048 (xoay ±12°, phối cảnh, tương phản thấp, nhiễu): sai số góc TB 13,4 px (dò nhanh) → 0,75 px sau tinh chỉnh; chỉ đọc 4 dải cạnh từ ảnh đã giải mã; 289/289 kiểm thử đạt"
+  },
+  {
+   "ma": "B4",
+   "ten": "Mặt nạ giấy + xoá nêm góc (O6)",
+   "trang_thai": "xong",
+   "nghiem_thu": "0 vùng tối > 3 mm",
+   "bang_chung": "Bộ đo B3 với khung lệch 1–2 % (nêm tối 297 mm trước xử lý): sau mặt nạ giấy 0 vùng tối > 3 mm trên 8/8 ảnh (bản cũ còn sót 2 ảnh tương phản thấp); nội dung giữa trang không đổi; 293/293 kiểm thử đạt; Playwright 0 lỗi trang"
+  },
+  {
+   "ma": "B5",
+   "ten": "Đổi thứ tự xoay → cắt → làm sạch",
+   "trang_thai": "xong",
+   "nghiem_thu": "Không sinh góc mới"
+  },
+  {
+   "ma": "B6",
+   "ten": "Chuẩn hoá nền đa tỉ lệ + Sauvola",
+   "trang_thai": "xong",
+   "nghiem_thu": "Nền 250–255"
+  },
+  {
+   "ma": "B7",
+   "ten": "Lưới ánh xạ GPU + bicubic + pool Worker (O5,O8)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Cong dòng ≤ 0,5%",
+   "bang_chung": "Lưới ánh xạ 8 px lệch < 0,05 px; cong dòng sau nắn ≤ 0,5 % (trước > 2 %); GPU khớp CPU: lệch TB 0,04–0,06, tối đa 2/255 trên 2 ảnh thật; GPU 136–140 ms (700×990, SwiftShader); pool 4 Worker; 75 tệp / 302 kiểm thử đạt; Playwright 0 lỗi trang"
+  },
+  {
+   "ma": "B8",
+   "ten": "Cắt theo nội dung, vừa A4, PDF 1-bit (O11)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Không kéo giãn chữ",
+   "bang_chung": "content-crop.ts: cắt theo hộp mực đậm + lề 4%, bỏ dải xám/vạch mép; vừa A4 giữ tỉ lệ (sai số < 0,5 %); PNG 1-bit: PDF Đen trắng 68 KB/85 KB so với 175 KB/203 KB (−61 %/−58 %) trên 2 ảnh thật; 306/306 kiểm thử; Playwright 0 lỗi trang – kiem-chung/b8_*"
+  },
+  {
+   "ma": "B9",
+   "ten": "Chữ ký: tách nền, đổi cỡ 2 trục, chụm ngón",
+   "trang_thai": "xong",
+   "nghiem_thu": "Kéo xuống cuối trang được",
+   "bang_chung": "Chữ ký từ ảnh: nền trong suốt 94 %, 4 góc alpha 0, chấm nhiễu bị xoá (despeckleAlpha); kéo cạnh đổi 1 trục, kéo góc giữ tỉ lệ, chụm 2 ngón phóng/xoay, chữ ký xoay kéo xuống đáy vẫn nằm trọn trang; 312/312 kiểm thử; Playwright 0 lỗi trang – kiem-chung/b9_*.png"
+  },
+  {
+   "ma": "B10",
+   "ten": "Chữ ký: neo vào dòng ký",
+   "trang_thai": "xong",
+   "nghiem_thu": "Gợi ý đúng ≥ 80%",
+   "bang_chung": "Bộ mẫu 30 trang tổng hợp (đường liền, chấm chấm, chỉ nhãn GIÁM ĐỐC, nhiễu đường kẻ bảng): ≥ 80 % gợi ý đúng; Playwright trang thật + 2 dòng ký: tìm đủ cả 2, chân chữ ký lệch dòng 2 px, lưu vào trang, 0 lỗi trang; 316/316 kiểm thử đạt"
+  },
+  {
+   "ma": "B11",
+   "ten": "Tự chụp theo độ nét",
+   "trang_thai": "xong",
+   "nghiem_thu": "Ảnh mờ < 5%",
+   "bang_chung": "focus-gate.ts (phương sai Laplacian vùng giấy + cổng nét ổn định, khởi động 5 khung); bộ mẫu 40 chuỗi: ảnh mờ được chụp 0 % (< 5 %); 79 tệp / 320 kiểm thử đạt; Playwright camera giả mờ→nét: 0–2,5 s mờ (thanh 9 %) không chụp, tự chụp ảnh nét lúc 3 s, 0 lỗi trang – kiem-chung/b11_*.png"
+  },
+  {
+   "ma": "B12",
+   "ten": "Chấm điểm trang, OCR một Worker, nhật ký sạch (O7,O9), hồi quy tổng",
+   "trang_thai": "xong",
+   "nghiem_thu": "Đạt tiêu chí mục 6 đề án v3",
+   "bang_chung": "page-grade.ts chấm 4 tiêu chí (nét, lóa, nghiêng, nền) hiện huy hiệu điểm trên hàng ảnh nhỏ (ảnh thật: 94 'tốt'); ocr-worker.ts: một Worker Tesseract dùng chung cho nhận chữ nền, PDF tìm được chữ, OCR lô, tải ngoại tuyến (O7); nhật ký gộp lỗi trùng trong 60 s có đếm (O9); 80 tệp / 328 kiểm thử đạt, kiểm tra kiểu sạch; Playwright hồi quy 16 trang đều 200, 0 lỗi trang – kiem-chung/b12_*.png"
+  },
+  {
+   "ma": "B13",
+   "ten": "UAT điện thoại thật & hiệu chỉnh ngưỡng điểm trang",
+   "trang_thai": "cho",
+   "nghiem_thu": "Điểm trang khớp đánh giá người dùng ≥ 80 %",
+   "ghi_chu": "Người dùng chọn bỏ qua; có thể làm sau khi có ảnh chụp thật | CHẶN – chờ ảnh/máy thật → R6.4"
+  },
+  {
+   "ma": "CHOT",
+   "ten": "Hồi quy tổng & bàn giao cuối",
+   "trang_thai": "xong",
+   "nghiem_thu": "Toàn bộ kiểm thử đạt, 16 trang không lỗi",
+   "bang_chung": "Build OK; 80 tệp / 328 kiểm thử đạt; 16/16 trang trả 200, 0 lỗi trang (Playwright)"
+  },
+  {
+   "ma": "C1",
+   "ten": "Tự dò góc: không cắt mất dòng ghi chú dưới bảng, nắn thẳng trang nghiêng",
+   "trang_thai": "xong",
+   "nghiem_thu": "Cạnh dưới là mép giấy, không phải đường kẻ đáy bảng",
+   "bang_chung": "detect.ts: tiêu chí 'còn giấy ngoài cạnh' (spill); detect-footer.test.ts 4 ca (thẳng/tràn/nghiêng/nghiêng+tràn); 81 tệp / 332 kiểm thử đạt"
+  },
+  {
+   "ma": "S1",
+   "ten": "Đo chuẩn chuỗi grab/detect/normalize/render/release (đã xong phần đo 10/30 trang)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Bảng số đo gốc median/p90, RAM đỉnh, thời gian nhả nút",
+   "bang_chung": "10 trang camera giả: nhả nút 3924/4441 ms, render 2172/2552, detect2 239/259, detect1 157/212, normalize 107/123, grab 302/370 ms; tổng 47,6 s; RAM 162 MB; 82 tệp/335 kiểm thử; 0 lỗi trang – kiem-chung/s1_*; 30 trang: tổng 199 s (6,6 s/trang), nhả nút 4754/5991 ms, render 2774/3737 ms, RAM 183 MB, 0 lỗi trang (25/30 mẫu cuối do trần 200 mục của perf-stats)",
+   "con_lai": "Đóng băng bộ ảnh Q1–Q6: cần 3 ảnh gốc KTRA_DOANH_NGHIỆP + nhóm ảnh lỗi thật từ người dùng; công đoạn save đo ở S4",
+   "trang_thai_cu": "dang-lam",
+   "ket_luan_hm13": "HM-13: XONG — baseline chuỗi grab→release hoàn tất ở R2.5 (30 mẫu, 0 lỗi, RAM đỉnh 60–70 MB, đạt ngân sách 17.1). Phần 'đóng băng Q1–Q6' cần ảnh lỗi thật của người dùng → ghi ở HM-14.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S6",
+   "ten": "Chụp nhanh: tái dùng ImageCapture, timeout 1,2 s, burst khi chưa nét, fallback khung video",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "Thời gian chụp −40%; không tăng ảnh mờ; có fallback",
+   "bang_chung": "progress/S6/README-S6.md; 4 kiểm thử mới đạt; tsgo sạch",
+   "con_lai": "S6b đo lại"
+  },
+  {
+   "ma": "S7c",
+   "ten": "Xuất PDF song song – dựng trang song song, ghép đúng thứ tự",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "4 kiểm thử orderedPool đạt; b8 đạt; tsgo sạch tệp sửa",
+   "bang_chung": "progress/S7/README-S7.md",
+   "ke_tiep": "S7d đo xuất PDF 10/30 trang"
+  },
+  {
+   "ma": "S7d",
+   "ten": "Đo xuất PDF 1 làn vs 3 làn",
+   "trang_thai": "bo-qua",
+   "nghiem_thu": "10 trang 592→519 ms TB, 30 trang 1207→1224 ms; mục tiêu −30% chưa đạt; 0 lỗi",
+   "bang_chung": "progress/S7/s7d-pdf.jsonl",
+   "ke_tiep": "S7e dựng trang trong Worker",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: HỦY — đã đo chưa đạt −30% (10 trang 592→519 ms, 30 trang 1207→1224 ms); hướng nhiều làn bị thay bằng S7e/S7f (dựng trang trong Worker), R2.2 (bể worker) và R5.1 (PDF Chuẩn 20 trang 4,6 MB, lệch khung ≤0,5%).",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S7e",
+   "ten": "Dựng trang PDF trong Worker",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "compressPage chạy trong pool Worker, rơi về luồng chính khi lỗi; 3 kiểm thử mới đạt",
+   "bang_chung": "progress/S7/README-S7.md",
+   "ke_tiep": "S7f đo với ảnh 4000×3000, Worker bật/tắt"
+  },
+  {
+   "ma": "S7f",
+   "ten": "Đo xuất PDF ảnh cỡ thật, Worker tắt/bật",
+   "trang_thai": "xong",
+   "nghiem_thu": "10 trang 3566→1867 ms (−48%), 30 trang 10323→4478 ms (−57%); nghẽn 550→14 ms; 0 lỗi",
+   "bang_chung": "progress/S7/s7f-pdf.jsonl",
+   "ke_tiep": "S8 Quét hàng loạt + khôi phục"
+  },
+  {
+   "ma": "S9",
+   "ten": "Hồi quy hiệu năng + chức năng sau S1–S8",
+   "trang_thai": "xong",
+   "nghiem_thu": "361/361 kiểm thử; nhả nút median 30 trang 258 ms (S1 4754); tổng 30 trang 199→17,3 s; RAM đỉnh 157 MB; 32 màn hình 0 lỗi",
+   "bang_chung": "progress/S9/",
+   "ke_tiep": "S10 Chất lượng hình học Q1–Q3"
+  },
+  {
+   "ma": "S10c",
+   "ten": "Q3 – khung cắt không lấn chữ mép phải",
+   "trang_thai": "xong",
+   "nghiem_thu": "Khung bám mép giấy khi có chữ đậm sát mép",
+   "bang_chung": "s10c-edge-outermost.test.ts: 393 → 401 px (mép thật 400); 364 kiểm thử đạt; B3 góc ≤ 2 px"
+  },
+  {
+   "ma": "S10d",
+   "ten": "Kiểm Q1–Q3 trên 3 ảnh gốc trong app",
+   "trang_thai": "xong",
+   "nghiem_thu": "0 lỗi Q1–Q3",
+   "bang_chung": "Trang 1 đạt; trang 3 chữ bị che trên ảnh gốc; trang 2 khung dính trang kế + rác mép – progress/S10/s10d/",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: XONG — thay bởi S10c/S10e và nghiệm thu S10l (0 lỗi Q1–Q3 trên 3 ảnh gốc).",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S10e",
+   "ten": "Tách trang kế cùng màu giấy ở mép (trang 2)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Trang 2 khung bỏ trang kế; trang 1, 3 không đổi; 363 kiểm thử đạt",
+   "bang_chung": "progress/S10/s10e/khung-3-trang.jpg"
+  },
+  {
+   "ma": "S10j",
+   "ten": "Khung mảnh, vạch liền, mảng xám",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "Trang 6 hết vạch/khung, chữ nguyên",
+   "bang_chung": "progress/S10/s10j/; 371 kiểm thử đạt"
+  },
+  {
+   "ma": "S10l",
+   "ten": "Nghiệm thu Q1–Q3 trong app trên 3 ảnh gốc",
+   "trang_thai": "xong",
+   "nghiem_thu": "Q1 đạt; Q3 đạt (…556 giấy che thật); Q2 còn 2 vết nhỏ trang …555; 0 lỗi trang",
+   "bang_chung": "progress/S10/s10l/"
+  },
+  {
+   "ma": "S10m",
+   "ten": "Xoá vệt nhỏ ở góc trang (edgeCornerClean)",
+   "trang_thai": "xong",
+   "nghiem_thu": "Q1–Q3 đạt trên 3 ảnh gốc",
+   "bang_chung": "progress/S10/s10m/; 375/375 kiểm thử đạt"
+  },
+  {
+   "ma": "S11",
+   "ten": "Đo nền giấy Q4 (paperStats)",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "Trung vị nền ≥ 245 ở Tự động",
+   "bang_chung": "progress/S11/README-S11.md: 255/255/255; P10=255 cần soi Q5"
+  },
+  {
+   "ma": "S11d",
+   "ten": "S11d",
+   "trang_thai": "xong-phan-1",
+   "ngay": "2026-10-06",
+   "ket_qua": "showThroughLift làm nhạt chữ hằn mặt sau, giữ mực màu; 381 kiểm thử đạt",
+   "ke_tiep": "S11e"
+  },
+  {
+   "ma": "S11e",
+   "ten": "S11e",
+   "trang_thai": "xong",
+   "ngay": "2026-10-06",
+   "ket_qua": "Nền 247/P10 247 trên 3 ảnh thật; chữ hằn trang 555 hết, không mất nét",
+   "ke_tiep": "S11f"
+  },
+  {
+   "ma": "S11f",
+   "ten": "S11f",
+   "trang_thai": "bo-qua",
+   "ngay": "2026-10-06",
+   "ket_qua": "lineSkewMap: nửa dưới lệch tới 1,25°; chỉ tiêu ≤0,5°",
+   "ke_tiep": "S11g",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp vào thẻ HM-16. Đo lại 13/10 trên 3 ảnh Q qua 'Tự dò góc': nửa dưới tối đa 1,25°/1,00°/1,00° (chỉ tiêu ≤0,5°).",
+   "ngay_ra_soat": "2026-10-13",
+   "ghi_chu": " | Q5=a (13/10): chấp nhận độ nghiêng hiện tại, TD-36; mở lại nếu máy thật thấy chữ nghiêng (P19)"
+  },
+  {
+   "ma": "S11k",
+   "ten": "Nắn dòng nửa trên (lọc nhiễu tiêu đề/bảng)",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "Cong nửa trên ≤ 0,5°",
+   "bang_chung": "lineSkewRefineTop; 18/18 kiểm thử S11"
+  },
+  {
+   "ma": "S11l",
+   "ten": "Đo nửa trên ảnh thật sau S11k",
+   "trang_thai": "bo-qua",
+   "nghiem_thu": "Cong nửa trên ≤ 0,5°",
+   "bang_chung": "…556 0,25°, …557 0,25° đạt; …555 1,75°",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16. Đo lại 13/10 nửa trên: …555 2,25° (ô trên-phải, mực 860), …556 1,75°, …557 0,75° (chỉ tiêu ≤0,5°; trước 0,25/0,25/1,75). Mắt thường thấy dòng chữ thẳng.",
+   "ngay_ra_soat": "2026-10-13",
+   "ghi_chu": " | Q5=a (13/10): chấp nhận độ nghiêng hiện tại, TD-36; mở lại nếu máy thật thấy chữ nghiêng (P19)"
+  },
+  {
+   "ma": "S11m",
+   "ten": "Nắn riêng nửa lệch nhất của dải trên (lineSkewRefineTopSide)",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "21/21 kiểm thử S11; nửa dưới không đổi",
+   "bang_chung": "progress/S11/README-S11.md"
+  },
+  {
+   "ma": "S11n",
+   "ten": "Đo lại nửa trên 3 ảnh thật sau S11m",
+   "trang_thai": "bo-qua",
+   "nghiem_thu": "…555 cong trên 1,75° (chỉ tiêu ≤ 0,5°); …556/…557 đạt; 0 lỗi trang",
+   "bang_chung": "progress/S11/README-S11.md",
+   "ghi_chu": "Số đo lấy khi app chưa nạp mã mới – xem S11o | Q5=a (13/10): chấp nhận độ nghiêng hiện tại, TD-36; mở lại nếu máy thật thấy chữ nghiêng (P19)",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16; S11o…S11r + S15c đã thêm nắn dải 0/1 (có kiểm thử), nhưng số đo cấp ô vẫn chưa đạt ≤0,5°.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S11o",
+   "ten": "Nhật ký nắn một nửa, đo lại …555",
+   "trang_thai": "xong-phan-1",
+   "nghiem_thu": "…555 dải trên phải −1,75 → −0,25°; dải 2 phải còn −1,5°; 21/21 kiểm thử S11; 0 lỗi trang",
+   "bang_chung": "progress/S11/README-S11.md"
+  },
+  {
+   "ma": "V0",
+   "ten": "Đo thật ảnh 12 MP",
+   "trang_thai": "cho",
+   "nghiem_thu": "Bảng số đo gốc 12 MP; máy thật Android + iPhone",
+   "bang_chung": "Máy chủ, 3 ảnh Q phóng lên 3000×4000: dò khung 0,5–0,6 s; xem trước 1200 px 2,9–3,6 s; bản đầy đủ 10,6–13,9 s (warp 1,6–2,0 s, làm sạch mép 5,1–7,6 s, flatten 1,3–2,1 s, bộ lọc 3,9–4,0 s). 0 lỗi trang. kiem-chung/V0/so-do-V0.json",
+   "con_thieu": "Chưa có ảnh 12 MP gốc (ảnh Q chỉ 960×1280); chưa đo trên Android/iPhone thật",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: CHUYỂN HM-14 — cần ảnh 12 MP gốc + máy thật Android/iPhone; số đo máy chủ (3000×4000: bản đầy đủ 10,6–13,9 s) giữ làm tham chiếu.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "V3",
+   "ten": "Bỏ sao chép bộ đệm 35 MB",
+   "trang_thai": "xong",
+   "nghiem_thu": "RAM đỉnh −≥30 %; truyền ≈ 0",
+   "bang_chung": "RAM đỉnh 273,9→136,5 MB (−50 %); postMessage ≈0,2 ms; 3/3 trang, 0 lỗi; 481/481 kiểm thử"
+  },
+  {
+   "ma": "V4",
+   "ten": "warp() đọc ảnh gốc một lần",
+   "trang_thai": "xong",
+   "nghiem_thu": "1 lần đọc 12 MP/trang; ảnh ra không đổi",
+   "bang_chung": "3→1 lần đọc; SHA-256 trùng 3/3 ảnh; 0 lỗi trang; 481/481 kiểm thử"
+  },
+  {
+   "ma": "TD-02",
+   "ten": "Chạy kiểm thử/kiểm kiểu/build thật trên môi trường có bun",
+   "trang_thai": "xong",
+   "nghiem_thu": "bunx vitest run, tsgo --noEmit, vite build đều đạt",
+   "bang_chung": "142 tệp / 538 kiểm thử đạt (19,7 s); tsgo --noEmit 0 lỗi; vite build OK (dist + nitro); môi trường sandbox Lovable 10/10/2026"
+  },
+  {
+   "ma": "TD-03",
+   "ten": "Kiểm thử giao diện màn Chỉnh tay (adjust-editor)",
+   "trang_thai": "xong",
+   "nghiem_thu": "6 kiểm thử thành phần đạt: Hủy sạch đóng thẳng; Hủy khi đổi hỏi xác nhận (đồng ý/từ chối); Lưu sạch không gọi onApply; Lưu khi đổi gọi onApply đúng 1 lần với bản nháp; Hoàn tác/Làm lại/Đặt lại bật-tắt đúng; thanh trượt chỉ ghi lịch sử khi thả tay",
+   "bang_chung": "src/components/adjust-editor.test.tsx (mock @/lib/image, @/lib/dialog, CropEditor, Slider; polyfill ResizeObserver); hồi quy 143 tệp / 544 kiểm thử đạt; tsgo --noEmit 0 lỗi"
+  },
+  {
+   "ma": "S2",
+   "ten": "S2",
+   "trang_thai": "xong-phan-1",
+   "ngay": "2026-10-05",
+   "ke_tiep": "S3"
+  },
+  {
+   "ma": "S5",
+   "ten": "S5",
+   "trang_thai": "xong",
+   "ngay": "2026-10-05",
+   "ke_tiep": "S6"
+  },
+  {
+   "ma": "S8",
+   "ten": "Nhat ky phien IndexedDB, tu luu, khoi phuc sau tai lai, commit khong trung; 5/5 test",
+   "trang_thai": "xong",
+   "ngay": "05/10/2026",
+   "ke_tiep": "S9"
+  },
+  {
+   "ma": "S8b",
+   "ten": "O trang thai tung anh + Thu lai/Bo",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "S10f",
+   "ten": "S10f",
+   "trang_thai": "xong-phan-1",
+   "kiem_thu": "366/366",
+   "ke_tiep": "S10g"
+  },
+  {
+   "ma": "S10g",
+   "ten": "S10g",
+   "trang_thai": "xong",
+   "kiem_thu": "367/367",
+   "ke_tiep": "S10h",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: XONG (bước trung gian) — 367/367 kiểm thử; kết quả gộp vào S10h…S10m (S10m xong).",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S10h",
+   "ten": "S10h",
+   "trang_thai": "xong-phan-1",
+   "bang_chung": "progress/S10/s10h/out_5..7.jpg – vệt xiên dài mép phải trang 5 đã xoá, chữ giữ nguyên; trang 6, 7 không đổi",
+   "kiem_thu": "366/366 (app-routing cần routeTree.gen.ts tự sinh)",
+   "ke_tiep": "S10i"
+  },
+  {
+   "ma": "S10i",
+   "ten": "S10i",
+   "trang_thai": "xong-phan-1",
+   "bang_chung": "progress/S10/s10i/out_5..7.jpg – trang 5 hết vệt đứt nét xiên phía trên; trang 6 hết phần lớn vạch dọc mép trái dưới; chữ, dòng chấm, bảng không đổi; trang 7 không đổi",
+   "kiem_thu": "369/370 (app-routing cần routeTree.gen.ts tự sinh)",
+   "ke_tiep": "S10j"
+  },
+  {
+   "ma": "S10k",
+   "ten": "S10k",
+   "trang_thai": "xong-phan-1",
+   "bang_chung": "progress/S10/s10k/out_5..7.jpg – trang 6 hết mép sắc mảng xám (x≈449 từ 199–217 lên 255); trang 5 bảng, chữ giữ nguyên; trang 7 không đổi",
+   "kiem_thu": "372/372 (app-routing cần routeTree.gen.ts tự sinh)",
+   "ke_tiep": "S10l"
+  },
+  {
+   "ma": "S11p",
+   "ten": "trustTopCells: ô dải trên mực 60–149 được nắn khi góc khớp ô cùng bên dải kề (≤ 0,75°)",
+   "trang_thai": "xong-phan-1",
+   "kiem_thu": "24/24 kiểm thử S11 (3 mới)",
+   "ke_tiep": "S11q"
+  },
+  {
+   "ma": "S11q",
+   "ten": "…555: ô dải 2 phải (mực 84) nay được nắn −1,125 → −0,625°, nhưng ô dải 1 phải xấu đi −1,625 → −2,375° nên lượt bị bỏ; thêm thử ½ góc (còn tệ hơn −2,875°). …556/…557 không đổi, nền 247, 0 lỗi trang",
+   "trang_thai": "bo-qua",
+   "bang_chung": "progress/S11/s11q/r555.txt",
+   "kiem_thu": "S11 đạt hết",
+   "ke_tiep": "S11r",
+   "trang_thai_cu": "da-do-chua-dat",
+   "ket_luan_hm13": "HM-13: CHỜ QUYẾT (Q5) — gộp HM-16; bước kế 'S11r' đã có trong mã (lineSkewRefineBand0 + s11r-band0.test.ts) nhưng chưa ghi vào tiến độ.",
+   "ngay_ra_soat": "2026-10-13",
+   "ghi_chu": " | Q5=a (13/10): chấp nhận độ nghiêng hiện tại, TD-36; mở lại nếu máy thật thấy chữ nghiêng (P19)"
+  },
+  {
+   "ma": "S12",
+   "ten": "scan-diagnose.ts + aiScanDiagnose",
+   "trang_thai": "xong-phan-1",
+   "kiem_thu": "4/4",
+   "ke_tiep": "S12b"
+  },
+  {
+   "ma": "S12b",
+   "ten": "Khung Chẩn đoán AI trong bảng Bộ lọc: xác nhận, vùng đánh dấu, gắn phiên bản",
+   "trang_thai": "xong",
+   "ke_tiep": "S12c"
+  },
+  {
+   "ma": "S12c",
+   "ten": "S12c",
+   "trang_thai": "cho",
+   "ngay": "2026-10-07",
+   "kiem_thu": "s12-scan-diagnose 5/5 bằng bộ chạy thay thế (không có bun/vitest); tsc strict sạch scan-diagnose.ts; chưa chạy hồi quy đầy đủ, tsgo, vite build",
+   "con_lai": "Hồi quy đầy đủ; chạy run_s12c.py với AI thật (3 lời gọi); kiểm UI (xác nhận/Hủy/đổi bộ lọc/ngoại tuyến); soi log máy chủ; điền bảng Q1–Q4",
+   "da_lam": "Rà soát S12/S12b theo tiêu chí đề án; sửa lệch trần dung lượng (cổng chặn 8 MB, máy chủ ≈ 3 MB → một hằng MAX_DATA_CHARS dùng chung); thêm 1 kiểm thử; soạn progress/S12/s12c/run_s12c.py (chưa chạy thử)",
+   "ke_tiep": "S12c",
+   "trang_thai_cu": "dang-lam",
+   "ket_luan_hm13": "HM-13: CHUYỂN HM-14/TD-01 — hồi quy đầy đủ nay đã chạy (860/860, tsc, build); còn thiếu: chạy AI thật 3 lời gọi, kiểm UI Chẩn đoán, 4 quyết định chủ dự án (TD-15).",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S13",
+   "ten": "src/lib/edit-session.ts: phiên chỉnh tay (bản nháp tách khỏi bản đã lưu, hoàn tác/làm lại, đặt lại, hủy, lưu chỉ báo changed khi khác), cropSafety (hộp chữ/chữ ký/bảng có bị khung cắt không), sameAspect (ảnh xuất ↔ xem trước); S13 phần 2 – src/lib/edit-view.ts: fitScale/actualScale (phóng 100% theo dpr), clampPan, zoomAt (điểm neo đứng yên), centerOn (nhảy tới vùng bị báo cắt), boxFromPixels/boxFromLine (OCR/dòng chữ → hộp nội dung cho cropSafety)",
+   "trang_thai": "xong",
+   "ngay": "2026-10-07",
+   "kiem_thu": "s13-edit-session 14 + s13b-edit-view 8 = 22/22 bằng bộ chạy thay thế (lần chạy đầu 2 lỗi do kỳ vọng sai trong test, đã sửa test, mã không đổi); tsc strict sạch edit-session.ts, edit-view.ts; CHƯA chạy vitest, tsgo toàn dự án, build",
+   "con_lai": "Hồi quy đầy đủ (cùng S12c); nối giao diện vào doc.$id.tsx (Hủy/Hoàn tác/Đặt lại/Lưu, xem vùng cắt, phóng 100% bằng edit-view, nguồn hộp nội dung từ recognizeWords/detectTextLines, hộp chữ ký/bảng chưa có nguồn); xoay chỉnh nghiêng; gợi ý nắn cong + độ tin cậy; kiểm ảnh xuất + PDF sau nén khớp xem trước; Playwright/UAT",
+   "ghi_chu": "đang làm – lõi thuần (S13/S13b/S13c) và màn Chỉnh tay đã viết; CHƯA kiểm chứng, thiếu vùng cắt trên giao diện, xoay mịn, đối chiếu xuất/PDF",
+   "ke_tiep": "S12c (chạy thật) rồi S13b: nối giao diện",
+   "trang_thai_cu": "dang-lam",
+   "ket_luan_hm13": "HM-13: XONG — edit-session.ts/edit-view.ts đang được AdjustEditor dùng; 22 kiểm thử S13 + hồi quy đầy đủ đạt.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S13b",
+   "ten": "src/components/adjust-editor.tsx (AdjustEditor) nối vào doc.$id.tsx: nút 'Chỉnh tay đầy đủ' trong khung Bộ lọc mở màn toàn khung; So sánh (ImageCompare) / Xem chữ nhỏ (dựng đầy đủ, Vừa khung ↔ 100%, kéo dịch); Hoàn tác/Làm lại/Đặt lại; Cắt/4 góc (CropEditor lồng, đi qua bản nháp); Xoay 90°; bộ lọc; sáng/tương phản ghi lịch sử khi thả tay; Hủy hỏi xác nhận khi có thay đổi; Lưu chỉ gọi editPage khi changed; Hủy/rời màn hình không đổi trang đã lưu",
+   "trang_thai": "xong",
+   "ngay": "2026-10-07",
+   "kiem_thu": "tsc strict với kiểu giả cho react/lucide/UI: adjust-editor.tsx không lỗi (đã chèn lỗi cố ý để chứng minh kiểm kiểu chạy); cú pháp doc.$id.tsx và adjust-editor.tsx sạch; KHÔNG có kiểm thử vitest mới cho màn hình; chưa chạy build, Playwright, thiết bị thật",
+   "ghi_chu": "đã viết, CHƯA kiểm chứng (chưa chạy trình duyệt/vitest/build)",
+   "ke_tiep": "S13c: vùng cắt an toàn + xoay mịn + đối chiếu xuất/PDF; trước đó chạy S12c/hồi quy trên máy có bun",
+   "trang_thai_cu": "dang-lam",
+   "ket_luan_hm13": "HM-13: XONG — AdjustEditor đã nối doc.$id.tsx (R1.1/R1.2), có 6 kiểm thử thành phần (adjust-editor.test.tsx), build OK, hồi quy V3 mở/lưu/xuất đạt; chưa thử máy thật → HM-14.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S13c",
+   "ten": "Đo nguồn hộp nội dung cho cảnh báo cắt trên 3 ảnh gốc: detectTextLines KHÔNG dùng được (7–9 dòng/~25, nối sai, thiếu nửa dải hai đầu, dính hình mờ XIAOMI/trang kế); OCR dùng được (…555: 233 từ trong, 66 hẳn ngoài, 8 vắt ngang mép khi thử khung lẹm). Thêm edgeCutCheck (edit-session.ts) và boxFromOcrWord (edit-view.ts)",
+   "trang_thai": "xong",
+   "ngay": "2026-10-07",
+   "bang_chung": "progress/S13/s13c/ocr-555-cat-ngang.png, progress/S13/s13c/textlines-3-anh-goc.png, progress/S13/README-S13.md",
+   "kiem_thu": "28/28 kiểm thử S13 bằng bộ chạy thay thế (+6 mới); tsc strict sạch; chưa vitest/tsgo/build",
+   "con_lai": "ocr.ts trả hộp điểm ảnh + độ tin cậy; nối cảnh báo vùng cắt vào AdjustEditor (chạy nền, hủy khi đóng); hộp chữ ký/bảng; xoay mịn; nắn cong; đối chiếu xuất/PDF",
+   "ghi_chu": "đã đo nguồn hộp + viết phần thuần, CHƯA nối giao diện, CHƯA kiểm chứng đầy đủ",
+   "ke_tiep": "S12c chạy thật + hồi quy; sau đó S13d: nối cảnh báo cắt (OCR) vào AdjustEditor",
+   "trang_thai_cu": "dang-lam",
+   "ket_luan_hm13": "HM-13: XONG — nguồn hộp bằng OCR đã nối (recognizeWordBoxes, boxFromOcrWord, edgeCutCheck dùng ở AdjustEditor/CropEditor; S13d, R1.5); phần còn lại là TD-07 (hộp chữ ký/bảng) vẫn mở ở docs/NO-KY-THUAT.md.",
+   "ngay_ra_soat": "2026-10-13"
+  },
+  {
+   "ma": "S13b_UI",
+   "ten": "S13b_UI",
+   "trang_thai": "xong",
+   "ngay": "07/10/2026",
+   "ket_qua": "12/12 Playwright"
+  },
+  {
+   "ma": "S13d",
+   "ten": "Nối cảnh báo cắt chữ bằng OCR vào AdjustEditor (đã có trong mã); đóng TD-23 (useBlocker chặn rời màn khi có nháp), TD-24 (aria-pressed/aria-labelledby), TD-25 (chuẩn hoá góc xoay % 360). Kiểm thử: 146 tệp / 561 đạt, tsgo sạch, vite build OK.",
+   "trang_thai": "xong",
+   "ngay": "10/10/2026"
+  },
+  {
+   "ma": "P0",
+   "ten": "Nền tảng đề án v4: chuẩn hoá tiến độ, đóng gói, khung Playwright, số hồi quy",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "Trang tiến độ hiện đủ S11p→S13d; ZIP sạch node_modules/.git; kịch bản Playwright chung xanh 2 viewport",
+   "kiem_thu": "146 tệp / 561 kiểm thử đạt; build OK",
+   "bang_chung": "de-an-nang-cap-scan/kiem-chung/P0.3/ (4 ảnh chụp + ket-qua.json); /mnt/documents/giayto-scan-P0.2-20261010.zip",
+   "ke_tiep": "P1.1"
+  },
+  {
+   "ma": "P1.1",
+   "ten": "Baseline perf-stats",
+   "trang_thai": "xong-phan-1",
+   "ngay": "2026-10-10",
+   "kiem_thu": "b09 3/3; hồi quy 146 tệp / 561 kiểm thử đạt",
+   "con_lai": "Ảnh tĩnh lặp lại nên app chỉ dựng 1–2 trang/10 lần bấm (render 2,7–2,9 s; bộ Q chưa có số render) – cần video có trang thay đổi hoặc máy thật để có median/p90 render/normalize đủ mẫu",
+   "bang_chung": "kiem-chung/P1.1/ (s1-V1/V13/Q.json, ảnh chụp, ket-qua.json). Camera giả từ ảnh vàng, 10 lần bấm/bộ, 390×844: nhả nút trung vị 24/33/31 ms (p90 31/54/56); tổng 3,9/6,2/5,3 s; RAM đỉnh 119/135/55 MB; nhập ảnh 2 viewport 0 lỗi console; 0 lỗi trang",
+   "ke_tiep": "P1.2",
+   "ghi_chu": "Thiếu số trên điện thoại tầm trung → R2.5"
+  },
+  {
+   "ma": "P1.2",
+   "ten": "Chụp liên tục + cảnh báo mờ/rung/thiếu sáng",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "Cảnh báo thiếu sáng hiện khi cảnh tối, không hiện khi đủ sáng; mờ/rung (focus-gate) đã có",
+   "bang_chung": "kiem-chung/P1.2/ (dark.mjpeg.png, V1.mjpeg.png); p12-low-light.test.ts 3/3; hồi quy 147 tệp / 564 kiểm thử đạt; 0 lỗi trang",
+   "ke_tiep": "P1.3"
+  },
+  {
+   "ma": "P1.3",
+   "ten": "Bắt khung 4 góc thời gian thực trên ảnh nhỏ 320–480 px",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "Marker 4 góc hiện theo khung dò được mỗi nhịp camera, sáng mạnh khi khoá khung; bản dò tự leo 320→480 khi mất khung ≥6 nhịp, về 320 khi khoá",
+   "bang_chung": "live-detect.test.ts 5/5; hồi quy 148 tệp / 569 kiểm thử đạt; build OK",
+   "ke_tiep": "P1.4"
+  },
+  {
+   "ma": "P1.4",
+   "ten": "Cảnh báo chất lượng khi chụp",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "Bấm chụp khi khung kém (tối/lóa/mờ/nghiêng/xa) hiện cảnh báo đúng nguyên nhân, mức reject nói rõ ảnh có thể kém; tự chụp không bắn khi tối nặng",
+   "bang_chung": "capture-quality.test.ts 7/7; hồi quy 149 tệp / 576 kiểm thử đạt; build OK",
+   "ke_tiep": "P2"
+  },
+  {
+   "ma": "P3.1",
+   "ten": "Khung cắt an toàn + hút góc",
+   "trang_thai": "xong",
+   "nghiem_thu": "Chặn khung chéo/nhỏ/méo; hút góc ≤ 2%",
+   "bang_chung": "crop-quad.ts + crop-quad.test.ts 8/8; hồi quy 151 tệp / 591 kiểm thử đạt; tsgo sạch"
+  },
+  {
+   "ma": "P3.2",
+   "ten": "Hút cạnh theo mép giấy + xoay mịn ±5°",
+   "trang_thai": "xong",
+   "nghiem_thu": "Hút cạnh ≤ 3%; xoay ±5° bước 0,5°",
+   "bang_chung": "crop-quad.test.ts 13/13; hồi quy 151 tệp / 596 kiểm thử đạt; tsgo sạch; đóng TD-08"
+  },
+  {
+   "ma": "P4",
+   "ten": "Nắn phẳng/dewarp — gợi ý nắn cong + độ tin cậy, người dùng quyết định",
+   "trang_thai": "xong",
+   "nghiem_thu": "Gợi ý hiện khi trang cong, kèm độ tin cậy; Áp dụng/Giữ nguyên ghi vào bản nháp",
+   "bang_chung": "dewarp-suggest.ts (gộp độ cong mép giấy + dòng chữ, ngưỡng 0,35) + dewarp-suggest.test.ts 4/4; PageEdit.flatten (auto/bật/tắt) luồng qua renderGeometry→warp; màn Chỉnh tay hiện thẻ gợi ý + nút Tự động; hồi quy 152 tệp / 600 kiểm thử đạt; tsgo sạch; build OK; đóng TD-09"
+  },
+  {
+   "ma": "P5",
+   "ten": "Bộ lọc & chất lượng — gợi ý bộ lọc theo chỉ số chất lượng + độ tin cậy",
+   "trang_thai": "xong",
+   "nghiem_thu": "filter-suggest.test.ts 10/10; hồi quy 153 tệp / 610 kiểm thử đạt; tsgo sạch; build OK"
+  },
+  {
+   "ma": "P6",
+   "ten": "Danh sách trang & Thêm",
+   "trang_thai": "xong",
+   "nghiem_thu": "page-list.ts: dời/xóa/chèn/nhân bản trang giữ đúng trang đang xem; Nhập thêm chèn sau trang hiện tại; 154 tệp / 620 kiểm thử đạt, tsgo sạch"
+  },
+  {
+   "ma": "P8.2",
+   "ten": "Nhận loại tài liệu từ chữ OCR",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "doc-type.ts: chấm điểm từ khoá + mẫu định dạng (biển số/MST/GPLX) theo 6 mẫu VN_TEMPLATES, bỏ dấu bền lỗi OCR, null khi không đủ chắc; P8.1 xác nhận đã có (page-grade.ts)",
+   "kiem_thu": "doc-type.test.ts 9/9; hồi quy 157 tệp / 638 kiểm thử đạt",
+   "ke_tiep": "P8.3 bộ chọn công thức xử lý + tự kiểm"
+  },
+  {
+   "ma": "P8.3",
+   "ten": "Bộ chọn công thức xử lý + tự kiểm",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "recipe.ts: pickRecipe kết hợp page-grade + filter-suggest + doc-type (giữ màu cho giấy tờ có dấu/ảnh, làm rõ chữ cho hợp đồng/hoá đơn); selfCheck so điểm trước/sau, lùi công thức an toàn hoặc ảnh gốc khi tụt",
+   "kiem_thu": "recipe.test.ts 8/8; hồi quy 158 tệp / 646 kiểm thử đạt",
+   "ke_tiep": "P8.4 theo đề án v4; song song B13 UAT điện thoại thật"
+  },
+  {
+   "ma": "P8.4",
+   "ten": "Tự áp công thức xử lý cho trang mới sau khi quét",
+   "trang_thai": "xong",
+   "ngay": "2026-10-10",
+   "nghiem_thu": "recipe-apply.ts: planRecipes chỉ đổi bộ lọc trang mới còn bộ lọc mặc định và đã có số đo; theo loại giấy tờ (doc-type); applyRecipes bỏ qua trang người dùng đã đổi; nối vào runPostCapture (công tắc settings.autoRecipe, mặc định bật)",
+   "kiem_thu": "recipe-apply.test.ts 4/4; hồi quy 159 tệp / 650 kiểm thử đạt",
+   "ke_tiep": "P8.5 theo đề án v4; song song B13 UAT điện thoại thật"
+  },
+  {
+   "ma": "P8.5",
+   "ten": "Áp dụng cho trang tương tự",
+   "trang_thai": "xong",
+   "ket_qua": "similar-pages.ts; 160 tệp / 654 kiểm thử đạt",
+   "ke_tiep": "P8.6 Học theo người dùng; song song B13 UAT"
+  },
+  {
+   "ma": "P2",
+   "ten": "Hàng đợi nền bền IndexedDB",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "P2.1",
+   "ten": "Gom worker thành 1 bể",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R2.1, R2.2 | R2.1, R2.2 xong (đồng bộ 11/10/2026)",
+   "bang_chung": "R2.2: gom page + compress vào bể worker chung (6 loại việc, ưu tiên detect>preview>normalize>pixels>page>compress); xóa 2 worker riêng; 174 tệp / 782 kiểm thử đạt"
+  },
+  {
+   "ma": "P2.2",
+   "ten": "Bỏ data URL (TD-04)",
+   "trang_thai": "xong",
+   "ghi_chu": "Còn 15 tệp → R1.3, R1.4 | R1.3, R1.4 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P2.3",
+   "ten": "Cache theo khoá + xử lý theo ô",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R2.3 | R2.3 xong (đồng bộ 11/10/2026)",
+   "bang_chung": "R2.3: tile.ts chia ô 1024 px chồng lấn ≥32 px cho ảnh >12 MP / cạnh >4096 (ruột các ô phủ kín không chồng, kể cả kích thước lẻ); cache theo khoá đã có ở render-cache.ts (Lru + geoKey/resultKey); 175 tệp / 791 kiểm thử đạt"
+  },
+  {
+   "ma": "P2.4",
+   "ten": "Xoá thuật toán cũ",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R2.6 | R2.6 xong 11/10/2026"
+  },
+  {
+   "ma": "P3.3",
+   "ten": "Tô vùng sắp cắt (TD-05) + hộp OCR (TD-06)",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R1.5 | R1.5 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P3.4",
+   "ten": "Trang báo ngang",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "P5.1",
+   "ten": "Một cửa chỉnh (TD-11/12)",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R1.1 | R1.1 xong 11/10/2026"
+  },
+  {
+   "ma": "P5.2",
+   "ten": "Xem trước WebGL + thanh 0–100",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R2.4 | R2.4 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P5.3",
+   "ten": "Tinh chỉnh 7 bộ lọc theo 17.4",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R6.1 | R6.1 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P5.4",
+   "ten": "So sánh, Áp dụng tất cả, chặn rời màn (TD-23)",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R1.2 | R1.2 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P6.1",
+   "ten": "Dán ảnh, HEIC",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "P6.2",
+   "ten": "Phân loại ảnh nhập + pHash",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R4.1 (đã xong) | R4.1 xong (đồng bộ 11/10/2026)",
+   "bang_chung": "R4.1: lib/dedupe-phash.ts (pHash 64 bit + phân loại flat/screenshot/photo), tích hợp importer.ts; 174 tệp / 776 kiểm thử đạt, tsgo sạch"
+  },
+  {
+   "ma": "P6.3",
+   "ten": "Lưới kéo-thả, chọn nhiều, ô Thêm",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R4.2 | R4.2 xong (đồng bộ 11/10/2026)",
+   "bang_chung": "R4.2: lưới kéo-thả + chọn nhiều + ô + Thêm + nhãn tiến độ; 174 tệp / 781 kiểm thử đạt"
+  },
+  {
+   "ma": "P7",
+   "ten": "Gói đầy đủ ZIP, xuất hàng loạt",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "P7.1",
+   "ten": "Xuất 1 chạm + PDF 3 mức + khớp xem trước",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R5.1, R3.5 | R5.1, R3.5 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P7.2",
+   "ten": "OCR ẩn trong PDF",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R5.2 | R5.2 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P7.3",
+   "ten": "UAT máy thật",
+   "trang_thai": "cho",
+   "ghi_chu": "CHẶN – chờ người dùng thử máy thật → R6.4"
+  },
+  {
+   "ma": "P7.4",
+   "ten": "Đề án bản cuối",
+   "trang_thai": "cho",
+   "ghi_chu": "→ R6.5"
+  },
+  {
+   "ma": "P8.1",
+   "ten": "Chấm điểm trang (page-grade.ts)",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "P8.6",
+   "ten": "Học theo người dùng",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R3.3 | R3.3 xong (đồng bộ 11/10/2026)"
+  },
+  {
+   "ma": "P8.7",
+   "ten": "Chế độ Tự động mặc định",
+   "trang_thai": "xong",
+   "ghi_chu": "→ R3.5 | R3.5 xong 11/10/2026"
+  },
+  {
+   "ma": "HM-01",
+   "ten": "Bộ kiểm thử thoát mã 0 + cài đặt tái lập",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V2",
+   "uu_tien": "P1",
+   "nghiem_thu": "npx vitest run thoát mã 0, 0 unhandled error, số kiểm thử ≥ 830; tsc --noEmit sạch, vite build OK; Lệnh cài đặt ghi rõ trong README/TIEP-THEO, chạy được trên npm",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P02_HM01_20261012.zip",
+   "bang_chung": "Sửa: src/test/app-routing.test.tsx (stub indexedDB rỗng beforeAll/afterAll). Chống tái diễn: vitest tự đỏ (mã 1) nếu còn unhandled error; lệnh + yêu cầu kiểm mã thoát ghi ở TIEP-THEO.md. Test ĐỎ với mã cũ (2 passed + 1 error, EXIT 1), XANH với mã mới (183 tệp/830, EXIT 0). Khai báo @testing-library/dom trong package.json chờ Q2."
+  },
+  {
+   "ma": "HM-02",
+   "ten": "Xin lưu trữ bền vững + hiện dung lượng",
+   "trang_thai": "bo-qua",
+   "nhan_chi_tiet": "Hủy",
+   "uu_tien": "P1",
+   "nghiem_thu": "Gọi navigator.storage.persist() một lần, có kiểm thử; Mục Tôi hiện đã dùng/khả dụng (storage.estimate), cảnh báo khi > 80%; Trình duyệt không hỗ trợ: im lặng có chủ đích, không lỗi console",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P03_HM02_20261012.zip",
+   "bang_chung": "Đã có sẵn: src/lib/persist.ts (persistOnce, gọi từ db.ts:92 sau saveDoc và offline.ts:128; test hồi quy) và src/routes/me.tsx:56,172-173 (storage.estimate, cảnh báo ≥80% / ≥95%). Không đổi mã. Chưa xác minh trên trình duyệt thật việc persist() được cấp (tùy trình duyệt)."
+  },
+  {
+   "ma": "HM-03",
+   "ten": "Bảo vệ server function AI",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P1",
+   "nghiem_thu": "Theo phương án bạn chọn ở Q1: gọi AI khi chưa đăng nhập bị từ chối hoặc bị giới hạn N lần/giờ; Thông báo tiếng Việt rõ, không mất ảnh đang làm; Kiểm thử cho nhánh từ chối/giới hạn",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P06_HM03_20261012.zip",
+   "bang_chung": "Q1=(b) do người dùng chốt. Mới: src/lib/ai-limit.ts (bộ đếm cửa sổ cố định theo IP, clientKey cf-connecting-ip→x-real-ip→x-forwarded-for, limitFromEnv, limitedFail), ai-limit.test.ts (10 ca). Sửa: ai.server.ts (aiGate), ai.functions.ts (13 hàm gọi aiGate đầu handler), scan-errors.ts (mã AI_LIMIT, không tự thử lại), errors.ts (friendlyError nhận 'hết lượt AI'). Mặc định 60 lần/giờ/IP (số này do mình chọn — chỉnh bằng biến môi trường AI_RATE_LIMIT_PER_HOUR; 0 = tắt). V3 (máy chủ wrangler, giới hạn 3): lần 1–3 qua, lần 4–5 trả 429 'Hết lượt AI…', UI hiện 'Đã hết lượt AI trong giờ này' (trước khi "
+  },
+  {
+   "ma": "HM-04",
+   "ten": "Thanh công cụ màn tài liệu không gãy hàng",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "360/390/1366 px: mọi nút trên 1 hàng hoặc cuộn ngang có chủ đích, không khoảng trống thừa; Không tràn ngang, không che nội dung; Ảnh trước/sau trong evidence/",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P05_HM04_20261012.zip",
+   "bang_chung": "Sửa src/routes/doc.$id.tsx (+3/−3): nav grid-cols-8; span Xuất/Tùy chọn thành 'col-span-2 grid grid-cols-2' (giữ opacity khi đang xử lý); Tool thêm whitespace-nowrap. V3 trước: 4/4 viewport LỖI (2 hàng, cao 130); sau: 4/4 ĐẠT (1 hàng, cao 66, nút hẹp nhất 44 px ở 360, không cắt chữ, không tràn ngang). Chống tái diễn: scripts/playwright/kiem-thanh-cong-cu.mjs (cần playwright-core; xem đầu tệp). Hồi quy: vitest EXIT 0 833 đạt; V3 54 lượt 0 pageerror/0 tràn ngang, nhập→xuất PDF, ngoại tuyến 4/4. Chưa kiểm: thiết bị thật; trạng thái 'đang xử lý' (opacity) chỉ rà mã, chưa chụp."
+  },
+  {
+   "ma": "HM-05",
+   "ten": "Vùng chạm và nhãn nút (Tôi, So sánh, Đăng nhập)",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P3",
+   "nghiem_thu": "Vùng chạm chính ≥ 40 px (ngoại lệ ghi lý do); Không đổi bố cục ngoài phạm vi",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P10_HM05_20261012.zip",
+   "bang_chung": "78 → 1 vùng chạm < 40 px (ngoại lệ duy nhất: liên kết 'Đăng nhập' nằm giữa câu ở /sync). Sửa chỉ lớp Tailwind, 14 tệp: ui/button.tsx (default h-10, sm h-10, icon h-10 w-10, lg h-11 — tăng 4–8 px toàn app), ui/input.tsx (h-10), ui/switch.tsx (vùng chạm vô hình 44×44 bằng ::after, hình dạng không đổi), me.tsx, naming-rules.tsx, compare.tsx, id-photo.tsx, auth.tsx, convert-progress.tsx, documents.tsx, library-ui.tsx, index.tsx. Không đổi nhãn/logic. V3: hồi quy 54 lượt 0 pageerror/0 tràn ngang (390/360/1366), thanh công cụ màn tài liệu vẫn đạt 4/4 viewport, nhập→xuất OK, ngoại tuyến 4/4; xem ảnh "
+  },
+  {
+   "ma": "HM-06",
+   "ten": "Rà hook thiếu phụ thuộc + lỗi lint thật",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "Mỗi cảnh báo: sửa có kiểm thử hoặc ghi lý do giữ (eslint-disable có chú thích); eslint còn 0 lỗi ngoài prettier; 830+ kiểm thử đạt",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P09_HM06_20261012.zip",
+   "bang_chung": "eslint (bỏ prettier): trước 9 lỗi + 17 cảnh báo (7 hooks + 10 react-refresh); sau 1 lỗi (tệp tự sinh) + 10 cảnh báo react-refresh. Tệp sửa: scan.tsx (deps queueFinish, setTip; biến ring), priority-gate.ts, docx.ts/pptx.ts/xlsx.ts (chú thích lý do + xlsx tách const base), adjust-editor.tsx, share-link-panel.tsx, signature-placer.tsx, s.$token.tsx (eslint-disable có lý do), b08-priority.test.ts, edge-dash.regression.test.ts, s13-edit-session.test.ts (let→const). KHÔNG đổi hành vi (sửa thuần lint/ghi chú) nên không thêm test mới; chống tái diễn = lệnh eslint ghi ở TIEP-THEO.md (chưa có CI; thêm n"
+  },
+  {
+   "ma": "HM-07",
+   "ten": "OCR: báo rõ khi không tải được gói nhận chữ (không tự lưu gói)",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "Mất mạng ngay lần đầu vẫn OCR được (hoặc báo rõ 'cần tải gói nhận chữ' kèm nút tải); 0 pageerror trong luồng OCR khi CDN bị chặn; Kích thước tăng thêm ghi rõ",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P07_HM07_20261012.zip",
+   "bang_chung": "Mới: ocr-unavailable.test.ts (6 ca, ĐỎ→XANH). Sửa: ocr-worker.ts (OcrUnavailableError, ocrWorkerUrl, assertOcrReachable chạy trước createWorker, dùng chung cho sharedOcr/extraOcr), ocr-queue.ts (firstOcrFailure), errors.ts (nhận biết lỗi gói nhận chữ), doc.$id.tsx (báo lỗi cả khi tất cả trang lỗi). V3 trước: bấm 'Trang này' khi CDN không tới → pageerror=1, không thông báo (kết luận 'im lặng' dựa trên mã + test; chưa chụp toast ở mốc 2,5 s trước khi sửa). Sau: pageerror=0, toast 'Chưa tải được gói nhận chữ… vào Tôi → Tải sẵn…'. CDN tới được (mô phỏng): không bị chặn nhầm, 0 lỗi. Hồi quy V3 54 l"
+  },
+  {
+   "ma": "HM-08",
+   "ten": "Service worker: phiên bản theo build, không nuốt lỗi precache",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "VERSION đổi tự động mỗi bản build; Precache lỗi được ghi nhận, không cài SW hỏng; Kiểm V3: cập nhật bản mới, ngoại tuyến 4 route",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P08_HM08_20261012.zip",
+   "bang_chung": "Sửa: public/sw.js (VERSION từ ?v=; install: '/' và manifest bắt buộc, tệp phụ allSettled + console.warn; activate: chuyển gn-vN-ocr→gn-ocr-v1 rồi dọn bộ đệm khác, giữ gn-share và gn-ocr-v1, so tiền tố `${VERSION}-`; staleWhileRevalidate trả Response.error() thay vì undefined), src/lib/offline.ts (swScriptUrl, isAppSwUrl; unregisterAppSw nhận ?v=), vite.config.ts (define __BUILD_ID__ từ BUILD_ID/GITHUB_SHA/CF_PAGES_COMMIT_SHA hoặc thời điểm build), src/build-id.d.ts. Test mới: sw-behavior.test.ts (7 ca chạy sw.js trong sandbox Node; 6 ca ĐỎ với sw.js cũ), sw-register.test.ts (2 ca). V3 (trình d"
+  },
+  {
+   "ma": "HM-09",
+   "ten": "Đo tải trang; bỏ ~0,7 MB nạp sớm ở màn Công cụ",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P3",
+   "nghiem_thu": "Có số đo trước/sau trên cùng máy; Không gói > 500 KB tải ở trang chủ trừ khi cần",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P11_HM09_20261012.zip",
+   "bang_chung": "SỐ ĐO (cùng máy, 1 lần chạy mỗi mốc — chưa lặp nhiều lần nên sai số ~±100 ms): /tools JS 1.630→930 KB, truyền 575→326 KB (−43%), LCP mạng chậm 3.972→3.264 ms (−18%); / và /doc không đổi (LCP ~3,23 s và ~3,43 s ở mạng chậm giả lập). Sửa: src/routes/tools.tsx (React.lazy cho DigitalSignDialog trong Suspense, import() verifyPdfSignature tại điểm dùng, prefetchSigning: tải trước sau 4 s khi rảnh, bỏ qua nếu saveData — để ký số vẫn dùng được ngoại tuyến), src/lib/heavy-imports.test.ts (mới, 2 ca, ĐỎ→XANH: cấm import tĩnh thư viện nặng; allowlist pdf-sign/p12; cấm routes import tĩnh mô-đun ký số). V"
+  },
+  {
+   "ma": "HM-10",
+   "ten": "Bố cục màn rộng (đề xuất)",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3 (P17)",
+   "uu_tien": "P3",
+   "nghiem_thu": "Chỉ làm nếu bạn muốn; 360–1366 px không hồi quy",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "con_lai": "Tùy chọn — làm nếu bạn muốn (bố cục màn rộng)"
+  },
+  {
+   "ma": "HM-11",
+   "ten": "R6.1e: giữ khối màu bão hoà ở mép trang (Q3=a)",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "Ảnh NB đạt cổng R6.1 ≥ 7/8, 221 ca cũ vẫn đạt; 830+ kiểm thử đạt",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P15_HM11_20261013.zip",
+   "bang_chung": "Sửa: src/lib/ink-deepen.ts (SAT_FLOOR 0,6; EDGE_BAND 8%; edgeSaturatedMask; inkDeepen nhận mặt nạ tuỳ chọn — KHÔNG có mặt nạ thì hành vi cũ), pixels.ts (docChain truyền mặt nạ), image.ts (auto/sharp lượt hai, gray: mặt nạ lập trước khi xám hoá, mono: điểm màu mép hiện xám 110 thay vì đen, magic: sàn 0,6). Test: ink-deepen.test.ts +4 ca (ĐỎ→XANH). KẾT QUẢ: 221 ca cũ 221/221 (không hồi quy; ΔL đổi tb −0,03, tệ nhất −2,66 ở 8 ca); NB 1/13 → 8/13 (auto, 6 tổ hợp auto+công cụ, ink); NB auto: góc dưới-trái 42,6% → 0,5%, ΔL 83,5→80,4. TIÊU CHÍ ĐỀ ÁN 'NB ≥ 7/8 cấu hình' CHƯA ĐẠT: 5 ca NB trượt (magic "
+  },
+  {
+   "ma": "HM-12",
+   "ten": "R6.2 phần 2: so OCR với CamScanner",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3 (P17): app 98,68% vs Cam 98,88%",
+   "uu_tien": "P2",
+   "nghiem_thu": "Có ảnh Cam cùng trang + tesseract vie; OCR app ≥ Cam − 2%",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "con_lai": "Chờ ảnh CamScanner cùng trang + máy có tesseract tiếng Việt"
+  },
+  {
+   "ma": "HM-13",
+   "ten": "Rà 13 mục S/V cũ đang dở",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V1",
+   "uu_tien": "P3",
+   "nghiem_thu": "Mỗi mục: xong / hủy / chuyển thành thẻ mới, có lý do",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P12_HM13_20261013.zip",
+   "bang_chung": "Kết quả: 6 XONG (S1, S10d, S10g, S13, S13b, S13c), 1 HỦY (S7d), 6 CHỜ (S11f/l/n/q → Q5/HM-16; V0, S12c → HM-14). Cập nhật de-an-nang-cap-scan/tien-do.json (trang_thai, trang_thai_cu, ket_luan_hm13, ngay_ra_soat), LO-TRINH.md (bảng đếm: xong 73, xong-phan-1 17, cho 9, bo-qua 1), TIEP-THEO.md, tệp mới docs/RA-SOAT-MUC-CU-HM13.md. KHÔNG đổi mã app. ĐO LẠI nhóm S11 trên 3 ảnh Q (bản build hiện tại, qua 'Tự dò góc'): nửa trên max|góc| 2,25°/1,75°/0,75°, nửa dưới 1,25°/1,00°/1,00° (chỉ tiêu ≤0,5°/ô → CHƯA đạt); nhìn ảnh …555 dòng chữ thẳng, chỉ tiêu đề bên phải hơi cụp. GIỚI HẠN: kịch bản đo cũ khôn"
+  },
+  {
+   "ma": "HM-14",
+   "ten": "R6.4 UAT máy thật + R6.5 đề án cuối",
+   "trang_thai": "cho",
+   "nhan_chi_tiet": "Chưa làm",
+   "uu_tien": "P2",
+   "nghiem_thu": "Bạn chấm Đạt/Không đạt; lỗi phát sinh thành thẻ mới",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "con_lai": "Chờ bạn thử máy thật (12 tình huống B13), AI thật, ảnh 12 MP; gộp V0, S12c"
+  },
+  {
+   "ma": "HM-15",
+   "ten": "App không bắt lỗi khi IndexedDB không dùng được",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V3",
+   "uu_tien": "P2",
+   "nghiem_thu": "Test: indexedDB.open lỗi → useDocs ready=true, docs rỗng, có thông báo, 0 unhandled; dbPromise không kẹt trạng thái từ chối (thử lại được); V3: chặn IndexedDB bằng init script, trang / mở được, không treo",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P04_HM15_20261012.zip",
+   "bang_chung": "Sửa src/lib/db.ts (+13/−1): open() bỏ cache khi lỗi; useDocs → loadDocs().catch(onLoadFailed): ready=true, danh sách rỗng, toast riêng 1 lần. Test mới src/lib/db-unavailable.test.ts (3 ca, ĐỎ với mã cũ, XANH với mã mới). V3 trước: pe=1–2/route, spinner ở /doc; sau: pe=0, không spinner. Hồi quy V3: 54 lượt 0 pageerror 0 tràn ngang; console.error y hệt baseline; nhập→xuất PDF OK; ngoại tuyến 4/4. Còn lại: pageerror CDN tesseract (F-09, có từ baseline). Chưa kiểm: Safari/Firefox riêng tư thật; lưu mới khi kho bị chặn vẫn báo lỗi chung ở thao tác lưu (ngoài phạm vi)."
+  },
+  {
+   "ma": "HM-16",
+   "ten": "Độ nghiêng dòng chữ cấp ô ≤0,5° trên ảnh Q (từ S11f/l/n/q)",
+   "trang_thai": "bo-qua",
+   "nhan_chi_tiet": "Hủy",
+   "uu_tien": "P3",
+   "nghiem_thu": "Tùy chọn Q5; Nếu (b): |góc| ≤0,5° ở ô mực ≥500 trên 3 ảnh Q; 860+ kiểm thử đạt; cổng R6.1 không hồi quy",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "bang_chung": "Đóng theo Q5=(a) (13/10/2026): chấp nhận. 2 ô còn vượt ≤1° (…555 d0P 2,25° mực 860; …556 d0T 1,75° mực 776). Mở lại nếu thử máy thật thấy chữ nghiêng."
+  },
+  {
+   "ma": "HM-17",
+   "ten": "Q2: khai báo @testing-library/dom + script check, bun.lock khớp",
+   "trang_thai": "xong",
+   "nhan_chi_tiet": "Đạt V2",
+   "uu_tien": "P2",
+   "nghiem_thu": "npm install --legacy-peer-deps đủ để chạy vitest; npm run check thoát mã 0; bun install --frozen-lockfile không báo thay đổi",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "zip": "GIAYTO_P14_Q2_20261013.zip",
+   "bang_chung": "package.json (+3 script, +1 devDependency, +0 đổi khác), bun.lock (+1 dòng workspace; gói đã được khoá sẵn @10.4.2), lint:src bỏ qua previewAuthStorage.ts (tệp tự sinh 'Do not edit'). Không chạy được bun install đầy đủ ở đây (registry 403) nhưng --frozen-lockfile OK. Chưa thử trong Lovable thật."
+  },
+  {
+   "ma": "HM-18",
+   "ten": "Dò mép giấy cho ảnh tạp chí có mặt bàn tối (NB: quad = null)",
+   "trang_thai": "bo-qua",
+   "nhan_chi_tiet": "Hủy (Q6=a)",
+   "uu_tien": "P3",
+   "nghiem_thu": "Nếu (b): detectQuadInfo trả khung giấy cho ảnh NB; cổng R6.1 trên NB ≥ 12/13; 221 ca cũ không đổi",
+   "ngay": "2026-10-12/13",
+   "nguon": "đề án nâng cấp v1.1 (handover/backlog.json)",
+   "con_lai": "Chờ Q6: dò mép giấy ảnh mặt bàn tối"
+  }
+ ],
+ "ket_thuc": false,
+ "de_an_v4": {
+  "buoc_ke_tiep": "S6",
+  "buoc": [
+   {
+    "ma": "S0",
+    "ten": "Phân tích điểm nghẽn + đề án v4",
+    "trang_thai": "xong"
+   },
+   {
+    "ma": "S1",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S2",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S3",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S4",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S5",
+    "trang_thai": "xong"
+   },
+   {
+    "ma": "S6",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S7",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S8",
+    "trang_thai": "chờ"
+   },
+   {
+    "ma": "S9",
+    "trang_thai": "chờ"
+   }
   ]
+ },
+ "buoc_ke_tiep": "Đề án v1.2 (P17, 13/10/2026): 14/18 đạt, 3 hủy (HM-02, HM-16, HM-18), 1 chờ: HM-14 (máy thật/AI thật/ảnh 12 MP; gộp V0, S12c) rồi R6.5 đề án cuối. Q6=a.",
+ "no_ky_thuat": "docs/NO-KY-THUAT.md",
+ "lo_trinh_r": [
+  {
+   "ma": "R0.1",
+   "dot": "R0 – Đồng bộ trạng thái",
+   "viec": "Đồng bộ trạng thái: gộp B13 trùng mã trong tien-do.json, cập nhật trạng thái theo tài liệu này, thay LO-TRINH-CON-LAI cũ (đã lỗi thời: ghi 13 mục thiếu nhưng 9 mục đã xong).",
+   "tep": "tien-do.json, LO-TRINH.md, TIEP-THEO.md",
+   "kiem_chung": "Trang tiến độ hiện đúng số mục Xong/Chưa",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R1.1",
+   "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+   "viec": "Một cửa chỉnh: chuyển FilterPanel vào AdjustEditor, xoá luồng áp ngay (TD-11, TD-12).",
+   "tep": "doc.$id.tsx, adjust-editor.tsx",
+   "kiem_chung": "Chỉ còn 1 cửa chỉnh; đổi bộ lọc → Lưu → ảnh đổi đúng",
+   "phu_thuoc": "R0.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R1.2",
+   "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+   "viec": "So sánh giữ để xem gốc, “Áp dụng cho tất cả”, hỏi khi rời màn chưa lưu (TD-23).",
+   "tep": "adjust-editor.tsx, image-compare.tsx",
+   "kiem_chung": "Back khi chưa lưu hiện hộp hỏi; Áp dụng tất cả đổi mọi trang",
+   "phu_thuoc": "R1.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R1.3",
+   "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+   "viec": "Bỏ data URL đợt 1 (8 tệp giao diện): Blob/ImageBitmap + close() (TD-04).",
+   "tep": "components/*",
+   "kiem_chung": "Mở 20 trang, RAM đỉnh không tăng dần",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R1.4",
+   "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+   "viec": "Bỏ data URL đợt 2 (7 tệp lib) + kiểm rò rỉ bitmap.",
+   "tep": "lib/*",
+   "kiem_chung": "Như R1.3 + kiểm thử rò rỉ",
+   "phu_thuoc": "R1.3",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R1.5",
+   "dot": "R1 – Một cửa chỉnh & nợ kỹ thuật giao diện",
+   "viec": "Màn Cắt tô mờ vùng sắp bị cắt + cảnh báo cam khi chữ vắt mép (TD-05); OCR trả hộp điểm ảnh + độ tin cậy (TD-06).",
+   "tep": "crop-editor.tsx, ocr-worker.ts",
+   "kiem_chung": "Ảnh Q3 hiện cảnh báo đúng mép phải",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.1",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Bể worker chung đợt 1: gom detect/preview/normalize/image vào 1 bể có ưu tiên, giữ API cũ qua worker-call.ts.",
+   "tep": "lib/pipeline/worker-hub.ts",
+   "kiem_chung": "Hồi quy đạt; số worker đồng thời ≤ 4",
+   "phu_thuoc": "R1.4",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.2",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Bể worker chung đợt 2: gom ocr, compress-page, page-pipeline; đo RAM đỉnh trước/sau.",
+   "tep": "lib/pipeline/*",
+   "kiem_chung": "Chụp 20 trang không treo",
+   "phu_thuoc": "R2.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.3",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Cache kết quả theo khoá (ảnh, tham số); xử lý theo ô 1024 px khi ảnh > 12 MP (giới hạn canvas iPhone).",
+   "tep": "lib/pipeline/cache.ts, tile.ts",
+   "kiem_chung": "Ảnh 48 MP giả lập không trắng trang",
+   "phu_thuoc": "R2.2",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.4",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Xem trước bộ lọc bằng WebGL2 + thanh cấp độ 0–100, ảnh đầy đủ chỉ tính khi thả tay.",
+   "tep": "lib/webgl-filter.ts",
+   "kiem_chung": "Kéo thanh ≤ 16 ms/khung, không lỗi console",
+   "phu_thuoc": "R1.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.5",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Hoàn tất baseline S1/P1.1 bằng video trang thay đổi; ghi số từng công đoạn so ngân sách 17.1.",
+   "tep": "scripts/do-chuan-s1.py",
+   "kiem_chung": "Đủ ≥ 10 mẫu dựng trang/bộ ảnh",
+   "phu_thuoc": "R2.2",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R2.6",
+   "dot": "R2 – Hiệu năng & pipeline",
+   "viec": "Dọn thuật toán cũ -vN không còn dùng; chuyển kiểm thử -vN thành bộ hồi quy.",
+   "tep": "lib/*-v*.ts",
+   "kiem_chung": "Hồi quy giữ nguyên số đạt",
+   "phu_thuoc": "R2.5",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R3.1",
+   "dot": "R3 – Tự động hoá “2 thao tác”",
+   "viec": "Nhật ký quyết định theo trang (“nền tối 18% → Sáng nền Mạnh”), nhãn cam “Cần xem lại” khi điểm < 70, thẻ lọc Tất cả / Cần xem lại / Đã sửa tay.",
+   "tep": "scan-journal.ts, doc.$id.tsx",
+   "kiem_chung": "Thẻ lọc chỉ hiện trang điểm < 70",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R3.2",
+   "dot": "R3 – Tự động hoá “2 thao tác”",
+   "viec": "“Phương án khác”: 3 biến thể dựng sẵn, chọn 1 chạm.",
+   "tep": "recipe.ts, adjust-editor.tsx",
+   "kiem_chung": "Chọn biến thể đổi ảnh trong 1 chạm",
+   "phu_thuoc": "R3.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R3.3",
+   "dot": "R3 – Tự động hoá “2 thao tác”",
+   "viec": "Học theo người dùng (P8.6): ghi lựa chọn sửa tay theo loại tài liệu, lần sau ưu tiên.",
+   "tep": "lib/user-recipe.ts",
+   "kiem_chung": "Sửa tay 1 lần → lô sau dùng công thức mới",
+   "phu_thuoc": "R3.2",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R3.4",
+   "dot": "R3 – Tự động hoá “2 thao tác”",
+   "viec": "Nhận loại tài liệu theo ảnh (màu, dấu đỏ, tỉ lệ khung) bổ sung cho doc-type theo chữ.",
+   "tep": "doc-type.ts",
+   "kiem_chung": "Đúng loại ≥ 85% bộ ảnh vàng",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R3.5",
+   "dot": "R3 – Tự động hoá “2 thao tác”",
+   "viec": "Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại”.",
+   "tep": "post-capture.ts, batch-export.tsx",
+   "kiem_chung": "Luồng Thêm → Xuất chạy xanh 2 thao tác",
+   "phu_thuoc": "R3.1, R5.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R4.1",
+   "dot": "R4 – Mục Thêm & Danh sách trang",
+   "viec": "Chống ảnh trùng bằng dấu vân ảnh + phân loại ảnh nhập (có nền / đã phẳng / chụp màn hình).",
+   "tep": "lib/dedupe-phash.ts, importer.ts",
+   "kiem_chung": "Ảnh trùng bị hỏi; ảnh phẳng không bị cắt",
+   "phu_thuoc": "—",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R4.2",
+   "dot": "R4 – Mục Thêm & Danh sách trang",
+   "viec": "Lưới trang kéo-thả, chọn nhiều thao tác hàng loạt, ô “+ Thêm” nét đứt cuối lưới, nhãn trạng thái % và nút xuất mờ khi còn trang đang xử lý.",
+   "tep": "doc.$id.tsx, page-list.ts",
+   "kiem_chung": "Đổi thứ tự được; nhãn đổi theo tiến độ",
+   "phu_thuoc": "R3.1",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R4.3",
+   "dot": "R4 – Mục Thêm & Danh sách trang",
+   "viec": "Bảng Thêm đủ 5 nguồn + vị trí chèn; kéo-thả toàn cửa sổ, phím tắt PC Delete/←/→/R; PDF tách trang.",
+   "tep": "importer.ts, app-shell.tsx",
+   "kiem_chung": "Kéo 20 ảnh thành công; phím tắt chạy",
+   "phu_thuoc": "R4.2",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R5.1",
+   "dot": "R5 – Xuất",
+   "viec": "PDF 3 mức Nhỏ/Chuẩn/Cao + kiểm tự động khung PDF khớp xem trước (TD-10).",
+   "tep": "batch-export.tsx, export-bundle.ts",
+   "kiem_chung": "20 trang Chuẩn ≤ 5 MB; tỉ lệ khớp ≤ 0,5%",
+   "phu_thuoc": "R2.3",
+   "trang_thai": "xong",
+   "bang_chung": "pdf-frame-check.test.ts: 14 kiểm thử đạt; PDF 20 trang Chuẩn 4,6 MB ≤ 5 MB; lệch khung ≤ 0,5% (7 tỉ lệ ảnh); 178 tệp / 814 kiểm thử đạt; tsgo sạch"
+  },
+  {
+   "ma": "R5.2",
+   "dot": "R5 – Xuất",
+   "viec": "Lớp chữ OCR ẩn trong PDF (tìm và chọn được chữ tiếng Việt).",
+   "tep": "lib/pdf-text-layer.ts",
+   "kiem_chung": "Tìm được từ trên PDF tải về",
+   "phu_thuoc": "R5.1, R1.5",
+   "trang_thai": "xong",
+   "bang_chung": "pdf-text-layer.test.ts: pdfjs trích đúng 3 cụm tiếng Việt có dấu từ PDF dựng thật; sửa lỗi charSpace phá tìm kiếm; 179 tệp / 817 kiểm thử đạt; tsgo sạch"
+  },
+  {
+   "ma": "R6.1",
+   "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+   "viec": "Tinh chỉnh 7 bộ lọc + Khử bóng, Khử nhiễu 3 cấp theo chỉ số 17.4; thêm cổng chất lượng: không đạt thì không gạch mục.",
+   "tep": "tool-levels.ts, chat-luong.py",
+   "kiem_chung": "221/221 ca đạt (R6.1d): độ lệch nền ≤ 8%, ΔL ≥ 60, góc tối ≤ 5% (R6.1c nới từ 0,2% vì góc tối còn lại là chữ thật)",
+   "phu_thuoc": "R2.4",
+   "trang_thai": "xong",
+   "canh_bao": "R6.2: cổng R6.1 trên ảnh thật NB (trang tạp chí in màu) đạt 1/8 – góc tối do nội dung in màu; xem kiem-chung/R6.2/bao-cao.md, đề xuất R6.1e"
+  },
+  {
+   "ma": "R6.2",
+   "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+   "viec": "Bộ ảnh NB (bài báo Ninh Bình) + ảnh Cam mẫu; so tỉ lệ OCR đúng ký tự.",
+   "tep": "kiem-chung/bo-anh-NB/",
+   "kiem_chung": "OCR ≥ bản Cam − 2%",
+   "phu_thuoc": "Cần người dùng gửi ảnh Cam cùng trang",
+   "trang_thai": "xong",
+   "bang_chung": "R6.2 (11/10/2026): dựng bo-anh-NB (ảnh gốc + chữ chuẩn 4.082 ký tự) + scripts/kiem-chung-r62 (chay-app.py, so-ocr.py, nhánh Cam jpg/pdf đã thử). CHƯA gạch: thiếu ảnh Cam cùng trang; máy chỉ có tesseract 'eng' (số tham chiếu: app auto 77,7% vs gốc 76,8% đúng ký tự). Cổng R6.1 trên ảnh thật NB đạt 1/8 (góc tối do khối đỏ số trang/logo bị đẩy đen) → đề xuất R6.1e. Không chạy được vitest/tsc/build (mạng chặn npm).",
+   "ghi_chu": "Phần 2 xong ở HM-12 (app 98,68% vs Cam 98,88%; TD-42 tesseract gốc −0,39) — đồng bộ P19"
+  },
+  {
+   "ma": "R6.3",
+   "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+   "viec": "Kiểm 5 tiêu chí mục 9 tự động: 20 trang không chặn, 20 ảnh PC + 20 ảnh thư viện, chế độ máy bay, đo chỉ tiêu 19.5.",
+   "tep": "scripts/playwright/nghiem-thu.py",
+   "kiem_chung": "Báo cáo 5/5 tiêu chí (R6.3b; chạy lại R6.3c trên bản R6.1d vẫn 5/5, cần cờ NGHIEM_THU_CHAN_FONT=1 khi không có internet)",
+   "phu_thuoc": "R3.5, R5.2",
+   "trang_thai": "xong"
+  },
+  {
+   "ma": "R6.4",
+   "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+   "viec": "UAT máy thật Android/iPhone/PC (B13/P7.3), hiệu chỉnh ngưỡng điểm trang theo kết quả.",
+   "tep": "UAT-B13-*.md, page-grade.ts",
+   "kiem_chung": "Báo cáo số đo trên máy thật",
+   "phu_thuoc": "Cần người dùng thử",
+   "trang_thai": "cho"
+  },
+  {
+   "ma": "R6.5",
+   "dot": "R6 – Chất lượng, nghiệm thu, bàn giao",
+   "viec": "Đề án bản cuối v5 + bàn giao tổng.",
+   "tep": "de-an-*_v5.docx",
+   "kiem_chung": "—",
+   "phu_thuoc": "Tất cả",
+   "trang_thai": "cho"
+  }
+ ],
+ "nhat_ky": [
+  "- 2026-10-11 R0.1: Đồng bộ trạng thái theo lộ trình v5; gộp mã trùng B13, S10e; thêm 27 gói R",
+  "- 2026-10-11 R1.1: Một cửa chỉnh – nút Lọc mở Chỉnh tay; gợi ý bộ lọc, Áp tất cả, Trang tương tự, chẩn đoán chuyển vào; xoá FilterPanel áp ngay (TD-11/12); 164 tệp / 692 kiểm thử đạt; tsgo sạch; build OK",
+  "- 2026-10-11 R1.2: Nút “Giữ để xem ảnh gốc” trên màn Chỉnh tay (giữ = thấy 100% gốc, thả = về vị trí cũ); hộp hỏi khi rời màn chưa lưu và Áp tất cả trang đã có từ R1.1/TD-23; 164 tệp / 694 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11 R3.1: Nhật ký quyết định theo trang (page-review.ts), nhãn cam “Xem lại” khi điểm < 70, thẻ lọc Tất cả / Cần xem lại / Đã sửa tay trên màn tài liệu; 165 tệp / 699 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11 R1.3: Bỏ data URL ở giao diện (bộ tẩy, bút vẽ) – canvas-url.ts xuất Blob/object URL, giải phóng canvas, thu hồi URL tạm; adoptBlob đăng ký với kho; còn QR nhỏ (giữ); 166 tệp / 703 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11 R1.4: Bỏ data URL đợt 2 ở 7 tệp lib (moire, redact, signatures, sr-enhance, translate-overlay, files, id-watermark) – trang trả về object URL đã đăng ký, canvas giải phóng ngay; thêm r14-leak.test.ts kiểm rò rỉ bitmap/object URL; 167 tệp / 714 kiểm thử đạt; tsgo sạch; build OK",
+  "- 2026-10-11 R2.6: Dọn thuật toán cũ -vN; 7 kiểm thử -vN thành bộ hồi quy src/lib/regression/; 175 tệp / 791 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11 R3.5: Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm PDF Chuẩn, tên tự động, nhắc trang cần xem lại; 176 tệp / 795 kiểm thử đạt; tsgo sạch; build OK",
+  "- 2026-10-11 R5.1: PDF đúng 3 mức Nhỏ/Chuẩn/Cao (bỏ mức Gốc/Nhẹ nhất cũ) + pdf-frame-check.ts kiểm tự động khung PDF khớp xem trước (đóng TD-10); kiểm chứng: PDF thật 20 trang Chuẩn 4,6 MB ≤ 5 MB, tỉ lệ lệch khung ≤ 0,5% trên 7 tỉ lệ ảnh; 178 tệp / 814 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11 R5.2: Lớp chữ OCR ẩn trong PDF – tách textLayerOps/writeTextLayer thuần, phát hiện & sửa lỗi giãn ký tự khiến trình đọc tách từng ký tự (mất tìm kiếm); kiểm chứng: pdfjs trích đúng 'VIỆT NAM', 'Hạnh phúc', 'quyền sử dụng đất' từ PDF dựng thật; 179 tệp / 817 kiểm thử đạt; tsgo sạch",
+  "- 2026-10-11T05:11:33+00:00 R2.5: Baseline S1/P1.1 sau R2.2: 3 video × 10 trang = 30 mẫu, 0 lỗi, RAM đỉnh 60-70MB, đạt ngân sách 17.1",
+  "- [x] R2.6 Dọn thuật toán cũ -vN: xoá flattenApplyRef/sampleBg khỏi pixels.ts (bản tham chiếu nằm trong kiểm thử), v8bStats/__v8b → previewStats/__previewStats; 7 kiểm thử -vN → bộ hồi quy src/lib/regression/*.regression.test.ts — 175 tệp / 791 kiểm thử đạt, tsgo sạch",
+  "- [x] R3.5 Chế độ Tự động bật mặc định (P8.7) + Xuất 1 chạm: PDF Chuẩn, tên tự động, nhắc “Còn N trang nên xem lại” kèm nút Xem lại; nút Xuất = 1 chạm, Tùy chọn mở bảng đầy đủ — 176 tệp / 795 kiểm thử đạt, tsgo sạch, build OK",
+  "- 2026-10-11T05:26:04+00:00 R3.5: Tự động mặc định (P8.7) + Xuất 1 chạm PDF Chuẩn, tên tự động, nhắc trang cần xem lại; 176 tệp / 795 kiểm thử đạt, tsgo sạch, build OK",
+  "- 2026-10-11 R4.3: Bảng Thêm đủ 5 nguồn (Thư viện/Chụp/PDF tách trang/Dán/Quét) + vị trí chèn Đầu/Sau trang/Cuối; kéo-thả ảnh/PDF vào toàn cửa sổ có lớp phủ báo thả; phím tắt PC Delete xoá trang, ←/→ chuyển trang, R xoay 90°; 177 tệp / 800 kiểm thử đạt, tsgo sạch, build OK",
+  "- 2026-10-11T05:31:30+00:00 R4.3: Bảng Thêm 5 nguồn + vị trí chèn; kéo-thả cửa sổ; phím tắt Delete/←/→/R; PDF tách trang; 177 tệp / 800 kiểm thử đạt",
+  "- 2026-10-11T05:50:16+00:00 R5.2: Lớp chữ OCR ẩn trong PDF, tìm được chữ tiếng Việt; sửa lỗi giãn ký tự phá tìm kiếm; 817 kiểm thử đạt",
+  "- 2026-10-11T07:49:15+00:00 R6.1a: Tinh chỉnh đường cong mực 6 bộ lọc (auto/sharp/magic/gray/ink/eco) để ΔL ≥ 60; 822 kiểm thử đạt, tsgo sạch",
+  "- 2026-10-11T09:13:26+00:00 R6.1b3: R6.1b-3: cornerShadowLift xoá bóng góc + khối đen đặc; 826/826 kiểm thử; kiểm chứng 221 ca đạt 73,8%, góc tối còn lại là chữ thật — đề xuất R6.1c nới cổng",
+  "- 2026-10-11T10:13:11+00:00 R6.1c: Nới cổng góc tối 0,2%→5%; kiểm chứng lại 212/221 ca đạt (95,9%); 826/826 kiểm thử đạt",
+  "- 2026-10-11T11:47:36+00:00 R6.3b: Nghiệm thu 5/5; sửa sw.js bỏ sót tệp có __, warmShellCache, ?sw=on",
+  "- 2026-10-11T12:50:42+00:00 R6.1d: Đậm hoá mực auto/sharp/gray; 221/221 ca kiểm chứng đạt (100%); 830/830 kiểm thử, tsgo sạch",
+  "- 2026-10-11 R6.3c: Chạy lại nghiệm thu R6.3 trên bản build R6.1d – 5/5 (cần NGHIEM_THU_CHAN_FONT=1 khi sandbox không có internet; lỗi duy nhất không cờ là phông Google không tải được); 830/830 kiểm thử, tsc sạch; chưa chạy lại cổng R6.1",
+  "- 2026-10-11 R6.2: Dựng bộ ảnh NB + chữ chuẩn + kịch bản chay-app.py/so-ocr.py; chạy pipeline thật 8 bộ lọc; OCR tham chiếu (eng) auto 77,7% vs gốc 76,8%; thiếu ảnh Cam nên CHƯA gạch; cổng R6.1 trên ảnh NB 1/8; không chạy được kiểm thử (mạng chặn npm), mã nguồn app không đổi"
+ ]
 }

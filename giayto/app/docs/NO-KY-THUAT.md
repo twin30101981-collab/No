@@ -30,7 +30,7 @@ Còn mở sau P18:
 | TD-26, TD-01, TD-16, HM-14 (V0 ảnh 12 MP, S12c AI thật, UAT máy thật) | Cần máy thật/ảnh chụp thật/AI thật — người dùng loại khỏi P18 | Người dùng |
 | TD-46 (ĐÃ ĐÓNG P19: primary làm đậm oklch(0.48 0.1 174), test td46; còn theme-color/icon) | Tương phản màu thương hiệu: chữ trắng trên primary 2,40; chữ primary/muted nhỏ trên nền sáng 2,07–2,31 (WCAG AA 4,5) — đổi bảng màu là quyết định thiết kế | Chủ dự án chọn: giữ / làm đậm primary / chữ tối trên primary |
 | TD-28 | Bộ đếm AI bền (bảng Supabase = đổi schema), miễn trừ người đăng nhập, mức 60 — đổi nghiệp vụ, cần quyết định | Chủ dự án |
-| TD-15, TD-11, TD-12, TD-31, TD-36, TD-44 | Quyết định chủ dự án / thiết kế (đã ghi trước) | Chủ dự án |
+| TD-15, TD-31, TD-36 (TD-11/12/44 đã đóng P19) | Quyết định chủ dự án / thiết kế (đã ghi trước) | Chủ dự án |
 | TD-05/06/07 | Hộp chữ ký/bảng chưa có nguồn — cần thiết kế (TD-05/06 phần OCR đã làm ở R1.5) | Thiết kế |
 | TD-20, TD-41 | Cần đề án nền v4 (không có trong ZIP) | Người dùng gửi |
 | TD-29, TD-35, TD-43, TD-18 | Đã chấp nhận / tệp tự sinh / cần người rà chữ chuẩn / theo TD-01 | — |
@@ -111,8 +111,8 @@ Quy ước: **Chặn** = phải xử lý trước khi ghi "xong" cho S12c/S13; *
 ## C. Thiết kế / nhất quán
 | Mã | Nợ | Mức | Ghi chú |
 | --- | --- | --- | --- |
-| TD-11 | Hai luồng chỉnh song song: FilterPanel/CropEditor/Xoay áp dụng ngay; AdjustEditor chỉ ghi khi Lưu → hành vi khác nhau, người dùng dễ nhầm | Trung | Quyết định S13d: thay hẳn hoặc để AdjustEditor là cửa chính |
-| TD-12 | AdjustEditor chỉ áp dụng cho trang hiện tại; FilterPanel có "Áp dụng tất cả" | Thấp | Thêm nếu người dùng cần |
+| TD-11 | ĐÓNG (xác minh P19: doc.$id.tsx dùng AdjustEditor cho cả panel adjust/filter; R1.1/HM-13). (cũ: Hai luồng chỉnh song song: FilterPanel/CropEditor/Xoay áp dụng ngay; AdjustEditor chỉ ghi khi Lưu → hành vi khác nhau, người dùng dễ nhầm | Trung | Quyết định S13d: thay hẳn hoặc để AdjustEditor là cửa chính |
+| TD-12 | ĐÓNG (xác minh P19: AdjustEditor có nút 'Áp tất cả trang', onApplyAll trong doc.$id.tsx). (cũ: AdjustEditor chỉ áp dụng cho trang hiện tại; FilterPanel có "Áp dụng tất cả" | Thấp | Thêm nếu người dùng cần |
 | TD-13 | Không bọc SafeBoundary cho AdjustEditor vì thông điệp hiện tại ("Phần AI gặp sự cố") sai ngữ cảnh | Thấp | Cho SafeBoundary nhận thông điệp tuỳ chọn |
 | TD-14 | Thanh trượt giữ giá trị "đang kéo" ở state riêng (`live`); nếu onValueCommit không bắn (kéo ra ngoài) số hiển thị có thể lệch tới lần kéo sau | Thấp | Kiểm trên thiết bị cảm ứng |
 | ~~TD-23~~ | **ĐÃ ĐÓNG 10/10/2026:** useBlocker + confirmDialog khi isDirty; kiểm thử thành phần đạt. Trước đó: Nháp chưa lưu mất **im lặng** khi người dùng bấm Back của trình duyệt/Android hoặc đổi tuyến: AdjustEditor là lớp phủ trong route doc.$id, chưa có chặn rời màn. Đúng yêu cầu "rời màn hình không đổi trang đã lưu" nhưng mất công chỉnh | Trung | Thử `useBlocker` của TanStack Router khi `isDirty`, hỏi bằng `confirmDialog`; kiểm trên Android |
