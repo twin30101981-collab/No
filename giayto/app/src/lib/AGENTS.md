@@ -1,0 +1,25 @@
+- Root `index.html` is a self-contained handoff preview.
+- Batch export skips+reports failing docs, never aborts.
+- QR: BarcodeDetector then jsQR; /measure uses photo + reference object.
+
+- Paper detection: detect.ts Sobel/Hough (robust ≥500px adds stretched/light-evened gray), then refine on the original; saves use detectQuadInfo.
+- Word export: dependency-free docx.ts (zip from xlsx.ts); aiLayout blocks, textToBlocks OCR fallback (word.ts).
+- PDF→Word/Excel (pdf-convert.ts): pdfjs text layer first; scanned pages via AI tables 3 at a time, one reused OCR worker as fallback.
+- Excel→Word: dependency-free xlsx-read.ts feeds merges/red cells to blocksToDocx; offline.
+- Scanned tables: aiTable cells with x-ranges + columns.ts clustering on the unrotated original; OCR fallback is text only.
+- Conversion history: history.ts (IDB), size-capped, backup w/o blobs.
+- Pixel work: pixels.ts via runPixels; ImageCompare uses renderPage so previews match output.
+- Warp: dewarp.ts edgeCurves; curved → CPU bicubic Coons, flat → WebGL then CPU; renderPage trims borders, sharpens luma only.
+- Vietnamese document templates live in vn-templates.ts (fields, prompt, validators); extract-check uses them by doc type.
+- ID-photo cutout (id-photo.ts): AI green-screen + chroma key, border-flood fallback; pure, testable.
+- Receipts: AI raw strings → receipt.ts normalizes (pure); list in localStorage.
+- Corner refine reads only 4 edge strips of the cached original via a Sampler (detect-refine.ts): no full 4096px reads; crop-bench.ts guards detection + ≤2px corners.
+- Mặt nạ giấy (paper-mask.ts) runs inside the "clean" pixel op after cleanBorder — keeps corner-wedge removal in the Worker pipeline.
+- Warping uses one source-coordinate map (makeSrcMap in dewarp.ts) shared by the WebGL2 mesh path (warp-mesh.ts) and the CPU fallback, so GPU and CPU output stay identical.
+- runPixels dispatches to a 2–4 Worker pool (least-busy) with main-thread fallback — keeps heavy pixel ops parallel and off the UI thread.
+- B8: cắt theo nội dung dùng hàm thuần trong content-crop.ts (chạy được ở Worker/kiểm thử); Đen trắng xuất PNG 1-bit tự mã hoá bằng fflate vì canvas chỉ ra PNG 8-bit.
+- Pages are stored in IndexedDB as binary Blobs (disk-pack.ts in toDisk/loadDocs) while memory keeps data URLs — smaller storage with no app-wide type change; old string records still load.
+- Blob image normalize runs in a 1–3 Worker pool (normalize-pool.ts, OffscreenCanvas) with main-thread fallback — lets parallel import actually scale.
+- Tài liệu sáng/Sắc nét chạy trọn trong một op Worker "docchain" (pixels.ts docChain) — kéo mức + nắn dòng nặng không được chạy trên luồng chính.
+- Làm nét dùng sharpenAdaptive (sharpen-adaptive.ts) — kẹp theo lân cận 3×3 để không quầng sáng/hỏng nét mảnh.
+- R2.1: mọi việc detect/preview/normalize/pixels chạy qua bể chung worker-pool.ts + pool.worker.ts (ưu tiên detect>preview>normalize>pixels, 2–4 worker); không tạo Worker riêng mới — thêm loại việc vào pool.worker.ts.

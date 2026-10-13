@@ -1,0 +1,119 @@
+{
+ "ngon_ngu_ocr": "eng",
+ "ngon_ngu_yeu_cau": "vie",
+ "psm": 3,
+ "nguong_diem": 0.02,
+ "chi_so_chinh": "dung_ky_tu",
+ "danh_gia": {
+  "IMG_NB_01": {
+   "app_auto": 0.7771,
+   "app_tot_nhat": 0.7771,
+   "bo_loc_tot_nhat": "auto",
+   "cam_tot_nhat": null,
+   "dat": null,
+   "ghi_chu": "CHƯA ĐÁNH GIÁ: thiếu ảnh Cam cùng trang trong bo-anh-NB/cam/"
+  }
+ },
+ "chi_tiet": {
+  "goc|IMG_NB_01": {
+   "nhom": "goc",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7682,
+   "cer": 0.2794,
+   "dung_ky_tu_khong_dau": 0.9259,
+   "cer_khong_dau": 0.1217,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3142
+  },
+  "app|IMG_NB_01_auto": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7771,
+   "cer": 0.2682,
+   "dung_ky_tu_khong_dau": 0.9193,
+   "cer_khong_dau": 0.126,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3144
+  },
+  "app|IMG_NB_01_eco": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7632,
+   "cer": 0.2755,
+   "dung_ky_tu_khong_dau": 0.9269,
+   "cer_khong_dau": 0.1124,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3111
+  },
+  "app|IMG_NB_01_gray": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7679,
+   "cer": 0.287,
+   "dung_ky_tu_khong_dau": 0.9104,
+   "cer_khong_dau": 0.1445,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3149
+  },
+  "app|IMG_NB_01_ink": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7553,
+   "cer": 0.2774,
+   "dung_ky_tu_khong_dau": 0.9114,
+   "cer_khong_dau": 0.1214,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3084
+  },
+  "app|IMG_NB_01_magic": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7662,
+   "cer": 0.2765,
+   "dung_ky_tu_khong_dau": 0.9309,
+   "cer_khong_dau": 0.1118,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3128
+  },
+  "app|IMG_NB_01_mono": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7536,
+   "cer": 0.2794,
+   "dung_ky_tu_khong_dau": 0.9084,
+   "cer_khong_dau": 0.125,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3086
+  },
+  "app|IMG_NB_01_original": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7655,
+   "cer": 0.2685,
+   "dung_ky_tu_khong_dau": 0.9223,
+   "cer_khong_dau": 0.1121,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3098
+  },
+  "app|IMG_NB_01_sharp": {
+   "nhom": "app",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7748,
+   "cer": 0.2642,
+   "dung_ky_tu_khong_dau": 0.9187,
+   "cer_khong_dau": 0.1207,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3126
+  },
+  "doi-chung|IMG_NB_01_nguong-thich-ung": {
+   "nhom": "doi-chung",
+   "trang": "IMG_NB_01",
+   "dung_ky_tu": 0.7636,
+   "cer": 0.2887,
+   "dung_ky_tu_khong_dau": 0.8995,
+   "cer_khong_dau": 0.1531,
+   "so_ky_tu_chuan": 3024,
+   "so_ky_tu_ocr": 3150
+  }
+ }
+}
