@@ -158,6 +158,7 @@ function Me() {
         <Row label="Âm báo khi chụp"><Switch aria-label="Âm báo khi chụp" checked={s.captureSound} onCheckedChange={(v) => setSettings({ captureSound: v })} /></Row>
         <Row label="AI tự đặt tên sau khi quét"><Switch aria-label="AI tự đặt tên sau khi quét" checked={s.autoName} onCheckedChange={(v) => setSettings({ autoName: v })} /></Row>
         {s.autoName && <NamingRules />}
+        <Row label="Xử lý ảnh nền khi rời màn chụp (thử nghiệm)"><Switch aria-label="Xử lý ảnh nền khi rời màn chụp" checked={s.globalPipeline !== false} onCheckedChange={(v) => setSettings({ globalPipeline: v })} /></Row>
         <Row label="Tự nhận chữ sau khi quét"><Switch aria-label="Tự nhận chữ sau khi quét" checked={s.autoOcr ?? true} onCheckedChange={(v) => setSettings({ autoOcr: v })} /></Row>
         <Row label="Đọc hướng dẫn khi quét"><Switch aria-label="Đọc hướng dẫn khi quét" checked={s.voiceGuide} onCheckedChange={(v) => setSettings({ voiceGuide: v })} /></Row>
         <Row label="Rung theo hướng dẫn"><Switch aria-label="Rung theo hướng dẫn" checked={s.guideVibrate} onCheckedChange={(v) => setSettings({ guideVibrate: v })} /></Row>

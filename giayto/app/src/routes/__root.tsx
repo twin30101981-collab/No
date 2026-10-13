@@ -33,6 +33,7 @@ import { installAutoLock, useSettings } from "../lib/settings";
 import { installGlobalErrorToasts } from "../lib/errors";
 import { registerServiceWorker } from "../lib/offline";
 import { runAuthCallbackOnce } from "../lib/auth-callback";
+import { startPipeline } from "../lib/pipeline/runner";
 import { authMessage } from "../lib/auth";
 import { AppDialog } from "@/components/app-dialog";
 import { Onboarding } from "@/components/onboarding";
@@ -155,6 +156,8 @@ function RootComponent() {
   useEffect(() => { document.documentElement.classList.toggle("dark", dark); }, [dark]);
   useEffect(() => { document.documentElement.classList.toggle("large-text", largeText); }, [largeText]);
   const navigate = useNavigate();
+  // CS-02: bộ điều phối nền toàn app — hoàn thiện trang ngay cả khi đã rời màn Chụp / sau khi tải lại
+  useEffect(() => { startPipeline(); }, []);
   // BL-00: đăng nhập Google quay về trang chủ kèm mã phiên → nhận ngay ở gốc app (trước đây mã bị bỏ lỡ vì Supabase chưa được khởi tạo)
   useEffect(() => {
     const run = runAuthCallbackOnce();

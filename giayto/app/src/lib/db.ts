@@ -91,6 +91,8 @@ export async function loadDocs() {
   const old = expiredIds(cache);
   if (old.length) await purgeDocs(old).catch(() => {});
 }
+/** CS-02: bộ điều phối nền chạy ở mọi màn — đảm bảo danh sách tài liệu đã nạp trước khi tra cứu trang. */
+export async function ensureDocsLoaded() { if (!ready) await loadDocs(); }
 export async function saveDoc(doc: Doc, touch = true) {
   let next = touch ? { ...doc, updatedAt: Date.now() } : doc;
   const disk = await toDisk(next);
