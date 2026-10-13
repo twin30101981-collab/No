@@ -191,8 +191,9 @@ function Editor({ doc, initial, autoRun = false }: { doc: Doc; initial: Panel; a
     if (!files.length || importing.current) return;
     importing.current = true; setBusy("Đang nhập ảnh…");
     try {
-      const pages = await filesToPages(files);
-      if (!pages.length) { toast.error("Không có ảnh hoặc PDF hợp lệ"); return; }
+      const stats = { skipped: 0 };
+      const pages = await filesToPages(files, stats);
+      if (!pages.length) { if (stats.skipped) toast.info("Đã bỏ qua ảnh trùng, không thêm trang nào"); else toast.error("Không có ảnh hoặc PDF hợp lệ"); return; }
       const current = getDocs().find((d) => d.id === doc.id);
       if (!current) return;
       const where = pos ?? posRef.current;
