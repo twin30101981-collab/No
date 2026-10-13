@@ -1,4 +1,5 @@
 /** G4-21: send a document to other services (email, Zalo, system share). Pure helpers + thin browser glue. */
+import { toast } from "sonner";
 import { download } from "./files";
 import { canShareThisFile, offerTapToShare, tryShare } from "./share";
 
@@ -19,6 +20,8 @@ export function mailtoUrl(opts: { to?: string | undefined; subject: string; body
 export function zaloShareUrl(link: string) {
   return `https://zalo.me/share?url=${encodeURIComponent(link)}`;
 }
+/** Zalo trên máy tính chạy ở web: kéo tệp đã tải vào khung chat (Zalo không có API gửi tệp từ web khác). */
+export const ZALO_WEB_URL = "https://chat.zalo.me/";
 
 /** Default message body for a document. */
 export function sendMessage(name: string, pages: number, link?: string) {
@@ -38,7 +41,12 @@ export async function sendFile(target: SendTarget, blob: Blob, name: string, met
   const file = new File([blob], name, { type: blob.type || "application/pdf" });
   const text = sendMessage(meta.title, meta.pages, meta.link);
   if (target === "zalo" && meta.link) { window.open(zaloShareUrl(meta.link), "_blank", "noopener"); return "shared"; }
-  if (canShareThisFile(file) && !(target === "email" && meta.to)) {
+  if (canShareThisFile(file)) {
+    // TF-02: điện thoại LUÔN dùng bảng chia sẻ để đính kèm thật (trước đây có người nhận thì tải về rồi mở thư rỗng).
+    // Bảng chia sẻ không điền sẵn người nhận → chép địa chỉ vào bộ nhớ tạm và nhắc dán.
+    if (target === "email" && meta.to) {
+      void navigator.clipboard?.writeText(meta.to).then(() => { toast.info(`Đã chép ${meta.to} — dán vào ô Người nhận`); }, () => { toast.info(`Người nhận: ${meta.to} — nhập vào ô Người nhận`); });
+    }
     const r = await tryShare(file, { title: meta.title, text });
     if (r === "shared") return "shared";
     if (r === "cancelled") return "cancelled";
@@ -46,6 +54,13 @@ export async function sendFile(target: SendTarget, blob: Blob, name: string, met
     if (r === "needs-tap") { offerTapToShare(file, { title: meta.title, text }, download); return "pending"; }
   }
   download(blob, name);
-  if (target === "email") window.location.href = mailtoUrl({ to: meta.to, subject: meta.title, body: sendMessage(meta.title, meta.pages, meta.link) + `\n\n(Đính kèm tệp ${name} vừa tải về.)` });
+  if (target === "email") {
+    window.location.href = mailtoUrl({ to: meta.to, subject: meta.title, body: sendMessage(meta.title, meta.pages, meta.link) + `\n\n(Đính kèm tệp ${name} vừa tải về.)` });
+    toast.info("Đã tải PDF — đính kèm vào thư vừa mở");
+  } else if (target === "zalo") {
+    toast(`Đã tải “${name}”`, { description: "Mở Zalo trên máy tính rồi kéo tệp vừa tải vào khung chat.", duration: 20000,
+      action: { label: "Mở Zalo", onClick: () => { window.open(ZALO_WEB_URL, "_blank", "noopener"); } },
+      actionButtonStyle: { minHeight: 40, padding: "0 14px", fontSize: 14, fontWeight: 600 } });
+  } else toast.info("Máy này không có bảng chia sẻ — đã tải PDF về");
   return "fallback";
 }

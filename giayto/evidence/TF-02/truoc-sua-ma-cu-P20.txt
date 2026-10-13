@@ -1,0 +1,13 @@
+LỖI  Email có người nhận (điện thoại): mở bảng chia sẻ với tệp PDF đính kèm  []
+LỖI  Email có người nhận (điện thoại): KHÔNG tải về rồi mở thư rỗng  ["Hợp đồng thử.pdf"]
+LỖI  Email: địa chỉ người nhận được chép vào bộ nhớ tạm  []
+LỖI  Email: nhắc dán địa chỉ vào ô Người nhận  Đã tải PDF — đính kèm vào thư vừa mở
+ĐẠT  Email không người nhận (điện thoại): chia sẻ 1 lần, không chép bộ nhớ tạm
+ĐẠT  Zalo (máy tính): tải PDF về
+LỖI  Zalo (máy tính): có hướng dẫn kéo tệp vào khung chat  Đã tải PDF — mở Zalo và gửi tệp này
+LỖI  Zalo (máy tính): có nút “Mở Zalo”
+LỖI  Zalo (máy tính): “Mở Zalo” mở chat.zalo.me ở tab mới  không mở
+ĐẠT  Zalo (điện thoại): chia sẻ tệp qua bảng chia sẻ, không tải về
+ĐẠT  Email (máy tính): tải PDF về + báo đính kèm vào thư  Đã tải PDF — đính kèm vào thư vừa mở
+ĐẠT  không có pageerror
+7 ca lỗi

@@ -1,0 +1,13 @@
+ĐẠT  Email có người nhận (điện thoại): mở bảng chia sẻ với tệp PDF đính kèm  [["Hợp đồng thử.pdf"]]
+ĐẠT  Email có người nhận (điện thoại): KHÔNG tải về rồi mở thư rỗng  []
+ĐẠT  Email: địa chỉ người nhận được chép vào bộ nhớ tạm  ["nguoi.nhan@example.com"]
+ĐẠT  Email: nhắc dán địa chỉ vào ô Người nhận  Đã chép nguoi.nhan@example.com — dán vào ô Người nhận
+ĐẠT  Email không người nhận (điện thoại): chia sẻ 1 lần, không chép bộ nhớ tạm
+ĐẠT  Zalo (máy tính): tải PDF về
+ĐẠT  Zalo (máy tính): có hướng dẫn kéo tệp vào khung chat  Đã tải “Hợp đồng thử.pdf” Mở Zalo trên máy tính rồi kéo tệp vừa tải
+ĐẠT  Zalo (máy tính): có nút “Mở Zalo”
+ĐẠT  Zalo (máy tính): “Mở Zalo” mở chat.zalo.me ở tab mới  https://chat.zalo.me/
+ĐẠT  Zalo (điện thoại): chia sẻ tệp qua bảng chia sẻ, không tải về
+ĐẠT  Email (máy tính): tải PDF về + báo đính kèm vào thư  Đã tải PDF — đính kèm vào thư vừa mở
+ĐẠT  không có pageerror
+TẤT CẢ ĐẠT

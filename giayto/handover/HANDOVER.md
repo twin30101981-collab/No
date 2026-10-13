@@ -1,5 +1,5 @@
 # BÀN GIAO — GIAYTO — Phiên P20 — 2026-10-13 (P19 và cũ hơn giữ nguyên bên dưới)
-Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00 và TF-01 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
+Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do đóng: BL-00, BL-01, CS-00, TF-01 và TF-02 xong — chờ người dùng chọn hạng mục kế (skill 4.4)
 
 ## P20 tóm tắt (đọc trước)
 - Người dùng giao ZIP P19 + skill v3.2.0 + **báo cáo rà soát lộ trình** (docx, bản 5) và nói "thực thi đề án theo lộ trình" → coi báo cáo = **đề án v2.0** (`de_an.trang_thai = DA_DUYET`, ghi chú duyệt trong backlog.json). File: `de-an/DE_AN_GIAYTO_v2.0_RA_SOAT_LO_TRINH_20261013.docx` (đề án v1.2 vẫn nằm trong de-an/ làm lịch sử).
@@ -31,9 +31,15 @@ Skill: web-app-repair-upgrade v3.2.0 | Chế độ: 3 (theo đề án) | Lý do 
 - **Kiểm chứng:** `scripts/playwright/kiem-chia-se.mjs` — mã cũ **9/18 LỖI**; mã mới **20/20 ĐẠT**, 0 pageerror. Test đơn vị 8 ca. `npm run check` = **196 tệp / 921 đạt**, lint 0 lỗi, build OK.
 - **CHƯA xác minh:** máy thật (Android Chrome, iPhone Safari/PWA) — Chromium Linux không có bảng chia sẻ nên `navigator.share` được GIẢ LẬP. Chưa làm TF-02 (Zalo PC, Email có người nhận trên điện thoại không đính kèm, iOS Lưu vào Tệp) và TF-03.
 
+## Hạng mục vừa đóng (5): TF-02 — Gửi tới: Email/Zalo theo nền tảng — ĐẠT-V3 (giả lập)
+- **Nguyên nhân gốc:** `sendFile` bỏ bảng chia sẻ khi Email có người nhận → tải PDF rồi mở `mailto:` KHÔNG đính kèm (toast còn nói sai "đính kèm vào thư vừa mở"); Zalo trên máy tính chỉ tải về, không hướng dẫn.
+- **Đã sửa (`lib/send-to.ts`, `routes/doc.$id.tsx`):** điện thoại luôn dùng bảng chia sẻ cho Email + chép địa chỉ người nhận vào bộ nhớ tạm và nhắc dán; Zalo máy tính: tải + thẻ "kéo tệp vào khung chat" + nút "Mở Zalo" (chat.zalo.me); toast chuyển hết vào `sendFile`.
+- **Kiểm chứng:** `scripts/playwright/kiem-gui-toi.mjs` mã cũ **7/12 LỖI** → mới **12/12 ĐẠT**; `kiem-chia-se.mjs` (TF-01) vẫn đạt; `npm run check` 196/921, build OK.
+- **CHƯA:** iOS "Lưu vào Tệp" (cần iPhone thật); sao chép ảnh PNG cho Zalo PC; phiếu thử 3 nền tảng × 4 kênh trên máy thật; mọi thứ ở trên chạy với share/clipboard GIẢ LẬP.
+
 ## Hạng mục kế tiếp — người dùng chọn
 Theo báo cáo mục 15.8 (phiên 2): **AI-01 → AI-04 → AI-05 + TF-01**. Nhưng lỗi người dùng cảm nhận rõ nhất nằm ở Đợt 1 (số đo gốc xác nhận chụp chậm, Xong chậm trên máy yếu, tự động không chạy): **CS-01 → CS-02 → CS-03 → CS-04 → CS-05**. **CS-01 đổi schema IndexedDB (v3) → cần người dùng cho phép trước** và có sao lưu/rollback (BL-01 đã cho sao lưu an toàn).
-Gợi ý: TF-02 (S, P2) tiếp nối TF-01; AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
+Gợi ý: TF-03 (M, P3, lưu vào thư mục) hoặc BL-06/BL-04 (S, độc lập); AI-01/AI-04 thêm phụ thuộc `@anthropic-ai/sdk` → cần xác nhận.
 
 ## Quyết định đã chốt P20
 - Báo cáo rà soát = đề án v2.0 (người dùng nói "thực thi đề án theo lộ trình").
