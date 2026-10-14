@@ -1,8 +1,8 @@
-Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P31 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
+Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P32 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
 - Repo `twin30101981-collab/No`, nhánh `ccr-981d2f3e-vfhva8`, thư mục `ban-giao/`:
-  - `GIAYTO_P31_AI02_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
+  - `GIAYTO_P31_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
   - `Web-app-repair-upgrade-skill-v3.2.0.md` = skill (đọc Mục 1–13; phụ lục chỉ khi cần)
 
 QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
@@ -12,13 +12,15 @@ QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
 - Vẫn PHẢI dừng hỏi nếu: nguy cơ mất dữ liệu không có đường lui; đổi schema/API/xác thực ngoài phạm vi đề án; lộ bí mật; cần thêm thư viện mới (vd. @anthropic-ai/sdk cho AI-01/AI-04 — chưa được duyệt).
 
 VIỆC CẦN LÀM:
-1. `git pull origin ccr-981d2f3e-vfhva8` (HEAD có thể tách rời: `git checkout -B ccr-981d2f3e-vfhva8 FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P30) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P31" vào HANDOVER.
-2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P30: 225 tệp / 1060 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0 và wrangler@4 ở THƯ MỤC RIÊNG; chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
+1. `git pull origin ccr-981d2f3e-vfhva8` (HEAD có thể tách rời: `git checkout -B ccr-981d2f3e-vfhva8 FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P31) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P32" vào HANDOVER.
+2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P31: 229 tệp / 1081 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0 và wrangler@4 ở THƯ MỤC RIÊNG; chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
 3. Hạng mục kế tiếp (tự chạy, mỗi hạng mục: tái hiện/đo bằng chạy thật → sửa → kiểm V3/V2 → ZIP → push):
-   P29–P30 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04 (ĐẠT-V3). CS-17f ĐÓNG theo quyết định người dùng (a).
-   QUYẾT ĐỊNH NGƯỜI DÙNG cuối P30 (đã chốt, KHÔNG hỏi lại): duyệt @anthropic-ai/sdk (Claude; đọc skill claude-api trước khi viết mã, mô hình mặc định theo đề án QD-13) + thư viện giải mã TIFF (utif2) cho CS-11; Q7 và AI-* làm theo khuyến nghị đề án (QD-12/QD-13, mục 12.5–12.6 docx v2.0).
-   Thứ tự: AI-01 (M, P1: chuỗi nguồn AI dự phòng, timeout 60 s, ghi nguồn) → AI-04 (M, P1: Khoá AI trong app, AES-GCM khoá thiết bị/két PIN, không vào sao lưu/đồng bộ/nhật ký/báo lỗi) → AI-05 (S, P1: định tuyến theo độ nhạy cảm, refusal/429 → nguồn kế) → AI-02 (S, P2: Tình trạng AI) → CS-18 (M, P2: xem trước GPU; P30 đo p90 ~1,2 s > 800 ms) → CS-20 (M, P2: PDF nén một lần + ghi DPI thật) → CS-21 (M) → CS-11 (S, TIFF trong Worker + cắt thanh trạng thái ảnh chụp màn hình + gợi ý khử moiré) → BL-08 (M, Q7 tiêu đề bảo mật) → TF-03 (M).
-   Không có key AI thật trong môi trường → kiểm AI bằng máy chủ giả/mock (fetch chặn bằng Playwright route), không gọi API thật, không đưa key vào mã/ZIP.
+   P29–P31 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04, AI-01, AI-04, AI-05, AI-02 (ĐẠT-V3). CS-17f đóng theo quyết định người dùng.
+   QUYẾT ĐỊNH ĐÃ CHỐT (không hỏi lại): thư viện @anthropic-ai/sdk (đã cài) + thư viện giải mã TIFF (utif2) cho CS-11; Q7 và AI-* theo khuyến nghị đề án.
+   Thứ tự P32: AI-03 (M, P2: đường không AI — ảnh thẻ tách nền trên máy thay cho Lovable tạo ảnh; Hoá đơn/Trích xuất rơi về OCR trên máy khi hết nguồn AI)
+   → CS-18 (M, P2: xem trước GPU; P30 đo p90 ~1,2 s > 800 ms) → CS-20 (M, P2: PDF nén một lần + ghi DPI thật) → CS-21 (M) → CS-11 (S) → BL-08 (M) → TF-03 (M).
+   Kiểm AI KHÔNG gọi API thật: máy chủ giả lập scripts/playwright/mock-claude.mjs (ANTHROPIC_BASE_URL) và mock-openai.mjs (MISTRAL_BASE_URL/GEMINI_BASE_URL);
+   wrangler cần --var LOVABLE_API_KEY:… --var SUPABASE_URL/SUPABASE_PUBLISHABLE_KEY giả và bản build có VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY giả (thiếu thì lệnh AI không gửi).
 4. CÔNG CỤ ĐO (evidence/CS-17a/KET-QUA.md): chạy TS thẳng bằng `ROOT=$PWD/src node --experimental-strip-types --no-warnings --import <evidence/CS-17a/reg.mjs> <kịch bản>` (số dòng hồ sơ CPU = dòng nguồn; `hotline.js <thư mục prof> <tệp.ts>`); băm trùng byte: evidence/CS-17/bam-buoc-lam-sach.ts + unit cs17a-trung-byte.test.ts (băm vàng) — PHẢI giữ đạt.
 5. BẪY MÔI TRƯỜNG: camera giả dùng đường dẫn TUYỆT ĐỐI; ảnh nguồn `evidence/anh-thu/tao-anh-to-giay.py <thư mục ĐÃ TẠO> <số ảnh>` (thư mục phải tồn tại trước; không có hạt cố định) rồi `SO_KHUNG=12 tao-camera-gia.py`; ca "Kiểm mép" dùng `evidence/anh-thu/anh-mep-mo.jpg`. Kịch bản tên tệp tiếng Việt chạy với `LANG=C.UTF-8`; vite dev phải `--host 127.0.0.1` (IPv6 lỗi); khởi bằng setsid thì `$!` KHÔNG phải PID nhóm — lấy PID bằng pgrep rồi kill theo PGID (evidence/CS-17d: wr.sh/vd.sh trong KET-QUA); wrangler cũ còn sống sẽ nạp bản build mới nửa vời (404) → kiểm `ps` trước khi khởi; sau khi sửa tệp phải khởi động lại vite trước kịch bản `import("/src/lib/…")`; đo tốc độ trên BẢN BUILD (`vite build` + `wrangler dev -c .output/server/wrangler.json --compatibility-date 2026-10-13`). Giết tiến trình theo PID GHI LÚC KHỞI (KHÔNG `pkill -f`, KHÔNG `grep "[v]ite --port"` — khớp cả lệnh bash đang chạy); wrangler cũ để lại workerd giữ cổng → kiểm `ps` trước khi khởi. vitest KHÔNG kiểm kiểu → `npm run typecheck` sau khi thêm test; test đọc tệp nguồn dùng đường dẫn tương đối `src/lib/...` (jsdom không nhận URL file). createImageBitmap(img,{colorSpaceConversion:"none"}) giải mã lại ở luồng chính — tránh. kiem-cs09b chọn bộ lọc bright/magic/original (CS-05), không qua docchain. Uint8ClampedArray làm tròn nửa-về-chẵn (v+0,5 làm số lẻ +1) — giữ để trùng byte. Máy P26 chậm hơn P25; máy P25 nhanh hơn P24 → chỉ so cũ/mới CÙNG máy. Lệnh chạy > 10 phút: chạy nền + chờ bằng vòng `until`.
 6. Theo dõi ngưỡng ngữ cảnh, giữ dự trữ đóng gói 15%; chỉ trả lời tiếng Việt, ngắn gọn.
@@ -30,3 +32,6 @@ VIỆC CẦN LÀM:
 
 10. Bẫy P29: run.sh của công cụ đo dùng biến R → KHÔNG đặt biến môi trường R (ab.mjs dùng REP). Ảnh vào CS-17 sinh lại mỗi phiên (không có hạt) → luôn chạy mốc mã cũ trên cùng ảnh. Đo "Áp tất cả" bằng mốc trong trang (kiem-cs07b-tach.mjs), dao động ±0,5 s → ≥ 3 lượt xen kẽ.
 11. Bẫy P30: đọc localStorage khi dựng component (SSR) gây React #418 lệch hydrate → đọc trong useEffect. Kịch bản đo phải so số mẫu thật đã ghi (dựng đủ không phải trang nào cũng qua đường có số đo). Cổng R6.1 chỉ có 1 ảnh thật (IMG_NB_01) trong ZIP + ảnh tổng hợp (trượt sẵn 27 ca).
+12. Bẫy P31: KHÔNG `pkill -f "wrangler dev …"` (giết luôn bash đang chạy lệnh) — lấy PID tiến trình node rồi kill theo PGID. Đặt biến môi trường cho
+    run.sh/wrai.sh cẩn thận (biến R, EXTRA). Màn tài liệu: hiệu ứng của khung con chạy trước khung cha → gợi ý nhạy cảm đặt ngay khi dựng.
+    Trích xuất tài liệu CCCD có hộp xác nhận "Gửi" trước khi gửi AI.
