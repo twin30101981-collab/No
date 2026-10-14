@@ -2,7 +2,7 @@
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
 - Repo `twin30101981-collab/No`, nhánh `ccr-981d2f3e-vfhva8`, thư mục `ban-giao/`:
-  - `GIAYTO_P25_CS17A_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp; P25 đã xong CS-17a — nếu P25 bị cắt, làm tiếp từ CS-17b)
+  - `GIAYTO_P25_CS17B_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp; P25 đã xong CS-17a, CS-17b — nếu P25 bị cắt, làm tiếp từ CS-17d)
   - `Web-app-repair-upgrade-skill-v3.2.0.md` = skill (đọc Mục 1–13; phụ lục chỉ khi cần)
 
 QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
