@@ -2,7 +2,7 @@
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
 - Repo `twin30101981-collab/No`, nhánh `ccr-981d2f3e-vfhva8`, thư mục `ban-giao/`:
-  - `GIAYTO_P29_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
+  - `GIAYTO_P30_CS16_20261014.zip` (hoặc ZIP P30 mới hơn trong ban-giao/) = ZIP bàn giao MỚI NHẤT; HANDOVER đầu tệp = P30 đang làm (điểm làm tiếp)
   - `Web-app-repair-upgrade-skill-v3.2.0.md` = skill (đọc Mục 1–13; phụ lục chỉ khi cần)
 
 QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
