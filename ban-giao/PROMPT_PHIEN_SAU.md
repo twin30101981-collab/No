@@ -1,8 +1,8 @@
-Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P34 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
+Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P35 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
-- Repo `twin30101981-collab/No`, nhánh `ccr-ef6720ab-xgvl6p` (P32–P33; nối tiếp `ccr-981d2f3e-vfhva8`), thư mục `ban-giao/`:
-  - `GIAYTO_P33_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
+- Repo `twin30101981-collab/No`, nhánh `ccr-ef6720ab-xgvl6p` (P32–P34; nối tiếp `ccr-981d2f3e-vfhva8`), thư mục `ban-giao/`:
+  - `GIAYTO_P34_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
   - `Web-app-repair-upgrade-skill-v3.2.0.md` = skill (đọc Mục 1–13; phụ lục chỉ khi cần)
 
 QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
@@ -12,12 +12,11 @@ QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
 - Vẫn PHẢI dừng hỏi nếu: nguy cơ mất dữ liệu không có đường lui; đổi schema/API/xác thực ngoài phạm vi đề án; lộ bí mật; cần thêm thư viện mới (vd. @anthropic-ai/sdk cho AI-01/AI-04 — chưa được duyệt).
 
 VIỆC CẦN LÀM:
-1. `git fetch origin ccr-ef6720ab-xgvl6p` rồi đưa nhánh làm việc của phiên về FETCH_HEAD (`git merge --ff-only FETCH_HEAD` hoặc `git checkout -B <nhánh> FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P33) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P34" vào HANDOVER.
-2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P33: 233 tệp / 1107 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0, wrangler@4 và @tesseract.js-data/vie + eng (cho kịch bản có OCR) ở THƯ MỤC RIÊNG; công cụ khởi/dừng wrangler + đóng ZIP: evidence/AI-03/wr.sh, mkzip.sh (sửa đường dẫn scratchpad); chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
+1. `git fetch origin ccr-ef6720ab-xgvl6p` rồi đưa nhánh làm việc của phiên về FETCH_HEAD (`git merge --ff-only FETCH_HEAD` hoặc `git checkout -B <nhánh> FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P34) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P34" vào HANDOVER.
+2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P34: 236 tệp / 1142 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0, wrangler@4 và @tesseract.js-data/vie + eng (cho kịch bản có OCR) ở THƯ MỤC RIÊNG; công cụ khởi/dừng wrangler + đóng ZIP: evidence/AI-03/wr.sh, mkzip.sh (sửa đường dẫn scratchpad); chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
 3. Hạng mục kế tiếp (tự chạy, mỗi hạng mục: tái hiện/đo bằng chạy thật → sửa → kiểm V3/V2 → ZIP → push):
-   P29–P33 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04, AI-01, AI-04, AI-05, AI-02, AI-03, CS-18, CS-20, CS-21 (ĐẠT-V3). CS-17f đóng theo quyết định người dùng.
-   QUYẾT ĐỊNH ĐÃ CHỐT (không hỏi lại): thư viện @anthropic-ai/sdk (đã cài) + thư viện giải mã TIFF (utif2) cho CS-11; Q7 và AI-* theo khuyến nghị đề án.
-   Thứ tự P34: CS-11 (S, TIFF utif2 trong Worker; cài utif2 vào app — đã duyệt) → BL-08 (M, Q7: tiêu đề bảo mật public/_headers; kiểm không vỡ camera/Worker/WebGL/Supabase/Tesseract) → TF-03 (M). Xong hết → đề xuất CS-23 (làm sạch nền/MozJPEG cho trang màu ≤ 250 KB — số đo CS-21) theo lộ trình đề án.
+   P29–P34 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04, AI-01, AI-04, AI-05, AI-02, AI-03, CS-18, CS-20, CS-21, CS-11, BL-08, TF-03 (ĐẠT-V3). CS-17f đóng theo quyết định người dùng.
+   Thứ tự P35 (đề xuất, backlog.json các thẻ CHUA_LAM): CS-23 (làm sạch nền/khử nhiễu trước nén hoặc MozJPEG để trang màu ≤ 250 KB — số đo CS-21; thẻ L → CHIA NHỎ trước khi mở; thêm WASM/thư viện = cần xác nhận người dùng) → CS-24 (đo lại trên ảnh thật). Nếu CS-23 cần thư viện mới chưa duyệt: dừng hỏi, chuyển sang thẻ CHUA_LAM kế tiếp theo ưu tiên.
    Kiểm AI KHÔNG gọi API thật: máy chủ giả lập scripts/playwright/mock-claude.mjs (ANTHROPIC_BASE_URL) và mock-openai.mjs (MISTRAL_BASE_URL/GEMINI_BASE_URL);
    wrangler cần --var LOVABLE_API_KEY:… --var SUPABASE_URL/SUPABASE_PUBLISHABLE_KEY giả và bản build có VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY giả (thiếu thì lệnh AI không gửi).
 4. CÔNG CỤ ĐO (evidence/CS-17a/KET-QUA.md): chạy TS thẳng bằng `ROOT=$PWD/src node --experimental-strip-types --no-warnings --import <evidence/CS-17a/reg.mjs> <kịch bản>` (số dòng hồ sơ CPU = dòng nguồn; `hotline.js <thư mục prof> <tệp.ts>`); băm trùng byte: evidence/CS-17/bam-buoc-lam-sach.ts + unit cs17a-trung-byte.test.ts (băm vàng) — PHẢI giữ đạt.
@@ -40,3 +39,5 @@ VIỆC CẦN LÀM:
     phan-tich-cs20.py / so-mep-cs20.py / so-net-mono-cs21.py (poppler pdfimages/pdfinfo có sẵn; không có scipy/cv2). Nút chữ tiếng Việt: bấm qua
     evaluate + normalize("NFC") (getByRole exact "Nhỏ" có lúc không khớp); "Tùy chọn" .last() = hộp Xuất. Bộ lọc Tài liệu sáng/Sắc nét làm mất màu dấu đỏ
     → kiểm mực màu dùng "Màu gốc". globalThis.__cs21 = {re, miss, err} số trang dựng lại từ ảnh gốc khi xuất. Ảnh "Thêm trang" chuẩn hoá ≤ 2000 px.
+
+15. Bẫy P34: kịch bản V3 trong scripts/playwright/kiem-cs11-*.mjs, kiem-bl08-csp.mjs, kiem-tf03-thu-muc.mjs (TIFF/SS/ANH/PDF/APP/TESSDATA là biến môi trường; sinh dữ liệu: evidence/CS-11/tao-tiff.py, tao-chup-man-hinh.py, tao-anh-man-hinh-van.py). Bản build KHÔNG có /src → gieo dữ liệu bằng UI (BUILD=1 trong kiem-tf03). Thêm phụ thuộc mới: lần vite dev đầu nạp lại trang giữa chừng → chạy lại; hai vite dev dùng chung node_modules/.vite xoá deps của nhau. package.json "sideEffects": false → import trần bị Rollup bỏ (tiff-pako.ts). Hộp chọn thư mục thật không có trong headless: thay window.showDirectoryPicker bằng thư mục OPFS (navigator.storage.getDirectory). Mở hộp Xuất của tài liệu: "Tùy chọn" .last(). Tesseract/PDF "có tìm kiếm" cần route CDN jsDelivr về node_modules. CSP chỉ ở bản build (src/lib/security-headers.ts → public/_headers + server.ts).
