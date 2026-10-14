@@ -1,24 +1,23 @@
-Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P32 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
+Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P33 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
-- Repo `twin30101981-collab/No`, nhánh `ccr-981d2f3e-vfhva8`, thư mục `ban-giao/`:
-  - `GIAYTO_P31_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
+- Repo `twin30101981-collab/No`, nhánh `ccr-ef6720ab-xgvl6p` (P32; nối tiếp `ccr-981d2f3e-vfhva8`), thư mục `ban-giao/`:
+  - `GIAYTO_P32_DONGPHIEN_20261014.zip` = ZIP bàn giao MỚI NHẤT (điểm làm tiếp)
   - `Web-app-repair-upgrade-skill-v3.2.0.md` = skill (đọc Mục 1–13; phụ lục chỉ khi cần)
 
 QUYỀN NGƯỜI DÙNG ĐÃ CHỐT (P21, giữ nguyên):
 - TỰ CHẠY các hạng mục kế tiếp theo đề xuất, KHÔNG hỏi lại người dùng giữa các hạng mục cho tới hết phiên.
-- Mỗi hạng mục xong: ZIP riêng → SendUserFile → commit + push ZIP vào `ban-giao/` (thay ZIP cũ). Không tạo pull request.
+- Mỗi hạng mục xong: ZIP riêng → SendUserFile → commit + push ZIP vào `ban-giao/` (thay ZIP cũ) trên nhánh làm việc được giao của phiên (nếu khác nhánh trên: fast-forward từ nhánh trên trước). Không tạo pull request.
 - Đóng phiên theo skill ở ~80% ngữ cảnh (hoặc sớm hơn khi đã rất nhiều lượt công cụ, ~140+): ZIP đóng phiên → commit + push → tự mở phiên mới (create_session, cùng repo/nhánh) với prompt này đã cập nhật → phiên mới tiếp tục tự chạy.
 - Vẫn PHẢI dừng hỏi nếu: nguy cơ mất dữ liệu không có đường lui; đổi schema/API/xác thực ngoài phạm vi đề án; lộ bí mật; cần thêm thư viện mới (vd. @anthropic-ai/sdk cho AI-01/AI-04 — chưa được duyệt).
 
 VIỆC CẦN LÀM:
-1. `git pull origin ccr-981d2f3e-vfhva8` (HEAD có thể tách rời: `git checkout -B ccr-981d2f3e-vfhva8 FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P31) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P32" vào HANDOVER.
-2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P31: 229 tệp / 1081 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0 và wrangler@4 ở THƯ MỤC RIÊNG; chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
+1. `git fetch origin ccr-ef6720ab-xgvl6p` rồi đưa nhánh làm việc của phiên về FETCH_HEAD (`git merge --ff-only FETCH_HEAD` hoặc `git checkout -B <nhánh> FETCH_HEAD`); giải nén ZIP mới nhất vào scratchpad, đọc `handover/HANDOVER.md` (ĐẦU TỆP = P32) và `handover/backlog.json`, xác minh `handover/MANIFEST.sha256`. Ghi "Phiên P33" vào HANDOVER.
+2. `cd app && rm -f tsconfig.tsbuildinfo && npm install --legacy-peer-deps && npm run check` (mốc P32: 231 tệp / 1095 đạt, lint 0 lỗi, thoát 0). Kiểm môi trường 1 lần: Chromium /opt/pw-browsers/chromium-1194; cài playwright-core@1.56.0, wrangler@4 và @tesseract.js-data/vie + eng (cho kịch bản có OCR) ở THƯ MỤC RIÊNG; công cụ khởi/dừng wrangler + đóng ZIP: evidence/AI-03/wr.sh, mkzip.sh (sửa đường dẫn scratchpad); chép kịch bản Playwright cạnh node_modules của playwright-core để chạy. Giữ một bản `app/` CHƯA SỬA (chép trước khi sửa) + symlink node_modules + build riêng để ĐỐI CHIẾU MÃ CŨ.
 3. Hạng mục kế tiếp (tự chạy, mỗi hạng mục: tái hiện/đo bằng chạy thật → sửa → kiểm V3/V2 → ZIP → push):
-   P29–P31 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04, AI-01, AI-04, AI-05, AI-02 (ĐẠT-V3). CS-17f đóng theo quyết định người dùng.
+   P29–P32 đã xong: CS-07b, CS-16, CS-13, FX-02, FX-04, AI-01, AI-04, AI-05, AI-02, AI-03, CS-18 (ĐẠT-V3). CS-17f đóng theo quyết định người dùng.
    QUYẾT ĐỊNH ĐÃ CHỐT (không hỏi lại): thư viện @anthropic-ai/sdk (đã cài) + thư viện giải mã TIFF (utif2) cho CS-11; Q7 và AI-* theo khuyến nghị đề án.
-   Thứ tự P32: AI-03 (M, P2: đường không AI — ảnh thẻ tách nền trên máy thay cho Lovable tạo ảnh; Hoá đơn/Trích xuất rơi về OCR trên máy khi hết nguồn AI)
-   → CS-18 (M, P2: xem trước GPU; P30 đo p90 ~1,2 s > 800 ms) → CS-20 (M, P2: PDF nén một lần + ghi DPI thật) → CS-21 (M) → CS-11 (S) → BL-08 (M) → TF-03 (M).
+   Thứ tự P33: CS-20 (M, P2: PDF nén một lần + ghi DPI thật) → CS-21 (M) → CS-11 (S, TIFF utif2 trong Worker) → BL-08 (M, Q7: tiêu đề bảo mật public/_headers) → TF-03 (M).
    Kiểm AI KHÔNG gọi API thật: máy chủ giả lập scripts/playwright/mock-claude.mjs (ANTHROPIC_BASE_URL) và mock-openai.mjs (MISTRAL_BASE_URL/GEMINI_BASE_URL);
    wrangler cần --var LOVABLE_API_KEY:… --var SUPABASE_URL/SUPABASE_PUBLISHABLE_KEY giả và bản build có VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY giả (thiếu thì lệnh AI không gửi).
 4. CÔNG CỤ ĐO (evidence/CS-17a/KET-QUA.md): chạy TS thẳng bằng `ROOT=$PWD/src node --experimental-strip-types --no-warnings --import <evidence/CS-17a/reg.mjs> <kịch bản>` (số dòng hồ sơ CPU = dòng nguồn; `hotline.js <thư mục prof> <tệp.ts>`); băm trùng byte: evidence/CS-17/bam-buoc-lam-sach.ts + unit cs17a-trung-byte.test.ts (băm vàng) — PHẢI giữ đạt.
@@ -35,3 +34,4 @@ VIỆC CẦN LÀM:
 12. Bẫy P31: KHÔNG `pkill -f "wrangler dev …"` (giết luôn bash đang chạy lệnh) — lấy PID tiến trình node rồi kill theo PGID. Đặt biến môi trường cho
     run.sh/wrai.sh cẩn thận (biến R, EXTRA). Màn tài liệu: hiệu ứng của khung con chạy trước khung cha → gợi ý nhạy cảm đặt ngay khi dựng.
     Trích xuất tài liệu CCCD có hộp xác nhận "Gửi" trước khi gửi AI.
+13. Bẫy P32: sandbox CHẶN CDN Tesseract (cdn.jsdelivr.net) → kịch bản có OCR phải route worker/core về app/node_modules (tesseract.js, tesseract.js-core) và dữ liệu chữ về @tesseract.js-data (xem kiem-ai03-khong-ai.mjs). ctx.setOffline chặn cả tệp OCR → mô phỏng mất mạng bằng navigator.onLine=false + chặn /_serverFn/. Ảnh thử dạng chữ trắng nền phẳng bị cổng chất lượng hỏi "Vẫn gửi AI" — kịch bản phải bấm qua. kiem-ai05 với anh-mep-mo.jpg trượt ở CẢ mã cũ (cổng chất lượng) → dùng ảnh tao-anh-to-giay.py. Ca "Kiểm mép" của kiem-quy-trinh-chup chỉ đạt với cảnh anh-mep-mo (cảnh mép rõ cho unsure=0 cả mã cũ). WebGL headless = SwiftShader (CPU) → số đo GPU chậm hơn máy thật, chụp dồn tranh CPU; đo xen kẽ cũ/mới. Mốc con dựng trang: globalThis.__v0 có geo:* (+ = bản đầy đủ) và quick:*; __cs18 đếm xem trước GPU/CPU. Đo xem trước: scripts/playwright/do-cs18-xem-truoc.mjs (N, GAP).
