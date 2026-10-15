@@ -21,7 +21,7 @@ const T = `1 2260081.59 570346.55 0.50
     const blocks = a.blocks || [];
     return { n: a.points.length, area: calcArea(a.points), nb: blocks.length,
       nb0: blocks[0] && blocks[0].points ? blocks[0].points.length : 0,
-      ab: blocks[0] && blocks[0].points ? calcArea(blocks[0].points) : 0 }; }, T);
+      ab: blocks[0] && blocks[0].area || 0 }; }, T);
   const ok = report('hm02_mau_a', { vong_chinh_7_moc: r.n === 7, dien_tich_chinh_29_70: Math.abs(r.area - 29.70) < 0.01,
     khoi_phu_tach_rieng: r.nb === 1 && r.nb0 === 4, dien_tich_phu_7_10: Math.abs(r.ab - 7.10) < 0.05 }, r);
   await b.close(); process.exit(ok ? 0 : 1);
