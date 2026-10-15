@@ -6695,6 +6695,11 @@ function initMap(){
   window.lgWatchTileErrors = function(layer){
     layer.on('tileerror', () => {
       if (!map.hasLayer(layer)) return;
+      // HM-39 — NGOẠI TUYẾN: không phải lỗi nguồn → đúng 1 thông báo mỗi lần mất mạng, không đếm lỗi, không đổi lớp.
+      if (navigator.onLine === false) {
+        if (!window.__lgOfflineNotified) { window.__lgOfflineNotified = true; toast({ title: 'Đang ngoại tuyến', description: 'Bản đồ dùng các ô đã lưu; ô chưa lưu sẽ để trống. Có mạng lại sẽ tự tải.' }); }
+        return;
+      }
       // v36: tile 404 khi phóng SÂU HƠN mức ảnh gốc của lớp (vd Esri Địa hình chỉ
       // có tới z19) là bình thường -> không phải lỗi nguồn, không báo đỏ nữa.
       const mn = layer.options.maxNativeZoom || layer.options.maxZoom || 19;
@@ -6702,7 +6707,9 @@ function initMap(){
       tileErrorCount++;
       clearTimeout(tileErrorTimer);
       tileErrorTimer = setTimeout(() => { tileErrorCount = 0; warnedTiles = false; }, 5000);
-      if (tileErrorCount > 8 && !warnedTiles) {
+      // HM-39: với lớp NỀN, thông báo duy nhất do bộ tự đổi lớp (lgTileHealthCheck) đưa ra — tránh 2 toast cho cùng một sự cố.
+      const isBase = Object.keys(LG_LAYER_DEFS).some(k => LG_LAYER_DEFS[k].layer === layer);
+      if (tileErrorCount > 8 && !warnedTiles && !(isBase && !window.__lgFailoverHalted)) {
         warnedTiles = true;
         toast({ title: 'Nguồn bản đồ tải chậm', description: 'Một số ô ảnh chưa tải được. Có thể chọn nền khác ở bảng góc trên bên phải (Google/Esri/OpenStreetMap).' });
       }
@@ -6746,7 +6753,8 @@ function initMap(){
     const layer = def.layer;
     let loaded = 0, errored = 0, done = false;
     let mainTimer = null, fastTimer = null;
-    const onLoad = () => { if (!done) loaded++; };
+    // HM-39: ô lỗi được thay bằng PNG trống (errorTileUrl) rồi Leaflet bắn thêm 'tileload' → trước đây tính nhầm là ô tải tốt (8 lỗi + 8 "tốt" = 50% → không bao giờ đổi lớp khi bị chặn)
+    const onLoad = (ev) => { if (!done && !(ev && ev.tile && ev.tile.src === LG_BLANK_PNG)) loaded++; };
     const onErr = () => { if (!done) errored++; };
     layer.on('tileload', onLoad);
     layer.on('tileerror', onErr);
@@ -7119,7 +7127,7 @@ function initMap(){
   // KHÔNG hề được lưu trạng thái bật/tắt — mỗi lần mở lại app đều reset về TẮT, dù
   // lần trước người dùng đã tick. Giờ lưu đúng lựa chọn của người dùng vào localStorage
   // và khôi phục lại mỗi lần mở; nếu chưa từng lưu (lần đầu dùng), mặc định BẬT cả 2.
-  const LG_OVERLAY_STATE_KEY = 'land_gis_overlay_state_v33';
+  const LG_OVERLAY_STATE_KEY = 'land_gis_overlay_state_v39';   // HM-39: khoá mới — mặc định TẮT cả 2 lớp phủ (lớp ranh giới Esri nhân đôi lượt tải ô)
   const lgOverlayKeys = Object.keys(OVERLAYS);
   let lgOverlayState = {};
   try { lgOverlayState = JSON.parse(localStorage.getItem(LG_OVERLAY_STATE_KEY) || '{}'); } catch (e) { lgOverlayState = {}; }
@@ -7128,7 +7136,7 @@ function initMap(){
     // bật thêm lớp nhãn CARTO sẽ chồng chữ đè lên nhau -> mặc định TẮT lớp nhãn,
     // chỉ bật mặc định lớp ranh giới hành chính. Lựa chọn của người dùng vẫn được nhớ.
     const hybridStart = startDef === LG_LAYER_DEFS.ggl_hybrid || startDef === LG_LAYER_DEFS.ggl_map;
-    const fallback = hybridStart ? !/Nhãn địa danh/.test(name) : true;
+    const fallback = false;   // HM-39: không bật lớp phủ mặc định (trước: ranh giới Esri luôn bật → ~2× lượt tải ô); người dùng bật ở bảng lớp và được nhớ
     const on = Object.prototype.hasOwnProperty.call(lgOverlayState, name) ? lgOverlayState[name] : fallback;
     if (on) map.addLayer(OVERLAYS[name]);
   });
@@ -15645,7 +15653,7 @@ try {
       } else if (tries > 40) clearInterval(t);
     }, 500);
 
-    window.addEventListener('online', function () { window.__lgFailoverCount = 0; window.__lgFailoverHalted = false; V.resetOverpass(); nomiFails = 0; V.notify('ok', 'Đã có mạng trở lại', 'Tra địa chỉ ngoài và gợi ý đường/ngõ OSM hoạt động lại.'); });
+    window.addEventListener('online', function () { window.__lgOfflineNotified = false; window.__lgFailoverCount = 0; window.__lgFailoverHalted = false; V.resetOverpass(); nomiFails = 0; V.notify('ok', 'Đã có mạng trở lại', 'Tra địa chỉ ngoài và gợi ý đường/ngõ OSM hoạt động lại.'); });
     window.addEventListener('offline', function () { V.notify('warn', 'Mất kết nối mạng ngoài', 'Các tính năng cần mạng tự ẩn. Đo vẽ, tính diện tích, xuất DXF/PDF offline vẫn chạy bình thường.'); });
     V.record('info', 'boot', 'Khoi nang cap v42 da nap xong');
   }
@@ -35708,6 +35716,10 @@ body.lg62:not(.lg62-map) #lg138-bar{
         img.__v144try = (img.__v144try || 0);
         var isSat = /arcgisonline|google\.com\/vt|virtualearth/i.test(self._url || '');
         if (!isSat || img.__v144try >= CHAIN.length) return;
+        // HM-39: lớp NỀN do bộ quản lý lớp (lgTileHealthCheck) lo — đổi cả lớp 1 lần thay vì vá từng ô (vá ô nhân 2–3 lượt tải và che mất lỗi
+        // làm bộ đo không bao giờ đổi lớp). Ngoại tuyến thì không thử nguồn khác.
+        if (navigator.onLine === false) return;
+        try { var D = window.LG_LAYER_DEFS || {}; if (Object.keys(D).some(function (k) { return D[k].layer === self; })) return; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h39a'); }
         var next = CHAIN[img.__v144try++];
         var c = ev.coords || {};
         img.src = next.replace('{z}', c.z).replace('{x}', c.x).replace('{y}', c.y);
