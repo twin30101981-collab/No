@@ -31,7 +31,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       const th0 = document.documentElement.getAttribute('data-lg-theme'); await clickAct('more', 'theme'); out.reach.theme = document.documentElement.getAttribute('data-lg-theme') !== th0;
       await clickAct('more', 'ai-key'); out.reach.key = getComputedStyle(document.getElementById('key-modal')).display !== 'none'; closeKeyModal();
       await clickAct('more', 'backup'); out.reach.backup = !!document.querySelector('#lg31-proj-file'); document.querySelectorAll('.lg31-sheet,[id^=lg31-sheet]').forEach(e => e.remove());
-      out.reach.legacyTool = !!document.querySelector('[data-lg103-act="legacy-tool"]') || (LandGIS.ui.switchDock('more'), !!document.querySelector('#lg103-body [data-lg103-act="legacy-tool"]'));
+      LandGIS.ui.switchDock('more'); out.legacyToolOff = !document.querySelector('#lg103-body [data-lg103-act="legacy-tool"]'); /* HM-08e: chỉ hiện khi bật chuyên gia */ document.querySelector('#lg103-body [data-lg103-act="expert-toggle"]').click(); await w8(150); out.reach.legacyTool = !!document.querySelector('#lg103-body [data-lg103-act="legacy-tool"]'); document.querySelector('#lg103-body [data-lg103-act="expert-toggle"]').click();
       LandGIS.ui.closeSheet(); return out; }, B);
     const imp = r.imp, more = r.more, prof = r.prof;
     checks['dock_5_muc_' + w] = r.dock.length === 5 && /Bản Đồ/.test(r.dock[0]) && /Thửa/.test(r.dock[1]) && /Nhập sổ/.test(r.dock[2]) && /Hồ sơ/.test(r.dock[3]) && /Thêm/.test(r.dock[4]);
@@ -39,7 +39,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
     checks['nhap_so_du_8_cach_' + w] = ['Chụp sổ đỏ', 'Chọn ảnh', 'Quét QR', 'Nhập bảng kê', 'Cạnh + góc', 'CAD', 'GPS thực địa', 'RTK'].every(k => imp.includes(k));
     checks['ho_so_tab_va_thanh_xuat_' + w] = ['Tổng quan', 'Toạ độ', 'Cạnh', 'Ảnh', 'In A4', 'PDF', 'DXF'].every(k => prof.includes(k)) && /Đạt/.test(prof);
     checks['chuc_nang_cu_con_duong_vao_' + w] = Object.values(r.reach).every(Boolean);
-    checks['them_4_nhom_' + w] = ['Bản đồ', 'Cài đặt', 'Trợ giúp', 'Chế độ chuyên gia'].every(k => more.includes(k)) && r.plots.includes('Thửa 131') && errs.length === 0;
+    checks['them_4_nhom_' + w] = ['bản đồ', 'cài đặt', 'trợ giúp', 'chế độ chuyên gia'].every(k => more.toLowerCase().includes(k)) && r.legacyToolOff && r.plots.includes('Thửa 131') && errs.length === 0;
     detail[w] = { reach: r.reach, dock: r.dock, tabsVisible: r.tabsVisible, floatVisible: r.floatVisible }; await p.context().close();
   }
   const ok = report('hm08b_nav', checks, detail); await b.close(); process.exit(ok ? 0 : 1);

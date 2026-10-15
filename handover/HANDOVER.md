@@ -80,3 +80,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 15. Phiên P04
 - S-OPEN phiên 4 (P04, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-08e (rồi HM-06e, HM-39, HM-33).
+- HM-08e DAT_V3: Hồ sơ có đầu đề + sơ đồ + địa chỉ/mục đích/nguồn gốc/biến động; Thêm dạng danh sách (công tắc giao diện tối); Chế độ chuyên gia bền (localStorage landgis_expert, mặc định tắt) ẩn công cụ V42–V237. Test hm08e_profile_more; hm08b_nav cập nhật theo. Kế tiếp: HM-06e, HM-39, HM-33.
