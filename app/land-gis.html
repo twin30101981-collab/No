@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -7919,10 +7919,50 @@ function lgCleanDuplicatePlots(){
 }
 window.lgCleanDuplicatePlots = lgCleanDuplicatePlots;
 
+/* ===== HM-08g — XOÁ CÓ HOÀN TÁC 6 s + THÙNG RÁC 30 NGÀY (bền qua lần mở lại) =====
+   Trước đây thửa vừa xoá chỉ nằm trong biến lastDeletedPlot (mất khi tải lại trang) và "Xoá tất cả" chỉ 1 lần xác nhận. */
+const LG_TRASH_KEY = 'landgis_trash_v1', LG_TRASH_DAYS = 30;
+function lgTrashRead() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(LG_TRASH_KEY) || '[]'), lim = Date.now() - LG_TRASH_DAYS * 86400000;
+    return (Array.isArray(arr) ? arr : []).filter(t => t && t.at > lim && t.data && Array.isArray(t.data.points));
+  } catch (e) { return []; }
+}
+function lgTrashWrite(list) { try { localStorage.setItem(LG_TRASH_KEY, JSON.stringify(list)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8g0'); } }
+function lgTrashAdd(snaps) {
+  const list = lgTrashRead(), now = Date.now();
+  snaps.forEach(d => { const i = list.findIndex(t => t.data.id === d.id); if (i >= 0) list.splice(i, 1); list.push({ at: now, data: d }); });
+  lgTrashWrite(list);
+}
+function lgTrashRestore(id) {
+  const list = lgTrashRead(), i = list.findIndex(t => t.data.id === id);
+  if (i < 0) return false;
+  const d = list[i].data, before = plots.length;
+  drawPlot(d.id, d.points, d.lon0, { ...(d.meta || {}), __restoring: true }, true, d.zone || 3);
+  if (plots.length <= before) return false;            // dựng không thành công → GIỮ NGUYÊN trong Thùng rác
+  list.splice(i, 1); lgTrashWrite(list);
+  saveToLocalStorage(); renderPlots();
+  return true;
+}
+function lgSnap(p) { return { id: p.id, points: p.points, lon0: p.lon0, zone: p.zone, meta: { ...(p.meta || {}), towgs84Key: p.towgs84Key, coordOrderConfirmed: 'as-is', provCode: p.provCode } }; }
+window.lgTrashList = lgTrashRead; window.lgTrashRestore = lgTrashRestore;
+function lgShowUndoBar(text, onUndo) {
+  let bar = document.getElementById('lg8g-undo');
+  if (!bar) {
+    bar = document.createElement('div'); bar.id = 'lg8g-undo'; bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:12px;bottom:calc(var(--lg-dock-clear,84px) + 70px);max-width:calc(100vw - 96px);z-index:100001;background:#263238;color:#fff;border-radius:12px;padding:8px 8px 8px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.35);font-size:var(--lg-fs-sm)';
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML = '<span></span><button type="button" style="border:0;border-radius:8px;background:#ffb300;color:#3e2723;font-weight:800;min-height:40px;padding:0 14px">↩ Hoàn tác</button>';
+  bar.firstChild.textContent = text; bar.style.display = 'flex';
+  clearTimeout(bar.__t); bar.querySelector('button').onclick = () => { bar.style.display = 'none'; clearTimeout(bar.__t); onUndo(); };
+  bar.__t = setTimeout(() => { bar.style.display = 'none'; }, 6000);
+}
 function deletePlot(id, autoSave = true){
   const idx = plots.findIndex(p => p.id === id);
   if (idx === -1) return;
   const p = plots[idx];
+  if (autoSave) { lgTrashAdd([lgSnap(p)]); lgShowUndoBar('Đã xoá thửa ' + p.id + ' (giữ trong Thùng rác 30 ngày)', () => { if (!lgTrashRestore(id)) undoDeletePlot(); }); }
   lastDeletedPlot = { id: p.id, points: p.points, lon0: p.lon0, zone: p.zone, meta: { ...(p.meta || {}), towgs84Key: p.towgs84Key, coordOrderConfirmed: 'as-is', provCode: p.provCode } };
   if (map) { map.removeLayer(p.polygon); map.removeLayer(p.labels); } // v37.7 - 4.3
   plots.splice(idx, 1);
@@ -7936,6 +7976,7 @@ function undoDeletePlot(){
   if (!lastDeletedPlot) { restoreClearedPlots(); return; }
   const d = lastDeletedPlot;
   lastDeletedPlot = null;
+  try { const tl = lgTrashRead().filter(t => t.data.id !== d.id); lgTrashWrite(tl); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8g1'); }
   drawPlot(d.id, d.points, d.lon0, d.meta, true, d.zone);
   toast({ title: 'Đã khôi phục thửa', description: d.id });
   renderPlots();
@@ -8031,6 +8072,9 @@ function clearAllPlots(){
   if (!plots.length) return;
   const n = plots.length;
   if (!window.confirm(`Xoá toàn bộ ${n} thửa đất khỏi bản đồ và bộ nhớ tạm?\nDữ liệu đã xuất file sẽ không bị ảnh hưởng.`)) return;
+  // HM-08g: xác nhận lần 2 (xoá tất cả là thao tác nguy hiểm nhất của app)
+  if (!window.confirm(`XÁC NHẬN LẦN 2: thật sự xoá ${n} thửa?\nCác thửa vẫn được giữ trong Thùng rác ${LG_TRASH_DAYS} ngày để khôi phục.`)) return;
+  lgTrashAdd(plots.map(lgSnap));
   const backup = plots.map(p => ({
     id: p.id, points: p.points, lon0: p.lon0, zone: p.zone,
     meta: { ...(p.meta || {}), towgs84Key: p.towgs84Key, coordOrderConfirmed: 'as-is', provCode: p.provCode }
@@ -8049,7 +8093,8 @@ function clearAllPlots(){
   try { localStorage.removeItem('land_gis_v18_cache'); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'q76'); }
   saveToLocalStorage();
   renderPlots();
-  toast({ title: `Đã xoá tất cả ${n} thửa`, description: 'Bấm “↩ Hoàn tác” để khôi phục toàn bộ.' });
+  toast({ title: `Đã xoá tất cả ${n} thửa`, description: 'Bấm “↩ Hoàn tác” để khôi phục toàn bộ; mở lại app vẫn khôi phục được từ Thùng rác (30 ngày).' });
+  lgShowUndoBar('Đã xoá tất cả ' + n + ' thửa', () => restoreClearedPlots());
 }
 
 let lastClearedPlots = null;
@@ -8059,6 +8104,7 @@ function restoreClearedPlots(){
   const backup = lastClearedPlots;
   lastClearedPlots = null;
   backup.forEach(d => drawPlot(d.id, d.points, d.lon0, { ...d.meta, __restoring: true }, false, d.zone));
+  try { lgTrashWrite(lgTrashRead().filter(t => !backup.some(b => b.id === t.data.id))); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8g2'); }
   saveToLocalStorage();
   renderPlots();
   toast({ title: 'Đã khôi phục toàn bộ thửa', description: `${backup.length} thửa.` });
@@ -26051,7 +26097,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<button class="lg103-abtn" data-lg103-act="legacy-set">⚙ Tỉnh / KTT &amp; cài đặt</button>' +
       '<button class="lg103-abtn" data-lg103-act="ai-key">🔑 Khoá AI</button>' +
       '<button class="lg103-abtn" data-lg103-act="theme">🌙 Giao diện tối</button>' +
-      '<button class="lg103-abtn" data-lg103-act="backup">💾 Sao lưu / Dự án</button></div>' +
+      '<button class="lg103-abtn" data-lg103-act="backup">💾 Sao lưu / Dự án</button>' +
+      '<button class="lg103-abtn" data-lg103-act="trash">🗑 Thùng rác thửa (30 ngày)</button></div>' +
       '<h5>Trợ giúp</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg109-act="guide">📘 Hướng dẫn vận hành</button>' +
       '<button class="lg103-abtn" data-lg109-act="qa">✅ Tự kiểm QA/QC</button></div>' +
@@ -26115,6 +26162,12 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'ai-key': closeSheet(); if (typeof window.openKeyModal === 'function') window.openKeyModal(); else clickIf('btn-open-key-modal'); return true;
       case 'backup': closeSheet(); clickIf('btn-backup-project'); return true;
       case 'panel184': closeSheet(); clickIf('lg184-fab'); return true;
+      case 'trash': {
+        var tl = window.lgTrashList ? window.lgTrashList() : [];
+        openSheet('Thùng rác thửa', tl.length ? tl.map(function (t) { return '<div class="lg103-kv"><span>' + escA4(t.data.id) + ' · xoá ' + new Date(t.at).toLocaleDateString('vi-VN') + '</span><button class="lg103-abtn" data-lg103-act="trash-restore" data-pid="' + escA4(t.data.id) + '">♻ Khôi phục</button></div>'; }).join('') : '<div class="lg103-empty">Thùng rác trống.</div>', 'medium');
+        return true;
+      }
+      case 'trash-restore': { var okr = window.lgTrashRestore(t.getAttribute('data-pid')); newNavAction('trash'); try { window.toast({ title: okr ? 'Đã khôi phục thửa' : 'Không khôi phục được', variant: okr ? undefined : 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8g3'); } return true; }
     }
     return false;
   }

@@ -23,3 +23,4 @@
 - 15/10 · P02 · HM-08i ĐẠT V3: màn Thửa có tìm kiếm, lọc Đạt/Không đạt, trạng thái đồng bộ; 500 thửa cuộn mượt (danh sách ảo).
 - 15/10 · P02 · HM-08c ĐẠT V3: màn Bản đồ theo mockup ① — ô tìm, chip KTT/lớp nền/nhãn, 2 nút tròn, thẻ thửa dạng sheet 3 trạng thái, không còn phần tử chồng nhau ở nửa dưới màn.
 - 15/10 · P02 · HM-08d ĐẠT V3: luồng Nhập bảng kê 3 bước Đọc → Kiểm tra → Kết quả; Mẫu A/B chạy hết luồng, nút không bị bàn phím che.
+- 15/10 · P02 · HM-08g ĐẠT V3: xoá thửa có thanh Hoàn tác 6 s, Thùng rác 30 ngày còn sau khi mở lại app, Xoá tất cả cần xác nhận 2 bước.
