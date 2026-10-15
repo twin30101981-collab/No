@@ -4268,6 +4268,19 @@ function calcAzimuth(p1, p2) {
 function calcPermissibleAreaError(area) {
   return 0.05 * Math.sqrt(area) + 0.0003 * area;
 }
+// HM-03 — MỘT quy tắc đối chiếu diện tích duy nhất cho mọi luồng (Tra sổ, scan, thẻ thửa, PDF,
+// đối soát vùng con): sai số cho phép = 0,05·√A + 0,0003·A. Trước đây có 3 công thức khác nhau
+// (max(0,05; 0,5%·A), 0,005·A+0,05√A, ngưỡng % cố định) nên cùng một thửa đạt ở nơi này, hỏng ở nơi kia.
+// Diện tích đo được TRỪ phần không cấp GCN trước khi so với diện tích ghi trên sổ.
+// level: ok ≤ sai số; warn ≤ 2× sai số (kiểm tra lại); bad > 2× sai số.
+function lgAreaVerdict(measured, gcn, excluded) {
+  const excl = (excluded != null && isFinite(excluded) && excluded > 0) ? Number(excluded) : 0;
+  const effective = measured - excl;
+  const diff = effective - gcn;
+  const tol = calcPermissibleAreaError(Math.max(gcn, 0));
+  const level = Math.abs(diff) <= tol ? 'ok' : (Math.abs(diff) <= 2 * tol ? 'warn' : 'bad');
+  return { effective, excl, diff, tol, level, ok: level === 'ok' };
+}
 
 // ---------------------------------------------------------------
 // v26: HÌNH HỌC THỬA — TRỌNG TÂM, GÓC TRONG, HỆ SỐ TỈ LỆ MÚI CHIẾU
@@ -7935,17 +7948,16 @@ window.LG_AREA_WARN_THRESHOLDS = { ok: 3, warn: 5 }; // %
 function areaDeviationBadgeHTML(measuredArea, gcnAreaM2, excludedM2){
   if (gcnAreaM2 == null || !isFinite(gcnAreaM2) || gcnAreaM2 <= 0) return '';
   const excl = (excludedM2 != null && isFinite(excludedM2) && excludedM2 > 0) ? excludedM2 : 0;
-  const effective = measuredArea - excl;
-  const diff = effective - gcnAreaM2;
+  const V = lgAreaVerdict(measuredArea, gcnAreaM2, excl);
+  const effective = V.effective, diff = V.diff, level = V.level;
   const pct = Math.abs(diff) / gcnAreaM2 * 100;
-  const th = window.LG_AREA_WARN_THRESHOLDS;
-  let level = 'ok', color = '#1f7a3d', bg = '#e4f3e6', icon = '✓';
-  if (pct > th.warn) { level = 'bad'; color = '#8a1f1f'; bg = '#fde3e3'; icon = '✕'; }
-  else if (pct > th.ok) { level = 'warn'; color = '#a97c1a'; bg = '#fdf1e0'; icon = '⚠'; }
+  let color = '#1f7a3d', bg = '#e4f3e6', icon = '✓';
+  if (level === 'bad') { color = '#8a1f1f'; bg = '#fde3e3'; icon = '✕'; }
+  else if (level === 'warn') { color = '#a97c1a'; bg = '#fdf1e0'; icon = '⚠'; }
   return `<div class="lg-area-dev" data-level="${level}" style="margin:6px 0;padding:7px 10px;border-radius:8px;background:${bg};border:1px solid ${color};font-size:var(--lg-fs-sm);color:${color}">
       <b>${icon} Đối chiếu GCN:</b> đo được ${measuredArea.toFixed(1)} m²${excl ? ` − ${excl.toFixed(1)} m² không cấp GCN = ${effective.toFixed(1)} m²` : ''} so với ${gcnAreaM2.toFixed(1)} m² ghi trên sổ đỏ
       — chênh ${diff >= 0 ? '+' : ''}${diff.toFixed(1)} m² (${pct.toFixed(2)}%)
-      ${level === 'ok' ? '· trong ngưỡng cho phép' : level === 'warn' ? '· VƯỢT ngưỡng khuyến nghị ±' + th.ok + '%, cần kiểm tra lại' : '· CHÊNH LỆCH LỚN vượt ±' + th.warn + '%, bắt buộc đối chiếu trước khi lập hồ sơ'}
+      ${level === 'ok' ? '· trong sai số cho phép ±' + V.tol.toFixed(2) + ' m²' : level === 'warn' ? '· VƯỢT sai số cho phép ±' + V.tol.toFixed(2) + ' m², cần kiểm tra lại' : '· CHÊNH LỆCH LỚN (> 2× sai số cho phép ±' + V.tol.toFixed(2) + ' m²), bắt buộc đối chiếu trước khi lập hồ sơ'}
     </div>`;
 }
 // v40 — SỬA GỐC RỄ "bảng thông tin thửa đất thiếu nhiều dòng": trước đây phần lớn
@@ -13386,9 +13398,11 @@ async function lgOfflineRefreshUI(){
     const permErr = (typeof calcPermissibleAreaError === 'function') ? calcPermissibleAreaError(p.area) : null;
     const gcnArea = parseFloat((p.meta || {}).dien_tich_m2);
     const hasGcn = isFinite(gcnArea) && gcnArea > 0;
-    const diff = hasGcn ? p.area - gcnArea : 0;
+    // HM-03: cùng quy tắc với thẻ thửa — trừ phần không cấp GCN, so với sai số 0,05√A + 0,0003A.
+    const exclPdf = parseFloat((p.meta || {}).dien_tich_khong_cap_gcn) || 0;
+    const V3 = hasGcn ? lgAreaVerdict(p.area, gcnArea, exclPdf) : null;
+    const diff = hasGcn ? V3.diff : 0;
     const diffPct = hasGcn ? Math.abs(diff) / gcnArea * 100 : 0;
-    const th = window.LG_AREA_WARN_THRESHOLDS || { ok: 3, warn: 5 };
     const topoText = (typeof lgTopologyTextForPlot === 'function') ? lgTopologyTextForPlot(p.id) : '—';
     let auditHTML = '';
     try {
@@ -13407,7 +13421,7 @@ async function lgOfflineRefreshUI(){
         <tr><td style="border:1px solid #999;padding:6px;width:46%;background:#f3f7f4">Diện tích đo được</td><td style="border:1px solid #999;padding:6px"><b>${p.area.toFixed(1)} m²</b></td></tr>
         <tr><td style="border:1px solid #999;padding:6px;background:#f3f7f4">Diện tích ghi trên GCN</td><td style="border:1px solid #999;padding:6px">${hasGcn ? gcnArea.toFixed(1) + ' m²' : '— (chưa đọc/nhập được)'}</td></tr>
         <tr><td style="border:1px solid #999;padding:6px;background:#f3f7f4">Chênh lệch so với GCN</td><td style="border:1px solid #999;padding:6px">${hasGcn
-            ? `${diff >= 0 ? '+' : ''}${diff.toFixed(1)} m² (${diffPct.toFixed(2)}%) — ${diffPct <= th.ok ? 'trong ngưỡng cho phép ±' + th.ok + '%' : diffPct <= th.warn ? 'VƯỢT ngưỡng khuyến nghị ±' + th.ok + '%, cần kiểm tra lại' : 'CHÊNH LỆCH LỚN vượt ±' + th.warn + '%, bắt buộc đối chiếu trước khi lập hồ sơ'}`
+            ? `${exclPdf ? '(đo ' + p.area.toFixed(1) + ' − ' + exclPdf.toFixed(1) + ' m² không cấp GCN) ' : ''}${diff >= 0 ? '+' : ''}${diff.toFixed(1)} m² (${diffPct.toFixed(2)}%) — ${V3.level === 'ok' ? 'trong sai số cho phép ±' + V3.tol.toFixed(2) + ' m²' : V3.level === 'warn' ? 'VƯỢT sai số cho phép ±' + V3.tol.toFixed(2) + ' m², cần kiểm tra lại' : 'CHÊNH LỆCH LỚN (> 2× sai số cho phép ±' + V3.tol.toFixed(2) + ' m²), bắt buộc đối chiếu trước khi lập hồ sơ'}`
             : 'Không đối chiếu được vì thiếu diện tích trên GCN'}</td></tr>
         <tr><td style="border:1px solid #999;padding:6px;background:#f3f7f4">Sai số khép f<sub>s</sub></td><td style="border:1px solid #999;padding:6px">${closure && closure.perimeter > 0
             ? `${closure.fs.toFixed(3)} m (1/${closure.relativeRatio > 0 ? Math.round(1 / closure.relativeRatio).toLocaleString('vi-VN') : '∞'})`
@@ -21014,13 +21028,12 @@ try {
         return box('#8a1f1f', '#fdf1e0', '<b>⚠ Chưa đủ căn cứ đối chiếu:</b> còn thiếu ' + thieu.join(' và ') + '. Không kết luận chênh lệch khi thiếu một trong hai số liệu.' + warn);
       }
       var excl = (excludedM2 != null && isFinite(excludedM2) && excludedM2 > 0) ? Number(excludedM2) : 0;
-      var effective = measured - excl;
-      var diff = effective - tong;
+      var V = lgAreaVerdict(measured, tong, excl);
+      var effective = V.effective, diff = V.diff;
       var pct = Math.abs(diff) / tong * 100;
-      var th = window.LG_AREA_WARN_THRESHOLDS || { ok: 3, warn: 5 };
-      var color = '#1f7a3d', bg = '#e4f3e6', icon = '✓', kl = '· trong ngưỡng cho phép';
-      if (pct > th.warn) { color = '#8a1f1f'; bg = '#fde3e3'; icon = '✕'; kl = '· CHÊNH LỆCH LỚN vượt ±' + th.warn + '%, bắt buộc đối chiếu trước khi lập hồ sơ'; }
-      else if (pct > th.ok) { color = '#a97c1a'; bg = '#fdf1e0'; icon = '⚠'; kl = '· VƯỢT ngưỡng khuyến nghị ±' + th.ok + '%, cần kiểm tra lại'; }
+      var color = '#1f7a3d', bg = '#e4f3e6', icon = '✓', kl = '· trong sai số cho phép ±' + V.tol.toFixed(2) + ' m²';
+      if (V.level === 'bad') { color = '#8a1f1f'; bg = '#fde3e3'; icon = '✕'; kl = '· CHÊNH LỆCH LỚN (> 2× sai số cho phép ±' + V.tol.toFixed(2) + ' m²), bắt buộc đối chiếu trước khi lập hồ sơ'; }
+      else if (V.level === 'warn') { color = '#a97c1a'; bg = '#fdf1e0'; icon = '⚠'; kl = '· VƯỢT sai số cho phép ±' + V.tol.toFixed(2) + ' m², cần kiểm tra lại'; }
       var src = m.__lg61AreaSource ? ' (nguồn: ' + m.__lg61AreaSource + ')' : '';
       var chiTiet = [];
       if (num(m.dien_tich_o_m2)) chiTiet.push('đất ở ' + num(m.dien_tich_o_m2).toFixed(1) + ' m²');
@@ -33363,7 +33376,7 @@ body.lg62:not(.lg62-map) #lg138-bar{
     var tongVungCon = subs.reduce(function (s, x) { return s + (x.dienTich || 0); }, 0);
     function cmp(a, b) {
       if (a == null || b == null) return null;
-      var d = a - b, tol = Math.max(0.05, 0.005 * Math.max(a, b) + 0.05 * Math.sqrt(Math.max(a, b)));
+      var d = a - b, tol = calcPermissibleAreaError(Math.max(a, b));
       return { d: d, tol: tol, ok: Math.abs(d) <= tol };
     }
     return {
@@ -35579,7 +35592,8 @@ body.lg62:not(.lg62-map) #lg138-bar{
       area = window.LG144.shoelace(pts);
       edges = window.LG144.edgeLens(pts);
     }
-    var okArea = isFinite(gcn) && area != null ? Math.abs(area - gcn) <= Math.max(0.05, gcn * 0.005) : null;
+    var kc = parseFloat(book.khong_cap_m2 != null ? book.khong_cap_m2 : meta.dien_tich_khong_cap_gcn) || 0;
+    var okArea = isFinite(gcn) && area != null ? lgAreaVerdict(area, gcn, kc).ok : null;
     var okEdge = null;
     if (sides && edges && sides.length === edges.length) {
       okEdge = true;
@@ -35687,12 +35701,15 @@ body.lg62:not(.lg62-map) #lg138-bar{
     if (pts.length < 3 || !window.LG144) return { ok: false, msg: 'Cần ít nhất 3 mốc.' };
     var area = window.LG144.shoelace(pts), edges = window.LG144.edgeLens(pts);
     var gcn = parseFloat(o.dien_tich_m2);
+    var kc = parseFloat(o.khong_cap_m2) || 0;
+    var V = isFinite(gcn) ? lgAreaVerdict(area, gcn, kc) : null;
     var lines = [];
     lines.push('Diện tích tính từ bảng kê: ' + area.toFixed(2) + ' m²'
-      + (isFinite(gcn) ? '  ·  ghi trên GCN: ' + gcn.toFixed(2) + ' m²  ·  lệch ' + (area - gcn).toFixed(2) + ' m²' : ''));
+      + (kc ? ' − ' + kc.toFixed(2) + ' m² không cấp GCN = ' + (area - kc).toFixed(2) + ' m²' : '')
+      + (V ? '  ·  ghi trên GCN: ' + gcn.toFixed(2) + ' m²  ·  lệch ' + V.diff.toFixed(2) + ' m² (cho phép ±' + V.tol.toFixed(2) + ')' : ''));
     lines.push('Cạnh tính từ bảng kê: ' + edges.map(function (v) { return v.toFixed(2); }).join(' · '));
     if (o.sides) lines.push('Cạnh S(m) in trên sổ:   ' + o.sides.map(function (v) { return (+v).toFixed(2); }).join(' · '));
-    var okA = isFinite(gcn) ? Math.abs(area - gcn) <= Math.max(0.05, gcn * 0.005) : null;
+    var okA = V ? V.ok : null;
     var okE = null;
     if (o.sides && o.sides.length === edges.length) {
       okE = true;
