@@ -19,3 +19,4 @@
 - 15/10 · P02 · HM-07a ĐẠT V3: sổ đăng ký bộ đếm nền, ẩn app thì dừng bộ đếm/GPS, thay đổi DOM lúc nhàn rỗi giảm 69%.
 - 15/10 · P02 · HM-07b ĐẠT V3: thanh rail và dock không còn dựng lại/bật tắt lớp lặp lúc nhàn rỗi.
 - 15/10 · P02 · HM-07c ĐẠT V3: 24 observer gom còn 2, app không còn xoá quy tắc CSS lúc chạy, kéo bản đồ 3 ms/khung.
+- 15/10 · P02 · HM-08b ĐẠT V3: điều hướng mới 5 mục (Bản đồ, Thửa, Nhập sổ, Hồ sơ, Thêm); gỡ hàng tab ngang và nút nổi trùng; mọi chức năng cũ vẫn có đường vào.
