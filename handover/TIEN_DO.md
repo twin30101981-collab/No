@@ -57,3 +57,6 @@
 - 15/10 · P05 · HM-21 ĐẠT V3: báo cáo đối chiếu 1 trang A4 gửi khách/ngân hàng (sơ đồ, diện tích, công thức, kết luận, QR).
 - 15/10 · P05 · HM-13 ĐẠT V3: lịch sử biến động sau khi cấp GCN (nhiều dòng) nhập được và in trong hồ sơ.
 - 15/10 · P05 · HM-23 ĐẠT V3: hàng đợi nhập sổ ngoại tuyến — chụp nhiều sổ khi mất mạng, có mạng tự đọc lần lượt (thử máy thật + AI thật: chờ bạn).
+- 15/10 · P05 · HM-17 ĐẠT V3: kiểm tra chồng lấn/khe hở có ngưỡng cấu hình và nút Xem trên bản đồ.
+- 15/10 · P05 · HM-37 ĐẠT V3: biên bản đối chiếu mốc chung/cạnh chung với thửa bên cạnh (1 trang, chỉ tham khảo).
+- 15/10 · P05 đóng: 26 hạng mục xong (HM-27a/b, 29–32, 34, 11, 11b, 40, 44, 10b, 08h, 12a, 35–38, 13–17, 21, 23, 24); còn HM-18a/b, 19, 20, 22, 25, 28 và HM-08f (hoãn); sinh P06.

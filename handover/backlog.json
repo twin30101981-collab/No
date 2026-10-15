@@ -1,7 +1,7 @@
 {
  "du_an": "LANDGIS",
  "skill_version": "3.2.0",
- "phien_hien_tai": 5,
+ "phien_hien_tai": 6,
  "che_do": "3-tu-dong",
  "de_an": {
   "phien_ban": "1.8",
@@ -1861,11 +1861,11 @@
    "effort": "M",
    "model_version": "unknown",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 3,
    "phu_thuoc": [
     "HM-04"
    ],
@@ -1878,17 +1878,19 @@
    "rui_ro": "Trung bình",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đề xuất",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 58 test); node tests/regress/hm17_topo.js",
+    "pass": 58,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm17_topo.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "Phát hiện chồng lấn/hở đã có từ v30 (lgTopologyScan). HM-17 thêm: ngưỡng cấu hình (landgis_topo_overlap_min m², landgis_topo_gap_max m), màn Thêm → Kiểm tra chồng lấn / khe hở có danh sách + nút Xem (đưa bản đồ tới vùng chồng lấn/khe hở).",
    "zip": "",
    "can_nguoi_dung": null
   },
@@ -2722,11 +2724,11 @@
    "effort": "M",
    "model_version": "unknown",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 4,
    "phu_thuoc": [
     "HM-36",
     "HM-17"
@@ -2741,17 +2743,19 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đề xuất (đã thử nghiệm khả thi)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 58 test); node tests/regress/hm37_doichieu.js",
+    "pass": 58,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm37_doichieu.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "LG37.compare(A,B): mốc chung (≤0,5 m) báo lệch >0,05 m kèm toạ độ hai sổ; cạnh chung (mẫu 0,1 m, chung ≥1 m) cho độ dài chung, khoảng cách TB/lớn nhất, phần hở m²; chồng lấn qua lgIntersectionArea. Biên bản 1 trang (dùng khung in của LG21) có chữ ký hai bên, ghi “chỉ để tham khảo”. Mở từ Hồ sơ → Giáp ranh → “Biên bản với <thửa>” (chỉ cho thửa bên cạnh đã lưu trong app).",
    "zip": "",
    "can_nguoi_dung": null
   },
@@ -3005,6 +3009,42 @@
      "HM-33(CHO_NGUOI_DUNG)"
     ],
     "ly_do_dong": "ngữ cảnh ước tính ≈ 70%"
+   },
+   {
+    "phien": 5,
+    "session_id": "session_01BkGonUVGr8NKwj4qGMa9sH",
+    "hang_muc_xong": [
+     "HM-27a",
+     "HM-27b",
+     "HM-29",
+     "HM-30",
+     "HM-31",
+     "HM-32",
+     "HM-34",
+     "HM-11",
+     "HM-11b",
+     "HM-40",
+     "HM-44",
+     "HM-10b(CHO_NGUOI_DUNG)",
+     "HM-08h",
+     "HM-12a",
+     "HM-35",
+     "HM-36",
+     "HM-14",
+     "HM-15",
+     "HM-16",
+     "HM-24",
+     "HM-38",
+     "HM-21",
+     "HM-13",
+     "HM-23",
+     "HM-17",
+     "HM-37"
+    ],
+    "hoan": [
+     "HM-08f (sidebar còn chứa panel cũ; cần phiên riêng + so ảnh)"
+    ],
+    "ly_do_dong": "ngữ cảnh ước tính ≈ 60%; còn lại toàn hạng mục M (HM-18a…) → đóng theo AUTORUN §5"
    }
   ]
  }

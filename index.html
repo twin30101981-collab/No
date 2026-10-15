@@ -10716,14 +10716,23 @@ function lgTopologyClearLayer(){
 }
 
 // Quét toàn bộ thửa. silent = true -> không bật hộp thoại (dùng khi chạy tự động).
+/* HM-17 — ngưỡng cấu hình: bỏ qua chồng lấn nhỏ hơn overlapMin (m², sai số đo) và khe hở lớn hơn gapMax (m); lưu localStorage. */
+function lgTopoCfg(){
+  const num = (k, d) => { try { const v = parseFloat(localStorage.getItem(k)); return (isFinite(v) && v >= 0) ? v : d; } catch (e) { return d; } };
+  return { overlapMin: num('landgis_topo_overlap_min', 0.01), gapMax: num('landgis_topo_gap_max', 0.5) };
+}
+window.lgTopoCfg = lgTopoCfg;
 function lgTopologyScan(silent){
-  const overlaps = [], gaps = [];
+  const overlaps = [], gaps = [], cfg = lgTopoCfg(); window.LG_GAP_TOL = cfg.gapMax;
   for (let i = 0; i < plots.length; i++) for (let j = i + 1; j < plots.length; j++) {
     const A = plots[i], B = plots[j];
     if (A.lon0 !== B.lon0 || A.zone !== B.zone) continue;
     if (polygonsIntersect(A.points, B.points)) {
       const areaM2 = lgIntersectionArea(A.points, B.points);
-      if (areaM2 > 0.01) overlaps.push({ a: A.id, b: B.id, area: areaM2, A, B });
+      if (areaM2 > cfg.overlapMin) {
+        const ax = A.points.map(p => p.x), ay = A.points.map(p => p.y), bx = B.points.map(p => p.x), by = B.points.map(p => p.y);
+        overlaps.push({ a: A.id, b: B.id, area: areaM2, A, B, box: { x0: Math.max(Math.min(...ax), Math.min(...bx)), x1: Math.min(Math.max(...ax), Math.max(...bx)), y0: Math.max(Math.min(...ay), Math.min(...by)), y1: Math.min(Math.max(...ay), Math.max(...by)) } });
+      }
       continue;
     }
     let best = null;
@@ -25847,6 +25856,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 @media print{ body.lg21-printing>*:not(#lg21-host){ display:none !important; } #lg21-host{ position:static !important; background:#fff !important; padding:0 !important; overflow:visible !important; } .lg21-bar{ display:none !important; } .lg21-page{ box-shadow:none; margin:0; width:auto; padding:0; } }
 .lg13-row{ display:grid; grid-template-columns:76px 1fr auto; gap:6px 8px; padding:8px 2px; border-bottom:1px solid var(--lg103-line); align-items:start; } .lg13-btns{ display:flex; gap:4px; } .lg13-form label{ display:flex; flex-direction:column; margin:6px 0; font-size:var(--lg103-fs-small,12px); } .lg13-form input,.lg13-form textarea{ font-size:16px; min-height:44px; }
 .lg23-row{ display:grid; grid-template-columns:1fr auto; gap:2px 8px; padding:8px 2px; border-bottom:1px solid var(--lg103-line); } .lg23-row small{ grid-column:1; opacity:.8; } .lg23-st{ font-size:12px; font-weight:700; } .lg23-xong{ color:#145a32; } .lg23-loi{ color:#9a3412; } .lg23-cho{ color:#555; } .lg23-pick{ display:inline-flex; align-items:center; cursor:pointer; }
+.lg37-t th,.lg37-t td{ font-size:11px; padding:2px 4px; } .lg37-sign{ display:grid; grid-template-columns:1fr 1fr; gap:10mm; text-align:center; margin-top:14mm; min-height:22mm; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26352,6 +26362,9 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
           t += '<div class="lg8e-kv"><span>' + LG36.hn(d) + '</span><span>' + (list.length ? list.map(function (x) { return 'Thửa ' + escA4(x.so_thua) + (x.to ? ' (tờ ' + escA4(x.to) + ')' : '') + ' · ' + x.shared.toFixed(1) + ' m'; }).join('<br>') : 'không có thửa sát cạnh') + (sd ? '<br><small>Sổ: ' + escA4(LG35.toText(sd) || 'chưa rõ') + '</small>' : '') + '</span></div>';
         });
         giapRes.canh_bao.forEach(function (w) { t += '<div class="warn">⚠ ' + escA4(w.text) + '</div>'; });
+        var saved = {}; (window.plots || []).forEach(function (q) { saved[String((q.meta && q.meta.so_thua) || q.id)] = q.id; });
+        var nbs = []; ['bac', 'dong', 'nam', 'tay'].forEach(function (d) { giapRes.huong[d].forEach(function (x) { if (x.nguon === 'thua_da_luu' && saved[x.so_thua] && nbs.indexOf(saved[x.so_thua]) < 0) nbs.push(saved[x.so_thua]); }); });
+        if (nbs.length) t += '<h5>Đối chiếu với sổ thửa bên cạnh</h5><div class="lg103-actions">' + nbs.map(function (id) { return '<button type="button" class="lg103-abtn" data-lg103-act="doichieu-nb" data-id="' + escA4(id) + '">Biên bản với ' + escA4(id) + '</button>'; }).join('') + '</div>';
         t += '<p class="lg8e-note">Chỉ để tham khảo: tính từ các thửa đã lưu và gói địa chính đã tải; cạnh không có thửa có thể là đường, ngõ, ao… hoặc thửa chưa có dữ liệu.</p>';
         box.innerHTML = t; if (on) LG36.showLabels(p, giapRes, true);
       });
@@ -26424,6 +26437,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
       mRow('🧮', 'Quy đổi toạ độ hàng loạt', 'data-lg103-act="conv-batch"') +
+      mRow('🧩', 'Kiểm tra chồng lấn / khe hở thửa', 'data-lg103-act="topo"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
       mRow('📍', 'Thửa tại vị trí của tôi', 'data-lg103-act="cad-gps"') +
       mRow('🗺', 'Gói dữ liệu địa chính', 'data-lg103-act="packs"') +
@@ -26507,6 +26521,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
+      case 'doichieu-nb': { var ca = currentPlot(), cb = (window.plots || []).filter(function (q) { return q.id === t.getAttribute('data-id'); })[0]; if (ca && cb && window.LG37) { closeSheet(); LG37.open(ca, cb); } return true; }
       case 'bd-add': { var bp = currentPlot(); if (bp) bdForm(bp, null); return true; }
       case 'bd-edit': { var bp2 = currentPlot(); if (bp2) bdForm(bp2, +t.getAttribute('data-i')); return true; }
       case 'bd-del': { var bp3 = currentPlot(); if (bp3 && confirm('Xoá dòng biến động này?')) { LG13.remove(bp3, +t.getAttribute('data-i')); body.innerHTML = tabProfile(); } return true; }
@@ -26550,6 +26565,21 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       }
       case 'doichieu': { var dp = currentPlot(); if (dp && window.LG21) { closeSheet(); LG21.open(dp); } return true; }
       case 'share-pdf': try { window.toast({ title: 'Đang chuẩn bị file PDF để chia sẻ…' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15b'); } window.lgSharePlotPdf().then(function (r) { try { if (r === 'downloaded') window.toast({ title: 'Máy không hỗ trợ chia sẻ file — đã tải về', description: 'Gửi file từ thư mục Tải xuống.' }); else if (r === 'failed') window.toast({ title: 'Không tạo được PDF để chia sẻ', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15c'); } }); return true;
+      case 'topo': case 'topo-run': {
+        if (act === 'topo-run') { var tf = body.querySelector('.lg17'); if (tf) { var ov = parseFloat(String(tf.querySelector('[data-f=ov]').value).replace(',', '.')), gp = parseFloat(String(tf.querySelector('[data-f=gp]').value).replace(',', '.')); try { if (isFinite(ov) && ov >= 0) localStorage.setItem('landgis_topo_overlap_min', String(ov)); if (isFinite(gp) && gp >= 0) localStorage.setItem('landgis_topo_gap_max', String(gp)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h17a'); } } }
+        var cfg = lgTopoCfg(), res = (typeof lgTopologyScan === 'function') ? lgTopologyScan(true) : { overlaps: [], gaps: [] }, th = '<div class="lg17"><p class="lg8e-note">Chỉ so các thửa cùng kinh tuyến trục. Chồng lấn nhỏ hơn ngưỡng sai số đo được bỏ qua.</p>' +
+          '<label>Bỏ qua chồng lấn nhỏ hơn (m²)<input data-f="ov" inputmode="decimal" aria-label="Ngưỡng chồng lấn m2" value="' + cfg.overlapMin + '"></label><label>Báo khe hở nhỏ hơn (m)<input data-f="gp" inputmode="decimal" aria-label="Ngưỡng khe hở m" value="' + cfg.gapMax + '"></label>' +
+          '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="topo-run">Kiểm tra lại</button></div>';
+        th += '<h5>Chồng lấn (' + res.overlaps.length + ')</h5>' + (res.overlaps.length ? res.overlaps.map(function (o, i) { return '<div class="lg8e-kv"><span>' + escA4(o.a) + ' ↔ ' + escA4(o.b) + '</span><span>≈ ' + o.area.toFixed(2) + ' m² <button type="button" class="lg103-abtn" data-lg103-act="topo-view" data-k="o" data-i="' + i + '">Xem</button></span></div>'; }).join('') : '<div class="lg103-empty">Không có chồng lấn đáng kể.</div>');
+        th += '<h5>Khe hở (' + res.gaps.length + ')</h5>' + (res.gaps.length ? res.gaps.map(function (g, i) { return '<div class="lg8e-kv"><span>' + escA4(g.a) + ' ↔ ' + escA4(g.b) + '</span><span>cách ' + g.dist.toFixed(3) + ' m <button type="button" class="lg103-abtn" data-lg103-act="topo-view" data-k="g" data-i="' + i + '">Xem</button></span></div>'; }).join('') : '<div class="lg103-empty">Không có khe hở nhỏ hơn ngưỡng.</div>');
+        openSheet('Chồng lấn / khe hở', th + '</div>'); return true;
+      }
+      case 'topo-view': {
+        var rr = window.LG_TOPO_RESULT || { overlaps: [], gaps: [] }, kk = t.getAttribute('data-k'), ii = +t.getAttribute('data-i'), it = (kk === 'o' ? rr.overlaps : rr.gaps)[ii]; if (!it || !window.map) return true;
+        var pl = it.A, ll = function (x, y) { return convertVN2000ToWGS84(x, y, pl.lon0, pl.zone, pl.towgs84Key); }, b;
+        if (kk === 'o') { var bx = it.box; b = L.latLngBounds([ll(bx.x0, bx.y0), ll(bx.x1, bx.y1)]); } else { var a1 = it.A.points[it.ua], b1 = it.B.points[it.vb]; b = L.latLngBounds([ll(a1.x, a1.y), ll(b1.x, b1.y)]); }
+        closeSheet(); selectTab('map'); setTimeout(function () { window.map.fitBounds(b.pad(2), { maxZoom: 21 }); }, 150); return true;
+      }
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -42822,13 +42852,14 @@ body.lg175-stack-open #lg124-stack{
       '<div class="lg21-concl">Kết luận: ' + kl + '</div>' + (tc ? '<p class="lg21-note">Tứ cận: ' + h(tc) + '</p>' : '') +
       '<div class="lg21-foot"><div class="lg21-qr">' + (Q.svg || '<small>Không tạo được QR</small>') + '</div><div><small>Mã tra cứu: <b>' + h(D.hash) + '</b>' + (Q.mode === 'rut-gon' ? '<br>QR chỉ chứa mã tra cứu (nội dung đầy đủ quá dài cho QR).' : '') + (Q.mode === 'khong-tao-duoc' ? '<br>⚠ Nội dung quá dài, không tạo được QR — dùng mã tra cứu.' : '') + '<br>Lập bằng Land GIS · số liệu chỉ có giá trị tham khảo đến khi được cơ quan có thẩm quyền xác nhận.</small></div></div></div>';
   }
-  function open(plot) {
-    close(); var host = document.createElement('div'); host.id = 'lg21-host'; host.innerHTML = '<div class="lg21-bar"><button type="button" data-lg21="print">🖨 In / Lưu PDF</button><button type="button" data-lg21="close">✕ Đóng</button></div>' + html(plot);
+  function open(plot) { return openHTML(html(plot)); }
+  function openHTML(pageHtml) {
+    close(); var host = document.createElement('div'); host.id = 'lg21-host'; host.innerHTML = '<div class="lg21-bar"><button type="button" data-lg21="print">🖨 In / Lưu PDF</button><button type="button" data-lg21="close">✕ Đóng</button></div>' + pageHtml;
     host.addEventListener('click', function (e) { var b = e.target.closest('[data-lg21]'); if (!b) return; if (b.getAttribute('data-lg21') === 'close') close(); else { document.body.classList.add('lg21-printing'); var done = function () { document.body.classList.remove('lg21-printing'); window.removeEventListener('afterprint', done); }; window.addEventListener('afterprint', done); setTimeout(function () { window.print(); }, 100); setTimeout(done, 60000); } });
     document.body.appendChild(host); return host;
   }
   function close() { var e = document.getElementById('lg21-host'); if (e) e.remove(); document.body.classList.remove('lg21-printing'); }
-  window.LG21 = { html: html, open: open, close: close, qr: function (plot) { return qr(plot, data(plot)); } };
+  window.LG21 = { html: html, open: open, openHTML: openHTML, close: close, qr: function (plot) { return qr(plot, data(plot)); } };
 })();
 </script>
 <script>
@@ -42905,6 +42936,51 @@ body.lg175-stack-open #lg124-stack{
   }
   window.addEventListener('online', function () { setTimeout(function () { process().catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h23o'); }); }, 800); });
   window.LGQueue = { add: add, list: list, get: get, remove: remove, put: put, process: process, seedFor: seedFor, autodel: autodel, isRunning: function () { return running; } };
+})();
+</script>
+<script>
+/* HM-37 — ĐỐI CHIẾU MỐC CHUNG / CẠNH CHUNG với sổ của thửa bên cạnh + biên bản 1 trang (chỉ tham khảo).
+   Mốc chung = mốc của hai thửa cách nhau ≤ 0,5 m (cùng một điểm ngoài thực địa); báo khi lệch > 0,05 m kèm toạ độ hai sổ.
+   Cạnh chung: lấy mẫu 0,1 m dọc cạnh của thửa A sát thửa B → độ dài chung, phần hở (m², giữa hai ranh) và chồng lấn (m², lgIntersectionArea). */
+(function () {
+  'use strict';
+  var NEAR = 0.5, TOLM = 0.05, STEP = 0.1, GAPMAX = 0.5, MINSHARE = 1.0;
+  var f2 = function (n) { return (n == null || !isFinite(n)) ? '—' : Number(n).toFixed(2).replace('.', ','); }, f3 = function (n) { return Number(n).toFixed(3).replace('.', ','); };
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function ring(pl) { var a = (pl.points || []).map(function (q) { return { x: q.x, y: q.y, ten: q.ten }; }); if (a.length > 1 && a[0].x === a[a.length - 1].x && a[0].y === a[a.length - 1].y) a.pop(); return a; }
+  function dseg(px, py, a, b) { var dx = b.x - a.x, dy = b.y - a.y, L = dx * dx + dy * dy, t = L ? Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / L)) : 0, qx = a.x + t * dx - px, qy = a.y + t * dy - py; return Math.sqrt(qx * qx + qy * qy); }
+  function dpoly(x, y, r) { var m = 1e18; for (var i = 0; i < r.length; i++) { var d = dseg(x, y, r[i], r[(i + 1) % r.length]); if (d < m) m = d; } return m; }
+  function inside(x, y, r) { var c = false; for (var i = 0, j = r.length - 1; i < r.length; j = i++) { var a = r[i], b = r[j]; if ((a.x > x) !== (b.x > x) && y < (b.y - a.y) * (x - a.x) / (b.x - a.x) + a.y) c = !c; } return c; }
+  function compare(A, B) {
+    var ra = ring(A), rb = ring(B), out = { moc: [], canh: [], chong_lan: 0, ho: 0, lech_max: 0 };
+    ra.forEach(function (a, i) {
+      var best = null; rb.forEach(function (b, j) { var d = Math.hypot(a.x - b.x, a.y - b.y); if (!best || d < best.d) best = { d: d, j: j, b: b }; });
+      if (best && best.d <= NEAR) { out.moc.push({ ia: i + 1, ib: best.j + 1, ten_a: a.ten != null ? a.ten : i + 1, ten_b: best.b.ten != null ? best.b.ten : best.j + 1, a: { x: a.x, y: a.y }, b: { x: best.b.x, y: best.b.y }, lech: best.d, vuot: best.d > TOLM }); if (best.d > out.lech_max) out.lech_max = best.d; }
+    });
+    ra.forEach(function (a, i) {
+      var b2 = ra[(i + 1) % ra.length], L = Math.hypot(b2.x - a.x, b2.y - a.y), n = Math.max(2, Math.ceil(L / STEP)), shared = 0, gapArea = 0, sepSum = 0, sepMax = 0, cnt = 0;
+      for (var k = 0; k < n; k++) { var t = (k + 0.5) / n, x = a.x + (b2.x - a.x) * t, y = a.y + (b2.y - a.y) * t, d = dpoly(x, y, rb), ins = inside(x, y, rb), seg = L / n;
+        if (ins || d <= GAPMAX) { shared += seg; cnt++; sepSum += d; if (d > sepMax) sepMax = d; if (!ins && d > 0.0005) gapArea += d * seg; } }
+      if (shared >= MINSHARE) out.canh.push({ i: i + 1, dai: L, chung: shared, sep_tb: cnt ? sepSum / cnt : 0, sep_max: sepMax, ho_m2: gapArea });
+    });
+    try { out.chong_lan = lgIntersectionArea(ra, rb); } catch (e) { out.chong_lan = 0; window.lgQuiet && window.lgQuiet(e, 'h37a'); }
+    out.ho = out.canh.reduce(function (s, c) { return s + c.ho_m2; }, 0); return out;
+  }
+  function html(A, B, C) {
+    C = C || compare(A, B); var ma = A.meta || {}, mb = B.meta || {}, now = new Date(), ts = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    var ta = 'Thửa ' + h(ma.so_thua || A.id) + (ma.to_ban_do ? ' (tờ ' + h(ma.to_ban_do) + ')' : ''), tb = 'Thửa ' + h(mb.so_thua || B.id) + (mb.to_ban_do ? ' (tờ ' + h(mb.to_ban_do) + ')' : '');
+    var ms = C.moc.length ? C.moc.map(function (m) { return '<tr' + (m.vuot ? ' style="background:#fff3cd"' : '') + '><td>' + h(m.ten_a) + ' / ' + h(m.ten_b) + '</td><td>' + f2(m.a.x) + '; ' + f2(m.a.y) + '</td><td>' + f2(m.b.x) + '; ' + f2(m.b.y) + '</td><td><b>' + f3(m.lech) + '</b> m</td><td>' + (m.vuot ? '⚠ lệch &gt; 0,05 m' : '✔ khớp') + '</td></tr>'; }).join('') : '<tr><td colspan="5">Không có mốc nào của hai thửa trùng nhau trong 0,5 m.</td></tr>';
+    var cs = C.canh.length ? C.canh.map(function (c) { return '<tr><td>' + c.i + '</td><td>' + f2(c.dai) + ' m</td><td>' + f2(c.chung) + ' m</td><td>' + f3(c.sep_tb) + ' m</td><td>' + f3(c.sep_max) + ' m</td><td>' + f2(c.ho_m2) + ' m²</td></tr>'; }).join('') : '<tr><td colspan="6">Hai thửa không có cạnh chung (≥ 1 m).</td></tr>';
+    var bad = C.moc.filter(function (m) { return m.vuot; }).length, kl = (bad || C.chong_lan > 0.05) ? '⚠ Có sai lệch cần xem xét: ' + (bad ? bad + ' mốc chung lệch &gt; 0,05 m' : '') + (bad && C.chong_lan > 0.05 ? '; ' : '') + (C.chong_lan > 0.05 ? 'chồng lấn ' + f2(C.chong_lan) + ' m²' : '') + '.' : '✔ Các mốc chung khớp trong 0,05 m, không chồng lấn đáng kể.';
+    return '<div class="lg21-page"><div class="lg21-head"><div><b>BIÊN BẢN ĐỐI CHIẾU RANH GIỚI</b><br><span>' + ta + ' ↔ ' + tb + '</span></div><div class="lg21-ts">' + h(ts) + '</div></div>' +
+      '<h4>1. Mốc chung (toạ độ VN-2000, X Bắc; Y Đông)</h4><table class="lg21-t lg37-t"><thead><tr><th>Mốc A / B</th><th>' + ta + '</th><th>' + tb + '</th><th>Lệch</th><th>Kết luận</th></tr></thead><tbody>' + ms + '</tbody></table>' +
+      '<h4>2. Cạnh chung (theo cạnh của ' + ta + ')</h4><table class="lg21-t lg37-t"><thead><tr><th>Cạnh</th><th>Dài</th><th>Chung</th><th>Cách TB</th><th>Cách lớn nhất</th><th>Phần hở</th></tr></thead><tbody>' + cs + '</tbody></table>' +
+      '<p class="lg21-formula">Phần chồng lấn: <b>' + f2(C.chong_lan) + ' m²</b> · Phần hở dọc cạnh chung: <b>' + f2(C.ho) + ' m²</b> · Mốc chung lệch lớn nhất: <b>' + f3(C.lech_max) + ' m</b>.</p>' +
+      '<div class="lg21-concl">' + kl + '</div><div class="lg37-sign"><div>Chủ ' + ta + '<br><small>(ký, ghi rõ họ tên)</small></div><div>Chủ ' + tb + '<br><small>(ký, ghi rõ họ tên)</small></div></div>' +
+      '<div class="lg21-foot"><small>Tính từ toạ độ hai sổ đã lưu trong Land GIS — <b>chỉ để tham khảo</b>, không thay thế đo đạc/xác nhận của cơ quan có thẩm quyền.</small></div></div>';
+  }
+  function open(A, B) { return window.LG21 ? window.LG21.openHTML(html(A, B)) : null; }
+  window.LG37 = { compare: compare, html: html, open: open };
 })();
 </script>
 </body>
