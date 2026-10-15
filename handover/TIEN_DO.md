@@ -21,3 +21,4 @@
 - 15/10 · P02 · HM-07c ĐẠT V3: 24 observer gom còn 2, app không còn xoá quy tắc CSS lúc chạy, kéo bản đồ 3 ms/khung.
 - 15/10 · P02 · HM-08b ĐẠT V3: điều hướng mới 5 mục (Bản đồ, Thửa, Nhập sổ, Hồ sơ, Thêm); gỡ hàng tab ngang và nút nổi trùng; mọi chức năng cũ vẫn có đường vào.
 - 15/10 · P02 · HM-08i ĐẠT V3: màn Thửa có tìm kiếm, lọc Đạt/Không đạt, trạng thái đồng bộ; 500 thửa cuộn mượt (danh sách ảo).
+- 15/10 · P02 · HM-08c ĐẠT V3: màn Bản đồ theo mockup ① — ô tìm, chip KTT/lớp nền/nhãn, 2 nút tròn, thẻ thửa dạng sheet 3 trạng thái, không còn phần tử chồng nhau ở nửa dưới màn.

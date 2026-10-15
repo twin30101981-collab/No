@@ -2210,7 +2210,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   /* HM-08a — KHUNG LAYOUT MOBILE: một token --lg-dock-clear (khoảng chừa phía dưới = chiều cao dock thật + 12px, JS đo)
      cho MỌI lớp thông báo; thông báo nằm TRÊN dock nên không bao giờ che 5 nút dock. */
   :root { --lg-dock-clear: calc(84px + env(safe-area-inset-bottom, 0px)); }
-  #lgv42-toast-host, .toast-wrap { bottom: var(--lg-dock-clear) !important; right: 12px !important; max-width: min(92vw, 380px) !important; }
+  #lgv42-toast-host, .toast-wrap { bottom: var(--lg-dock-clear) !important; left: 12px !important; right: auto !important; max-width: min(calc(100vw - 96px), 380px) !important; }   /* HM-08c: thông báo bên trái, nút tròn bên phải — không chồng nhau */
   #lgv42-toast-host > div:not(:has(button)), .toast-wrap > .toast { pointer-events: none !important; }
   .toast-wrap { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom,0px) + var(--lg62-nav-reserve, 0px)); right: 16px; display: flex; flex-direction: column; gap: 6px; z-index: 3900; pointer-events: none; }
   .toast { background: #08100c; color: #fff; padding: 8px 12px; border-radius: 6px; font-size:var(--lg63-fs); box-shadow: 0 4px 12px rgba(0,0,0,.25); max-width: 320px; pointer-events: auto; }
@@ -4045,7 +4045,10 @@ function lgMeasureDock() {
     if (!bar) return false;
     const r = bar.getBoundingClientRect();
     if (!(r.height > 0)) return false;
-    document.documentElement.style.setProperty('--lg-dock-clear', Math.max(0, Math.round(window.innerHeight - r.top) + 12) + 'px');
+    let top = r.top;
+    const sh = document.getElementById('lg103-sheet');   // HM-08c: thông báo/nút nổi nằm TRÊN bottom sheet đang mở
+    if (sh && sh.classList.contains('on')) { const sr = sh.getBoundingClientRect(); if (sr.height > 0 && sr.top < top) top = sr.top; }
+    document.documentElement.style.setProperty('--lg-dock-clear', Math.max(0, Math.round(window.innerHeight - top) + 12) + 'px');
     return true;
   } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8a0'); return false; }
 }
@@ -25306,6 +25309,24 @@ header h1{ white-space:nowrap; }               /* tiêu đề vẫn rút gọn 1
      ========================================================================== -->
 <style id="lg103-mobile-ui">
 /* HM-08b — gỡ hàng tab ngang và các nút nổi trùng (🌙 🕰 lg184): chức năng chuyển vào ＋ Nhập sổ / ⋯ Thêm (nút vẫn có trong DOM để mã gọi) */
+/* HM-08c — MÀN BẢN ĐỒ (mockup ①): ô tìm + chip lớp phủ ở trên; 2 nút tròn bên phải; thẻ thửa đang chọn là bottom sheet; bỏ thanh rail dưới và bảng chi tiết nổi cũ
+   (nút của rail vẫn trong DOM; chức năng chuyển vào ⋯ Thêm / chip). Không có phần tử nào chồng nhau ở nửa dưới màn hình. */
+body.lg103 #lg62-rail, body.lg103 #plot-info-panel, body.lg103 #geo-warn-banner, body.lg103 #lg-gps-badge, body.lg103 .lg138-legend, body.lg103 #lg138-legend, body.lg103 .lg138-ktt-badge, body.lg103 #lg138-ktt-badge, body.lg103 #lg62-nav { display:none !important; }
+body.lg103.lg8c-info #plot-info-panel { display:block !important; position:fixed !important; left:8px !important; right:8px !important; top:64px !important; bottom:calc(var(--lg103-dock-h) + 8px + env(safe-area-inset-bottom,0px)) !important; z-index:1500 !important; overflow:auto !important; width:auto !important; height:auto !important; }
+#lg8c-top, #lg8c-fabs { display:none; }
+body.lg103.lg62-map #lg8c-top { display:block; position:fixed; left:12px; right:12px; top:calc(env(safe-area-inset-top,0px) + 8px); z-index:1300; }
+body.lg103.lg62-map #lg8c-fabs { display:flex; position:fixed; right:12px; bottom:calc(var(--lg-dock-clear) + 4px); z-index:1300; flex-direction:column; gap:10px; }
+#lg8c-bar { display:flex; align-items:center; gap:8px; background:var(--card,#fff); border:1px solid var(--border,#cfd8dc); border-radius:999px; padding:4px 6px 4px 14px; box-shadow:0 2px 10px rgba(0,0,0,.18); }
+#lg8c-q { flex:1; min-width:0; border:0; background:transparent; font-size:var(--lg-fs); padding:10px 0; outline:none; color:var(--fg,#102); }
+#lg8c-menu { width:44px; height:44px; border-radius:50%; border:0; background:#e3efe8; font-size:18px; }
+#lg8c-chips { display:flex; gap:8px; overflow-x:auto; padding:8px 2px 2px; scrollbar-width:none; }
+#lg8c-chips button { flex:0 0 auto; border:0; border-radius:999px; padding:9px 14px; min-height:40px; background:var(--card,#fff); box-shadow:0 1px 6px rgba(0,0,0,.18); font-weight:700; font-size:var(--lg-fs-sm); color:var(--fg,#102); white-space:nowrap; }
+#lg8c-res { background:var(--card,#fff); border-radius:12px; margin-top:6px; box-shadow:0 4px 14px rgba(0,0,0,.22); max-height:40vh; overflow:auto; }
+#lg8c-res button { display:block; width:100%; text-align:left; border:0; border-bottom:1px solid #eef2ef; background:transparent; padding:12px 14px; font-size:var(--lg-fs); }
+#lg8c-fabs button { width:48px; height:48px; border-radius:50%; border:0; background:var(--card,#fff); box-shadow:0 2px 10px rgba(0,0,0,.25); font-size:22px; }
+.lg8c-card .t { font-weight:800; font-size:calc(var(--lg-fs) + 2px); } .lg8c-card .s { color:#5b6b63; font-size:var(--lg-fs-sm); } .lg8c-card .n { margin:8px 0; font-size:var(--lg-fs); }
+.lg8c-card .acts { display:flex; gap:8px; } .lg8c-card .acts button { flex:1; min-height:48px; border-radius:12px; border:0; background:#e3efe8; font-weight:700; font-size:var(--lg-fs); } .lg8c-card .acts button.p { background:#0f4c34; color:#fff; flex:1.3; } .lg8c-card .acts button.i { flex:0 0 56px; }
+.lg8c-chip { padding:6px 10px; border-radius:999px; font-weight:800; font-size:var(--lg-fs-sm); } .lg8c-chip.ok { background:#e4f3e6; color:#1f7a3d; } .lg8c-chip.bad { background:#fde3e3; color:#8a1f1f; } .lg8c-chip.none { background:#eee; color:#555; }
 body.lg62.lg103 .nav-tabs,
 body.lg103 #lg185-theme-fab, body.lg103 #lg185-cmp-fab, body.lg103 #lg184-fab { display:none !important; }
 :root{
@@ -25478,6 +25499,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 }
 #lg103-sheet.on{ transform:translateY(0); }
 #lg103-sheet[data-state="peak"]{ height:60px; }
+#lg103-sheet.lg8c-card-on[data-state="peak"]{ height:170px; }
 #lg103-sheet[data-state="medium"]{ height:calc(var(--lg103-vh) * 0.45); }
 #lg103-sheet[data-state="full"]{ height:calc(var(--lg103-vh) * 0.85); }
 #lg103-sheet.dragging{ transition:none; }
@@ -25584,7 +25606,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function closeSheet() {
     if (!sheet) return;
-    sheet.classList.remove('on');
+    sheet.classList.remove('on'); sheet.classList.remove('lg8c-card-on'); cardShown = false;
+    remeasure();
     currentTab = null;
     Array.prototype.forEach.call(dock.querySelectorAll('.lg103-dbtn'), function (b) { b.setAttribute('aria-selected', 'false'); });
   }
@@ -25985,7 +26008,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         '<div class="lg103-kv"><span>Diện tích đo</span><span>' + area.toFixed(2) + ' m²</span></div>' +
         (V ? '<div class="lg103-kv"><span>Đối chiếu GCN</span><span>' + (V.ok ? '✔ Đạt' : '⚠ Không đạt') + ' (lệch ' + V.diff.toFixed(2) + ' m², cho phép ±' + V.tol.toFixed(2) + ')</span></div>' : '') +
         '<div class="lg103-kv"><span>Số mốc</span><span>' + pts.length + '</span></div>' +
-        '<div class="lg103-kv"><span>KTT</span><span>' + (p.lon0 != null ? p.lon0 + '°' : '—') + '</span></div>';
+        '<div class="lg103-kv"><span>KTT</span><span>' + (p.lon0 != null ? p.lon0 + '°' : '—') + '</span></div>' +
+        '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="info-panel">ℹ Bảng chi tiết thửa (đầy đủ)</button></div>';
     }
     var exportBar = '<h5>Xuất</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="a4">🖨 In A4</button>' +
@@ -26005,7 +26029,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     return '<h5>Bản đồ</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="imagery">🛰 Lớp nền &amp; ảnh vệ tinh</button>' +
       '<button class="lg103-abtn" data-lg103-act="compare">🕰 So sánh ảnh theo thời gian</button>' +
-      '<button class="lg103-abtn" data-lg109-act="cache">📶 Bản đồ ngoại tuyến</button></div>' +
+      '<button class="lg103-abtn" data-lg109-act="cache">📶 Bản đồ ngoại tuyến</button>' +
+      '<button class="lg103-abtn" data-lg103-act="align">🎚 Căn ảnh vệ tinh</button>' +
+      '<button class="lg103-abtn" data-lg103-act="gps-avg">📡 GPS trung bình</button>' +
+      '<button class="lg103-abtn" data-lg103-act="compass">🧭 La bàn</button></div>' +
       '<h5>Cài đặt</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="legacy-set">⚙ Tỉnh / KTT &amp; cài đặt</button>' +
       '<button class="lg103-abtn" data-lg103-act="ai-key">🔑 Khoá AI</button>' +
@@ -26039,6 +26066,13 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
       case 'goto-import': selectTab('import'); return true;
+      case 'card-profile': cardShown = false; sheet.classList.remove('lg8c-card-on'); selectTab('profile'); return true;
+      case 'card-route': clickIf('lg52-fab-route'); return true;
+      case 'card-photo': clickIf('lg31-fab-sv'); return true;
+      case 'align': closeSheet(); clickIf('lg31-fab-align'); return true;
+      case 'gps-avg': closeSheet(); clickIf('lg31-fab-gps'); return true;
+      case 'compass': closeSheet(); clickIf('lg31-compass-fab'); return true;
+      case 'info-panel': closeSheet(); document.body.classList.toggle('lg8c-info'); return true;
       case 'pf-all': case 'pf-ok': case 'pf-bad': case 'pf-none': case 'pf-unsynced':
         plotFilter.f = act.slice(3); body.innerHTML = tabPlots(); return true;
       case 'plot-select': {
@@ -26091,8 +26125,9 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       if (mb) mb.setAttribute('aria-selected', 'true');
       return;
     }
-    currentTab = key;
+    currentTab = key; cardShown = false; sheet.classList.remove('lg8c-card-on');
     openSheet(t.title || t.label, t.render ? t.render() : '', 'medium');
+    if (typeof window.lgMeasureDock === 'function') requestAnimationFrame(window.lgMeasureDock);
   }
 
   function triggerCameraScan() {
@@ -26179,10 +26214,15 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     window.lg108PrintA4 = printPlotA4;
 
     // Đồng bộ trạng thái Dock với màn hình hiện tại của lớp v62
+    var lastOnMap = null;
     var sync = LG.util.debounce(function () {
       var onMap = document.body.classList.contains('lg62-map');
       var b = dock.querySelector('[data-lg103-tab="map"]');
       if (b && !currentTab) b.setAttribute('aria-selected', String(onMap));
+      if (onMap !== lastOnMap) {   // HM-08c: vào/ra màn Bản đồ → hiện/ẩn thẻ thửa đang chọn, cập nhật chip
+        lastOnMap = onMap;
+        try { showPlotCard(); if (window.lg8cPaintChips) window.lg8cPaintChips(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8c1'); }
+      }
     }, 120);
     try { new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q303'); }
     sync();
@@ -26197,10 +26237,83 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       printPlotA4: printPlotA4,
       refresh: function () { if (currentTab && TABS[currentTab] && TABS[currentTab].render) body.innerHTML = TABS[currentTab].render(); }
     };
+    try { buildMapOverlay(); } catch (e) { LG.diag.log('error', 'ui', 'HM-08c overlay: ' + (e && e.message)); }
     LG.diag.log('info', 'ui', 'v103 Bottom Dock + Bottom Sheet 3 trang thai da san sang');
     return true;
   }
 
+  /* ============ HM-08c — lớp phủ màn Bản đồ ============ */
+  var cardShown = false;
+  function remeasure() { if (typeof window.lgMeasureDock === 'function') { requestAnimationFrame(window.lgMeasureDock); setTimeout(window.lgMeasureDock, 420); } }   // lần 2 sau khi sheet trượt xong
+  function cardHTML(p) {
+    var m = p.meta || {}, area = (typeof calcArea === 'function') ? calcArea(p.points) : LG.cad.area(p.points);
+    var gcn = parseFloat(m.dien_tich_m2), kc = parseFloat(m.dien_tich_khong_cap_gcn) || 0;
+    var V = (isFinite(gcn) && gcn > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(area, gcn, kc) : null;
+    var chip = V ? (V.ok ? '<span class="lg8c-chip ok">✓ ĐẠT</span>' : '<span class="lg8c-chip bad">✕ KHÔNG ĐẠT</span>') : '<span class="lg8c-chip none">— chưa GCN</span>';
+    var f1 = function (v) { return Number(v).toFixed(2).replace('.', ','); };
+    var addr = [m.dia_chi, m.phuong_xa, m.quan_huyen, m.tinh_thanh].filter(Boolean).join(' · ');
+    return '<div class="lg8c-card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><div class="t">Thửa ' + escA4(m.so_thua || p.id) + (m.to_ban_do ? ' · Tờ ' + escA4(m.to_ban_do) : '') + '</div><div class="s">' + escA4(addr || p.id) + '</div></div>' + chip + '</div>' +
+      '<div class="n">' + (isFinite(gcn) ? '<b>' + f1(gcn) + ' m²</b> GCN · ' : '') + 'đo ' + f1(area) + (kc ? ' · KCGCN ' + f1(kc) : '') + '</div>' +
+      '<div class="acts"><button class="p" data-lg103-act="card-profile">📄 Hồ sơ</button><button data-lg103-act="card-route">➦ Chỉ đường</button><button class="i" data-lg103-act="card-photo" aria-label="Ảnh thực tế">📷</button></div></div>';
+  }
+  function showPlotCard() {
+    var onMap = document.body.classList.contains('lg62-map');
+    var p = (function () { var id = window.selectedPlotId; return id ? plotsAll().filter(function (x) { return x.id === id; })[0] : null; })();
+    if (!p || !onMap) { if (cardShown) { cardShown = false; sheet.classList.remove('lg8c-card-on'); closeSheet(); remeasure(); } return; }
+    if (currentTab) return;                       // đang mở khay khác (Thửa/Nhập sổ/Hồ sơ/Thêm) → không đè
+    cardShown = true; sheet.classList.add('lg8c-card-on');
+    openSheet('', cardHTML(p), 'peak'); gripTitle.textContent = 'Thửa đang chọn'; remeasure();
+  }
+  function buildMapOverlay() {
+    if (document.getElementById('lg8c-top')) return;
+    var top = document.createElement('div'); top.id = 'lg8c-top';
+    top.innerHTML = '<div id="lg8c-bar"><span aria-hidden="true">🔍</span><input id="lg8c-q" type="search" placeholder="Tìm thửa, tờ bản đồ, địa chỉ…" autocomplete="off"><button id="lg8c-menu" type="button" aria-label="Thêm">≡</button></div>' +
+      '<div id="lg8c-res" style="display:none"></div><div id="lg8c-chips"><button type="button" data-chip="ktt"></button><button type="button" data-chip="base"></button><button type="button" data-chip="labels">◧ Nhãn</button></div>';
+    document.body.appendChild(top);
+    var fabs = document.createElement('div'); fabs.id = 'lg8c-fabs';
+    fabs.innerHTML = '<button type="button" id="lg8c-layers" aria-label="Lớp bản đồ">◫</button><button type="button" id="lg8c-loc" aria-label="Vị trí của tôi">◎</button>';
+    document.body.appendChild(fabs);
+    var q = document.getElementById('lg8c-q'), res = document.getElementById('lg8c-res');
+    q.addEventListener('input', function () {
+      var items = (window.lgPlotListItems ? window.lgPlotListItems(plotsAll(), { q: q.value, f: 'all' }) : []).slice(0, 6);
+      res.style.display = (q.value.trim() && items.length) ? 'block' : 'none';
+      res.innerHTML = items.map(function (it) { return '<button type="button" data-lg103-act="plot-select" data-pid="' + escA4(it.id) + '"><b>' + escA4(it.id) + '</b> · ' + it.area.toFixed(1) + ' m²</button>'; }).join('');
+    });
+    res.addEventListener('click', function (e) { if (e.target.closest('button')) { res.style.display = 'none'; q.value = ''; newNavAction('plot-select', e.target.closest('button')); } });
+    document.getElementById('lg8c-menu').onclick = function () { selectTab('more'); };
+    document.getElementById('lg8c-layers').onclick = function () { newNavAction('imagery'); };
+    document.getElementById('lg8c-loc').onclick = function () { if (!clickIf('btn-quick-gps-locate')) clickIf('lg31-compass-fab'); };
+    top.querySelector('#lg8c-chips').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return; var k = b.getAttribute('data-chip');
+      if (k === 'ktt') { var bs = $('lg62-btn-set'); if (bs) bs.click(); }
+      else if (k === 'base') newNavAction('imagery');
+      else if (k === 'labels') {
+        var ids = [['lg-chk-vertex', 'Số hiệu mốc'], ['lg-chk-edges', 'Chiều dài cạnh (m)'], ['lg-chk-angles', 'Góc trong thửa'], ['lg-chk-info', 'Thông tin thửa']];
+        openSheet('Chú giải · nhãn trên bản đồ', ids.map(function (r) { var el = document.getElementById(r[0]); return '<label style="display:flex;gap:10px;align-items:center;padding:12px 4px;font-size:var(--lg-fs)"><input type="checkbox" data-lg8c-chk="' + r[0] + '"' + (el && el.checked ? ' checked' : '') + ' style="width:22px;height:22px"> ' + r[1] + '</label>'; }).join(''), 'medium');
+        body.querySelectorAll('[data-lg8c-chk]').forEach(function (c) { c.onchange = function () { var o = document.getElementById(c.getAttribute('data-lg8c-chk')); if (o) { o.checked = c.checked; o.dispatchEvent(new Event('change', { bubbles: true })); } }; });
+      }
+    });
+    function paintChips() {
+      var p = (function () { var id = window.selectedPlotId; return id ? plotsAll().filter(function (x) { return x.id === id; })[0] : null; })();
+      var sel = document.getElementById('province-select'), pn = sel && sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent.replace(/\(.*$/, '').trim() : '';
+      var lon0 = p && p.lon0 != null ? p.lon0 : null;
+      var kb = top.querySelector('[data-chip="ktt"]'), bb = top.querySelector('[data-chip="base"]');
+      var kt = 'KTT ' + (lon0 != null && window.LG146 && LG146.fmtKtt ? LG146.fmtKtt(lon0) : (lon0 != null ? lon0 + '°' : '—')) + (pn ? ' · ' + pn : '');
+      var bn = ''; try { bn = localStorage.getItem('land_gis_base_layer_name') || ''; } catch (e) { bn = ''; }
+      bn = '🛰 ' + (bn ? bn.replace(/\(.*$/, '').trim().split(' ').slice(0, 2).join(' ') : 'Lớp nền');
+      if (kb.textContent !== '🧭 ' + kt) kb.textContent = '🧭 ' + kt;
+      if (bb.textContent !== bn) bb.textContent = bn;
+    }
+    window.lg8cPaintChips = paintChips; paintChips();
+    // đổi thửa chọn / đổi màn → cập nhật thẻ + chip (không dùng observer/bộ đếm mới)
+    var origSel = window.setSelectedPlotId;
+    if (typeof origSel === 'function' && !origSel.__lg8c) {
+      var wrapped = function () { var r = origSel.apply(this, arguments); setTimeout(function () { paintChips(); showPlotCard(); }, 0); return r; };
+      wrapped.__lg8c = true; window.setSelectedPlotId = wrapped;
+    }
+    window.lg8cShowCard = showPlotCard;
+    window.addEventListener('resize', remeasure);
+  }
   // Lớp v62 dựng khung theo chu kỳ; chờ tới khi body.lg62 xuất hiện.
   var tries = 0;
   var timer = setInterval(function () {
