@@ -16627,14 +16627,27 @@ try {
     var r = lat * Math.PI / 180;
     return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * Math.pow(2, z) * 256;
   }
-  function loadImg(url) {
+  function loadImgRaw(url, cors) {
     return new Promise(function (res) {
-      var im = new Image(); im.crossOrigin = 'anonymous';
+      var im = new Image(); if (cors) im.crossOrigin = 'anonymous';
       var t = setTimeout(function () { res(null); }, 12000);
       im.onload = function () { clearTimeout(t); res(im); };
       im.onerror = function () { clearTimeout(t); res(null); };
       im.src = url;
     });
+  }
+  /* HM-40 — ưu tiên ô ảnh ĐÃ LƯU ngoại tuyến (Cache API, tải bằng CORS → blob cùng gốc, canvas không bị "tainted"); không có mới tải mạng. */
+  async function loadImg(url) {
+    try {
+      if (window.caches && window.LG_TILE_CACHE) {
+        var c = await caches.open(window.LG_TILE_CACHE), m = await c.match(url);
+        if (m && m.type !== 'opaque') {
+          var b = await m.blob();
+          if (b && b.size > 100) { var u = URL.createObjectURL(b), im = await loadImgRaw(u, false); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); if (im) return im; }
+        }
+      }
+    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h40a'); }
+    return loadImgRaw(url, true);
   }
   async function captureSatelliteOnce(plot, opt) {
     opt = opt || {};
@@ -17387,7 +17400,7 @@ try {
               + '<td style="border:1px solid #999;padding:4px">' + r.dist.toFixed(1) + '</td></tr>';
           }).join('');
         }).join('') + '</tbody></table>'
-      : '<p style="font-size:var(--lg-fs-xs);color:#8a1f1f;margin-top:10px">Chưa lấy được dữ liệu đường/ngõ từ OpenStreetMap' + (roadErr ? ': ' + esc(roadErr.message) : '') + '. Trang này vẫn in ảnh bản đồ đường để đối chiếu thực địa.</p>';
+      : '<p style="font-size:var(--lg-fs-xs);color:#8a1f1f;margin-top:10px">Chưa có dữ liệu đường/ngõ cho khu vực này (cần mạng khi dựng hồ sơ). Trang này vẫn in ảnh bản đồ đường để đối chiếu thực địa.</p>';
 
     return wrapPage(ctx, '<h3 style="margin:0 0 8px">Bản đồ đường và ngõ giáp danh thửa đất</h3>'
       + (layerNote ? '<p style="font-size:var(--lg-fs-xs);color:#8a1f1f;margin:0 0 6px">' + esc(layerNote) + '</p>' : '')
@@ -20456,6 +20469,7 @@ try {
     var wrapFn = pageWrap(plot), out = [];
     for (var i = 0; i < LG59.SECTIONS.length; i++) {
       var r = await LG59.sectionHTML(plot, LG59.SECTIONS[i]);
+      if (r && r.ok === false) { rec('info', 'v59', 'HM-40: bo phu luc ' + LG59.SECTIONS[i].key + ' (khong co du lieu)'); continue; }   // không in khối lỗi kỹ thuật vào hồ sơ
       out.push(wrapFn(r.html));
     }
     return out;
@@ -21013,6 +21027,11 @@ try {
       var sec = window.LG59 && window.LG59.SECTIONS && window.LG59.SECTIONS[i];
       if (!sec) throw new Error('thiếu lõi trang phụ lục (LG59)');
       var res = await window.LG59.sectionHTML(plot, sec); // { ok, html } — lỗi vẫn trả khối ghi chú
+      if (res && res.ok === false) {   // HM-40: không có ảnh/dữ liệu → bỏ hẳn trang phụ lục, không in lỗi kỹ thuật
+        var pg0 = body.closest && body.closest('.lg60-page'); body.innerHTML = '';
+        if (pg0) { pg0.classList.add('lg60-omit'); pg0.setAttribute('data-omit', '1'); }
+        body.dataset.done = '1'; return;
+      }
       var inner = document.createElement('div');
       inner.className = 'lg60-annex-scale';
       inner.innerHTML = res.html;
@@ -21026,7 +21045,7 @@ try {
       var pg = body.closest && body.closest('.lg60-page');
       if (pg) pg.classList.toggle('lg63-slim', res.ok === false);
     } catch (e) {
-      body.innerHTML = '<div class="lg60-annex-empty">Không tải được mục này: ' + h(e && e.message || e) + '<br><br><button type="button" data-annex-load="' + i + '">Thử lại</button></div>';
+      body.innerHTML = '<div class="lg60-annex-empty">Chưa có dữ liệu cho phụ lục này (cần mạng hoặc ô bản đồ đã lưu).<br><br><button type="button" data-annex-load="' + i + '">Thử lại</button></div>';
       throw e;
     }
   }
@@ -22141,6 +22160,7 @@ button, .btn{ min-width:44px; }
 
 /* 3) Trang phụ lục không có dữ liệu -> thu gọn, không để tờ A4 trắng. */
 .lg60-page.lg63-slim{ min-height:0; padding-bottom:8mm; page-break-after:auto; }
+.lg60-page.lg60-omit{ display:none !important; }
 .lg60-page.lg63-slim .lg60-pageno{ position:static; text-align:right; margin-top:8px; }
 
 /* 4) Chỉ báo tiến độ nạp nền + nháy nút "Chi tiết thửa đất" khi đã đủ dữ liệu. */
