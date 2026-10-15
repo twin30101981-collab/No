@@ -46,3 +46,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-02 DAT_V3: parseBookText nhiều khối (points/sides=vòng chính; blocks[] khối phụ có ring/area; warnings[]). Tests hm02_mau_a, hm02_parser PASS. Kế tiếp: HM-42 (cần HM-10, chưa xong → làm phần độc lập) rồi HM-03. Theo thứ tự: HM-42 phụ thuộc HM-10 (chưa) → bỏ qua tới sau; làm HM-03.
 - HM-03 DAT_V3: một quy tắc `lgAreaVerdict` (0,05√A+0,0003A; trừ phần không cấp GCN) cho checkBook/reconcile/thẻ thửa/PDF/LG142. Mức warn=2×tol là mặc định chọn, chờ người dùng chốt. xfail.json rỗng. Kế tiếp theo thứ tự: HM-42 (cần HM-10, chưa) → HM-41.
 - HM-41 DAT_V3: autoAdjust không còn ghi đè toạ độ; chỉ đề xuất (pendingAdjust) → applyPendingAdjust khi người dùng chọn. Kế tiếp: HM-45.
+- HM-45 DAT_V3: hồ sơ LG60 sạch (tên chủ trống+ghi chú, toạ độ 2259336,23, KTT 105°30′, kết luận 0,05√A+0,0003A, bỏ nhãn vNN). Kế tiếp: HM-05.

@@ -338,13 +338,13 @@
    "dot": 1,
    "uu_tien": "P1",
    "effort": "S",
-   "model_version": "unknown",
+   "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 4,
    "phu_thuoc": [
     "HM-03"
    ],
@@ -359,17 +359,19 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3 (pdftotext)",
    "nhan_xac_minh": "Đã xác minh (F-45, F-46)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/regress/hm45_dossier.js app/land-gis.html",
+    "pass": 1,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "baseline FAIL 5/5 kiểm tra, sau sửa PASS 5/5"
+    ]
    },
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "nguyen_nhan_goc": "LG60: tên chủ rơi về plot.id; fmt2 cắt toạ độ còn 336,23; KTT in 105.5°; kết luận diện tích theo ngưỡng 1% riêng; nhật ký lẫn nhãn v125/v57.",
+   "ghi_chu_ban_giao": "Phạm vi đã làm: tên chủ, định dạng số, KTT, ngưỡng, nhãn phiên bản (LG60 mục I–VII). Chưa làm: Tứ cận/nguồn dữ liệu có nhãn riêng (để HM-35/HM-08*), tên chủ trên trang PDF khác (L13400 vùng pCheck) và nhãn phiên bản ngoài LG60.",
    "zip": "",
    "can_nguoi_dung": null
   },

@@ -20226,6 +20226,16 @@ try {
   function num(v) { var x = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(x) ? x : null; }
   function fmt(v, d) { if (v == null || !isFinite(v)) return '—'; return Number(v).toFixed(d == null ? 1 : d).replace('.', ','); }
   function fmtSigned(v, d) { if (v == null || !isFinite(v)) return '—'; return (v < 0 ? '−' : '+') + Math.abs(v).toFixed(d == null ? 2 : d).replace('.', ','); }
+  /* HM-45: KTT hiển thị 105°30′ (độ–phút), không để số thập phân 105.5° */
+  function fmtDMS(lon) {
+    var x = parseFloat(lon); if (!isFinite(x)) return '—';
+    var d = Math.floor(x + 1e-9), mi = Math.round((x - d) * 60 * 100) / 100;
+    if (mi >= 60) { d += 1; mi = 0; }
+    var ms = (mi % 1 === 0) ? String(mi) : String(mi).replace('.', ',');
+    return d + '°' + ms + '′';
+  }
+  /* HM-45: xoá nhãn phiên bản nội bộ (v57, v125...) khỏi câu chữ in trong hồ sơ */
+  function cleanLabel(t) { return String(t == null ? '' : t).replace(/\bv\d{2,3}\s*(?:[:\-–—]\s*)?/gi, '').replace(/\s{2,}/g, ' ').trim(); }
   function fmt2(v) { return ((v % 1000) < 0 ? (v % 1000) + 1000 : (v % 1000)).toFixed(2).replace('.', ','); }
   function pad2(v) {
     var s = Number(v).toFixed(2), parts = s.split('.'), i = parts[0].replace('-', '');
@@ -20355,7 +20365,10 @@ try {
         if (!suspectPoints.length) suspectPoints = null;
       } catch (e) { window.lgQuiet && window.lgQuiet(e, 'p2-suspect'); suspectPoints = null; }
     }
-    var devOk = dev != null ? Math.abs(dev) <= 1 : null;
+    // HM-45/HM-03: kết luận diện tích dùng MỘT công thức sai số 0,05√A + 0,0003A (lgAreaVerdict), không dùng ngưỡng 1%
+    var devV = (aSo != null && isFinite(aSo) && aSo > 0) ? lgAreaVerdict(aDo, aSo, aExcl || 0) : null;
+    var devOk = devV ? devV.ok : null;
+    var devTol = devV ? devV.tol : null;
     var edgeOk = maxLech != null ? maxLech <= 0.05 : null;
     var shapeOk = norm ? !norm.selfIntersecting : true;
     var overall = (devOk !== false) && (edgeOk !== false) && shapeOk && (devOk === true || edgeOk === true);
@@ -20370,9 +20383,10 @@ try {
       logs.push('Đối chiếu cột S(m) in trên sổ: có cạnh lệch tới ' + fmt(maxLech, 2) + ' m — cần rà soát lại bảng kê.');
       if (suspectPoints && suspectPoints.length) logs.push('Mốc nghi vấn nhiều khả năng bị đọc sai khi quét/OCR (lệch bất thường ở cả 2 cạnh kề): mốc ' + suspectPoints.join(', ') + ' — nên đối chiếu lại các mốc này với ảnh sổ gốc trước tiên.');
     }
-    if (devOk === true) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmt(dev, 2) + ' % (trong ngưỡng cho phép).');
-    else if (devOk === false) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmt(dev, 2) + ' % — vượt ngưỡng, cần kiểm tra.');
+    if (devOk === true) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmtSigned(devV.diff, 2) + ' m² (' + fmt(dev, 2) + ' %), trong sai số cho phép ±' + fmt(devTol, 2) + ' m² (0,05√A + 0,0003A).');
+    else if (devOk === false) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmtSigned(devV.diff, 2) + ' m² (' + fmt(dev, 2) + ' %) — vượt sai số cho phép ±' + fmt(devTol, 2) + ' m², cần kiểm tra.');
     logs.push(shapeOk ? 'Ranh giới khép kín, không tự cắt.' : 'Ranh giới TỰ CẮT — chưa đủ điều kiện xuất hồ sơ.');
+    logs = logs.map(cleanLabel);
 
     var ghiChu = [];
     if (m.ghi_chu_trang_4) {
@@ -20396,7 +20410,7 @@ try {
     if (!diachi) diachi = [m.dia_chi, m.phuong_xa, m.quan_huyen, m.tinh_thanh].filter(Boolean).join(', ');
 
     var HS = {
-      chu: m.chu_su_dung || plot.id || '—',
+      chu: m.chu_su_dung || '',   // HM-45: không điền mã thửa vào ô tên chủ; để trống + ghi chú
       cccd: m.cccd_cmnd || m.cccd || '—',
       dong: m.dong_su_dung || m.vo_chong || '—',
       thuongTru: m.dia_chi_thuong_tru || '—',
@@ -20411,14 +20425,14 @@ try {
       taiSan: m.tai_san_gan_lien_dat || '—',
       soGCN: m.so_phat_hanh || m.so_hieu_gcn || m.so_seri || '—',
       soVaoSo: m.so_vao_so || '—',
-      lon0: m.kinh_tuyen_truc || (plot.lon0 ? plot.lon0 + '°' : '—'),
+      lon0: m.kinh_tuyen_truc ? (/[°′']/.test(String(m.kinh_tuyen_truc)) ? String(m.kinh_tuyen_truc) : fmtDMS(m.kinh_tuyen_truc)) : (plot.lon0 ? fmtDMS(plot.lon0) : '—'),
       ghiChu: ghiChu,
       giapRanh: giapRanh
     };
     var lsq = S ? lsqAdjust(pts, S) : null;
     return {
       plot: plot, m: m, pts: pts, n: n, S: S, edges: edges,
-      aDo: aDo, aSo: aSo, aExcl: aExcl, aGross: aGross, dev: dev,
+      aDo: aDo, aSo: aSo, aExcl: aExcl, aGross: aGross, dev: dev, devTol: devTol,
       chuVi: chuVi, V: V, norm: norm, verify: verify, logs: logs,
       maxLech: maxLech, devOk: devOk, edgeOk: edgeOk, shapeOk: shapeOk, overall: overall,
       HS: HS, lsq: lsq, suspectPoints: suspectPoints
@@ -20437,7 +20451,7 @@ try {
     s += '<div class="lg60-tagline">Thửa đất số ' + h(HS.thua) + ' — Tờ bản đồ số ' + h(HS.tobd) + ' — ' + h(HS.diachi) + '</div>';
     s += '<h2 class="lg60-sec">I. THÔNG TIN CHỦ SỬ DỤNG ĐẤT</h2>';
     s += '<dl class="lg60-kv">';
-    s += '<dt>Tên chủ sử dụng</dt><dd>' + h(HS.chu) + '</dd>';
+    s += '<dt>Tên chủ sử dụng</dt><dd>' + (HS.chu ? h(HS.chu) : '<i style="color:#8a6d00">(để trống — chưa có tên chủ sử dụng trong dữ liệu, cần điền tay trước khi nộp)</i>') + '</dd>';
     s += '<dt>Giấy tờ pháp lý (CCCD)</dt><dd>' + h(HS.cccd) + '</dd>';
     s += '<dt>Đồng sử dụng</dt><dd>' + h(HS.dong) + '</dd>';
     s += '<dt>Địa chỉ thường trú</dt><dd>' + h(HS.thuongTru) + '</dd>';
@@ -20500,7 +20514,7 @@ try {
       s += '<tr><td class="lg60-l">Diện tích đối chiếu</td><td>' + fmt(D.aGross, 1) + ' m²</td><td class="lg60-l">= DT ghi trên GCN + DT không cấp GCN</td></tr>';
       s += '<tr><td class="lg60-l">Chênh lệch tuyệt đối</td><td>' + fmtSigned(D.aDo - D.aGross, 2) + ' m²</td><td class="lg60-l">Đo từ toạ độ − diện tích đối chiếu</td></tr>';
       s += '<tr><td class="lg60-l">Sai lệch tương đối</td><td>' + fmtSigned(D.dev, 2) + ' %</td><td class="lg60-l">So với diện tích đối chiếu</td></tr>';
-      s += '<tr class="lg60-sum"><td class="lg60-l">Kết luận</td><td colspan="2">' + (D.devOk ? 'ĐẠT — sai lệch trong ngưỡng cho phép (≤ 1%)' : 'KHÔNG ĐẠT — sai lệch vượt ngưỡng, cần rà soát') + '</td></tr>';
+      s += '<tr class="lg60-sum"><td class="lg60-l">Kết luận</td><td colspan="2">' + (D.devOk ? 'ĐẠT — sai lệch trong sai số cho phép ±' + fmt(D.devTol, 2) + ' m² (0,05√A + 0,0003A)' : 'KHÔNG ĐẠT — sai lệch vượt sai số cho phép ±' + fmt(D.devTol, 2) + ' m², cần rà soát') + '</td></tr>';
       s += '</tbody></table>';
     } else {
       s += '<div class="lg60-note">Chưa khai báo diện tích ghi trên GCN (<i>dien_tich_m2</i>) — chưa đối chiếu được diện tích. Diện tích đo từ bảng kê toạ độ: <b>' + fmt(D.aDo, 1) + ' m²</b>.</div>';
@@ -20522,7 +20536,7 @@ try {
         var t1 = (p1.ten != null ? p1.ten : (i + 1)), t2 = (p2.ten != null ? p2.ten : ((i + 1) % D.n + 1));
         var isSuspect = suspectSet[String(t1)] || suspectSet[String(t2)];
         s += '<tr' + (isSuspect ? ' class="lg60-suspect"' : '') + '><td>' + (isSuspect ? '⚠ ' : '') + h(t1) + ' → ' + h(t2) + '</td>' +
-          '<td>' + fmt2(p1.x) + ' – ' + fmt2(p1.y) + '<br>→ ' + fmt2(p2.x) + ' – ' + fmt2(p2.y) + '</td>' +
+          '<td>' + pad2(p1.x) + ' – ' + pad2(p1.y) + '<br>→ ' + pad2(p2.x) + ' – ' + pad2(p2.y) + '</td>' +
           '<td>' + fmt2(D.S[i]) + '</td><td>' + fmt2(len) + '</td><td>' + fmtSigned(len - D.S[i], 2) + '</td>' +
           '<td>' + fmt(az, 2) + '°</td><td>' + fmtSigned(dx, 2) + '</td><td>' + fmtSigned(dy, 2) + '</td></tr>';
       }
@@ -20649,7 +20663,7 @@ try {
     host.className = 'lg60-host';
     host.setAttribute('data-lg60', 'report');
     host.innerHTML =
-      '<div class="lg60-toolbar"><div class="lg60-brand"><b>Land GIS VN-2000</b><span>v60 · Chi tiết thửa đất · Thửa ' + h(D.HS.thua) + ' · Tờ bản đồ ' + h(D.HS.tobd) + '</span></div>' +
+      '<div class="lg60-toolbar"><div class="lg60-brand"><b>Land GIS VN-2000</b><span>Chi tiết thửa đất · Thửa ' + h(D.HS.thua) + ' · Tờ bản đồ ' + h(D.HS.tobd) + '</span></div>' +
       '<div class="lg60-actions"><span class="lg60-badge ' + badgeCls + '">' + badgeTxt + '</span>' +
       '<button type="button" class="lg60-ghost" id="lg60-btn-annex">Tải trang ảnh/bản đồ</button>' +
       '<button type="button" class="lg60-ghost" id="lg60-btn-dxf">Xuất DXF</button>' +
