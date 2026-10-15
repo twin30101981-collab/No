@@ -4,13 +4,14 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.1",
+  "phien_ban": "1.2",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.1.docx",
-  "so_phien_uoc_tinh": "4-5",
+  "tep": "de-an/DE_AN_LANDGIS_v1.2.docx",
+  "so_phien_uoc_tinh": "4-6",
   "dieu_chinh": [
-   "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi"
+   "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi",
+   "v1.2: chuyển sang giao diện chỉ-mobile; thay HM-08, HM-12b bằng HM-08a..08f"
   ]
  },
  "moi_truong": {
@@ -335,31 +336,228 @@
    "zip": ""
   },
   {
-   "id": "HM-08",
-   "ten": "Bố cục mobile 390px: toast che dock, nút nổi che nội dung",
+   "id": "HM-08a",
+   "ten": "Khung layout mobile: token, safe-area, thang z-index, một khe toast không chặn chạm dock",
    "dot": 2,
-   "uu_tien": "P2",
+   "uu_tien": "P1",
    "effort": "S",
    "model_version": "unknown",
-   "model_effort_recommended": "medium",
+   "model_effort_recommended": "high",
    "model_effort_actual": null,
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [
-    "HM-07b"
+    "HM-01"
    ],
-   "pham_vi": "CSS lg103/lg112/lg124 (chỉ trong <style>)",
+   "pham_vi": "CSS lg103/lg112/lg124, #lgv42-toast-host",
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
-    "Ở 360/390px: nhãn dock không bị cắt/che",
-    "Toast không che nút hành động",
-    "Không tràn ngang"
+    "Chạm tâm 5 nút dock luôn trúng nút, kể cả khi có toast",
+    "Tối đa 1 toast, gộp tin trùng",
+    "Không cuộn ngang ở 360/390/430 px"
    ],
    "rui_ro": "Thấp",
-   "kiem_chung_du_kien": "V3",
-   "nhan_xac_minh": "Đã xác minh (ảnh)",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đã xác minh (F-14)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08b",
+   "ten": "Điều hướng mới: dock 5 mục + sheet Nhập sổ; gỡ tab ngang và nút trùng",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08a"
+   ],
+   "pham_vi": "nav-tabs, lg62-top, lg103-dock",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Cây điều hướng đúng Mục 6.4",
+    "Mọi chức năng cũ còn đường vào",
+    "Không còn nút bị cắt/trùng"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đã xác minh (F-16)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08c",
+   "ten": "Màn Bản đồ: ô tìm, chip lớp phủ, 2 nút nổi, sheet 3 trạng thái",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08b",
+    "HM-07a"
+   ],
+   "pham_vi": "lớp phủ bản đồ, lg103-sheet, lg184-fab, lg185 fab",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Đúng mockup ①",
+    "Không chồng lớp ở nửa dưới màn",
+    "Sheet kéo 3 trạng thái"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đã xác minh (F-15)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08d",
+   "ten": "Luồng Nhập sổ 3 bước (mockup ②③④)",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08b",
+    "HM-03"
+   ],
+   "pham_vi": "scan/QR/bảng kê/cạnh-góc/CAD",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Đúng mockup ②③④",
+    "Mẫu A/B chạy hết luồng trên 390 px",
+    "Bàn phím ảo không che nút"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đề xuất thiết kế",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08e",
+   "ten": "Hồ sơ thửa + Thêm/Cài đặt + Chế độ chuyên gia",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08b"
+   ],
+   "pham_vi": "Chi tiết thửa, menu Thêm, bảng ⚙/🧰",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Đúng mockup ⑤⑥",
+    "Công cụ V42…V237 chỉ hiện khi bật chuyên gia"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đã xác minh (F-16)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08f",
+   "ten": "Gỡ bố cục desktop/sidebar và CSS chồng lớp không còn dùng",
+   "dot": 3,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08c",
+    "HM-08d",
+    "HM-08e"
+   ],
+   "pham_vi": "khối style v62–v124, sidebar",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Giảm !important ở vùng đã gom",
+    "Ảnh so sánh 360/390/430 không đổi ngoài chủ ý"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (360/390/430)",
+   "nhan_xac_minh": "Đã xác minh (số đếm)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -463,14 +661,15 @@
    "chi_phi_uoc_tinh_pct": 6,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [
-    "HM-08"
+    "HM-08e"
    ],
    "pham_vi": "index.html (repo đang là v43), sw.js (cache landgis-shell-v1 không đổi), manifest.json",
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
     "Tên cache theo phiên bản",
     "Có thông báo 'có bản mới'",
-    "Mở offline lần 2 được app shell"
+    "Mở offline lần 2 được app shell",
+    "manifest orientation theo quyết định khoá dọc"
    ],
    "rui_ro": "Trung bình: người dùng kẹt bản cũ nếu sai",
    "kiem_chung_du_kien": "V3 (localhost)",
@@ -513,44 +712,6 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (cấu trúc)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
-   "bang_chung": {
-    "lenh": "",
-    "pass": 0,
-    "fail": 0,
-    "skip": 0,
-    "artifact": []
-   },
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
-   "zip": ""
-  },
-  {
-   "id": "HM-12b",
-   "ten": "Gom CSS chồng lớp (734 !important) theo token",
-   "dot": 3,
-   "uu_tien": "P3",
-   "effort": "M",
-   "model_version": "unknown",
-   "model_effort_recommended": "high",
-   "model_effort_actual": null,
-   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
-   "effort_change_reason": "",
-   "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
-   "phu_thuoc": [
-    "HM-08"
-   ],
-   "pham_vi": "khối style v62–v124",
-   "hanh_vi_mong_doi": "",
-   "tieu_chi_nghiem_thu": [
-    "Giảm !important ở vùng đã gom",
-    "Ảnh so sánh 390/1366 không đổi ngoài chủ ý"
-   ],
-   "rui_ro": "Trung bình",
-   "kiem_chung_du_kien": "V3",
-   "nhan_xac_minh": "Đã xác minh (số đếm)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
