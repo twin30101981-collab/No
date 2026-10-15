@@ -5,7 +5,9 @@ import hashlib, re, shutil, os
 root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 src = open(os.path.join(root, 'app/land-gis.html'), 'rb').read()
 ver = max((int(v) for v in re.findall(rb"\)\('v(\d+)'\)", src)), default=0)
-tag = 'v%d-%s' % (ver, hashlib.sha256(src).hexdigest()[:8])
+h = hashlib.sha256(src)
+for f in sorted(os.listdir(os.path.join(root, 'vendor'))): h.update(open(os.path.join(root, 'vendor', f), 'rb').read())   # đổi thư viện ⇒ đổi tên cache
+tag = 'v%d-%s' % (ver, h.hexdigest()[:8])
 open(os.path.join(root, 'index.html'), 'wb').write(src)
 shutil.copy(os.path.join(root, 'app/admin-map.json'), os.path.join(root, 'admin-map.json'))
 t = open(os.path.join(root, 'handover/tools/sw.template.js'), encoding='utf-8').read().replace('__VERSION__', tag)
