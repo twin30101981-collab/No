@@ -37,3 +37,6 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 ## 10. Nhật ký ngắn
 - 03:00–09:50 P01: S0 phân tích, đề án v1.0→v1.8.
 - 10:05 người dùng yêu cầu chạy tự động; phát hiện repo công khai → gỡ 2 PDF chứa số GCN, ẩn danh bản gốc trước khi đưa lên; dựng tests/, AUTORUN.md; sinh phiên P02.
+
+## 11. Nhật ký phiên tự động
+- S-OPEN phiên 2 (P02, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-00.
