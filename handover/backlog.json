@@ -2520,11 +2520,11 @@
    "effort": "M",
    "model_version": "unknown",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 5,
    "phu_thuoc": [
     "HM-31"
    ],
@@ -2538,17 +2538,19 @@
    "rui_ro": "Trung bình: sổ thiếu cạnh → kém chính xác",
    "kiem_chung_du_kien": "V2 + V3",
    "nhan_xac_minh": "Đề xuất (đã thử nghiệm khả thi)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 38 test); node tests/regress/hm32_shape.js",
+    "pass": 38,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm32_shape.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "LGCadastre.findByShape(xã,{area,edges}): lọc theo số cạnh + diện tích ±20%, so dãy cạnh mọi mốc đầu/cả hai chiều; điểm 70% hình + 30% diện tích; top-3 kèm % và lý do, cảnh báo tham khảo; chọn ứng viên → điền tờ/thửa + tra toạ độ. Thử trên dữ liệu giả lập 1.500 thửa + Mẫu B (top-1 mọi trường hợp lệch mốc/đảo chiều). % là độ giống, không phải xác suất. Chỉ so thửa cùng số cạnh (chưa gộp cạnh thẳng hàng).",
    "zip": "",
    "can_nguoi_dung": null
   },
