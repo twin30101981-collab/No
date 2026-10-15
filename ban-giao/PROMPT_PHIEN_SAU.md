@@ -1,4 +1,4 @@
-Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P35 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
+Áp dụng skill web-app-repair-upgrade v3.2.0 cho phiên P36 (P35 đã đóng: CS-24 ĐẠT-V3, CS-23 đề xuất không làm; điểm làm tiếp GIAYTO_P35_DONGPHIEN_20261015.zip; hạng mục kế tiếp CẦN NGƯỜI DÙNG CHỌN — xem HANDOVER đầu tệp; thay mọi "P34" bằng "P35" bên dưới) — bản cũ: phiên P35 của đề án GIAYTO (đề án v2.0 = báo cáo rà soát lộ trình; mã hạng mục CS/BL/AI/TF/FX/LN).
 
 NGUỒN (phiên mới không có tệp tải lên — lấy từ repo):
 - Repo `twin30101981-collab/No`, nhánh `ccr-ef6720ab-xgvl6p` (P32–P34; nối tiếp `ccr-981d2f3e-vfhva8`), thư mục `ban-giao/`:
