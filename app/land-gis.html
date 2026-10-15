@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -3686,7 +3686,26 @@ function lgResolveKttForPlot(points, lon0, zone, meta, towKey){
    Bật "chỉ lưu trong phiên": khoá nằm trong sessionStorage, tự mất khi đóng tab,
    không ghi ra localStorage và không ghi ra bất kỳ tệp nào. */
 var LG_KEY_FIELDS = ['gemini_api_key','claude_api_key','openrouter_api_key','mistral_api_key','landgis_ai_provider_mode','landgis_claude_model','landgis_openrouter_model'];
-function lgKeySessionOnly(){ try { return sessionStorage.getItem('landgis_key_session_only') === '1'; } catch(e){ return false; } }
+// HM-06d — SỬA GỐC RỄ: cờ chế độ phiên chỉ nằm trong sessionStorage nên mở TAB MỚI là mất cờ, app quay lại đọc
+// khoá lâu dài cũ (IndexedDB/localStorage) dù người dùng đã chọn "chỉ trong phiên". Nay lựa chọn được nhớ BỀN
+// (localStorage 'landgis_key_session_pref'), và bật chế độ phiên thì XOÁ mọi bản khoá lâu dài.
+function lgKeySessionOnly(){
+  try { if (sessionStorage.getItem('landgis_key_session_only') === '1') return true; } catch(e){ window.lgQuiet && window.lgQuiet(e, 'h6d0'); }
+  try { return localStorage.getItem('landgis_key_session_pref') === '1'; } catch(e){ return false; }
+}
+function lgKeySetSessionMode(on){
+  try { on ? sessionStorage.setItem('landgis_key_session_only','1') : sessionStorage.removeItem('landgis_key_session_only'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6d1'); }
+  try { on ? localStorage.setItem('landgis_key_session_pref','1') : localStorage.removeItem('landgis_key_session_pref'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6d2'); }
+  if (on) lgKeyPurgeDurable();
+}
+function lgKeyPurgeDurable(names){
+  (names || LG_KEY_FIELDS).forEach(function(name){
+    try { localStorage.removeItem(name); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6d3'); }
+    try { delete LG_KEY_CACHE[name]; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6d4'); }
+    try { if (window.LGCore && window.LGCore.DataStore) window.LGCore.DataStore['delete']('settings', 'apikey:' + name); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6d5'); }
+  });
+}
+window.lgKeyPurgeDurable = lgKeyPurgeDurable;
 var LG_KEY_CACHE = {};
 var LG_KEY_CACHE_READY = false;
 // p1-fix: chế độ "chỉ lưu trong phiên" GIỮ NGUYÊN sessionStorage (đúng nghĩa "mất
@@ -3698,6 +3717,7 @@ function lgKeyCacheInit() {
   if (LG_KEY_CACHE_READY) return;
   if (!(window.LGCore && window.LGCore.DataStore)) return; // gọi lại sau khi DataStore sẵn sàng
   LG_KEY_CACHE_READY = true;
+  if (lgKeySessionOnly()) { lgKeyPurgeDurable(); return; }   // HM-06d: chế độ phiên → không giữ/nạp khoá cũ
   LG_KEY_FIELDS.forEach(function (name) {
     window.LGCore.DataStore.get('settings', 'apikey:' + name).then(function (row) {
       if (row && typeof row.value === 'string') { LG_KEY_CACHE[name] = row.value; return; }
@@ -3726,8 +3746,7 @@ function lgKeyGet(name){
 function lgKeySet(name, val){
   if (lgKeySessionOnly()) {
     try { sessionStorage.setItem(name, val); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q54'); }
-    try { localStorage.removeItem(name); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q55'); }
-    delete LG_KEY_CACHE[name];
+    lgKeyPurgeDurable([name]);
     return;
   }
   LG_KEY_CACHE[name] = val;
@@ -9782,7 +9801,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-save-key').onclick = () => {
     // v107: ghi nhớ lựa chọn "chỉ lưu trong phiên" TRƯỚC khi ghi khoá
     const sessOnly = !!(document.getElementById('chk-key-session-only') || {}).checked;
-    try { sessOnly ? sessionStorage.setItem('landgis_key_session_only','1') : sessionStorage.removeItem('landgis_key_session_only'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q93'); }
+    lgKeySetSessionMode(sessOnly);
     lgKeySet('gemini_api_key', document.getElementById('input-custom-api-key').value.trim());
     lgKeySet('claude_api_key', document.getElementById('input-claude-api-key').value.trim());
     lgKeySet('openrouter_api_key', document.getElementById('input-openrouter-api-key').value.trim());
@@ -9790,11 +9809,11 @@ document.addEventListener('DOMContentLoaded', () => {
     lgKeySet('landgis_ai_provider_mode', document.getElementById('select-ai-provider-mode').value);
     lgKeySet('landgis_claude_model', document.getElementById('select-claude-model').value);
     closeKeyModal();
-    toast({ title: 'Đã lưu cấu hình AI', description: sessOnly ? 'Khoá chỉ tồn tại trong phiên này' : 'Khoá lưu trên máy này' });
+    toast({ title: 'Đã lưu cấu hình AI', description: sessOnly ? 'Khoá chỉ tồn tại trong phiên này (đã xoá mọi bản lưu lâu dài; tab mới phải nhập lại).' : '⚠ Khoá được lưu KHÔNG MÃ HOÁ trên trình duyệt của máy này — không dùng trên máy chung; bấm “Xóa Key” trước khi rời máy.' });
   };
   document.getElementById('btn-clear-key').onclick = () => {
     lgKeyClearAll();
-    try { sessionStorage.removeItem('landgis_key_session_only'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q94'); }
+    lgKeySetSessionMode(false);
     ['input-custom-api-key','input-claude-api-key','input-openrouter-api-key','input-mistral-api-key'].forEach(function(id){
       var el = document.getElementById(id); if (el) el.value = '';
     });
