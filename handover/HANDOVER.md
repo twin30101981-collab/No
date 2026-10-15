@@ -93,3 +93,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-29 DAT_V3: LGPacks (tải tiếp bằng Range, sha256, lưu IndexedDB, báo bản mới, xoá, đồng hồ dung lượng) + màn Thêm → Gói dữ liệu địa chính. Test hm29_packs; bộ đầy đủ 35/35 PASS. Kế tiếp: HM-30 (đọc gói bằng app/lib/lgpack.js, vẽ canvas).
 - HM-30 DAT_V3: LGCadastre — lớp vector địa chính canvas (20.000 thửa 4–26 ms), nhãn tờ/thửa, chạm chọn, ngoại tuyến; nút Hiện trên bản đồ. Test hm30_cadastre; bộ đầy đủ PASS. Công cụ convert/pack nhận --ktt/--mui. Kế tiếp: HM-31.
 - HM-31 DAT_V3: Tra địa chính (xã cũ/mới + tờ + thửa) → bảng toạ độ → đối chiếu GCN; nguồn ghi vào nguon_toa_do. Test hm31_lookup; bộ đầy đủ PASS. Kế tiếp: HM-32 (M), HM-34 (S).
+- HM-32 DAT_V3: Tìm theo hình (cạnh + diện tích) trong Nhập sổ: top-3 + % + lý do, chọn → tra toạ độ. Test hm32_shape; bộ đầy đủ PASS. Kế tiếp: HM-34 (S).
