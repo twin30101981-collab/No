@@ -81,3 +81,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 ## 15. Phiên P04
 - S-OPEN phiên 4 (P04, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-08e (rồi HM-06e, HM-39, HM-33).
 - HM-08e DAT_V3: Hồ sơ có đầu đề + sơ đồ + địa chỉ/mục đích/nguồn gốc/biến động; Thêm dạng danh sách (công tắc giao diện tối); Chế độ chuyên gia bền (localStorage landgis_expert, mặc định tắt) ẩn công cụ V42–V237. Test hm08e_profile_more; hm08b_nav cập nhật theo. Kế tiếp: HM-06e, HM-39, HM-33.
+- HM-06e DAT_V3: gỡ nhánh đọc .xlsx/.xls (báo 'Không hỗ trợ nhập Excel'), ô chọn file/nhãn đổi CAD/CSV; xuất Excel giữ nguyên (SheetJS chỉ còn để ghi). Test hm06e_no_xlsx_import. Sửa test hm42_ai chập chờn (đếm cả fetch nền). Kế tiếp: HM-39, HM-33.

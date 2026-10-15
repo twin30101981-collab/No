@@ -2944,7 +2944,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         <button class="tab-btn active" onclick="switchTab('tab-scan-ai', this)">📷 Scan Sổ Đỏ</button>
         <button class="tab-btn" id="lg83-tab-qr" onclick="switchTab('tab-qr', this)">🔳 Quét QR Sổ Đỏ</button>
         <button class="tab-btn" onclick="switchTab('tab-gps-offline', this)">📡 GPS Thực Địa</button>
-        <button class="tab-btn" onclick="switchTab('tab-import', this)">📥 Nhập CAD/Excel</button>
+        <button class="tab-btn" onclick="switchTab('tab-import', this)">📥 Nhập CAD/CSV</button>
         <button class="tab-btn" onclick="switchTab('tab-plots', this)">📐 Quản lý Thửa</button>
         <button class="tab-btn lg83-hidden-tab" id="lg83-tab-stakeout" onclick="switchTab('tab-stakeout', this)">📍 Cắm Mốc RTK</button>
         <button id="btn-close-sidebar" class="tab-btn" style="flex:0 0 auto;padding:10px 12px;color:var(--accent);font-weight:700" title="Đóng menu">✕</button>
@@ -3110,14 +3110,14 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 3: NHẬP FILE CAD / EXCEL -->
       <div id="tab-import" class="tab-content">
         <section class="block">
-          <h3>Nhập File AutoCAD (.DXF) / Excel / GeoJSON</h3>
+          <h3>Nhập File AutoCAD (.DXF) / CSV / GeoJSON</h3>
           <label for="file-upload">
             <div class="dropzone">
               <div style="font-size:var(--lg-fs-num)">📐</div>
-              <p class="small muted" style="margin:4px 0 0">Chọn file .dxf (AutoCAD), .xlsx, .geojson, .kml</p>
+              <p class="small muted" style="margin:4px 0 0">Chọn file .dxf (AutoCAD), .csv, .geojson, .kml</p>
             </div>
           </label>
-          <input type="file" id="file-upload" accept=".dxf,.xlsx,.xls,.csv,.geojson,.json,.kml,.txt,.asc,.mif,.mid,.tab,.vn2000" style="display:none" />
+          <input type="file" id="file-upload" accept=".dxf,.csv,.geojson,.json,.kml,.txt,.asc,.mif,.mid,.tab,.vn2000" style="display:none" />
           <div style="margin-top:10px">
             <label class="small bold" style="display:block;margin-bottom:4px">Hoặc dán trực tiếp bảng toạ độ VN-2000 (Tên mốc, X, Y — mỗi mốc một dòng):</label>
             <textarea id="paste-coords" rows="5" placeholder="1&#9;2245000.12&#9;552000.35&#10;2&#9;2245010.40&#9;552004.11&#10;3&#9;2245008.90&#9;552018.77" style="width:100%;font-family:var(--mono);font-size:var(--lg-fs-xs);padding:6px;border:1px solid var(--border);border-radius:6px"></textarea>
@@ -10378,23 +10378,8 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.readAsText(file);
 
     } else if (ext === 'xlsx' || ext === 'xls') {
-      reader.onload = async (evt) => {
-        try {
-          await ensureXLSX();
-          const wb = XLSX.read(evt.target.result, { type: 'array' });
-          const sheet = wb.Sheets[wb.SheetNames[0]];
-          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: null });
-          const pts = lgExtractXYPointsFromRows(rows);
-          const provKey = document.getElementById('province-select').value;
-          const lon0 = VN2000_PROVINCES[provKey]?.lon0 || DEFAULT_LON0;
-          drawPlot(`Excel_Thua_${Date.now()}`, pts, lon0);
-          toast({ title: 'Đã nạp file Excel', description: `Trích xuất ${pts.length} điểm mốc (X, Y theo VN-2000). KTT dùng: ${lon0}° — kiểm tra lại nếu thửa không thuộc tỉnh đang chọn.` });
-        } catch (err) {
-          toast({ title: 'Lỗi nạp file Excel', description: err.message, variant: 'destructive' });
-        }
-      };
-      reader.readAsArrayBuffer(file);
-
+      // HM-06e: không đọc file Excel (bỏ thư viện đọc) — chỉ giữ XUẤT Excel. Dùng CSV/DXF/GeoJSON để nhập.
+      toast({ title: 'Không hỗ trợ nhập Excel', description: 'Hãy lưu bảng toạ độ ra CSV (hoặc dùng DXF, GeoJSON, KML) rồi nhập lại. Ứng dụng vẫn xuất được Excel.', variant: 'destructive' });
     } else if (ext === 'csv') {
       // v156 — SỬA GỐC RỄ: trước đây .csv bị gộp chung nhánh xử lý với .xlsx/.xls,
       // nên dù CSV chỉ là văn bản thuần (tách bằng dấu phẩy), nạp file vẫn bắt buộc
@@ -10494,7 +10479,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       reader.readAsText(file);
     } else {
-      toast({ title: 'Định dạng file chưa hỗ trợ', description: `Không nhận diện được ".${ext}". Hỗ trợ: .dxf, .xlsx, .xls, .csv, .geojson, .json, .kml, .txt, .asc, .mif, .mid, .tab`, variant: 'destructive' });
+      toast({ title: 'Định dạng file chưa hỗ trợ', description: `Không nhận diện được ".${ext}". Hỗ trợ: .dxf, .csv, .geojson, .json, .kml, .txt, .asc, .mif, .mid, .tab`, variant: 'destructive' });
     }
     e.target.value = '';
   });
@@ -21183,7 +21168,7 @@ try {
       '<button id="lg61-block-close" style="border:0;background:transparent;font-size:var(--lg-fs);cursor:pointer;color:#5c1414">✕</button></div>' +
       '<p style="margin:8px 0 4px">Thửa <b>' + (m.id ? String(m.id) : '(chưa đặt tên)') + '</b> KHÔNG được vẽ lên bản đồ và mọi thao tác lưu/xuất hồ sơ đang bị khoá. Lý do:</p>' +
       '<ul style="margin:4px 0 8px 18px;padding:0">' + LG61.state.reasons.map(function (r) { return '<li style="margin:3px 0">' + r + '</li>'; }).join('') + '</ul>' +
-      '<p style="margin:6px 0 0"><b>Cách xử lý:</b> nhập lại bảng toạ độ theo đúng sổ đỏ (tab “Nhập CAD/Excel” hoặc bảng toạ độ tay), nạp file DXF/Excel đo đạc, hoặc lấy toạ độ RTK ngoài thực địa. Cửa chặn tự mở khi thửa vẽ được bằng số liệu hợp lệ.</p>' +
+      '<p style="margin:6px 0 0"><b>Cách xử lý:</b> nhập lại bảng toạ độ theo đúng sổ đỏ (tab “Nhập CAD/CSV” hoặc bảng toạ độ tay), nạp file DXF/Excel đo đạc, hoặc lấy toạ độ RTK ngoài thực địa. Cửa chặn tự mở khi thửa vẽ được bằng số liệu hợp lệ.</p>' +
       '<div id="lg61-sketch-host" style="margin-top:10px"></div>';
     var btn = document.getElementById('lg61-block-close');
     if (btn) btn.onclick = function () { el.remove(); };
@@ -26132,7 +26117,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<button class="lg103-abtn" data-lg103-act="import-qr">🔳 Quét QR</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-book">📋 Nhập bảng kê</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-edges">📐 Cạnh + góc</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-cad">📥 CAD / Excel</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-cad">📥 CAD / CSV</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-gps">📡 GPS thực địa</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-rtk">📍 Cắm mốc RTK</button>' +
       '<button class="lg103-abtn" data-lg108-act="vision">🤖 Đọc GCN bằng AI</button>' +
