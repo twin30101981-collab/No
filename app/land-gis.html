@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -12066,14 +12066,57 @@ async function lgOfflineRefreshUI(){
       setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
       say({ title: 'Đã xuất file dự án', description: `${plots.length} thửa · lưu vào ${a.download} — mang file này sang máy khác hoặc cất làm bản sao lưu.` });
     }
+    // HM-00c — nhập dự án an toàn: kiểm tra trước (0 thửa hợp lệ → từ chối, KHÔNG xoá gì), đếm hợp lệ/không hợp lệ,
+    // tự lưu bản sao trước khi "Thay thế toàn bộ" (localStorage; không đủ chỗ thì tự tải file) và có nút Hoàn tác.
+    const UNDO_KEY = 'landgis_undo_import';
+    function projectValidate(items){
+      const okPt = q => q && isFinite(+q.x) && isFinite(+q.y);
+      const valid = [], invalid = [];
+      (items || []).forEach(it => { (it && Array.isArray(it.points) && it.points.length >= 3 && it.points.every(okPt) ? valid : invalid).push(it); });
+      return { valid, invalid };
+    }
+    function projectSnapshot(){
+      return plots.map(p => ({ id: p.id, points: p.points, lon0: p.lon0, provCode: p.provCode, zone: p.zone, towgs84Key: p.towgs84Key,
+        meta: { ...(p.meta || {}), towgs84Key: p.towgs84Key, coordOrderConfirmed: 'as-is' } }));
+    }
+    function projectSaveUndo(){
+      if (!plots.length) return true;
+      const snap = JSON.stringify({ at: new Date().toISOString(), plots: projectSnapshot() });
+      try { localStorage.setItem(UNDO_KEY, snap); if (localStorage.getItem(UNDO_KEY) === snap) return true; } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c1'); }
+      try { // bộ nhớ đầy: bắt buộc tải bản sao về máy trước khi xoá
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([snap], { type: 'application/json' }));
+        a.download = `LandGIS-TruocKhiThayThe_${Date.now()}.landgis`;
+        document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+        return true;
+      } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c2'); }
+      return false;
+    }
+    function projectUndo(){
+      let snap = null;
+      try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c3'); }
+      if (!snap || !Array.isArray(snap.plots) || !snap.plots.length) { say({ title: 'Không có bản sao để hoàn tác', variant: 'destructive' }); return false; }
+      const cur = projectSnapshot();   // cho phép hoàn tác qua lại: bản đang có thành bản sao mới
+      plots.slice().forEach(p => { try { map.removeLayer(p.polygon); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c4'); } try { map.removeLayer(p.labels); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c5'); } });
+      plots.length = 0;
+      snap.plots.forEach(item => { const m = { ...(item.meta || {}), __restoring: true }; drawPlot(item.id || 'Thửa', item.points, item.lon0 || DEFAULT_LON0, m, false, item.zone || 3); });
+      try { if (cur.length) localStorage.setItem(UNDO_KEY, JSON.stringify({ at: new Date().toISOString(), plots: cur })); else localStorage.removeItem(UNDO_KEY); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h0c6'); }
+      saveToLocalStorage(); renderPlots();
+      say({ title: 'Đã hoàn tác nhập dự án', description: `Khôi phục ${snap.plots.length} thửa như trước khi thay thế.` });
+      return true;
+    }
+    window.lgProjectValidate = projectValidate; window.lgProjectUndo = projectUndo;
     function backupProjectImport(items, mode){
+      const chk = projectValidate(items);
+      if (!chk.valid.length) { say({ title: 'Không nhập: file không có thửa hợp lệ', description: `${items.length} mục, 0 thửa hợp lệ (cần ≥ 3 mốc có toạ độ). Dữ liệu hiện có được giữ nguyên.`, variant: 'destructive' }); return false; }
+      items = chk.valid;
       if (mode === 'replace') {
+        if (!projectSaveUndo()) { say({ title: 'Không nhập: chưa lưu được bản sao dự phòng', description: 'Dữ liệu hiện có được giữ nguyên. Hãy xuất file dự án trước rồi thử lại.', variant: 'destructive' }); return false; }
         plots.slice().forEach(p => { try { map.removeLayer(p.polygon); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'q110'); } try { map.removeLayer(p.labels); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'q111'); } });
         plots.length = 0;
       }
       let n = 0;
       items.forEach(item => {
-        if (!item || !Array.isArray(item.points) || item.points.length < 3) return;
         const metaRestore = { ...(item.meta || {}) };
         if (item.provCode) metaRestore.provCode = item.provCode;
         if (item.towgs84Key) metaRestore.towgs84Key = item.towgs84Key;
@@ -12092,7 +12135,8 @@ async function lgOfflineRefreshUI(){
         <h4>Nhập lại từ file .landgis</h4>
         <input id="lg31-proj-file" type="file" accept=".landgis,.json,application/json" style="width:100%">
         <div class="row" style="margin-top:8px"><button class="btn sm" id="lg31-proj-merge">➕ Gộp thêm vào hiện có</button><button class="btn sm" id="lg31-proj-replace">♻️ Thay thế toàn bộ</button></div>
-        <p class="lg31-note">"Gộp thêm" giữ nguyên thửa đang có và thêm thửa trong file vào. "Thay thế toàn bộ" xoá hết thửa hiện tại rồi nạp lại đúng nội dung file.</p>
+        <p class="lg31-note">"Gộp thêm" giữ nguyên thửa đang có và thêm thửa trong file vào. "Thay thế toàn bộ" thay hết thửa hiện tại bằng nội dung file — app tự lưu bản sao trước khi thay và có nút hoàn tác bên dưới.</p>
+        <div class="row"><button class="btn sm secondary" id="lg31-proj-undo">↩ Hoàn tác lần nhập/thay thế gần nhất</button></div>
       `, (w) => {
         $('#lg31-proj-export', w).onclick = backupProjectExport;
         const doImport = (mode) => {
@@ -12104,6 +12148,11 @@ async function lgOfflineRefreshUI(){
               const parsed = JSON.parse(evt.target.result);
               const items = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.plots) ? parsed.plots : null);
               if (!items) throw new Error('File không đúng định dạng dự án LandGIS (.landgis).');
+              const chk = projectValidate(items);
+              if (!chk.valid.length) { say({ title: 'Không nhập: file không có thửa hợp lệ', description: `${items.length} mục, 0 thửa hợp lệ. Dữ liệu hiện có được giữ nguyên.`, variant: 'destructive' }); return; }
+              const msg = `File có ${chk.valid.length} thửa hợp lệ` + (chk.invalid.length ? ` và ${chk.invalid.length} mục KHÔNG hợp lệ (bị bỏ qua)` : '') + '.\n'
+                + (mode === 'replace' ? `Sẽ thay thế ${plots.length} thửa đang có (tự lưu bản sao, có nút Hoàn tác).` : 'Sẽ gộp thêm vào các thửa đang có.') + '\nTiếp tục?';
+              if (!window.confirm(msg)) return;
               w.remove();
               backupProjectImport(items, mode);
             } catch (e) { say({ title: 'Không đọc được file', description: e.message, variant: 'destructive' }); }
@@ -12111,7 +12160,8 @@ async function lgOfflineRefreshUI(){
           reader.readAsText(f);
         };
         $('#lg31-proj-merge', w).onclick = () => doImport('merge');
-        $('#lg31-proj-replace', w).onclick = () => { if (window.confirm('Xoá toàn bộ thửa đang có rồi nạp lại từ file? Không thể hoàn tác.')) doImport('replace'); };
+        $('#lg31-proj-replace', w).onclick = () => doImport('replace');
+        const ub = $('#lg31-proj-undo', w); if (ub) ub.onclick = () => { if (projectUndo()) w.remove(); };
       });
     }
     const projBtn = document.getElementById('btn-backup-project');
@@ -32584,7 +32634,7 @@ body.lg125-modal-open{ overflow:hidden; }
       try {
         for (var i = 0; i < localStorage.length; i++) {
           var k = localStorage.key(i);
-          if (INCLUDE.test(k) && !SENSITIVE_KEYS.test(k) && !/_corrupt_/.test(k)) dump.storage[k] = localStorage.getItem(k);
+          if (INCLUDE.test(k) && !SENSITIVE_KEYS.test(k) && !/_corrupt_/.test(k) && k !== 'landgis_undo_import') dump.storage[k] = localStorage.getItem(k);
         }
       } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q468'); }
       var blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
