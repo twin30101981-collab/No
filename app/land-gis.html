@@ -26461,6 +26461,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         '<label class="f">Diện tích ghi trên GCN (m²)</label><input class="f" id="lg8d-gcn" inputmode="decimal" value="' + escA4(W.gcn) + '">' +
         '<label class="f">Diện tích không cấp GCN (m²) — nếu có</label><input class="f" id="lg8d-kc" inputmode="decimal" value="' + escA4(W.kc) + '">' +
         '<label class="f">Thửa số · Tờ bản đồ</label><div style="display:flex;gap:8px"><input class="f" id="lg8d-so" value="' + escA4(W.so) + '" placeholder="Thửa"><input class="f" id="lg8d-to" value="' + escA4(W.to) + '" placeholder="Tờ"></div>' +
+        '<label class="f">🔎 Tra địa chính — xã/phường (tên cũ hoặc mới) rồi nhập Tờ · Thửa ở trên</label><div style="display:flex;gap:8px"><input class="f" id="lg8d-cadxa" value="' + escA4(W.cadXa || '') + '" placeholder="Xã/phường (gói đã tải)"><button type="button" data-w="cad" style="min-height:44px">Tra</button></div>' +
+        (W.cadMsg ? '<div class="' + (W.cadOk ? 'good' : 'warn') + '" role="status">' + escA4(W.cadMsg) + '</div>' : '') +
         '<label class="f">Địa chỉ thửa đất (để chốt tỉnh/KTT)</label><input class="f" id="lg8d-dc" value="' + escA4(W.dc) + '">' +
         '<label class="f">Tỉnh / thành (kinh tuyến trục VN-2000) — chọn đúng địa bàn ghi trên sổ</label><select class="f" id="lg8d-prov">' + provOptions(W.prov) + '</select>' +
         '<div class="warn" style="margin-top:12px">Chưa có bảng kê? Quay lại ＋ Nhập sổ để chụp / chọn ảnh / quét QR — kết quả đọc được điền vào đây để kiểm tra.</div>';
@@ -26497,7 +26499,20 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function readStep1() {
     var g = function (id) { var e = document.getElementById(id); return e ? e.value : ''; };
-    if (document.getElementById('lg8d-text')) { W.text = g('lg8d-text'); W.gcn = g('lg8d-gcn'); W.kc = g('lg8d-kc'); W.so = g('lg8d-so'); W.to = g('lg8d-to'); W.dc = g('lg8d-dc'); W.prov = g('lg8d-prov'); }
+    if (document.getElementById('lg8d-text')) { W.text = g('lg8d-text'); W.gcn = g('lg8d-gcn'); W.kc = g('lg8d-kc'); W.so = g('lg8d-so'); W.to = g('lg8d-to'); W.dc = g('lg8d-dc'); W.prov = g('lg8d-prov'); W.cadXa = g('lg8d-cadxa'); if (W.nguon && W.text !== W.cadText) W.nguon = ''; }
+  }
+  /* HM-31 — Tra địa chính: xã (+tờ+thửa) → bảng toạ độ VN-2000 từ gói đã tải → điền bước 1 (rồi đối chiếu diện tích GCN như bình thường) */
+  function wizardCad() {
+    if (!window.LGCadastre) return;
+    LGCadastre.lookup(W.cadXa, W.to, W.so).then(function (r) {
+      W.cadOk = !!r.ok; W.cadMsg = r.msg;
+      if (r.ok) {
+        W.text = r.text; W.cadText = r.text; W.nguon = r.nguon; try { var tb = window.VN2000_PROVINCES || {}, cp = tb[W.prov]; if (r.prov && !(cp && Math.abs(Number(cp.lon0) - r.ktt) < 1e-6)) W.prov = r.prov; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h31c'); }
+        if (r.dt) W.cadMsg += ' Diện tích trong dữ liệu địa chính: ' + fmt2c(r.dt) + ' m² (nhập diện tích ghi trên GCN để đối chiếu).';
+        if (r.dt && !W.gcn) W.gcn = String(r.dt);
+      }
+      renderWizard();
+    });
   }
   async function wizardDraw() {
     var r = parseWiz(), t = r.t;
@@ -26506,7 +26521,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       var sel = document.getElementById('province-select');     // chốt KTT theo lựa chọn của người dùng trước khi dựng (cửa chặn KTT v61)
       if (sel && W.prov && sel.value !== W.prov) { sel.value = W.prov; sel.dispatchEvent(new Event('change', { bubbles: true })); }
       var rec = await LG145.applyBook({ points: t.points, sides: t.sides, blocks: t.blocks, dien_tich_m2: isFinite(r.gcn) ? r.gcn : null, khong_cap_m2: r.kc || null,
-        so_thua: W.so || null, to_ban_do: W.to || null, dia_chi: W.dc || null });
+        so_thua: W.so || null, to_ban_do: W.to || null, dia_chi: W.dc || null, nguon_toa_do: W.nguon || null });
       var ps = plotsAll(), pl = ps.length > before ? ps[ps.length - 1] : (ps.length ? ps[ps.length - 1] : null);
       if (pl && pl.meta && r.kc) pl.meta.dien_tich_khong_cap_gcn = r.kc;
       var area = pl ? ((typeof calcArea === 'function') ? calcArea(pl.points) : LG.cad.area(pl.points)) : (rec && rec.area) || 0;
@@ -26527,6 +26542,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       if (a === 'cancel') { closeWizard(); }
       else if (a === 'next') { readStep1(); W.step = 2; renderWizard(); }
       else if (a === 'back') { W.step = 1; renderWizard(); }
+      else if (a === 'cad') { readStep1(); wizardCad(); }
       else if (a === 'draw') { b.disabled = true; wizardDraw(); }
       else if (a === 'again') { openWizard(); }
       else if (a === 'map') { closeWizard(); selectTab('map'); }
@@ -38704,6 +38720,7 @@ html body .leaflet-tooltip.lg138-lbl{
         dia_chi: o.dia_chi || null,
         dien_tich_m2: o.dien_tich_m2 != null ? o.dien_tich_m2 : null,
         so_hieu_gcn: o.so_hieu_gcn || null, so_vao_so: o.so_vao_so || null, ngay_cap: o.ngay_cap || null,
+        nguon_toa_do: o.nguon_toa_do || null,
         canh_gcn: (o.sides && o.sides.length) ? o.sides.map(function (v) { return Number(v).toFixed(2); }).join(', ') : null,
         nguon_du_lieu: 'Bang ke toa do in tren Giay chung nhan (nhap tay, khong qua AI)'
       };
@@ -46142,7 +46159,7 @@ body.lg175-stack-open #lg124-stack{
   function catalog() {
     return fetch(cfg.catalogUrl, { cache: 'no-cache', headers: hdrs() }).then(function (r) { if (!r.ok) throw new Error('catalog ' + r.status); return r.json(); }).then(function (j) { return (j && j.packs) || []; });
   }
-  function installed() { return tx('packs', 'readonly', function (s) { return s.getAll(); }).then(function (a) { return (a || []).map(function (p) { return { id: p.id, ten: p.ten, ver: p.ver, ktt: p.ktt, mui: p.mui, bytes: p.bytes, sha256: p.sha256, at: p.at }; }); }); }
+  function installed() { return tx('packs', 'readonly', function (s) { return s.getAll(); }).then(function (a) { return (a || []).map(function (p) { return { id: p.id, ten: p.ten, ver: p.ver, ktt: p.ktt, mui: p.mui, ngay: p.ngay, bytes: p.bytes, sha256: p.sha256, at: p.at }; }); }); }
   function partial(id) { return tx('part', 'readonly', function (s) { return s.get(id); }); }
   /* Tải gói: nếu đã có phần dở dang cùng sha256 thì gửi Range để tiếp tục. Trả {ok, resumable, error}. */
   function install(item, onProgress) {
@@ -46173,7 +46190,7 @@ body.lg175-stack-open #lg124-stack{
         if (blob.size < tot) return tx('part', 'readwrite', function (s) { return s.put({ id: key, sha256: item.sha256, blob: blob }); }).then(function () { return { ok: false, resumable: true, got: blob.size, error: 'Mới nhận ' + blob.size + '/' + tot + ' byte' }; });
         return sha256(blob).then(function (h) {
           if (h !== item.sha256) return tx('part', 'readwrite', function (s) { return s.delete(key); }).then(function () { return { ok: false, resumable: false, error: 'Sai mã kiểm tra sha256 — đã bỏ phần tải, hãy tải lại' }; });
-          return tx('packs', 'readwrite', function (s) { return s.put({ id: key, ten: item.ten, ver: item.ver, ktt: item.ktt, mui: item.mui, bytes: blob.size, sha256: h, at: Date.now(), blob: blob }); })
+          return tx('packs', 'readwrite', function (s) { return s.put({ id: key, ten: item.ten, ver: item.ver, ktt: item.ktt, mui: item.mui, ngay: item.ngay, bytes: blob.size, sha256: h, at: Date.now(), blob: blob }); })
             .then(function () { return tx('part', 'readwrite', function (s) { return s.delete(key); }); }).then(function () { return { ok: true }; });
         });
       });
@@ -46321,7 +46338,31 @@ body.lg175-stack-open #lg124-stack{
     return LGPacks.blob(id).then(function (bl) { if (!bl) throw new Error('Chưa tải gói ' + id); return bl.arrayBuffer(); }).then(openBuffer)
       .then(function (pk) { return LGPacks.installed().then(function (a) { var it = a.filter(function (x) { return x.id === id; })[0] || {}; return mount(pk, { ktt: (o && o.ktt) || it.ktt, mui: (o && o.mui) || it.mui }); }); });
   }
-  window.LGCadastre = { openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
+  /* HM-31 — tra theo xã + tờ + thửa. Trả {ok,msg,text,dt,nguon,prov}; text = bảng "STT X Y S" (X=Bắc, Y=Đông, dòng cuối lặp mốc 1). */
+  function nm(t) { var x = String(t == null ? '' : t).toLowerCase(); try { x = x.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h31n'); } return x.replace(/đ/g, 'd').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function core(t) { return nm(t).replace(/^(xa|phuong|thi tran|huyen|quan|thi xa|thanh pho|tp)\s+/, ''); }
+  var cache = {};
+  function lookup(xa, to, thua) {
+    var q = core(xa), nTo = parseInt(to, 10), nTh = parseInt(thua, 10);
+    if (!q) return Promise.resolve({ ok: false, msg: 'Nhập tên xã/phường cần tra.' });
+    if (!(nTo > 0) || !(nTh > 0)) return Promise.resolve({ ok: false, msg: 'Nhập số Tờ và số Thửa (số nguyên).' });
+    var names = [q];
+    try { (window.LGAdmin ? LGAdmin.lookup(xa) : []).forEach(function (r) { names.push(core(r.moi)); (r.cu || []).forEach(function (c) { names.push(core(c.ten)); }); }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h31a'); }
+    return LGPacks.installed().then(function (inst) {
+      var it = inst.filter(function (p) { return names.indexOf(core(p.ten)) >= 0; })[0];
+      if (!it) return { ok: false, msg: 'Chưa tải gói dữ liệu cho "' + xa + '". Vào Thêm → Gói dữ liệu địa chính để tải.' };
+      return (cache[it.id + '|' + it.sha256] ? Promise.resolve(cache[it.id + '|' + it.sha256]) : LGPacks.blob(it.id).then(function (bl) { return bl.arrayBuffer(); }).then(openBuffer).then(function (pk) { cache[it.id + '|' + it.sha256] = pk; return pk; }))
+        .then(function (pk) {
+          var pl = pk.get(nTo, nTh); if (!pl) return { ok: false, msg: 'Không thấy tờ ' + nTo + ' thửa ' + nTh + ' trong gói "' + it.ten + '".' };
+          var ring = pl.ring.slice(); var n = ring.length - 1, lines = [];
+          for (var i = 0; i < ring.length; i++) { var a = ring[i], b = ring[(i + 1) % ring.length], k = i % n; lines.push((k + 1) + ' ' + a[1].toFixed(2) + ' ' + a[0].toFixed(2) + (i < n ? ' ' + Math.hypot(b[0] - a[0], b[1] - a[1]).toFixed(2) : '')); }
+          var prov = ''; try { var tbl = window.VN2000_PROVINCES || {}; ['NAM_DINH', 'HA_NAM', 'NINH_BINH'].forEach(function (k) { if (!prov && tbl[k] && Math.abs(Number(tbl[k].lon0) - it.ktt) < 1e-6) prov = k; }); if (!prov) for (var key in tbl) if (Math.abs(Number(tbl[key].lon0) - it.ktt) < 1e-6) { prov = key; break; } } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h31b'); }
+          var nguon = 'Dữ liệu địa chính xã/phường ' + it.ten + (it.ngay ? ', ngày ' + it.ngay : ', gói bản ' + (it.ver || '?')) + ' (tra theo tờ ' + nTo + ' thửa ' + nTh + ')';
+          return { ok: true, msg: '✔ Đã lấy ' + n + ' mốc từ gói "' + it.ten + '".', text: lines.join('\n'), dt: pl.dt || pl.dtHH, nguon: nguon, prov: prov, ktt: it.ktt };
+        });
+    });
+  }
+  window.LGCadastre = { lookup: lookup, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
 })();
 </script>
 </body>
