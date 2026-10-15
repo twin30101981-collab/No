@@ -30,3 +30,4 @@
 - 15/10 · P03 · HM-42 ĐẠT V3: một lần gọi AI cho mọi loại trang, đọc được khối chính + khối phụ, mỗi số có độ tin cậy (<90% tô vàng), giáp ranh có cấu trúc (cần thử với ảnh thật + khoá thật).
 - 15/10 · P03 đóng: HM-10, HM-42 xong; sinh P04.
 - 15/10 · P04 · HM-08e ĐẠT V3: Hồ sơ thửa + màn Thêm dạng danh sách + Chế độ chuyên gia (mặc định tắt).
+- 15/10 · P04 · HM-06e ĐẠT V3: bỏ nhập Excel, chỉ giữ xuất.
