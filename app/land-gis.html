@@ -1468,6 +1468,26 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   // lần thử lại đều gọi lại CHÍNH tên miền đang bị chặn -> chắc chắn thất bại. Nay
   // loadLib nhận DANH SÁCH địa chỉ và tự chuyển sang máy chủ gương kế tiếp khi lỗi.
   window.__libCache = {};
+  /* HM-06 — SRI (Subresource Integrity): hash SHA-384 tính từ đúng tệp trong gói npm đã ghim phiên bản;
+     jsDelivr/unpkg phục vụ nguyên byte tệp npm nên trình duyệt từ chối bản bị sửa. cdnjs chưa kiểm chứng
+     byte-identical → khi thư viện có SRI, loadLib chỉ dùng các địa chỉ có SRI. */
+  window.LG_SRI = {
+    'xlsx@0.18.5/dist/xlsx.full.min.js': 'sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw',
+    'html2canvas@1.4.1/dist/html2canvas.min.js': 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H',
+    'jsqr@1.4.0/dist/jsQR.js': 'sha384-b5Ya4Bq3qCyz39m2ISh+4DxjAIljdeFwK/BsXLuj9gugaNwAcj/ia15fxNZL9Nlx',
+    'jspdf@2.5.1/dist/jspdf.umd.min.js': 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk',
+    'tesseract.js@5.1.1/dist/tesseract.min.js': 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F',
+    'pdfmake@0.2.10/build/vfs_fonts.js': 'sha384-zmD5tDN2awbMigS/yVcxHObSsdXXKh/27Y/bSII38WfNl+D7O/aVCIteAXsLY3p3'
+  };
+  window.lgSriFor = function (url) {
+    var m = /^https:\/\/(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/(.+)$/.exec(String(url));
+    return (m && window.LG_SRI[m[1]]) || null;
+  };
+  window.lgSriScript = function (sc, url) {
+    var h = window.lgSriFor(url);
+    if (h) { sc.integrity = h; sc.crossOrigin = 'anonymous'; }
+    return sc;
+  };
   window.LG_CDN_MIRRORS = function(path){
     // path dạng 'leaflet/1.9.4/leaflet.min.js' (đường dẫn kiểu cdnjs)
     return ['https://cdnjs.cloudflare.com/ajax/libs/' + path,
@@ -1489,6 +1509,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     var cd = window.__libFailedAt && window.__libFailedAt[name];
     if (cd && (Date.now() - cd.at) < 15000) return Promise.reject(cd.err);
     var list = Array.isArray(urls) ? urls.slice() : [urls];
+    var verified = list.filter(function (u) { return window.lgSriFor(u); });
+    if (verified.length) list = verified;   // HM-06: có SRI thì chỉ dùng địa chỉ có SRI
     window.__libCache[name] = new Promise(function(resolve, reject){
       var tried = [];
       var step = function(i){
@@ -1507,6 +1529,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         tried.push(url);
         var sc = document.createElement('script');
         sc.src = url;
+        window.lgSriScript(sc, url);
         sc.onload = function(){
           if (i > 0) { try { window.LGV42 && window.LGV42.record('warn', 'v67-lib', 'Da nap ' + name + ' tu may chu guong thu ' + (i+1) + ': ' + url); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q40'); } }
           if (window.__libFailedAt) delete window.__libFailedAt[name];
@@ -17294,13 +17317,13 @@ try {
      6) OCR NGOẠI TUYẾN (lớp cuối khi mọi AI đều hết hạn mức)
      ============================================================ */
   var TESS_URLS = [
-    'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
-    'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js'
+    'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+    'https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js'
   ];
   function loadScript(src) {
     return new Promise(function (res, rej) {
       var s = document.createElement('script');
-      s.src = src; s.async = true;
+      s.src = src; s.async = true; window.lgSriScript && window.lgSriScript(s, src);
       s.onload = function () { res(true); };
       s.onerror = function () { rej(new Error('không tải được ' + src)); };
       document.head.appendChild(s);
@@ -18113,7 +18136,8 @@ try {
   async function loadFonts() {
     for (var i = 0; i < FONT_SRC.length; i++) {
       try {
-        var r = await fetch(FONT_SRC[i]); if (!r.ok) continue;
+        var sri = window.lgSriFor && window.lgSriFor(FONT_SRC[i]);
+        var r = await fetch(FONT_SRC[i], sri ? { integrity: sri, mode: 'cors' } : undefined); if (!r.ok) continue;
         var txt = await r.text();
         var reg = pick(txt, 'Roboto-Regular.ttf'), bold = pick(txt, 'Roboto-Medium.ttf') || pick(txt, 'Roboto-Bold.ttf');
         if (reg) { fontCache.r = reg; fontCache.b = bold; return; }
@@ -35307,8 +35331,8 @@ body.lg62:not(.lg62-map) #lg138-bar{
     // thì lại rơi về đúng lỗi "không nghỉ giữa các lần thử" đã sửa. Dùng lại
     // window.loadLib() thay vì viết riêng, để nhất quán và tự động thừa hưởng
     // cơ chế nghỉ 15 giây.
-    var urls = ['https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
-                'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js'];
+    var urls = ['https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+                'https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js'];
     if (typeof window.loadLib === 'function') {
       await window.loadLib('tesseract', urls);
       if (window.Tesseract) return window.Tesseract;
@@ -35317,7 +35341,7 @@ body.lg62:not(.lg62-map) #lg138-bar{
     for (var i = 0; i < urls.length; i++) {
       try {
         await new Promise(function (res, rej) {
-          var s = document.createElement('script'); s.src = urls[i]; s.async = true;
+          var s = document.createElement('script'); s.src = urls[i]; s.async = true; window.lgSriScript && window.lgSriScript(s, urls[i]);
           s.onload = res; s.onerror = function () { rej(new Error('không tải được ' + urls[i])); };
           document.head.appendChild(s);
         });
