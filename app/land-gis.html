@@ -26445,6 +26445,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🗺', 'Gói dữ liệu địa chính', 'data-lg103-act="packs"') +
       mRow('🎚', 'Căn ảnh vệ tinh', 'data-lg103-act="align"') +
       mRow('📡', 'GPS trung bình', 'data-lg103-act="gps-avg"') +
+      mRow('🛰', 'Máy thu GNSS/RTK (Bluetooth)', 'data-lg103-act="gnss-open"', { sub: 'Toạ độ cm qua NMEA · cần máy thu ngoài' }) +
       mRow('🧭', 'La bàn', 'data-lg103-act="compass"') +
       '<h5>Cài đặt</h5>' +
       mRow('⚙', 'Tỉnh / kinh tuyến trục &amp; cài đặt', 'data-lg103-act="legacy-set"') +
@@ -26601,6 +26602,9 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'ver-bak-dl': { LGVersions.downloadBackup(t.getAttribute('data-k')); return true; }
       case 'ver-bak-restore': { if (!confirm('Thay toàn bộ dự án hiện tại bằng bản sao lưu này? Trạng thái hiện tại được sao lưu lại trước.')) return true; LGVersions.restoreBackup(t.getAttribute('data-k')).then(function (r) { try { window.toast(r.ok ? { title: 'Đã khôi phục sao lưu', description: r.n + ' thửa' } : { title: 'Không khôi phục được', description: r.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20w'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
       case 'ver-keep-local': case 'ver-keep-server': { LGVersions.resolve(t.getAttribute('data-id'), act === 'ver-keep-local' ? 'local' : 'server').then(function (r) { try { if (!r.ok) window.toast({ title: 'Chưa xử lý được', description: r.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20x'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'gnss-open': openSheet('Máy thu GNSS/RTK', LGGnss.panelHTML()); return true;
+      case 'gnss-ble': case 'gnss-serial': { var gp = act === 'gnss-ble' ? LGGnss.connectBLE() : LGGnss.connectSerial(9600); gp.then(function () { body.innerHTML = LGGnss.panelHTML(); var tm = setInterval(function () { if (!document.body.contains(body) || !body.querySelector('.lg22')) { clearInterval(tm); return; } body.innerHTML = LGGnss.panelHTML(); }, 1500); }, function (er) { try { window.toast({ title: 'Chưa kết nối được máy thu', description: String(er && er.message || er), variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22i'); } }); return true; }
+      case 'gnss-off': LGGnss.disconnect(); body.innerHTML = LGGnss.panelHTML(); return true;
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -43208,7 +43212,7 @@ body.lg175-stack-open #lg124-stack{
   function save(plot, i, fix, extra) {
     var c = compare(plot, i, fix); if (!c.ok) return c; extra = extra || {};
     var pt = plot.points[i], b = bag(plot), k = key(pt, i), old = b[k] || {};
-    b[k] = { at: new Date().toISOString(), lat: fix.lat, lng: fix.lng, acc: c.acc, x: c.x, y: c.y, lech: c.dist, az: c.az, huong: c.huong, dat: c.dat, ghi_chu: extra.ghi_chu != null ? String(extra.ghi_chu) : (old.ghi_chu || ''), anh: extra.anh != null ? extra.anh : (old.anh || '') };
+    b[k] = { at: new Date().toISOString(), nguon: fix.nguon || 'GPS máy', q: fix.q != null ? fix.q : null, lat: fix.lat, lng: fix.lng, acc: c.acc, x: c.x, y: c.y, lech: c.dist, az: c.az, huong: c.huong, dat: c.dat, ghi_chu: extra.ghi_chu != null ? String(extra.ghi_chu) : (old.ghi_chu || ''), anh: extra.anh != null ? extra.anh : (old.anh || '') };
     persist(); c.rec = b[k]; return c;
   }
   function note(plot, i, text, photo) {   // ghi chú/ảnh cho mốc chưa có lần đo GPS cũng được
@@ -43230,6 +43234,7 @@ body.lg175-stack-open #lg124-stack{
     });
   }
   function getFix(timeoutMs) {
+    if (window.LGGnss && window.LGGnss.fresh(5000)) return Promise.resolve(window.LGGnss.toFix());   // HM-22: máy thu GNSS/RTK ngoài
     return new Promise(function (ok, no) {
       if (!navigator.geolocation) return no(new Error('Thiết bị không hỗ trợ GPS'));
       navigator.geolocation.getCurrentPosition(function (p) { ok({ lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }); }, function (e) { no(new Error(e && e.message || 'Không lấy được vị trí')); }, { enableHighAccuracy: true, timeout: timeoutMs || 20000, maximumAge: 0 });
@@ -43242,7 +43247,7 @@ body.lg175-stack-open #lg124-stack{
     var head = '<p class="lg8e-note">Đứng tại mốc, bấm “Đo GPS” để so với toạ độ trên sổ. GPS điện thoại thường ±3–5 m — chỉ để tham khảo. ' + (window.isSecureContext ? '' : '<b style="color:#b45309">Cần mở bằng https:// để dùng GPS.</b>') + '</p>' +
       '<div class="lg8e-kv"><span>Đã đối soát</span><span>' + S.da_do + '/' + S.tong + ' mốc · khớp ' + S.khop + ' · lệch ' + S.lech + (S.da_do ? ' · lệch lớn nhất ' + f2(S.lech_max) + ' m' : '') + '</span></div>';
     var rows = pts.map(function (p, i) {
-      var r = b[key(p, i)], st = !r || r.lech == null ? '<span class="lg19-st">Chưa đo</span>' : '<span class="lg19-st ' + (r.dat ? 'ok' : 'bad') + '">' + (r.dat ? '✓ Khớp ' : '⚠ Lệch ') + f2(r.lech) + ' m' + (r.huong ? ' · tới mốc sổ về ' + h(r.huong) : '') + (r.acc != null ? ' · GPS ±' + f1(r.acc) + ' m' : '') + '</span>';
+      var r = b[key(p, i)], st = !r || r.lech == null ? '<span class="lg19-st">Chưa đo</span>' : '<span class="lg19-st ' + (r.dat ? 'ok' : 'bad') + '">' + (r.dat ? '✓ Khớp ' : '⚠ Lệch ') + f2(r.lech) + ' m' + (r.huong ? ' · tới mốc sổ về ' + h(r.huong) : '') + (r.acc != null ? ' · ' + (r.nguon === 'GNSS ngoài' ? 'GNSS ±' + (r.acc < 1 ? Math.round(r.acc * 100) + ' cm' : f1(r.acc) + ' m') : 'GPS ±' + f1(r.acc) + ' m') : '') + '</span>';
       return '<div class="lg19-row" data-i="' + i + '" style="border:1px solid #d6dfd9;border-radius:10px;padding:8px;margin:6px 0"><b>Mốc ' + h(key(p, i)) + '</b> <small>X ' + f3(p.x) + ' · Y ' + f3(p.y) + '</small><br>' + st +
         (r && r.ghi_chu ? '<br><small>📝 ' + h(r.ghi_chu) + '</small>' : '') + (r && r.anh ? '<br><img alt="Ảnh mốc ' + h(key(p, i)) + '" src="' + h(r.anh) + '" style="max-width:96px;max-height:72px;border-radius:6px;margin-top:4px">' : '') +
         '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="fld-gps" data-i="' + i + '">📡 Đo GPS</button><button type="button" class="lg103-abtn" data-lg103-act="fld-note" data-i="' + i + '">📝 Ghi chú / ảnh</button>' + (r ? '<button type="button" class="lg103-abtn" data-lg103-act="fld-clear" data-i="' + i + '">Xoá</button>' : '') + '</div></div>';
@@ -43454,6 +43459,115 @@ body.lg175-stack-open #lg124-stack{
   }
   window.LGVersions = { scan: scan, schedule: schedule, list: list, restoreVersion: restoreVersion, backups: backups, backupNow: backupNow, restoreBackup: restoreBackup, downloadBackup: downloadBackup,
     hashOf: hashOf, status: status, setAuto: setAuto, autoOn: autoOn, syncNow: syncNow, conflicts: conflicts, resolve: resolve, panelHTML: panelHTML, toRec: toRec, rowSnap: rowSnap };
+})();
+</script>
+<script>
+/* HM-22 — MÁY THU GNSS/RTK NGOÀI QUA BLUETOOTH (hoặc cổng nối tiếp): đọc câu NMEA (GGA, RMC, GST, GSA) → vị trí cm, chất lượng fix (RTK Fixed/Float/DGPS/GPS), số vệ tinh, HDOP, sai số.
+   Kết nối: Web Bluetooth (BLE UART: Nordic UART, HM-10 FFE0) hoặc Web Serial (USB / cổng COM Bluetooth trên máy tính). Máy thu dùng Bluetooth Classic (SPP) cần ghép đôi ở hệ điều hành rồi dùng Web Serial.
+   Có vị trí tươi (≤ 5 s) thì HM-19 (đối soát mốc) ưu tiên dùng thay GPS điện thoại. KHÔNG kiểm thử được trên máy thu thật trong môi trường phát triển — chỉ giả lập (xem VIEC_CUA_BAN.md). */
+(function () {
+  'use strict';
+  var NUS = '6e400001-b5a3-f393-e0a9-e50e24dcca9e', NUS_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e', HM10 = '0000ffe0-0000-1000-8000-00805f9b34fb', HM10_C = '0000ffe1-0000-1000-8000-00805f9b34fb';
+  var QL = { 0: 'Chưa có fix', 1: 'GPS đơn (±vài m)', 2: 'DGPS (±~1 m)', 3: 'PPS', 4: 'RTK Fixed (cm)', 5: 'RTK Float (dm)', 6: 'Ước tính', 7: 'Thủ công', 8: 'Mô phỏng' };
+  var S = { fix: null, gst: null, gsa: null, conn: null, kind: '', name: '', buf: '', lines: 0, bad: 0, last: 0, err: '' }, subs = [], dev = null, port = null, reader = null, ch = null;
+  function cs(body) { var c = 0; for (var i = 0; i < body.length; i++) c ^= body.charCodeAt(i); return (c < 16 ? '0' : '') + c.toString(16).toUpperCase(); }
+  function ll(v, hemi, deg) {   // ddmm.mmmm → độ thập phân
+    if (!v) return NaN; var d = parseFloat(v.slice(0, deg)), m = parseFloat(v.slice(deg)); if (!isFinite(d) || !isFinite(m)) return NaN; var r = d + m / 60; return (hemi === 'S' || hemi === 'W') ? -r : r;
+  }
+  function num(x) { var n = parseFloat(x); return isFinite(n) ? n : null; }
+  /* Phân tích một câu NMEA; sai tổng kiểm (checksum) → null. Trả {type, ...}. */
+  function parse(line) {
+    line = String(line || '').trim(); var m = /^\$([^*]+)\*([0-9A-Fa-f]{2})$/.exec(line); if (!m) return null; if (cs(m[1]) !== m[2].toUpperCase()) return null;
+    var f = m[1].split(','), id = f[0].slice(-3);
+    if (id === 'GGA') {
+      var lat = ll(f[2], f[3], 2), lng = ll(f[4], f[5], 3), q = parseInt(f[6], 10) || 0;
+      return { type: 'GGA', time: f[1], lat: lat, lng: lng, q: q, sats: parseInt(f[7], 10) || 0, hdop: num(f[8]), alt: num(f[9]), age: num(f[13]), ok: q > 0 && isFinite(lat) && isFinite(lng) };
+    }
+    if (id === 'RMC') return { type: 'RMC', time: f[1], valid: f[2] === 'A', lat: ll(f[3], f[4], 2), lng: ll(f[5], f[6], 3), speed: num(f[7]), course: num(f[8]), date: f[9] };
+    if (id === 'GST') { var la = num(f[6]), lo = num(f[7]); return { type: 'GST', time: f[1], rms: num(f[2]), stdLat: la, stdLng: lo, stdAlt: num(f[8]), hAcc: (la != null && lo != null) ? Math.hypot(la, lo) : null }; }
+    if (id === 'GSA') return { type: 'GSA', mode: f[2], pdop: num(f[15]), hdop: num(f[16]), vdop: num(f[17]) };
+    return { type: id };
+  }
+  function estAcc(q, hdop) { var u = q === 4 ? 0.02 : q === 5 ? 0.3 : q === 2 ? 1.0 : 3.0; return (hdop || 1) * u; }
+  function apply(r) {
+    S.lines++; S.last = Date.now();
+    if (r.type === 'GGA') {
+      if (r.ok) { var g = S.gst, fresh = g && Date.now() - g.at < 3000; S.fix = { lat: r.lat, lng: r.lng, alt: r.alt, q: r.q, ql: QL[r.q] || ('Chất lượng ' + r.q), sats: r.sats, hdop: r.hdop, age: r.age, acc: fresh ? g.hAcc : estAcc(r.q, r.hdop), acc_est: !fresh, at: Date.now(), time: r.time }; }
+      else S.fix = { lat: NaN, lng: NaN, q: 0, ql: QL[0], sats: r.sats, hdop: r.hdop, at: Date.now(), time: r.time, acc: null };
+      subs.slice().forEach(function (fn) { try { fn(S.fix); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22c'); } });
+    } else if (r.type === 'GST' && r.hAcc != null) S.gst = { hAcc: r.hAcc, at: Date.now() };
+    else if (r.type === 'GSA') S.gsa = r;
+  }
+  /* Nạp văn bản thô (có thể bị cắt giữa chừng giữa các gói BLE): ghép dòng đến khi gặp xuống dòng. */
+  function feed(text) {
+    S.buf += String(text || ''); if (S.buf.length > 4096) S.buf = S.buf.slice(-1024);
+    var parts = S.buf.split(/\r?\n/); S.buf = parts.pop();
+    parts.forEach(function (ln) { ln = ln.trim(); if (!ln) return; var i = ln.lastIndexOf('$'); if (i > 0) ln = ln.slice(i); var r = parse(ln); if (r) apply(r); else S.bad++; });
+  }
+  function fresh(maxMs) { return !!(S.conn && S.fix && S.fix.q > 0 && isFinite(S.fix.lat) && Date.now() - S.fix.at <= (maxMs || 5000)); }
+  function toFix() { var f = S.fix; return f ? { lat: f.lat, lng: f.lng, acc: f.acc, nguon: 'GNSS ngoài', q: f.q, ql: f.ql, sats: f.sats } : null; }
+  /* ---- Web Bluetooth (BLE UART) ---- */
+  function connectBLE() {
+    if (!navigator.bluetooth) return Promise.reject(new Error('Trình duyệt không hỗ trợ Web Bluetooth (dùng Chrome trên Android/máy tính, mở bằng https://)'));
+    return navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: [NUS, HM10] }).then(function (d) {
+      dev = d; S.name = d.name || 'Máy thu BLE'; if (d.addEventListener) d.addEventListener('gattserverdisconnected', function () { drop('Mất kết nối Bluetooth'); });
+      return d.gatt.connect();
+    }).then(function (srv) {
+      return srv.getPrimaryService(NUS).then(function (s) { return s.getCharacteristic(NUS_TX); }, function () { return srv.getPrimaryService(HM10).then(function (s) { return s.getCharacteristic(HM10_C); }); });
+    }).then(function (c) {
+      ch = c; var dec = new TextDecoder('ascii'); c.addEventListener('characteristicvaluechanged', function (ev) { feed(dec.decode(ev.target.value)); });
+      return c.startNotifications();
+    }).then(function () { S.conn = true; S.kind = 'ble'; S.err = ''; return status(); });
+  }
+  /* ---- Web Serial (USB / COM Bluetooth) ---- */
+  function connectSerial(baud) {
+    if (!navigator.serial) return Promise.reject(new Error('Trình duyệt không hỗ trợ Web Serial (dùng Chrome/Edge trên máy tính)'));
+    return navigator.serial.requestPort().then(function (p) { port = p; return p.open({ baudRate: baud || 9600 }); }).then(function () {
+      S.conn = true; S.kind = 'serial'; S.name = 'Cổng nối tiếp'; S.err = ''; var dec = new TextDecoder('ascii'); reader = port.readable.getReader();
+      (function loop() { reader.read().then(function (r) { if (r.done) { drop('Cổng nối tiếp đã đóng'); return; } feed(dec.decode(r.value, { stream: true })); loop(); }, function (e) { drop('Lỗi cổng nối tiếp: ' + (e && e.message || e)); }); })();
+      return status();
+    });
+  }
+  function drop(why) { S.conn = false; S.err = why || ''; S.fix = S.fix ? Object.assign({}, S.fix, { q: 0 }) : null; subs.slice().forEach(function (fn) { try { fn(null); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22d'); } }); }
+  function disconnect() {
+    try { if (reader) reader.cancel(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22e'); } try { if (port) port.close(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22f'); }
+    try { if (ch && ch.stopNotifications) ch.stopNotifications(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22g'); } try { if (dev && dev.gatt && dev.gatt.connected) dev.gatt.disconnect(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22h'); }
+    reader = port = ch = dev = null; S.conn = false; S.kind = ''; S.fix = null; S.buf = ''; return status();
+  }
+  function status() { var f = S.fix; return { ket_noi: !!S.conn, loai: S.kind, ten: S.name, co_fix: !!(f && f.q > 0 && isFinite(f.lat)), q: f ? f.q : 0, chat_luong: f ? f.ql : '', sats: f ? f.sats : 0, hdop: f ? f.hdop : null, acc: f ? f.acc : null, acc_uoc_tinh: f ? !!f.acc_est : false, tuoi_ms: f ? Date.now() - f.at : null, cau: S.lines, cau_loi: S.bad, loi: S.err, rtk_fixed: !!(f && f.q === 4) }; }
+  function panelHTML() {
+    var st = status(), e = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var info = st.ket_noi ? '<div class="lg8e-kv"><span>Thiết bị</span><span>' + e(st.ten) + ' (' + (st.loai === 'ble' ? 'Bluetooth BLE' : 'Cổng nối tiếp') + ')</span></div>' +
+      '<div class="lg8e-kv"><span>Chất lượng</span><span><b style="color:' + (st.q === 4 ? '#145a28' : st.q === 5 ? '#b45309' : '#444') + '">' + e(st.chat_luong || 'Chưa có fix') + '</b></span></div>' +
+      '<div class="lg8e-kv"><span>Sai số ngang</span><span>' + (st.acc != null ? (st.acc < 1 ? (st.acc * 100).toFixed(1) + ' cm' : st.acc.toFixed(2) + ' m') + (st.acc_uoc_tinh ? ' (ước tính từ HDOP)' : ' (GST)') : '—') + '</span></div>' +
+      '<div class="lg8e-kv"><span>Vệ tinh · HDOP</span><span>' + st.sats + ' · ' + (st.hdop != null ? st.hdop : '—') + '</span></div><div class="lg8e-kv"><span>Câu NMEA</span><span>' + st.cau + ' đọc được · ' + st.cau_loi + ' lỗi tổng kiểm</span></div>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="gnss-off">Ngắt kết nối</button></div>' : '<p class="lg8e-note">Chưa kết nối.' + (st.loi ? ' <b style="color:#b45309">' + e(st.loi) + '</b>' : '') + '</p>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="gnss-ble">🔵 Kết nối Bluetooth (BLE)</button><button type="button" class="lg103-abtn" data-lg103-act="gnss-serial">🔌 Cổng nối tiếp / USB</button></div>';
+    return '<div class="lg22"><p class="lg8e-note">Máy thu GNSS/RTK ngoài (Emlid, u-blox, CHCNAV, …) xuất NMEA qua Bluetooth hoặc cổng nối tiếp. Khi có vị trí mới (≤ 5 giây), “Đo GPS” ở Hồ sơ → Thực địa dùng máy thu này thay GPS điện thoại. ' + (window.isSecureContext ? '' : '<b style="color:#b45309">Cần mở bằng https://.</b>') + '</p>' + info + '</div>';
+  }
+  window.LGGnss = { parse: parse, feed: feed, checksum: cs, status: status, fresh: fresh, toFix: toFix, connectBLE: connectBLE, connectSerial: connectSerial, disconnect: disconnect, panelHTML: panelHTML, subscribe: function (fn) { subs.push(fn); return function () { subs = subs.filter(function (x) { return x !== fn; }); }; }, _state: S };
+})();
+</script>
+<script>
+/* HM-28 — GÓI RIÊNG TƯ: mục danh mục có "rieng_tu": true được tải bằng link ký có hạn do Edge Function sign-pack cấp (cần đăng nhập OTP);
+   mục công khai vẫn tải thẳng bằng "url". Link hết hạn giữa chừng → lần tiếp tục xin link mới (resolveUrl chạy mỗi lần tải/tiếp tục). */
+(function () {
+  'use strict';
+  function signUrl(item) {
+    if (!item || !item.rieng_tu) return Promise.resolve(item && item.url);
+    var A = window.LG172, C = window.LG172_CFG || {};
+    if (!(A && A.auth && A.auth.loggedIn && A.auth.loggedIn())) return Promise.reject(new Error('Gói riêng tư — cần đăng nhập (email + mã OTP) trước'));
+    if (!C.url) return Promise.reject(new Error('Chưa cấu hình máy chủ'));
+    return A.auth.token().then(function (tk) {
+      if (!tk) throw new Error('Phiên đăng nhập đã hết hạn — đăng nhập lại');
+      return fetch(String(C.url).replace(/\/+$/, '') + '/functions/v1/sign-pack', { method: 'POST', headers: { apikey: C.key || '', Authorization: 'Bearer ' + tk, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: item.id }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok) throw new Error((j && j.error && j.error.message) || ('Máy chủ từ chối (HTTP ' + r.status + ')'));
+          if (!j || !j.url) throw new Error('Máy chủ không trả link tải'); return j.url; }); });
+    });
+  }
+  if (window.LGPacks && window.LGPacks.config) window.LGPacks.config({ resolveUrl: signUrl });
+  window.LGPackSign = { resolve: signUrl };
 })();
 </script>
 </body>

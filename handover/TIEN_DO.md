@@ -63,3 +63,4 @@
 - 15/10 · P06 · HM-18a, HM-18b ĐẠT V3: mô phỏng tách thửa (đường thẳng/diện tích), bảng mốc mới, hồ sơ PDF và DXF cho từng thửa mới.
 - 15/10 · P06 · HM-19 ĐẠT V3: đối soát mốc thực địa (GPS so với sổ, ảnh + ghi chú theo mốc, báo cáo); cần thử máy thật.
 - 15/10 · P06 · HM-20 ĐẠT V3: phiên bản thửa + sao lưu tự động + đồng bộ CSDL (tuỳ chọn, có xung đột).
+- 15/10 · P06 · HM-22 (phần mã) và HM-28 (phần mã) xong → CHỜ BẠN: máy thu GNSS thật; triển khai Supabase sign-pack + gói địa chính thật.
