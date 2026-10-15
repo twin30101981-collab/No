@@ -16146,9 +16146,9 @@ try {
     return {
       rows: rows, hasBook: !!gcn, worstEdge: worst,
       areaBook: areaBook, areaCalc: areaCalc, areaDiff: areaDiff, areaPct: areaPct,
-      areaWarn: areaPct != null && Math.abs(areaPct) > LG.AREA_TOL_PCT,
+      areaWarn: areaBook != null && Math.abs(areaDiff) > calcPermissibleAreaError(areaBook),   // HM-03: một công thức sai số
       perimBook: perimBook, perimCalc: perimCalc,
-      ok: (!gcn || worst <= LG.EDGE_TOL) && !(areaPct != null && Math.abs(areaPct) > LG.AREA_TOL_PCT)
+      ok: (!gcn || worst <= LG.EDGE_TOL) && !(areaBook != null && Math.abs(areaDiff) > calcPermissibleAreaError(areaBook))
     };
   };
   function num(v, d) { return v == null || !isFinite(v) ? '—' : v.toFixed(d == null ? 2 : d); }
@@ -16166,12 +16166,12 @@ try {
       + td(c.perimBook == null ? '—' : num(c.perimBook - c.perimCalc, 3)) + td('') + '</tr>'
       + '<tr>' + td('<b>Diện tích (m²)</b>') + td(c.areaBook == null ? '—' : num(c.areaBook, 1)) + td(num(c.areaCalc, 2))
       + td(c.areaDiff == null ? '—' : (c.areaDiff > 0 ? '+' : '') + num(c.areaDiff, 2) + (c.areaPct == null ? '' : ' (' + num(c.areaPct, 2) + '%)'), c.areaWarn)
-      + td(c.areaWarn ? 'LỆCH > ' + LG.AREA_TOL_PCT + '%' : (c.areaBook == null ? 'chưa khai báo' : 'khớp'), c.areaWarn) + '</tr>';
+      + td(c.areaWarn ? 'LỆCH > sai số cho phép ±' + calcPermissibleAreaError(c.areaBook).toFixed(2) + ' m²' : (c.areaBook == null ? 'chưa khai báo' : 'khớp'), c.areaWarn) + '</tr>';
     return '<table style="width:100%;border-collapse:collapse;font-size:var(--lg-fs-xs)">'
       + '<thead><tr>' + [th('Hạng mục'), th('Theo sổ đỏ'), th('Theo toạ độ VN-2000'), th('Chênh lệch'), th('Kết luận')].join('') + '</tr></thead>'
       + '<tbody>' + body + extra + '</tbody></table>'
       + '<p style="font-size:var(--lg-fs-xs);color:#555;margin-top:8px">Quy tắc áp dụng: <b>chiều dài in trên sổ đỏ là số chính thức</b> — bản vẽ, bảng toạ độ và hồ sơ đều in theo số của sổ. '
-      + 'Số tính từ bảng toạ độ chỉ dùng để đối soát; lệch quá ' + LG.EDGE_TOL + ' m mỗi cạnh hoặc ' + LG.AREA_TOL_PCT + '% diện tích thì cảnh báo, ứng dụng không tự sửa số liệu.'
+      + 'Số tính từ bảng toạ độ chỉ dùng để đối soát; lệch quá ' + LG.EDGE_TOL + ' m mỗi cạnh hoặc vượt sai số diện tích cho phép (0,05√A + 0,0003A) thì cảnh báo, ứng dụng không tự sửa số liệu.'
       + (c.hasBook ? '' : '<br><b>Chưa khai báo chiều dài cạnh theo sổ</b> — mở “Sửa / bổ sung hồ sơ”, điền ô “Chiều dài cạnh in trên sổ”.') + '</p>';
   };
 
@@ -19080,7 +19080,7 @@ try {
     if (aSo != null && aSo > 0) {
       var gross = aSo + aExcl;
       res.areaPct = (ringArea(pts) - gross) / gross * 100;
-      res.areaOk = Math.abs(res.areaPct) <= LG57.AREA_TOL_PCT;
+      res.areaOk = lgAreaVerdict(ringArea(pts), aSo, aExcl).ok;   // HM-03: một quy tắc sai số duy nhất
     }
     return res;
   }
@@ -20342,7 +20342,7 @@ try {
     return d + '°' + ms + '′';
   }
   /* HM-45: xoá nhãn phiên bản nội bộ (v57, v125...) khỏi câu chữ in trong hồ sơ */
-  function cleanLabel(t) { return String(t == null ? '' : t).replace(/\bv\d{2,3}\s*(?:[:\-–—]\s*)?/gi, '').replace(/\s{2,}/g, ' ').trim(); }
+  function cleanLabel(t) { return String(t == null ? '' : t).replace(/\s*(?:của|bởi|theo)\s+v\d{2,3}\b/gi, '').replace(/\bv\d{2,3}\s*(?:[:\-–—]\s*)?/gi, '').replace(/\s{2,}/g, ' ').trim(); }
   function fmt2(v) { return ((v % 1000) < 0 ? (v % 1000) + 1000 : (v % 1000)).toFixed(2).replace('.', ','); }
   function pad2(v) {
     var s = Number(v).toFixed(2), parts = s.split('.'), i = parts[0].replace('-', '');
@@ -20477,7 +20477,9 @@ try {
     var devOk = devV ? devV.ok : null;
     var devTol = devV ? devV.tol : null;
     var edgeOk = maxLech != null ? maxLech <= 0.05 : null;
-    var shapeOk = norm ? !norm.selfIntersecting : true;
+    // HM-43: kiểm tra hình học đầy đủ trên vòng ranh dùng để lập hồ sơ — chỉ ghi “hợp lệ” khi qua hết
+    var hinhHoc = null; try { hinhHoc = window.LGCore.Geometry.validate(pts); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h43a'); }
+    var shapeOk = (norm ? !norm.selfIntersecting : true) && (hinhHoc ? hinhHoc.ok : true);
     var overall = (devOk !== false) && (edgeOk !== false) && shapeOk && (devOk === true || edgeOk === true);
 
     var logs = [];
@@ -20492,7 +20494,9 @@ try {
     }
     if (devOk === true) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmtSigned(devV.diff, 2) + ' m² (' + fmt(dev, 2) + ' %), trong sai số cho phép ±' + fmt(devTol, 2) + ' m² (0,05√A + 0,0003A).');
     else if (devOk === false) logs.push('Đối chiếu diện tích trên GCN: lệch ' + fmtSigned(devV.diff, 2) + ' m² (' + fmt(dev, 2) + ' %) — vượt sai số cho phép ±' + fmt(devTol, 2) + ' m², cần kiểm tra.');
-    logs.push(shapeOk ? 'Ranh giới khép kín, không tự cắt.' : 'Ranh giới TỰ CẮT — chưa đủ điều kiện xuất hồ sơ.');
+    if (hinhHoc && !hinhHoc.ok) hinhHoc.errors.forEach(function (e) { logs.push('Kiểm tra hình học — LỖI: ' + e.text + '.'); });
+    if (hinhHoc) hinhHoc.warnings.forEach(function (e) { logs.push('Kiểm tra hình học — cảnh báo: ' + e.text + '.'); });
+    logs.push(shapeOk ? 'Kiểm tra hình học: HỢP LỆ — không đỉnh trùng, không đỉnh chạm cạnh, không tự cắt, diện tích > 0.' : 'Kiểm tra hình học: KHÔNG HỢP LỆ — chưa đủ điều kiện xuất hồ sơ.');
     logs = logs.map(cleanLabel);
 
     var ghiChu = [];
@@ -41092,6 +41096,59 @@ body.lg175-stack-open #lg124-stack{
     },
 
     isClockwise: function (points) { return signedArea(points) < 0; },
+
+    /* HM-43 — KIỂM TRA HÌNH HỌC ĐẦY ĐỦ. Trả {ok, errors[], warnings[], info[]}; mỗi mục {type, i, j, text}.
+       ok = true CHỈ KHI không có lỗi: đỉnh trùng (kể cả không liền kề, vd bảng kê gộp sai “mốc 5 trùng mốc 8”),
+       đỉnh chạm cạnh khác, hai cạnh tự cắt, diện tích ≈ 0. Mốc cuối lặp mốc đầu = điểm khép vòng (hợp lệ).
+       opts.blocks = các khối phụ [{points}] → cảnh báo khối phụ có mốc nằm NGOÀI vòng chính. */
+    validate: function (points, opts) {
+      var o = opts || {}, TOL = o.tol != null ? o.tol : 0.01;
+      var errors = [], warnings = [], info = [];
+      var src = [];
+      (points || []).forEach(function (q, k) { var c = pt(q); if (c) { c.ten = (q && q.ten != null && String(q.ten) !== '') ? String(q.ten) : String(k + 1); src.push(c); } });
+      var n = src.length;
+      if (n > 3 && Math.hypot(src[0].x - src[n - 1].x, src[0].y - src[n - 1].y) < TOL) { src.pop(); n--; info.push({ type: 'khep', text: 'mốc cuối lặp lại mốc đầu — điểm khép vòng' }); }
+      if (n < 3) { errors.push({ type: 'it_moc', text: 'cần ít nhất 3 mốc, hiện có ' + n }); return { ok: false, errors: errors, warnings: warnings, info: info }; }
+      function d(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+      var i, j;
+      for (i = 0; i < n; i++) for (j = i + 1; j < n; j++) {
+        if (d(src[i], src[j]) < TOL) errors.push({ type: 'dinh_trung', i: i, j: j, text: 'mốc ' + src[i].ten + ' trùng mốc ' + src[j].ten + (j === i + 1 ? ' (liền kề)' : '') });
+      }
+      function segDist(p, a, b) {
+        var vx = b.x - a.x, vy = b.y - a.y, L = vx * vx + vy * vy;
+        if (L === 0) return d(p, a);
+        var t = Math.max(0, Math.min(1, ((p.x - a.x) * vx + (p.y - a.y) * vy) / L));
+        return Math.hypot(p.x - (a.x + t * vx), p.y - (a.y + t * vy));
+      }
+      function cr(a, b, c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+      for (i = 0; i < n; i++) {
+        var a = src[i], b = src[(i + 1) % n];
+        for (j = 0; j < n; j++) {
+          if (j === i || j === (i + 1) % n) continue;
+          var c = src[j], e = src[(j + 1) % n];
+          if (segDist(c, a, b) < TOL && d(c, a) >= TOL && d(c, b) >= TOL) errors.push({ type: 'cham', i: j, j: i, text: 'mốc ' + c.ten + ' chạm vào cạnh ' + a.ten + '–' + b.ten });
+          if (j > i && (j + 1) % n !== i) {
+            var d1 = cr(a, b, c), d2 = cr(a, b, e), d3 = cr(c, e, a), d4 = cr(c, e, b);
+            if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0)))
+              errors.push({ type: 'tu_cat', i: i, j: j, text: 'cạnh ' + a.ten + '–' + b.ten + ' cắt cạnh ' + c.ten + '–' + e.ten });
+          }
+        }
+      }
+      if (Math.abs(signedArea(src)) < 1e-6) errors.push({ type: 'dien_tich_0', text: 'diện tích ≈ 0 (các mốc thẳng hàng hoặc trùng nhau)' });
+      (o.blocks || []).forEach(function (blk, bi) {
+        var bp = (blk && blk.points) || [];
+        bp.forEach(function (q) {
+          var c = pt(q); if (!c) return;
+          var onB = src.some(function (v, k) { return segDist(c, v, src[(k + 1) % n]) < TOL; });
+          var inside = false;
+          for (var k = 0, m = n - 1; k < n; m = k++) {
+            if (((src[k].y > c.y) !== (src[m].y > c.y)) && (c.x < (src[m].x - src[k].x) * (c.y - src[k].y) / (src[m].y - src[k].y) + src[k].x)) inside = !inside;
+          }
+          if (!onB && !inside) warnings.push({ type: 'khoi_phu_ngoai', text: 'khối phụ ' + (bi + 1) + ' có mốc (' + c.x.toFixed(2) + '; ' + c.y.toFixed(2) + ') nằm ngoài vòng ranh chính' });
+        });
+      });
+      return { ok: errors.length === 0, errors: errors, warnings: warnings, info: info };
+    },
 
     /* ------- VN-2000 <-> WGS84: dung dung proj4 va cong thuc def cua app ------ */
     vn2000: {
