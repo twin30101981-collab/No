@@ -122,3 +122,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-20 DAT_V3: LGVersions (Thêm → Sao lưu tự động & phiên bản): lịch sử phiên bản từng thửa + khôi phục; sao lưu tự động; đồng bộ CSDL (tuỳ chọn) có hàng chờ ngoại tuyến và xử lý xung đột. Ảnh mốc không gửi lên CSDL. Test hm20_versions; bộ đầy đủ PASS. Kế tiếp: HM-22, HM-25, HM-28 (phần mã).
 - HM-22 CHO_NGUOI_DUNG (phần mã xong): LGGnss — máy thu GNSS/RTK qua Bluetooth BLE/Web Serial, NMEA, RTK Fixed/Float, HM-19 dùng GNSS ngoài; test giả lập hm22_gnss. Cần máy thu thật (VIEC_CUA_BAN 12).
 - HM-28 CHO_NGUOI_DUNG (phần mã xong): sign-pack (Edge Function + SQL bucket riêng tư/quyền/nhật ký) + app xin link ký cho gói rieng_tu; test hm28_signpack; bộ đầy đủ PASS. Việc của bạn: VIEC_CUA_BAN 13.
+- HM-25 CHO_NGUOI_DUNG (phần mã xong): LGForms — nạp biểu mẫu HTML/JSON của bạn, điền dữ liệu thửa, in PDF / Excel / CSV; 3 mẫu có sẵn. Test hm25_forms; bộ đầy đủ PASS. Cần mẫu thật (VIEC_CUA_BAN 14).
