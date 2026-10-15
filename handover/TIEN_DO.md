@@ -45,3 +45,4 @@
 - 15/10 · P05 · HM-40 ĐẠT V3: hồ sơ PDF: phụ lục ảnh bản đồ lấy từ ô đã lưu/Esri; thiếu ảnh thì bỏ phụ lục thay vì in lỗi.
 - 15/10 · P05 · HM-44 ĐẠT V3: hồ sơ PDF bố cục theo dòng chảy: Mẫu B còn 4 trang chính, không trang trống, không cắt mép.
 - 15/10 · P05 · HM-10b phần mã xong (CHỜ BẠN triển khai Edge Function): AI qua máy chủ, không giữ khoá trong trình duyệt.
+- 15/10 · P05 · HM-08h ĐẠT V3: truy cập — mọi nút/ô có tên, tiêu đề không nhảy cấp, bỏ onclick nội dòng (TalkBack thật chờ bạn thử). HM-08f hoãn sang phiên riêng.

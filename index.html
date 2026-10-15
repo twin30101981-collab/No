@@ -1023,7 +1023,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         + ' — tất cả đều không truy cập được. Nguyên nhân thường gặp: mất kết nối mạng, hoặc mạng nội bộ/'
         + 'tường lửa chi nhánh đang chặn các tên miền trên (gửi danh sách này cho bộ phận IT để mở). '
         + 'Kiểm tra kết nối mạng rồi tải lại trang (F5).'
-        + '<button onclick="location.reload()" style="margin-left:10px;background:#fff;color:#b71c1c;'
+        + '<button data-lg-call="@reload" style="margin-left:10px;background:#fff;color:#b71c1c;'
         + 'border:0;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer">Tải lại</button>';
       if (isNew) document.body.appendChild(d);
     };
@@ -2953,19 +2953,19 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     <aside id="sidebar">
       <!-- Sidebar Navigation Tabs -->
       <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('tab-scan-ai', this)">📷 Scan Sổ Đỏ</button>
-        <button class="tab-btn" id="lg83-tab-qr" onclick="switchTab('tab-qr', this)">🔳 Quét QR Sổ Đỏ</button>
-        <button class="tab-btn" onclick="switchTab('tab-gps-offline', this)">📡 GPS Thực Địa</button>
-        <button class="tab-btn" onclick="switchTab('tab-import', this)">📥 Nhập CAD/CSV</button>
-        <button class="tab-btn" onclick="switchTab('tab-plots', this)">📐 Quản lý Thửa</button>
-        <button class="tab-btn lg83-hidden-tab" id="lg83-tab-stakeout" onclick="switchTab('tab-stakeout', this)">📍 Cắm Mốc RTK</button>
+        <button class="tab-btn active" data-lg-call="switchTab" data-lg-arg="tab-scan-ai" data-lg-this="1">📷 Scan Sổ Đỏ</button>
+        <button class="tab-btn" id="lg83-tab-qr" data-lg-call="switchTab" data-lg-arg="tab-qr" data-lg-this="1">🔳 Quét QR Sổ Đỏ</button>
+        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-gps-offline" data-lg-this="1">📡 GPS Thực Địa</button>
+        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-import" data-lg-this="1">📥 Nhập CAD/CSV</button>
+        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-plots" data-lg-this="1">📐 Quản lý Thửa</button>
+        <button class="tab-btn lg83-hidden-tab" id="lg83-tab-stakeout" data-lg-call="switchTab" data-lg-arg="tab-stakeout" data-lg-this="1">📍 Cắm Mốc RTK</button>
         <button id="btn-close-sidebar" class="tab-btn" style="flex:0 0 auto;padding:10px 12px;color:var(--accent);font-weight:700" title="Đóng menu">✕</button>
       </div>
 
       <!-- TAB 1: SCAN SỔ ĐỎ VÀ TỰ ĐỘNG ĐỊNH VỊ VỊ TRÍ ĐẤT -->
       <div id="tab-scan-ai" class="tab-content active">
         <section class="block">
-          <h3>1. Chụp Ảnh / Tải Ảnh Sổ Đỏ Tự Động Tìm Vị Trí Đất</h3>
+          <h3 aria-level="2">1. Chụp Ảnh / Tải Ảnh Sổ Đỏ Tự Động Tìm Vị Trí Đất</h3>
           <p class="small muted lg-scan-intro">Chụp hình trực tiếp bằng Camera hoặc chọn ảnh Sổ Đỏ từ thư viện. Hệ thống tự động scan bảng tọa độ X, Y và nhảy thẳng đến vị trí thửa đất trên bản đồ.</p>
           
           <div style="margin-bottom:8px;background:var(--muted);padding:8px;border-radius:6px;">
@@ -3016,19 +3016,19 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
             
             <div style="margin-top:6px">
               <label class="small muted">Tỉnh/Thành (Xác định Kinh tuyến trục VN-2000):</label>
-              <select id="province-select" style="margin-top:2px"></select>
+              <select id="province-select" aria-label="Tỉnh/thành (kinh tuyến trục VN-2000)" style="margin-top:2px"></select>
             </div>
             <div id="gcn-date-box" style="margin-top:6px;background:#fffaf0;border:1px solid var(--border);padding:8px;border-radius:6px">
               <label class="small bold">📅 Xác định KTT theo ngày cấp GCN (Nam Định/Ninh Bình/Hà Nam):</label>
               <div class="row" style="margin-top:4px;gap:6px">
-                <input type="text" id="input-gcn-issue-date" placeholder="VD: 16/04/2012" style="flex:1" />
+                <input type="text" id="input-gcn-issue-date" aria-label="Ngày cấp giấy chứng nhận" placeholder="VD: 16/04/2012" style="flex:1" />
                 <button class="btn sm primary" id="btn-apply-gcn-date">Áp dụng</button>
               </div>
               <div class="small muted" style="margin-top:4px">Dùng khi ảnh không đọc được ngày cấp — nhập tay ngày cấp GCN in trên sổ đỏ, app sẽ tự chọn đúng KTT theo mốc sáp nhập 1/7/2025.</div>
             </div>
             <div style="margin-top:6px">
               <label class="small muted">Múi chiếu (đọc ở góc bảng tọa độ sổ đỏ):</label>
-              <select id="zone-select" style="margin-top:2px">
+              <select id="zone-select" aria-label="Múi chiếu" style="margin-top:2px">
                 <option value="3">Múi 3° — k = 0.9999 (địa chính, phổ biến)</option>
                 <option value="6">Múi 6° — k = 0.9996 (bản đồ nền tỉ lệ nhỏ)</option>
               </select>
@@ -3056,7 +3056,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
 
         <!-- v38: QUÉT BỔ SUNG CÁC TRANG CÒN LẠI CỦA SỔ ĐỎ -->
         <section class="block">
-          <h3>2. Quét Bổ Sung (Bìa / Trang 3-4) Cho Thửa Đã Có</h3>
+          <h3 aria-level="2">2. Quét Bổ Sung (Bìa / Trang 3-4) Cho Thửa Đã Có</h3>
           <p class="small muted lg-scan-intro">Chụp/tải thêm ảnh các trang còn lại của sổ đỏ (trang bìa, trang ghi chú biến động...) để bổ sung Chủ sử dụng, Mục đích, Thời hạn, Nguồn gốc SD, Ghi chú biến động/thế chấp... App tự khớp vào đúng thửa đã có trong danh sách theo <b>Số thửa + Tờ bản đồ</b> đọc được trên ảnh.</p>
 
           <div class="row">
@@ -3079,7 +3079,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 2: ĐỊNH VỊ GPS VỆ TINH OFFLINE TRỰC THỪA -->
       <div id="tab-gps-offline" class="tab-content">
         <section class="block">
-          <h3>1. Trực tiếp Vị trí GPS Vệ tinh Thực địa (Không cần 3G/4G)</h3>
+          <h3 aria-level="2">1. Trực tiếp Vị trí GPS Vệ tinh Thực địa (Không cần 3G/4G)</h3>
           <button class="btn primary" style="width:100%;margin-bottom:8px" id="btn-trigger-gps-live">📍 Bật Định Vị GPS Vệ Tinh Thời Gian Thực</button>
 
           <div id="gps-live-card" style="display:none;background:var(--muted);padding:10px;border-radius:6px;border:1px solid var(--border)">
@@ -3095,16 +3095,16 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         <hr class="sep" />
 
         <section class="block">
-          <h3>2. Nhập Tọa độ VN-2000 Thủ công tại Thực địa</h3>
+          <h3 aria-level="2">2. Nhập Tọa độ VN-2000 Thủ công tại Thực địa</h3>
           <div class="row">
-            <input type="number" id="manual-x" placeholder="Tọa độ X (Northing - Bắc)..." />
+            <input type="number" id="manual-x" aria-label="Toạ độ X (Bắc)" placeholder="Tọa độ X (Northing - Bắc)..." />
           </div>
           <div class="row">
-            <input type="number" id="manual-y" placeholder="Tọa độ Y (Easting - Đông)..." />
+            <input type="number" id="manual-y" aria-label="Toạ độ Y (Đông)" placeholder="Tọa độ Y (Easting - Đông)..." />
           </div>
           <div style="margin-bottom:6px">
             <label class="small muted">Chọn Tỉnh/Thành:</label>
-            <select id="manual-province-select"></select>
+            <select id="manual-province-select" aria-label="Tỉnh/thành của toạ độ"></select>
           </div>
           <button class="btn secondary" style="width:100%" id="btn-add-manual-point">📌 Thêm Mốc Tọa Độ Vào Thửa</button>
           <!-- v159: thửa thật hầu như luôn có ≥4 cạnh — không thể tự chốt hình
@@ -3122,7 +3122,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 3: NHẬP FILE CAD / EXCEL -->
       <div id="tab-import" class="tab-content">
         <section class="block">
-          <h3>Nhập File AutoCAD (.DXF) / CSV / GeoJSON</h3>
+          <h3 aria-level="2">Nhập File AutoCAD (.DXF) / CSV / GeoJSON</h3>
           <label for="file-upload">
             <div class="dropzone">
               <div style="font-size:var(--lg-fs-num)">📐</div>
@@ -3132,7 +3132,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
           <input type="file" id="file-upload" accept=".dxf,.csv,.geojson,.json,.kml,.txt,.asc,.mif,.mid,.tab,.vn2000" style="display:none" />
           <div style="margin-top:10px">
             <label class="small bold" style="display:block;margin-bottom:4px">Hoặc dán trực tiếp bảng toạ độ VN-2000 (Tên mốc, X, Y — mỗi mốc một dòng):</label>
-            <textarea id="paste-coords" rows="5" placeholder="1&#9;2245000.12&#9;552000.35&#10;2&#9;2245010.40&#9;552004.11&#10;3&#9;2245008.90&#9;552018.77" style="width:100%;font-family:var(--mono);font-size:var(--lg-fs-xs);padding:6px;border:1px solid var(--border);border-radius:6px"></textarea>
+            <textarea id="paste-coords" aria-label="Dán bảng toạ độ" rows="5" placeholder="1&#9;2245000.12&#9;552000.35&#10;2&#9;2245010.40&#9;552004.11&#10;3&#9;2245008.90&#9;552018.77" style="width:100%;font-family:var(--mono);font-size:var(--lg-fs-xs);padding:6px;border:1px solid var(--border);border-radius:6px"></textarea>
             <button class="btn sm primary" style="width:100%;margin-top:6px" id="btn-import-paste">📋 Nạp bảng toạ độ đã dán</button>
           </div>
         </section>
@@ -3142,7 +3142,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <div id="tab-plots" class="tab-content">
         <section class="block">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <h3 style="margin:0">Danh sách thửa đất</h3>
+            <h3 aria-level="2" style="margin:0">Danh sách thửa đất</h3>
             <div style="display:flex;gap:4px">
               <button class="btn sm" id="btn-undo-delete" style="display:none" title="Khôi phục thửa vừa xoá" aria-label="Khôi phục thửa vừa xoá">↩ Hoàn tác</button>
               <button class="btn sm danger-text" id="btn-clear-all" style="display:none">Xóa tất cả</button>
@@ -3170,7 +3170,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         <hr class="sep" />
 
         <section class="block">
-          <h3>Báo Cáo Bảng Kê Kỹ Thuật Cadastral</h3>
+          <h3 aria-level="2">Báo Cáo Bảng Kê Kỹ Thuật Cadastral</h3>
           <button class="btn secondary" style="width:100%;margin-bottom:6px" id="btn-export-excel">📊 Xuất Bảng Tọa Độ (Excel)</button>
         </section>
 
@@ -3181,10 +3181,10 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
       <div id="tab-stakeout" class="tab-content">
         <section class="block">
-          <h3>Dẫn Đường Cắm Mốc RTK (Âm Thanh Geiger)</h3>
+          <h3 aria-level="2">Dẫn Đường Cắm Mốc RTK (Âm Thanh Geiger)</h3>
           <label class="small muted">Chọn thửa đất và mốc cần cắm:</label>
-          <select id="stakeout-plot-select" style="margin:4px 0"></select>
-          <select id="stakeout-pin-select" style="margin-bottom:8px"></select>
+          <select id="stakeout-plot-select" aria-label="Thửa cần cắm mốc" style="margin:4px 0"></select>
+          <select id="stakeout-pin-select" aria-label="Mốc cần cắm" style="margin-bottom:8px"></select>
 
           <button class="btn primary" style="width:100%" id="btn-start-stakeout">🧭 Bật Dẫn Đường GPS RTK</button>
 
@@ -3200,13 +3200,13 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 6 (v35): QUÉT MÃ QR TRÊN SỔ ĐỎ MẪU MỚI -->
       <div id="tab-qr" class="tab-content">
         <section class="block">
-          <h3>Quét Mã QR Trên Sổ Đỏ Mẫu Mới</h3>
+          <h3 aria-level="2">Quét Mã QR Trên Sổ Đỏ Mẫu Mới</h3>
           <p class="small muted">Quét mã QR in ở góc Giấy chứng nhận mẫu mới để lấy <b>mã tra cứu</b>. App ghi nhớ mã, mở sẵn cổng tra cứu <span class="mono">tracuuqr.vbdlis.vn</span> (mã đã được chép vào bộ nhớ tạm và điền sẵn nếu cổng cho phép) và in được phiếu A4 nội dung mã.</p>
           <div class="row" style="gap:6px;flex-wrap:wrap">
             <button class="btn primary sm" style="flex:1" id="btn-qr-camera">📷 Quét bằng camera</button>
             <button class="btn secondary sm" style="flex:1" id="btn-qr-file">🖼 Quét từ ảnh</button>
           </div>
-          <input type="file" id="qr-file-input" accept="image/*" style="display:none" />
+          <input type="file" id="qr-file-input" aria-label="Chọn ảnh mã QR" accept="image/*" style="display:none" />
           <div id="qr-cam-wrap" style="display:none;margin-top:8px">
             <video id="qr-video" playsinline muted style="width:100%;border-radius:8px;background:#000"></video>
             <div class="row" style="gap:6px;margin-top:4px">
@@ -3262,7 +3262,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   <div class="modal-card" style="max-width:520px;">
     <div class="modal-header">
       <h3 style="margin:0;font-size:var(--lg-fs-sm)">🧮 Tham số chuyển đổi VN-2000 → WGS84 (towgs84)</h3>
-      <button class="btn sm outline-light" onclick="closeTowgs84Modal()">✖</button>
+      <button class="btn sm outline-light" data-lg-call="closeTowgs84Modal">✖</button>
     </div>
     <div class="modal-body" style="font-size:var(--lg-fs-xs);padding:16px">
       <p style="margin:0 0 8px;line-height:1.5;color:var(--muted-fg)">
@@ -3270,17 +3270,17 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         nhập vào đây để đạt độ chính xác pháp lý. Ứng dụng <strong>không tự bịa</strong> tham số địa phương.
       </p>
       <label class="small bold" style="display:block;margin-bottom:4px">Bộ tham số:</label>
-      <select id="towgs84-select" style="margin-bottom:10px"></select>
+      <select id="towgs84-select" aria-label="Bộ tham số ToWGS84" style="margin-bottom:10px"></select>
       <div id="towgs84-custom-wrap" style="display:none">
         <label class="small bold" style="display:block;margin-bottom:4px">7 tham số (dX,dY,dZ,rX,rY,rZ,scale) — phân tách bằng dấu phẩy:</label>
-        <input type="text" id="towgs84-custom-input" placeholder="-191.90441429,-39.30318279,-111.45032835,-0.00928836,0.01975479,-0.00427372,0.252906278" style="font-family:var(--mono)" />
+        <input type="text" id="towgs84-custom-input" aria-label="Tham số ToWGS84 tuỳ chỉnh" placeholder="-191.90441429,-39.30318279,-111.45032835,-0.00928836,0.01975479,-0.00427372,0.252906278" style="font-family:var(--mono)" />
         <label class="small bold" style="display:block;margin:8px 0 4px">Tên bộ tham số (để in vào hồ sơ):</label>
-        <input type="text" id="towgs84-custom-name" placeholder="VD: Nam Định (QĐ số .../QĐ-UBND)" />
+        <input type="text" id="towgs84-custom-name" aria-label="Tên bộ tham số" placeholder="VD: Nam Định (QĐ số .../QĐ-UBND)" />
       </div>
       <div class="small muted" id="towgs84-hint" style="margin-top:8px;overflow-wrap:anywhere;word-break:break-word"></div>
 
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-        <button class="btn secondary sm" onclick="closeTowgs84Modal()">Huỷ</button>
+        <button class="btn secondary sm" data-lg-call="closeTowgs84Modal">Huỷ</button>
         <button class="btn primary sm" id="btn-save-towgs84">💾 Áp dụng &amp; vẽ lại</button>
       </div>
     </div>
@@ -3293,7 +3293,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   <div class="modal-card">
     <div class="modal-header">
       <h3 style="margin:0;font-size:var(--lg-fs-sm)">📄 HỒ SƠ KỸ THUẬT THỬA ĐẤT</h3>
-      <button class="btn sm outline-light" onclick="closeModal()" aria-label="Đóng hồ sơ">✖ Đóng</button>
+      <button class="btn sm outline-light" data-lg-call="closeModal" aria-label="Đóng hồ sơ">✖ Đóng</button>
     </div>
     <div class="modal-body" id="report-printable-area">
       <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px">
@@ -3348,8 +3348,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       </div>
     </div>
     <div class="no-print" style="padding:10px 16px;background:#f8faf9;border-top:1px solid #ccc;display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn secondary" onclick="exportReportImage()">📷 Tải Ảnh Sơ Đồ (PNG)</button>
-      <button class="btn primary" onclick="window.print()">🖨️ In / Xuất PDF</button>
+      <button class="btn secondary" data-lg-call="exportReportImage">📷 Tải Ảnh Sơ Đồ (PNG)</button>
+      <button class="btn primary" data-lg-call="@print">🖨️ In / Xuất PDF</button>
     </div>
   </div>
 </div>
@@ -3359,13 +3359,13 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   <div class="modal-card" style="max-width:440px;">
     <div class="modal-header">
       <h3 style="margin:0;font-size:var(--lg-fs-sm)">🔑 Cấu Hình AI (Gemini / OpenRouter / Mistral / Claude)</h3>
-      <button class="btn sm outline-light" onclick="closeKeyModal()" aria-label="Đóng cấu hình khoá">✖</button>
+      <button class="btn sm outline-light" data-lg-call="closeKeyModal" aria-label="Đóng cấu hình khoá">✖</button>
     </div>
     <div class="modal-body" style="font-size:var(--lg-fs-xs);padding:16px;max-height:70vh;overflow:auto">
       <!-- v41.2: 4 nhà cung cấp, chuỗi dự phòng mặc định Gemini -> OpenRouter -> Mistral
            -> Claude (3 lớp đầu miễn phí, Claude trả phí là dự phòng cuối cùng). -->
       <label class="small bold" style="display:block;margin-bottom:4px">Chế độ dùng AI:</label>
-      <select id="select-ai-provider-mode" style="margin-bottom:12px">
+      <select id="select-ai-provider-mode" aria-label="Nhà cung cấp AI" style="margin-bottom:12px">
         <option value="auto">Tự động — Gemini → OpenRouter → Mistral → Claude (khuyên dùng)</option>
         <option value="gemini">Chỉ dùng Gemini</option>
         <option value="openrouter">Chỉ dùng OpenRouter</option>
@@ -3377,19 +3377,19 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         Nhập Gemini API Key cá nhân (miễn phí) từ <a href="https://aistudio.google.com" target="_blank" style="color:var(--accent);font-weight:bold">Google AI Studio</a>:
       </p>
       <label class="small bold" style="display:block;margin-bottom:4px">Gemini API Key:</label>
-      <input type="text" id="input-custom-api-key" placeholder="AIzaSy..." style="font-family:var(--mono);margin-bottom:12px" />
+      <input type="text" id="input-custom-api-key" aria-label="Khoá Gemini" placeholder="AIzaSy..." style="font-family:var(--mono);margin-bottom:12px" />
 
       <p style="margin:0 0 8px;line-height:1.5;color:var(--muted-fg)">
         Nhập OpenRouter API Key (miễn phí, dự phòng #1 — <b>bao gồm cả Claude Haiku 3.5 miễn phí</b>) từ <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent);font-weight:bold">openrouter.ai/keys</a>:
       </p>
       <label class="small bold" style="display:block;margin-bottom:4px">OpenRouter API Key:</label>
-      <input type="text" id="input-openrouter-api-key" placeholder="sk-or-v1-..." style="font-family:var(--mono);margin-bottom:12px" />
+      <input type="text" id="input-openrouter-api-key" aria-label="Khoá OpenRouter" placeholder="sk-or-v1-..." style="font-family:var(--mono);margin-bottom:12px" />
 
       <p style="margin:0 0 8px;line-height:1.5;color:var(--muted-fg)">
         Nhập Mistral API Key (miễn phí, dự phòng #2 — cần xác minh SĐT khi đăng ký) từ <a href="https://console.mistral.ai" target="_blank" style="color:var(--accent);font-weight:bold">console.mistral.ai</a>:
       </p>
       <label class="small bold" style="display:block;margin-bottom:4px">Mistral API Key:</label>
-      <input type="text" id="input-mistral-api-key" placeholder="..." style="font-family:var(--mono);margin-bottom:12px" />
+      <input type="text" id="input-mistral-api-key" aria-label="Khoá Mistral" placeholder="..." style="font-family:var(--mono);margin-bottom:12px" />
 
       <p style="margin:0 0 8px;line-height:1.5;color:var(--muted-fg)">
         <b>💡 Mẹo miễn phí:</b> Claude Haiku 3.5 đã được thêm vào danh sách OpenRouter miễn phí ở trên — nếu bạn có OpenRouter Key thì không cần nhập key Anthropic riêng, Claude Haiku sẽ được dùng qua OpenRouter mà không tốn credit.<br/>
@@ -3401,9 +3401,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         Claude trực tiếp, hoặc đưa file này lên một địa chỉ HTTPS rồi mở lại.
       </div>
       <label class="small bold" style="display:block;margin-bottom:4px">Claude API Key:</label>
-      <input type="text" id="input-claude-api-key" placeholder="sk-ant-..." style="font-family:var(--mono);margin-bottom:8px" />
+      <input type="text" id="input-claude-api-key" aria-label="Khoá Claude" placeholder="sk-ant-..." style="font-family:var(--mono);margin-bottom:8px" />
       <label class="small bold" style="display:block;margin-bottom:4px">Model Claude:</label>
-      <select id="select-claude-model" style="margin-bottom:12px">
+      <select id="select-claude-model" aria-label="Mô hình Claude" style="margin-bottom:12px">
         <option value="claude-opus-5-5">Claude Opus 5.5 — chính xác nhất (mặc định)</option>
         <option value="claude-sonnet-5-5">Claude Sonnet 5.5 — cân bằng</option>
         <option value="claude-haiku-5-5">Claude Haiku 5.5 — nhanh, rẻ nhất</option>
@@ -3436,11 +3436,11 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   <div class="modal-card" style="max-width:520px;">
     <div class="modal-header">
       <h3 style="margin:0;font-size:var(--lg-fs-sm)">📐 XEM TRƯỚC KẾT QUẢ BÌNH SAI</h3>
-      <button class="btn sm outline-light" onclick="closeAdjustModal()" aria-label="Đóng">✖</button>
+      <button class="btn sm outline-light" data-lg-call="closeAdjustModal" aria-label="Đóng">✖</button>
     </div>
     <div class="modal-body" id="adjust-body" style="font-size:var(--lg-fs-xs);padding:14px;overflow-wrap:anywhere"></div>
     <div style="padding:10px 14px;background:#f8faf9;border-top:1px solid #ccc;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
-      <button class="btn secondary sm" onclick="closeAdjustModal()">Huỷ</button>
+      <button class="btn secondary sm" data-lg-call="closeAdjustModal">Huỷ</button>
       <button class="btn primary sm" id="btn-accept-adjust">✔ Chấp nhận &amp; thay toạ độ</button>
     </div>
   </div>
@@ -3451,11 +3451,11 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   <div class="modal-card" style="max-width:400px;">
     <div class="modal-header">
       <h3 style="margin:0;font-size:var(--lg-fs-sm)" id="dialog-title">Thông báo</h3>
-      <button class="btn sm outline-light" onclick="closeDialog()" aria-label="Đóng thông báo">✖</button>
+      <button class="btn sm outline-light" data-lg-call="closeDialog" aria-label="Đóng thông báo">✖</button>
     </div>
     <div class="modal-body" id="dialog-message" style="font-size:var(--lg-fs-xs);padding:16px"></div>
     <div style="padding:10px;background:#f8faf9;display:flex;justify-content:flex-end;gap:6px" id="dialog-actions">
-      <button class="btn primary sm" onclick="closeDialog()">OK</button>
+      <button class="btn primary sm" data-lg-call="closeDialog">OK</button>
     </div>
   </div>
 </div>
@@ -7307,7 +7307,7 @@ function initMap(){
     document.getElementById('clicked-coords-wrap').innerHTML = `
       <div class="row" style="align-items:center;margin-top:4px">
         <div class="coord-box mono">${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}</div>
-        <button class="btn sm" onclick="navigator.clipboard.writeText('${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}');toast({title:'Đã sao chép'})">📋</button>
+        <button class="btn sm" data-lg-copy="${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}">📋</button>
       </div>`;
   });
 }
@@ -8437,7 +8437,7 @@ function lgMetaRowsHTML(plot, facing){
   try {
     const n = (window.LG49 && window.LG49.diffCount) ? window.LG49.diffCount(plot.id) : 0;
     diffRow = `<dt>Chênh lệch cần xác nhận</dt><dd>${n
-      ? `<b style="color:#8a1f1f">${n} trường</b> <button type="button" class="lg49-diff-open" data-plot="${escapeHtml(plot.id)}" onclick="window.LG49 &amp;&amp; window.LG49.openDiff('${escapeHtml(plot.id)}')">Mở bảng xác nhận</button>`
+      ? `<b style="color:#8a1f1f">${n} trường</b> <button type="button" class="lg49-diff-open" data-plot="${escapeHtml(plot.id)}" data-lg-call="LG49.openDiff" data-lg-arg="${escapeHtml(plot.id)}">Mở bảng xác nhận</button>`
       : '<span style="opacity:.6">Không có — dữ liệu AI không ghi đè bất kỳ ô nào</span>'}</dd>`;
   } catch (e) { diffRow = ''; }
   return rows + diffRow;
@@ -11344,7 +11344,7 @@ async function lgOfflineRefreshUI(){
     return `
     <div class="lg-v30-head">
       <b>Công cụ v30</b>
-      <button type="button" class="lg-v30-x" onclick="lgTogglePanel(false)" aria-label="Đóng">✕</button>
+      <button type="button" class="lg-v30-x" data-lg-call="lgTogglePanel" data-lg-arg="false" aria-label="Đóng">✕</button>
     </div>
     <div class="lg-v30-body">
       <section>
@@ -11352,22 +11352,22 @@ async function lgOfflineRefreshUI(){
         <div id="lg-offline-stat" class="lg-v30-stat">Đang kiểm tra…</div>
         <div class="lg-v30-progress"><i id="lg-offline-bar"></i></div>
         <div class="lg-v30-btns">
-          <button type="button" id="lg-btn-prefetch" onclick="lgDoPrefetch()">Tải trước vùng đang xem</button>
-          <button type="button" class="ghost" onclick="lgClearTileCache()">Xoá bản đồ đã lưu</button>
+          <button type="button" id="lg-btn-prefetch" data-lg-call="lgDoPrefetch">Tải trước vùng đang xem</button>
+          <button type="button" class="ghost" data-lg-call="lgClearTileCache">Xoá bản đồ đã lưu</button>
         </div>
       </section>
       <section>
         <h4>Định vị GPS</h4>
         <div class="lg-v30-btns">
-          <button type="button" onclick="lgGpsStart()">Bật theo dõi sai số</button>
-          <button type="button" class="ghost" onclick="lgGpsStop()">Tắt</button>
+          <button type="button" data-lg-call="lgGpsStart">Bật theo dõi sai số</button>
+          <button type="button" class="ghost" data-lg-call="lgGpsStop">Tắt</button>
         </div>
       </section>
       <section>
         <h4>Tô-pô</h4>
         <div class="lg-v30-btns">
-          <button type="button" onclick="lgTopologyScan(false)">Kiểm chồng lấn &amp; khe hở</button>
-          <button type="button" class="ghost" onclick="lgTopologyClearLayer()">Ẩn tô màu</button>
+          <button type="button" data-lg-call="lgTopologyScan" data-lg-arg="false">Kiểm chồng lấn &amp; khe hở</button>
+          <button type="button" class="ghost" data-lg-call="lgTopologyClearLayer">Ẩn tô màu</button>
         </div>
       </section>
       <section>
@@ -11376,8 +11376,8 @@ async function lgOfflineRefreshUI(){
           <input type="text" id="lg-surveyor" placeholder="Họ tên cán bộ đo đạc" onchange="lgSetSurveyorName(this.value)" />
         </label>
         <div class="lg-v30-btns">
-          <button type="button" onclick="lgAuditExportCSV()">Xuất CSV</button>
-          <button type="button" class="ghost" onclick="lgAuditClear()">Xoá nhật ký</button>
+          <button type="button" data-lg-call="lgAuditExportCSV">Xuất CSV</button>
+          <button type="button" class="ghost" data-lg-call="lgAuditClear">Xoá nhật ký</button>
         </div>
         <div id="lg-audit-list" class="lg-audit-list"></div>
       </section>
@@ -11388,8 +11388,8 @@ async function lgOfflineRefreshUI(){
           <input type="text" id="lg-gmaps-key" placeholder="AIza…" />
         </label>
         <div class="lg-v30-btns">
-          <button type="button" onclick="lgApplyGoogleTilesKey(document.getElementById('lg-gmaps-key').value.trim())">Lưu khoá</button>
-          <button type="button" class="ghost" onclick="document.getElementById('lg-gmaps-key').value='';lgApplyGoogleTilesKey('')">Xoá khoá</button>
+          <button type="button" data-lg-call="lgApplyGoogleTilesKey" data-lg-from="lg-gmaps-key">Lưu khoá</button>
+          <button type="button" class="ghost" data-lg-call="lgApplyGoogleTilesKey" data-lg-arg="" data-lg-clear="lg-gmaps-key">Xoá khoá</button>
         </div>
       </section>
     </div>`;
@@ -26660,7 +26660,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   function buildMapOverlay() {
     if (document.getElementById('lg8c-top')) return;
     var top = document.createElement('div'); top.id = 'lg8c-top';
-    top.innerHTML = '<div id="lg8c-bar"><span aria-hidden="true">🔍</span><input id="lg8c-q" type="search" placeholder="Tìm thửa, tờ bản đồ, địa chỉ…" autocomplete="off"><button id="lg8c-menu" type="button" aria-label="Thêm">≡</button></div>' +
+    top.innerHTML = '<div id="lg8c-bar"><span aria-hidden="true">🔍</span><input id="lg8c-q" aria-label="Tìm thửa, tờ bản đồ, địa chỉ" type="search" placeholder="Tìm thửa, tờ bản đồ, địa chỉ…" autocomplete="off"><button id="lg8c-menu" type="button" aria-label="Thêm">≡</button></div>' +
       '<div id="lg8c-res" style="display:none"></div><div id="lg8c-chips"><button type="button" data-chip="ktt"></button><button type="button" data-chip="base"></button><button type="button" data-chip="labels">◧ Nhãn</button></div>';
     document.body.appendChild(top);
     var fabs = document.createElement('div'); fabs.id = 'lg8c-fabs';
@@ -33554,7 +33554,7 @@ body.lg125-modal-open{ overflow:hidden; }
     });
     /* B8 — bán kính hiển thị OSM */
     var sel = document.createElement('select');
-    sel.id = 'lg138-radius';
+    sel.id = 'lg138-radius'; sel.setAttribute('aria-label', 'Bán kính');
     sel.style.cssText = 'font:11px system-ui,sans-serif;border-radius:8px;padding:4px;width:auto';
     [200, 500, 1000].forEach(function (r) {
       var o = document.createElement('option'); o.value = r; o.textContent = r + ' m'; if (r === 500) o.selected = true; sel.appendChild(o);
@@ -33576,7 +33576,7 @@ body.lg125-modal-open{ overflow:hidden; }
     var restoreInput = document.createElement('input');
     restoreInput.type = 'file'; restoreInput.accept = '.json,application/json';
     restoreInput.style.display = 'none';
-    restoreInput.id = 'lg138-restore-input';
+    restoreInput.id = 'lg138-restore-input'; restoreInput.setAttribute('aria-label', 'Chọn tệp sao lưu');
     document.body.appendChild(restoreInput);
     restoreInput.addEventListener('change', function () {
       var f = restoreInput.files && restoreInput.files[0];
@@ -38078,8 +38078,8 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
       document.getElementById('lg172-a-trash').onclick = function () { LG172.showTrash(); };
       return;
     }
-    h.innerHTML = '<b>Đăng nhập bằng email</b> <input id="lg172-a-mail" type="email" placeholder="email@..." style="min-width:180px"/> ' +
-      '<button class="lg172-b p" id="lg172-a-send">Gửi mã OTP</button> <input id="lg172-a-code" inputmode="numeric" placeholder="Mã 6 số" style="width:100px"/> ' +
+    h.innerHTML = '<b>Đăng nhập bằng email</b> <input id="lg172-a-mail" aria-label="Email đăng nhập" type="email" placeholder="email@..." style="min-width:180px"/> ' +
+      '<button class="lg172-b p" id="lg172-a-send">Gửi mã OTP</button> <input id="lg172-a-code" aria-label="Mã xác nhận 6 số" inputmode="numeric" placeholder="Mã 6 số" style="width:100px"/> ' +
       '<button class="lg172-b p" id="lg172-a-ok">Xác nhận</button><div id="lg172-a-msg" style="font-size:12px;color:#5b6b63;margin-top:4px"></div>';
     var msg = function (t, bad) { var m = document.getElementById('lg172-a-msg'); if (m) { m.textContent = t; m.style.color = bad ? '#8a1f1f' : '#5b6b63'; } };
     document.getElementById('lg172-a-send').onclick = function () {
@@ -40237,7 +40237,7 @@ body.lg175-stack-open #lg124-stack{
 
   function buildUI() {
     fab = document.createElement('button');
-    fab.id = 'lg184-fab'; fab.type = 'button';
+    fab.id = 'lg184-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Bảng điều khiển nâng cấp');
     fab.dataset.lg144Swept = '1';   // không để bộ gom nút nổi v144 ẩn mất nút này fab.textContent = '🧾 OCR sổ đỏ';
     fab.onclick = function () { panel.style.display = panel.style.display === 'block' ? 'none' : 'block'; };
     document.body.appendChild(fab);
@@ -40246,17 +40246,17 @@ body.lg175-stack-open #lg124-stack{
     panel.id = 'lg184-panel'; panel.dataset.lg144Swept = '1';
     panel.innerHTML =
       '<h3>Quét sổ đỏ (OCR) — cấu hình tay <button id="lg184-x" style="float:right">Đóng</button></h3>' +
-      '<div class="row"><input type="file" id="lg184-file" accept="image/*" multiple></div>' +
+      '<div class="row"><input type="file" id="lg184-file" aria-label="Chọn ảnh cần đọc" accept="image/*" multiple></div>' +
       '<div class="row" id="lg184-thumbs" style="gap:4px"></div>' +
       '<div id="lg184-wrap"><canvas id="lg184-cv"></canvas><div id="lg184-sel"></div></div>' +
       '<div class="row"><span style="font-size:11px;color:#64748b">Kéo chuột/ngón tay trên ảnh để chọn vùng bảng toạ độ.</span></div>' +
-      '<div class="row"><label>Góc xoay</label><select id="lg184-rot">' +
+      '<div class="row"><label>Góc xoay</label><select id="lg184-rot" aria-label="Xoay ảnh">' +
       '<option value="auto">Tự nhận diện (0/90/180/270)</option><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select>' +
       '<button id="lg184-auto">Tự cắt vùng bảng</button><button id="lg184-clr">Bỏ vùng chọn</button></div>' +
-      '<div class="row"><label>Whitelist ký tự</label><input type="text" id="lg184-wl" size="22" placeholder="để trống = không giới hạn">' +
+      '<div class="row"><label>Whitelist ký tự</label><input type="text" id="lg184-wl" aria-label="Ký tự được phép" size="22" placeholder="để trống = không giới hạn">' +
       '<button data-wl="0123456789.,">Chỉ số</button><button data-wl="">Bỏ</button></div>' +
-      '<div class="row"><label>PSM</label><select id="lg184-psm"><option value="6">6 – khối chữ</option><option value="4">4 – cột</option><option value="11">11 – chữ rời</option><option value="12">12 – chữ rời + kẻ</option></select>' +
-      '<label>Phóng</label><input type="number" id="lg184-sc" min="1" max="6" step="0.5" style="width:64px"></div>' +
+      '<div class="row"><label>PSM</label><select id="lg184-psm" aria-label="Chế độ đọc trang"><option value="6">6 – khối chữ</option><option value="4">4 – cột</option><option value="11">11 – chữ rời</option><option value="12">12 – chữ rời + kẻ</option></select>' +
+      '<label>Phóng</label><input type="number" id="lg184-sc" aria-label="Tỉ lệ phóng" min="1" max="6" step="0.5" style="width:64px"></div>' +
       '<div class="row"><button class="p" id="lg184-run">Đọc & so sánh diện tích</button><button id="lg184-load">Nạp vào bản đồ</button></div>' +
       '<div id="lg184-res" style="margin:6px 0"></div>' +
       '<div id="lg184-log"></div>' +
@@ -46556,6 +46556,30 @@ body.lg175-stack-open #lg124-stack{
   }
   document.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('[data-lgpk-act="goto"]'); if (!t) return; gotoParcel(t.getAttribute('data-pack'), +t.getAttribute('data-to'), +t.getAttribute('data-thua')).then(function () { var shx = document.getElementById('lg103-sheet'); if (shx) shx.classList.remove('on'); }, function (er) { window.lgQuiet && window.lgQuiet(er, 'h34g'); }); });
   window.LGCadastre = { locate: locate, locateHTML: locateHTML, locateGPS: locateGPS, goto: gotoParcel, lookup: lookup, findByShape: findByShape, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
+})();
+</script>
+<script>
+/* HM-08h — thay onclick nội dòng bằng MỘT bộ uỷ quyền sự kiện: data-lg-call="tên.hàm" [data-lg-arg] [data-lg-this] [data-lg-from="idÔ"] [data-lg-clear="idÔ"]; "@reload"/"@print" = hàm trình duyệt; data-lg-copy = chép vào bộ nhớ tạm. */
+(function () {
+  'use strict';
+  function resolve(path) { var o = window, parts = path.split('.'); for (var i = 0; i < parts.length - 1; i++) { o = o && o[parts[i]]; } var f = o && o[parts[parts.length - 1]]; return f ? { f: f, ctx: o } : null; }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-lg-call],[data-lg-copy]'); if (!t) return;
+    try {
+      var cp = t.getAttribute('data-lg-copy');
+      if (cp != null) { navigator.clipboard.writeText(cp); window.toast && window.toast({ title: 'Đã sao chép' }); return; }
+      var name = t.getAttribute('data-lg-call');
+      if (name === '@reload') { location.reload(); return; }
+      if (name === '@print') { window.print(); return; }
+      var r = resolve(name); if (!r) return;
+      var args = [];
+      if (t.hasAttribute('data-lg-clear')) { var c = document.getElementById(t.getAttribute('data-lg-clear')); if (c) c.value = ''; }
+      if (t.hasAttribute('data-lg-from')) { var src = document.getElementById(t.getAttribute('data-lg-from')); args.push(src ? String(src.value).trim() : ''); }
+      else if (t.hasAttribute('data-lg-arg')) { var v = t.getAttribute('data-lg-arg'); args.push(v === 'false' ? false : v === 'true' ? true : v); }
+      if (t.hasAttribute('data-lg-this')) args.push(t);
+      r.f.apply(r.ctx, args);
+    } catch (er) { window.lgQuiet && window.lgQuiet(er, 'h8h1'); }
+  }, true);
 })();
 </script>
 </body>
