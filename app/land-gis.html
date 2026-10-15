@@ -26378,7 +26378,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var hv = (isFinite(hg) && hg > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(harea, hg, parseFloat(hm.dien_tich_khong_cap_gcn) || 0) : null;
     var head = '<div class="lg8e-phead"><b>Thửa ' + escA4(hm.so_thua || p.id) + (hm.to_ban_do ? ' · Tờ ' + escA4(hm.to_ban_do) : '') + '</b><span>' +
       [hm.loai_dat || hm.muc_dich_su_dung, (hg > 0 ? hg : harea).toFixed(1).replace('.', ',') + ' m²', hv ? (hv.ok ? '✓ Đạt' : '⚠ Không đạt') : ''].filter(Boolean).map(escA4).join(' · ') + '</span></div>';
-    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['bd', 'Biến động'], ['photos', 'Ảnh']];
+    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['bd', 'Biến động'], ['field', 'Thực địa'], ['photos', 'Ảnh']];
     var bar = '<div class="lg103-actions">' + tabs.map(function (t) {
       return '<button class="lg103-abtn" data-lg103-act="prof-' + t[0] + '"' + (profTab === t[0] ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t[1] + '</button>';
     }).join('') + '</div>';
@@ -26387,6 +26387,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     else if (profTab === 'edges') body = tabEdges();
     else if (profTab === 'giap') body = tabGiap(p);
     else if (profTab === 'bd') body = tabBienDong(p);
+    else if (profTab === 'field') body = LGField.tabHTML(p);
     else if (profTab === 'photos') body = '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="photos">🛰 Ảnh thực tế &amp; 8 hướng</button><button class="lg103-abtn" data-lg103-act="imagery">🗺 Ảnh nền &amp; độ nét</button></div>';
     else {
       var pts = p.points || [], area = (typeof calcArea === 'function') ? calcArea(pts) : LG.cad.area(pts), m = p.meta || {};
@@ -26511,7 +26512,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'queue-build': LGQueue.get(t.getAttribute('data-id')).then(function (j) { if (!j) return; closeSheet(); openWizard(LGQueue.seedFor(j)); }); return true;
       case 'queue-autodel': try { if (LGQueue.autodel()) localStorage.removeItem('landgis_queue_autodel'); else localStorage.setItem('landgis_queue_autodel', '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h23b'); } queueOpen(); return true;
       case 'import-edges': closeSheet(); if (window.LG170 && LG170.open) LG170.open(); return true;
-      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos': case 'prof-giap': case 'prof-bd':
+      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos': case 'prof-giap': case 'prof-bd': case 'prof-field':
         profTab = act.slice(5); body.innerHTML = tabProfile(); return true;
       case 'pdf': closeSheet(); { var pp = currentPlot(); if (window.LG60 && LG60.open && pp) LG60.open(pp); else if (window.LG146 && LG146.exportHSKT) LG146.exportHSKT(); } return true;
       case 'exports-more': { var ex = document.getElementById('lg103-exports-more'); if (ex) ex.style.display = ex.style.display === 'none' ? '' : 'none'; return true; }
@@ -26585,6 +26586,12 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'split-run': { var sp2 = currentPlot(); if (!sp2) return true; var sr = LGSplit.runFromForm(sp2); document.getElementById('lg-split-out').innerHTML = LGSplit.resultHTML(sr, sp2); return true; }
       case 'split-pdf': { if (LGSplit.last && LGSplit.last.ok) { closeSheet(); LGSplit.openDossier(LGSplit.last, LGSplit.last.plot); } return true; }
       case 'split-dxf': { if (LGSplit.last && LGSplit.last.ok) { try { LGSplit.downloadDXF(LGSplit.last, LGSplit.last.plot); window.toast({ title: 'Đã xuất DXF', description: '2 file, mỗi thửa mới một file' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h18b'); } } return true; }
+      case 'fld-gps': { var fp = currentPlot(), fi = +t.getAttribute('data-i'); if (!fp) return true; t.disabled = true; t.textContent = '📡 Đang lấy vị trí…'; LGField.measure(fp, fi).then(function (r) { try { if (!r.ok) window.toast({ title: 'Chưa đo được', description: r.loi, variant: 'destructive' }); else window.toast({ title: r.dat ? 'Mốc khớp trong sai số GPS' : 'Mốc lệch ' + r.dist.toFixed(2) + ' m', description: r.ketluan }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19a'); } body.innerHTML = tabProfile(); }); return true; }
+      case 'fld-note': { var fp2 = currentPlot(), fi2 = +t.getAttribute('data-i'); if (fp2) body.innerHTML = LGField.noteFormHTML(fp2, fi2); return true; }
+      case 'fld-note-save': { var fp3 = currentPlot(), fi3 = +t.getAttribute('data-i'); if (!fp3) return true; var ntxt = document.getElementById('lg19-note').value, ph = document.getElementById('lg19-photo').files[0];
+        var fin = function (img) { LGField.note(fp3, fi3, ntxt, img); body.innerHTML = tabProfile(); }; if (ph) LGField.shrink(ph).then(fin, function () { fin(null); try { window.toast({ title: 'Không đọc được ảnh', description: 'Đã lưu ghi chú, chưa có ảnh.', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19b'); } }); else fin(null); return true; }
+      case 'fld-clear': { var fp4 = currentPlot(); if (fp4 && confirm('Xoá kết quả đối soát, ghi chú và ảnh của mốc này?')) { LGField.clear(fp4, +t.getAttribute('data-i')); body.innerHTML = tabProfile(); } return true; }
+      case 'fld-report': { var fp5 = currentPlot(); if (fp5) { closeSheet(); LGField.openReport(fp5); } return true; }
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -43160,6 +43167,96 @@ body.lg175-stack-open #lg124-stack{
   var api = { splitByLine: splitByLine, splitByArea: splitByArea, ringOf: ringOf, formHTML: formHTML, resultHTML: resultHTML, runFromForm: runFromForm, showMode: showMode, dossierHTML: dossierHTML, dxfOf: dxfOf, downloadDXF: downloadDXF, nameOf: nameOf, last: null,
     openDossier: function (res, plot) { return window.LG21 ? window.LG21.openHTML(dossierHTML(res, plot)) : null; } };
   window.LGSplit = api;
+})();
+</script>
+<script>
+/* HM-19 — ĐỐI SOÁT MỐC THỰC ĐỊA: đứng tại mốc ngoài hiện trường, lấy vị trí GPS → quy ra VN-2000 → độ lệch (m) và hướng tới toạ độ mốc trên sổ,
+   so với sai số GPS báo cáo; kèm ảnh (thu nhỏ) và ghi chú theo từng mốc, lưu trong meta.doi_soat_moc (khoá = tên mốc) của thửa.
+   GPS điện thoại thường ±3–5 m: kết luận luôn kèm sai số, độ chính xác kém được cảnh báo; chỉ để tham khảo, không thay thế đo đạc. */
+(function () {
+  'use strict';
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var f1 = function (n) { return Number(n).toFixed(1).replace('.', ','); }, f2 = function (n) { return Number(n).toFixed(2).replace('.', ','); }, f3 = function (n) { return Number(n).toFixed(3).replace('.', ','); };
+  var DIRS = ['Bắc', 'Đông Bắc', 'Đông', 'Đông Nam', 'Nam', 'Tây Nam', 'Tây', 'Tây Bắc'];
+  function compass(az) { return DIRS[Math.round((((az % 360) + 360) % 360) / 45) % 8]; }
+  function bag(plot) { plot.meta = plot.meta || {}; if (!plot.meta.doi_soat_moc || typeof plot.meta.doi_soat_moc !== 'object') plot.meta.doi_soat_moc = {}; return plot.meta.doi_soat_moc; }
+  function key(pt, i) { return String(pt && pt.ten != null && pt.ten !== '' ? pt.ten : i + 1); }
+  function get(plot, i) { var p = (plot.points || [])[i]; return p ? ((plot.meta && plot.meta.doi_soat_moc) || {})[key(p, i)] || null : null; }
+  /* Từ vị trí GPS {lat,lng,acc} tới mốc thứ i của thửa: trả {x,y,dist,az,huong,acc,dat,ketluan,canh_bao}. dist = khoảng cách từ người đứng tới mốc sổ; az = phương vị từ người tới mốc sổ. */
+  function compare(plot, i, fix) {
+    var pt = (plot.points || [])[i]; if (!pt) return { ok: false, loi: 'Không có mốc số ' + (i + 1) };
+    if (!fix || !isFinite(fix.lat) || !isFinite(fix.lng)) return { ok: false, loi: 'Chưa có vị trí GPS' };
+    var vn; try { vn = convertWGS84ToVN2000(fix.lat, fix.lng, plot.lon0, plot.zone || 3); } catch (e) { vn = null; }
+    if (!vn || !isFinite(vn.x) || !isFinite(vn.y)) return { ok: false, loi: 'Không quy đổi được sang VN-2000 (kiểm tra kinh tuyến trục của thửa)' };
+    var dx = pt.x - vn.x, dy = pt.y - vn.y, dist = Math.hypot(dx, dy), az = ((Math.atan2(dy, dx) * 180 / Math.PI) % 360 + 360) % 360;
+    var acc = isFinite(fix.acc) && fix.acc > 0 ? +fix.acc : null, ok = acc != null ? dist <= acc : dist <= 3;
+    var kl = acc == null ? 'Không biết sai số GPS — lệch ' + f2(dist) + ' m.' : (ok ? 'Khớp trong sai số GPS (lệch ' + f2(dist) + ' m ≤ ±' + f1(acc) + ' m).' : 'Lệch ' + f2(dist) + ' m — vượt sai số GPS ±' + f1(acc) + ' m, nên kiểm tra lại mốc.');
+    var cb = []; if (acc != null && acc > 5) cb.push('GPS kém (±' + f1(acc) + ' m): kết quả chỉ để tham khảo, nên đo lại ngoài trời thoáng hoặc dùng máy RTK.'); if (acc == null) cb.push('Thiết bị không báo sai số GPS.');
+    return { ok: true, x: vn.x, y: vn.y, dist: dist, az: az, huong: compass(az), acc: acc, dat: ok, ketluan: kl, canh_bao: cb };
+  }
+  /* Lưu một lần đo (kèm ghi chú/ảnh tuỳ chọn; ghi đè bản đo cũ của mốc nhưng giữ ghi chú/ảnh nếu không đưa mới) */
+  function save(plot, i, fix, extra) {
+    var c = compare(plot, i, fix); if (!c.ok) return c; extra = extra || {};
+    var pt = plot.points[i], b = bag(plot), k = key(pt, i), old = b[k] || {};
+    b[k] = { at: new Date().toISOString(), lat: fix.lat, lng: fix.lng, acc: c.acc, x: c.x, y: c.y, lech: c.dist, az: c.az, huong: c.huong, dat: c.dat, ghi_chu: extra.ghi_chu != null ? String(extra.ghi_chu) : (old.ghi_chu || ''), anh: extra.anh != null ? extra.anh : (old.anh || '') };
+    persist(); c.rec = b[k]; return c;
+  }
+  function note(plot, i, text, photo) {   // ghi chú/ảnh cho mốc chưa có lần đo GPS cũng được
+    var pt = (plot.points || [])[i]; if (!pt) return false; var b = bag(plot), k = key(pt, i), r = b[k] || { at: new Date().toISOString() };
+    if (text != null) r.ghi_chu = String(text); if (photo != null) r.anh = photo; b[k] = r; persist(); return true;
+  }
+  function clear(plot, i) { var pt = (plot.points || [])[i]; if (!pt) return; var b = bag(plot); delete b[key(pt, i)]; persist(); }
+  function persist() { try { if (typeof saveToLocalStorage === 'function') saveToLocalStorage(); else window.LG_V42_HOST && window.LG_V42_HOST.save(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19s'); } }
+  function summary(plot) {
+    var pts = plot.points || [], b = (plot.meta && plot.meta.doi_soat_moc) || {}, n = 0, ok = 0, bad = 0, worst = 0, photos = 0;
+    pts.forEach(function (p, i) { var r = b[key(p, i)]; if (!r) return; if (r.anh) photos++; if (r.lech == null) return; n++; if (r.dat) ok++; else bad++; if (r.lech > worst) worst = r.lech; });
+    return { tong: pts.length, da_do: n, khop: ok, lech: bad, lech_max: worst, co_anh: photos };
+  }
+  /* Ảnh: thu nhỏ về cạnh dài ≤ 640 px, JPEG 0,6 → ~30–60 KB mỗi ảnh (lưu trong meta; HM-00 giữ bản sao khi bộ nhớ đầy) */
+  function shrink(file, maxSide) {
+    maxSide = maxSide || 640;
+    return (window.createImageBitmap ? createImageBitmap(file) : Promise.reject(new Error('no bitmap'))).then(function (bm) {
+      var k = Math.min(1, maxSide / Math.max(bm.width, bm.height)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bm.width * k)); c.height = Math.max(1, Math.round(bm.height * k)); c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.6);
+    });
+  }
+  function getFix(timeoutMs) {
+    return new Promise(function (ok, no) {
+      if (!navigator.geolocation) return no(new Error('Thiết bị không hỗ trợ GPS'));
+      navigator.geolocation.getCurrentPosition(function (p) { ok({ lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }); }, function (e) { no(new Error(e && e.message || 'Không lấy được vị trí')); }, { enableHighAccuracy: true, timeout: timeoutMs || 20000, maximumAge: 0 });
+    });
+  }
+  function measure(plot, i) { try { if (window.lgWake) window.lgWake.on(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19w'); } return getFix().then(function (fix) { try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19x'); } return save(plot, i, fix); }, function (er) { try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19y'); } return { ok: false, loi: er.message }; }); }
+  /* ---- giao diện ---- */
+  function tabHTML(plot) {
+    var pts = plot.points || [], S = summary(plot), b = (plot.meta && plot.meta.doi_soat_moc) || {};
+    var head = '<p class="lg8e-note">Đứng tại mốc, bấm “Đo GPS” để so với toạ độ trên sổ. GPS điện thoại thường ±3–5 m — chỉ để tham khảo. ' + (window.isSecureContext ? '' : '<b style="color:#b45309">Cần mở bằng https:// để dùng GPS.</b>') + '</p>' +
+      '<div class="lg8e-kv"><span>Đã đối soát</span><span>' + S.da_do + '/' + S.tong + ' mốc · khớp ' + S.khop + ' · lệch ' + S.lech + (S.da_do ? ' · lệch lớn nhất ' + f2(S.lech_max) + ' m' : '') + '</span></div>';
+    var rows = pts.map(function (p, i) {
+      var r = b[key(p, i)], st = !r || r.lech == null ? '<span class="lg19-st">Chưa đo</span>' : '<span class="lg19-st ' + (r.dat ? 'ok' : 'bad') + '">' + (r.dat ? '✓ Khớp ' : '⚠ Lệch ') + f2(r.lech) + ' m' + (r.huong ? ' · tới mốc sổ về ' + h(r.huong) : '') + (r.acc != null ? ' · GPS ±' + f1(r.acc) + ' m' : '') + '</span>';
+      return '<div class="lg19-row" data-i="' + i + '" style="border:1px solid #d6dfd9;border-radius:10px;padding:8px;margin:6px 0"><b>Mốc ' + h(key(p, i)) + '</b> <small>X ' + f3(p.x) + ' · Y ' + f3(p.y) + '</small><br>' + st +
+        (r && r.ghi_chu ? '<br><small>📝 ' + h(r.ghi_chu) + '</small>' : '') + (r && r.anh ? '<br><img alt="Ảnh mốc ' + h(key(p, i)) + '" src="' + h(r.anh) + '" style="max-width:96px;max-height:72px;border-radius:6px;margin-top:4px">' : '') +
+        '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="fld-gps" data-i="' + i + '">📡 Đo GPS</button><button type="button" class="lg103-abtn" data-lg103-act="fld-note" data-i="' + i + '">📝 Ghi chú / ảnh</button>' + (r ? '<button type="button" class="lg103-abtn" data-lg103-act="fld-clear" data-i="' + i + '">Xoá</button>' : '') + '</div></div>';
+    }).join('');
+    return head + rows + '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="fld-report">🖨 Báo cáo thực địa (PDF)</button></div>';
+  }
+  function noteFormHTML(plot, i) {
+    var r = get(plot, i) || {}, p = plot.points[i];
+    return '<div class="lg19-form" data-i="' + i + '"><p class="lg8e-note"><b>Mốc ' + h(key(p, i)) + '</b></p><label>Ghi chú <textarea id="lg19-note" rows="3" aria-label="Ghi chú mốc">' + h(r.ghi_chu || '') + '</textarea></label>' +
+      '<label>Ảnh mốc <input id="lg19-photo" type="file" accept="image/*" capture="environment" aria-label="Ảnh mốc"></label>' + (r.anh ? '<img alt="Ảnh hiện có" src="' + h(r.anh) + '" style="max-width:140px;border-radius:6px">' : '') +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="fld-note-save" data-i="' + i + '">Lưu</button></div></div>';
+  }
+  function reportHTML(plot) {
+    var m = plot.meta || {}, pts = plot.points || [], b = m.doi_soat_moc || {}, S = summary(plot), d = new Date(), ts = d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    var rows = pts.map(function (p, i) { var r = b[key(p, i)];
+      return '<tr' + (r && r.lech != null && !r.dat ? ' style="background:#fff3cd"' : '') + '><td>' + h(key(p, i)) + '</td><td>' + f3(p.x) + '; ' + f3(p.y) + '</td><td>' + (r && r.x != null ? f3(r.x) + '; ' + f3(r.y) : '—') + '</td><td>' + (r && r.lech != null ? f2(r.lech) + ' m' + (r.huong ? ' (' + h(r.huong) + ')' : '') : '—') + '</td><td>' + (r && r.acc != null ? '±' + f1(r.acc) + ' m' : '—') + '</td><td>' + (r && r.lech != null ? (r.dat ? 'Khớp' : 'Lệch') : 'Chưa đo') + '</td></tr>'; }).join('');
+    var extra = pts.map(function (p, i) { var r = b[key(p, i)]; if (!r || (!r.ghi_chu && !r.anh)) return ''; return '<div style="display:inline-block;vertical-align:top;width:48%;margin:4px 0"><b>Mốc ' + h(key(p, i)) + '</b>' + (r.ghi_chu ? '<br>' + h(r.ghi_chu) : '') + (r.anh ? '<br><img alt="Ảnh mốc ' + h(key(p, i)) + '" src="' + h(r.anh) + '" style="max-width:100%;max-height:150px">' : '') + '</div>'; }).join('');
+    return '<div class="lg21-page"><div class="lg21-head"><div><b>BÁO CÁO ĐỐI SOÁT MỐC THỰC ĐỊA</b><br><span>Thửa ' + h(m.so_thua || plot.id) + (m.to_ban_do ? ' · Tờ bản đồ ' + h(m.to_ban_do) : '') + (m.dia_chi ? ' · ' + h(m.dia_chi) : '') + '</span></div><div class="lg21-ts">' + h(ts) + '</div></div>' +
+      '<p class="lg21-formula">Đã đối soát <b>' + S.da_do + '/' + S.tong + '</b> mốc · khớp trong sai số GPS <b>' + S.khop + '</b> · lệch ngoài sai số <b>' + S.lech + '</b>' + (S.da_do ? ' · lệch lớn nhất <b>' + f2(S.lech_max) + ' m</b>' : '') + '.</p>' +
+      '<table class="lg21-t lg37-t"><thead><tr><th>Mốc</th><th>Toạ độ sổ (X; Y)</th><th>Toạ độ GPS (X; Y)</th><th>Lệch</th><th>Sai số GPS</th><th>Kết quả</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      (extra ? '<h4>Ghi chú và ảnh theo mốc</h4>' + extra : '') + '<div class="lg21-foot"><small>GPS điện thoại thường ±3–5 m nên <b>chỉ để tham khảo</b>, không thay thế đo đạc bằng máy RTK/toàn đạc của đơn vị có thẩm quyền.</small></div></div>';
+  }
+  window.LGField = { compare: compare, save: save, note: note, clear: clear, get: get, summary: summary, shrink: shrink, getFix: getFix, measure: measure, tabHTML: tabHTML, noteFormHTML: noteFormHTML, reportHTML: reportHTML, compass: compass, key: key,
+    openReport: function (plot) { return window.LG21 ? window.LG21.openHTML(reportHTML(plot)) : null; } };
 })();
 </script>
 </body>
