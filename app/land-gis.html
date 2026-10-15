@@ -26438,6 +26438,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
       mRow('🧮', 'Quy đổi toạ độ hàng loạt', 'data-lg103-act="conv-batch"') +
+      mRow('📄', 'Xuất theo biểu mẫu của bạn', 'data-lg103-act="forms-open"', { sub: 'Bảng kê toạ độ · Excel · trang PDF theo mẫu' }) +
       mRow('✂', 'Mô phỏng tách thửa', 'data-lg103-act="split-open"', { sub: 'Chia thửa đang chọn thành 2 phần' }) +
       mRow('🧩', 'Kiểm tra chồng lấn / khe hở thửa', 'data-lg103-act="topo"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
@@ -26605,6 +26606,11 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'gnss-open': openSheet('Máy thu GNSS/RTK', LGGnss.panelHTML()); return true;
       case 'gnss-ble': case 'gnss-serial': { var gp = act === 'gnss-ble' ? LGGnss.connectBLE() : LGGnss.connectSerial(9600); gp.then(function () { body.innerHTML = LGGnss.panelHTML(); var tm = setInterval(function () { if (!document.body.contains(body) || !body.querySelector('.lg22')) { clearInterval(tm); return; } body.innerHTML = LGGnss.panelHTML(); }, 1500); }, function (er) { try { window.toast({ title: 'Chưa kết nối được máy thu', description: String(er && er.message || er), variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h22i'); } }); return true; }
       case 'gnss-off': LGGnss.disconnect(); body.innerHTML = LGGnss.panelHTML(); return true;
+      case 'forms-open': { openSheet('Xuất theo biểu mẫu', ''); LGForms.mount(body, currentPlot()); return true; }
+      case 'frm-open': { var fp = currentPlot(); if (!fp) { try { window.toast({ title: 'Chưa chọn thửa', description: 'Chọn một thửa ở ▤ Thửa trước.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25a'); } return true; } closeSheet(); LGForms.open(t.getAttribute('data-id'), fp); return true; }
+      case 'frm-xlsx': case 'frm-csv': { var fp2 = currentPlot(), fid = t.getAttribute('data-id'), ff = LGForms.get(fid); if (!fp2 && ff && /"dong"\s*:\s*"moc"/.test(ff.noi_dung)) { try { window.toast({ title: 'Chưa chọn thửa', description: 'Biểu mẫu theo mốc cần một thửa.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25b'); } return true; } LGForms.exportTable(fid, fp2, act === 'frm-csv' ? 'csv' : 'xlsx').then(function (r) { try { window.toast({ title: 'Đã xuất ' + (r.dinh_dang || '').toUpperCase(), description: r.dong + ' dòng' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25c'); } }); return true; }
+      case 'frm-del': { if (confirm('Xoá biểu mẫu này?')) { LGForms.remove(t.getAttribute('data-id')); LGForms.mount(body, currentPlot()); } return true; }
+      case 'frm-add': { var r25 = LGForms.add(document.getElementById('lg25-name').value, document.getElementById('lg25-kind').value, document.getElementById('lg25-body').value); if (!r25.ok) { try { window.toast({ title: 'Chưa lưu được biểu mẫu', description: r25.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25d'); } return true; } LGForms.mount(body, currentPlot()); return true; }
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -43568,6 +43574,109 @@ body.lg175-stack-open #lg124-stack{
   }
   if (window.LGPacks && window.LGPacks.config) window.LGPacks.config({ resolveUrl: signUrl });
   window.LGPackSign = { resolve: signUrl };
+})();
+</script>
+<script>
+/* HM-25 — XUẤT THEO BIỂU MẪU CỦA BẠN. Hai loại biểu mẫu nạp từ file/dán (lưu trên máy, localStorage `landgis_forms`):
+   • "html": trang A4 tự thiết kế; điền dữ liệu bằng {{trường}} (đã mã hoá HTML), {{{trường}}} (HTML thô, vd {{{so_do}}}), {{trường|2}} (số, 2 chữ số thập phân, dấu phẩy),
+     khối lặp {{#moc}}…{{/moc}} (mỗi mốc) và {{#giap}}…{{/giap}}, khối có điều kiện {{#neu trường}}…{{/neu}}. Mở → In / Lưu PDF.
+   • "bang": JSON {"ten":…, "dong":"moc"|"thua", "cot":[{"tieu_de":…, "truong":…, "dp":2}]} → xuất Excel (.xlsx) hoặc CSV (BOM).
+   Trường thửa: so_thua, to_ban_do, dia_chi, chu_su_dung, cccd (che theo tuỳ chọn HM-14), loai_dat, nguon_goc, dien_tich_gcn, dien_tich_do, dien_tich_khong_cap, dien_tich_sau_tru, chenh_lech,
+   sai_so_cho_phep, ket_luan, ktt, so_moc, chu_vi, ngay_xuat, gio_xuat, ma_tra_cuu, giap_bac/dong/nam/tay, so_do.  Trường mốc (trong {{#moc}}): stt, ten, x, y, canh, dai, huong.
+   Trường thửa dùng cho dòng "thua": id, so_thua, to_ban_do, dia_chi, dien_tich_do, dien_tich_gcn, chenh_lech, ket_luan, so_moc. */
+(function () {
+  'use strict';
+  var KEY = 'landgis_forms';
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var fmt = function (v, dp) { if (v == null || v === '' || !isFinite(+v)) return v == null ? '' : String(v); return Number(v).toFixed(dp).replace('.', ','); };
+  function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function store(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); return true; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25s'); return false; } }
+  var BUILTIN = [
+    { id: 'mac-dinh-bang-moc', ten: 'Bảng kê toạ độ mốc (mẫu có sẵn)', loai: 'html', builtin: true, noi_dung:
+      '<div style="font:13px/1.45 Arial,sans-serif"><h2 style="text-align:center;margin:0">BẢNG KÊ TOẠ ĐỘ MỐC RANH GIỚI THỬA ĐẤT</h2><p style="text-align:center;margin:4px 0 12px">Thửa {{so_thua}}{{#neu to_ban_do}} · Tờ bản đồ {{to_ban_do}}{{/neu}}{{#neu dia_chi}} · {{dia_chi}}{{/neu}}</p>' +
+      '<table style="width:100%;border-collapse:collapse" border="1" cellpadding="4"><thead><tr><th>STT</th><th>Mốc</th><th>X Bắc (m)</th><th>Y Đông (m)</th><th>Cạnh dài (m)</th></tr></thead><tbody>{{#moc}}<tr><td>{{stt}}</td><td>{{ten}}</td><td style="text-align:right">{{x|3}}</td><td style="text-align:right">{{y|3}}</td><td style="text-align:right">{{dai|2}}</td></tr>{{/moc}}</tbody></table>' +
+      '<p>Diện tích đo từ toạ độ: <b>{{dien_tich_do|2}} m²</b> · Chu vi: <b>{{chu_vi|2}} m</b> · Hệ toạ độ VN-2000, kinh tuyến trục {{ktt}}°.</p><div style="text-align:center">{{{so_do}}}</div><p style="text-align:right">Ngày {{ngay_xuat}}</p></div>' },
+    { id: 'mac-dinh-bang-thua', ten: 'Danh sách thửa (Excel, mẫu có sẵn)', loai: 'bang', builtin: true, noi_dung: JSON.stringify({ ten: 'Danh sách thửa', dong: 'thua', cot: [{ tieu_de: 'Số thửa', truong: 'so_thua' }, { tieu_de: 'Tờ bản đồ', truong: 'to_ban_do' }, { tieu_de: 'Địa chỉ', truong: 'dia_chi' }, { tieu_de: 'Diện tích đo (m²)', truong: 'dien_tich_do', dp: 2 }, { tieu_de: 'Diện tích GCN (m²)', truong: 'dien_tich_gcn', dp: 2 }, { tieu_de: 'Chênh lệch (m²)', truong: 'chenh_lech', dp: 2 }, { tieu_de: 'Kết luận', truong: 'ket_luan' }, { tieu_de: 'Số mốc', truong: 'so_moc' }] }) },
+    { id: 'mac-dinh-bang-moc-xlsx', ten: 'Bảng toạ độ mốc (Excel, mẫu có sẵn)', loai: 'bang', builtin: true, noi_dung: JSON.stringify({ ten: 'Toạ độ mốc', dong: 'moc', cot: [{ tieu_de: 'STT', truong: 'stt' }, { tieu_de: 'Mốc', truong: 'ten' }, { tieu_de: 'X Bắc (m)', truong: 'x', dp: 3 }, { tieu_de: 'Y Đông (m)', truong: 'y', dp: 3 }, { tieu_de: 'Cạnh dài (m)', truong: 'dai', dp: 2 }, { tieu_de: 'Phương vị (°)', truong: 'huong', dp: 1 }] }) }
+  ];
+  function list() { return BUILTIN.concat(load()); }
+  function get(id) { return list().filter(function (f) { return f.id === id; })[0] || null; }
+  /* kiểm tra khi nạp: html phải cân khối {{#…}}/{{/…}}; bang phải là JSON có cot[] */
+  function validate(loai, text) {
+    text = String(text || ''); if (!text.trim()) return 'Biểu mẫu trống';
+    if (loai === 'bang') { var j; try { j = JSON.parse(text); } catch (e) { return 'JSON không hợp lệ: ' + e.message; } if (!j || !Array.isArray(j.cot) || !j.cot.length) return 'Thiếu mảng "cot"'; if (j.dong !== 'moc' && j.dong !== 'thua') return '"dong" phải là "moc" hoặc "thua"'; if (j.cot.some(function (c) { return !c || !c.truong; })) return 'Mỗi cột cần "truong"'; return ''; }
+    var open = (text.match(/\{\{#(moc|giap|neu)\b/g) || []).length, close = (text.match(/\{\{\/(moc|giap|neu)\}\}/g) || []).length;
+    if (open !== close) return 'Khối {{#…}} và {{/…}} không khớp (' + open + ' mở, ' + close + ' đóng)'; return '';
+  }
+  function add(ten, loai, text) {
+    var err = validate(loai, text); if (err) return { ok: false, loi: err }; if (!String(ten || '').trim()) return { ok: false, loi: 'Thiếu tên biểu mẫu' };
+    if (loai === 'html' && /<\s*(script|iframe|object|embed|link|meta|base|form)\b|\son\w+\s*=|javascript:/i.test(text)) return { ok: false, loi: 'Biểu mẫu HTML không được chứa script, khung nhúng hay sự kiện (onclick…)' };
+    var a = load(), f = { id: 'u' + Date.now().toString(36), ten: String(ten).trim().slice(0, 80), loai: loai, noi_dung: String(text), at: Date.now() }; a.push(f); if (!store(a)) return { ok: false, loi: 'Không lưu được (bộ nhớ đầy)' }; return { ok: true, form: f };
+  }
+  function remove(id) { var a = load().filter(function (f) { return f.id !== id; }); store(a); }
+  /* ---- dữ liệu ---- */
+  function azimuth(a, b) { var d = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI; return (d + 360) % 360; }
+  function plotData(plot) {
+    var m = plot.meta || {}, pts = (plot.points || []).map(function (q) { return { x: +q.x, y: +q.y, ten: q.ten }; }); if (pts.length > 1 && pts[0].x === pts[pts.length - 1].x && pts[0].y === pts[pts.length - 1].y) pts.pop();
+    var area = (typeof calcArea === 'function') ? calcArea(plot.points || []) : (window.lgCoreArea ? window.lgCoreArea(pts) : 0), gcn = parseFloat(m.dien_tich_m2), kc = parseFloat(m.dien_tich_khong_cap_gcn) || 0;
+    var V = (isFinite(gcn) && gcn > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(area, gcn, kc) : null, now = new Date(), per = 0;
+    var moc = pts.map(function (p, i) { var q = pts[(i + 1) % pts.length], dai = Math.hypot(q.x - p.x, q.y - p.y); per += dai; return { stt: i + 1, ten: p.ten != null ? p.ten : i + 1, x: p.x, y: p.y, dai: dai, huong: azimuth(p, q) }; });
+    var giap = []; try { if (window.LG35) giap = LG35.fromPlot(plot).map(function (e) { return { huong: ({ bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' })[e.huong], noi_dung: LG35.toText(e) || 'chưa rõ' }; }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25g'); }
+    var gm = {}; giap.forEach(function (g) { gm[g.huong] = g.noi_dung; });
+    var svg = ''; try { svg = window.LG57.sketchSVG(plot, 150, 105); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h25v'); }
+    var cc = window.lgMaskId ? window.lgMaskId(m.cccd_cmnd) : m.cccd_cmnd, hash = (typeof reportHash === 'function') ? reportHash([plot.id, plot.lon0, area.toFixed(3)].join('#')) : '';
+    return { id: plot.id, so_thua: m.so_thua || plot.id, to_ban_do: m.to_ban_do || '', dia_chi: [m.dia_chi, m.phuong_xa, m.quan_huyen, m.tinh_thanh].filter(Boolean).join(', '), chu_su_dung: m.chu_su_dung || '', cccd: cc || '', loai_dat: m.loai_dat || m.muc_dich_su_dung || '', nguon_goc: m.nguon_goc_su_dung || '',
+      dien_tich_gcn: isFinite(gcn) ? gcn : '', dien_tich_do: area, dien_tich_khong_cap: kc, dien_tich_sau_tru: V ? V.effective : '', chenh_lech: V ? V.diff : '', sai_so_cho_phep: V ? V.tol : '', ket_luan: V ? (V.ok ? 'ĐẠT' : 'KHÔNG ĐẠT') : '',
+      ktt: plot.lon0 != null ? plot.lon0 : '', so_moc: pts.length, chu_vi: per, ngay_xuat: now.toLocaleDateString('vi-VN'), gio_xuat: now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }), ma_tra_cuu: hash, giap_bac: gm['Bắc'] || '', giap_dong: gm['Đông'] || '', giap_nam: gm['Nam'] || '', giap_tay: gm['Tây'] || '', so_do: svg, moc: moc, giap: giap };
+  }
+  /* ---- bộ điền mẫu ---- */
+  function render(tpl, data) {
+    var guard = 0;
+    function run(t, ctx) {
+      t = t.replace(/\{\{#(moc|giap)\}\}([\s\S]*?)\{\{\/\1\}\}/g, function (_, name, inner) { if (++guard > 5000) return ''; return (ctx[name] || data[name] || []).map(function (row) { return run(inner, Object.assign({}, ctx, row)); }).join(''); });
+      t = t.replace(/\{\{#neu\s+([\w]+)\}\}([\s\S]*?)\{\{\/neu\}\}/g, function (_, name, inner) { var v = ctx[name] != null ? ctx[name] : data[name]; return (v !== '' && v != null && v !== false && !(Array.isArray(v) && !v.length)) ? run(inner, ctx) : ''; });
+      t = t.replace(/\{\{\{\s*(\w+)\s*\}\}\}/g, function (_, name) { var v = ctx[name] != null ? ctx[name] : data[name]; return v == null ? '' : (name === 'so_do' ? String(v) : h(v).replace(/\{/g, '&#123;')); });
+      t = t.replace(/\{\{\s*(\w+)(?:\|(\d))?\s*\}\}/g, function (_, name, dp) { var v = ctx[name] != null ? ctx[name] : data[name]; if (Array.isArray(v)) return ''; return h(dp != null ? fmt(v, +dp) : (typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(+v.toFixed(3)).replace('.', ',')) : v)).replace(/\{/g, '&#123;'); });
+      return t;
+    }
+    return run(String(tpl), {});
+  }
+  function pageHTML(form, plot) { return '<div class="lg21-page lg25-page">' + render(form.noi_dung, plotData(plot)) + '</div>'; }
+  function open(id, plot) { var f = get(id); if (!f || f.loai !== 'html') return null; return window.LG21 ? window.LG21.openHTML(pageHTML(f, plot)) : null; }
+  /* ---- bảng ---- */
+  function table(form, plot) {
+    var spec = JSON.parse(form.noi_dung), cols = spec.cot, rows;
+    if (spec.dong === 'moc') rows = plotData(plot).moc; else rows = (typeof plots !== 'undefined' ? plots : []).map(function (p) { return plotData(p); });
+    var head = cols.map(function (c) { return c.tieu_de || c.truong; }), body = rows.map(function (r) { return cols.map(function (c) { var v = r[c.truong]; if (v == null) return ''; return (c.dp != null && isFinite(+v) && v !== '') ? Number(Number(v).toFixed(c.dp)) : v; }); });
+    return { ten: spec.ten || form.ten, head: head, rows: body, dp: cols.map(function (c) { return c.dp; }) };
+  }
+  function toCSV(t) { var q = function (v) { v = v == null ? '' : String(v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }; return '﻿' + [t.head].concat(t.rows.map(function (r, i) { return r.map(function (v, k) { return (typeof v === 'number' && t.dp[k] != null) ? v.toFixed(t.dp[k]).replace('.', ',') : v; }); })).map(function (r) { return r.map(q).join(';'); }).join('\r\n') + '\r\n'; }
+  function save(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000); }
+  function exportTable(id, plot, kind) {
+    var f = get(id); if (!f || f.loai !== 'bang') return Promise.resolve({ ok: false, loi: 'Không phải biểu mẫu bảng' }); var t = table(f, plot), base = String(t.ten).replace(/[^\p{L}\p{N}\-]+/gu, '_') + '-' + new Date().toISOString().slice(0, 10);
+    var csv = function () { save(new Blob([toCSV(t)], { type: 'text/csv;charset=utf-8' }), base + '.csv'); return { ok: true, dinh_dang: 'csv', dong: t.rows.length }; };
+    if (kind === 'csv') return Promise.resolve(csv());
+    return (typeof ensureXLSX === 'function' ? Promise.resolve(ensureXLSX()).catch(function () { }) : Promise.resolve()).then(function () {
+      if (typeof XLSX === 'undefined') return csv();
+      var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([t.head].concat(t.rows)), String(t.ten).slice(0, 31)); XLSX.writeFile(wb, base + '.xlsx'); return { ok: true, dinh_dang: 'xlsx', dong: t.rows.length };
+    });
+  }
+  /* ---- giao diện ---- */
+  function panelHTML(plot) {
+    var rows = list().map(function (f) {
+      return '<div class="lg25-row" style="border:1px solid #d6dfd9;border-radius:10px;padding:8px;margin:6px 0"><b>' + h(f.ten) + '</b> <small>(' + (f.loai === 'html' ? 'trang in/PDF' : 'bảng Excel/CSV') + (f.builtin ? ' · có sẵn' : '') + ')</small><div class="lg103-actions">' +
+        (f.loai === 'html' ? '<button type="button" class="lg103-abtn" data-lg103-act="frm-open" data-id="' + h(f.id) + '">Xem / In PDF</button>' : '<button type="button" class="lg103-abtn" data-lg103-act="frm-xlsx" data-id="' + h(f.id) + '">Excel</button><button type="button" class="lg103-abtn" data-lg103-act="frm-csv" data-id="' + h(f.id) + '">CSV</button>') +
+        (f.builtin ? '' : '<button type="button" class="lg103-abtn" data-lg103-act="frm-del" data-id="' + h(f.id) + '">Xoá</button>') + '</div></div>'; }).join('');
+    return '<div class="lg25"><p class="lg8e-note">' + (plot ? 'Thửa đang chọn: <b>' + h((plot.meta && plot.meta.so_thua) || plot.id) + '</b>. ' : '<b>Chưa chọn thửa</b> — biểu mẫu trang cần một thửa. ') + 'Biểu mẫu lưu trên máy.</p>' + rows +
+      '<h5>Nạp biểu mẫu của bạn</h5><label>Tên <input id="lg25-name" type="text" aria-label="Tên biểu mẫu"></label><label>Loại <select id="lg25-kind" aria-label="Loại biểu mẫu"><option value="html">Trang in/PDF (HTML)</option><option value="bang">Bảng Excel/CSV (JSON)</option></select></label>' +
+      '<label>Nội dung (dán vào đây) <textarea id="lg25-body" rows="6" aria-label="Nội dung biểu mẫu" placeholder="&lt;h2&gt;Thửa {{so_thua}}&lt;/h2&gt;{{#moc}}…{{/moc}}"></textarea></label><label>…hoặc chọn file <input id="lg25-file" type="file" accept=".html,.htm,.json,.txt" aria-label="Chọn file biểu mẫu"></label>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="frm-add">Lưu biểu mẫu</button></div><details><summary>Các trường dùng được</summary><p class="lg8e-note">Thửa: so_thua, to_ban_do, dia_chi, chu_su_dung, cccd, loai_dat, dien_tich_gcn, dien_tich_do, dien_tich_khong_cap, dien_tich_sau_tru, chenh_lech, sai_so_cho_phep, ket_luan, ktt, so_moc, chu_vi, ngay_xuat, ma_tra_cuu, giap_bac/dong/nam/tay, so_do. Mốc ({{#moc}}): stt, ten, x, y, dai, huong. Định dạng số: {{dien_tich_do|2}}.</p></details></div>';
+  }
+  function mount(el, plot) {
+    el.innerHTML = panelHTML(plot); var fi = el.querySelector('#lg25-file');
+    if (fi) fi.addEventListener('change', function () { var f = fi.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { el.querySelector('#lg25-body').value = String(r.result || ''); var nm = el.querySelector('#lg25-name'); if (!nm.value) nm.value = f.name.replace(/\.[^.]+$/, ''); el.querySelector('#lg25-kind').value = /\.json$/i.test(f.name) ? 'bang' : 'html'; }; r.readAsText(f); });
+  }
+  window.LGForms = { mount: mount, list: list, get: get, add: add, remove: remove, validate: validate, render: render, plotData: plotData, pageHTML: pageHTML, open: open, table: table, toCSV: toCSV, exportTable: exportTable, panelHTML: panelHTML };
 })();
 </script>
 </body>
