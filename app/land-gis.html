@@ -274,14 +274,72 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   };
   window.clearInterval = function (id) { delete timers[id]; return rawCI(id); };
   if (RawMO) {
+    /* HM-07c — GOM OBSERVER: mọi `new MutationObserver(cb).observe(target, opts)` của ứng dụng dùng chung MỘT observer thật
+       cho mỗi phần tử đích (hợp các tuỳ chọn); bản ghi được phân phát lại cho từng callback theo đúng tuỳ chọn của nó
+       (childList/attributes/attributeFilter/subtree/characterData). Hành vi từng observer không đổi, số observer thật giảm. */
+    var hubs = [];   // { target, raw, entries: [] }
+    function hubFor(target) {
+      // mọi phần tử nằm trong <body> dùng chung MỘT observer thật gắn ở <body> (phân phát lại theo phạm vi từng đăng ký)
+      var T = (document.body && target !== document.body && document.body.contains(target)) ? document.body : target;
+      for (var i = 0; i < hubs.length; i++) if (hubs[i].target === T) return hubs[i];
+      var h = { target: T, entries: [], raw: null, key: '' };
+      h.raw = new RawMO(function (records) {
+        h.entries.slice().forEach(function (en) {
+          var mine = records.filter(function (r) { return en.match(r); });
+          if (mine.length) { en.info.runs++; en.info.records += mine.length; try { en.cb.call(en.obs, mine, en.obs); } catch (e) { setTimeout(function () { throw e; }); } }
+        });
+      });
+      hubs.push(h); return h;
+    }
+    function optKey(h) {
+      var u = { childList: false, attributes: false, characterData: false, subtree: false, attributeOldValue: false, characterDataOldValue: false, filter: [], anyAttr: false };
+      h.entries.forEach(function (en) { var o = en.opts;
+        u.childList = u.childList || !!o.childList; u.characterData = u.characterData || !!o.characterData; u.subtree = u.subtree || !!o.subtree || en.target !== h.target;
+        u.attributeOldValue = u.attributeOldValue || !!o.attributeOldValue; u.characterDataOldValue = u.characterDataOldValue || !!o.characterDataOldValue;
+        var at = o.attributes || !!o.attributeFilter || !!o.attributeOldValue;
+        if (at) { u.attributes = true; if (o.attributeFilter) o.attributeFilter.forEach(function (f) { if (u.filter.indexOf(f) < 0) u.filter.push(f); }); else u.anyAttr = true; }
+      });
+      var opt = { childList: u.childList, characterData: u.characterData, subtree: u.subtree };
+      if (u.attributes) { opt.attributes = true; if (!u.anyAttr) opt.attributeFilter = u.filter; }
+      if (u.attributeOldValue) opt.attributeOldValue = true; if (u.characterDataOldValue) opt.characterDataOldValue = true;
+      return opt;
+    }
+    function reobserve(h) {
+      h.raw.disconnect();
+      if (h.entries.length) h.raw.observe(h.target, optKey(h));
+    }
     window.MutationObserver = function (cb) {
-      var info = { site: site(), runs: 0, records: 0, live: true };
-      observers.push(info);
-      var o = new RawMO(function (ms, self) { info.runs++; info.records += ms.length; return cb.call(this, ms, self); });
-      var dis = o.disconnect.bind(o); o.disconnect = function () { info.live = false; return dis(); };
-      return o;
+      var obs = this instanceof window.MutationObserver ? this : Object.create(window.MutationObserver.prototype);
+      var info = { site: site(), runs: 0, records: 0, live: false, hubs: 0 }; observers.push(info);
+      var mine = [];   // các entry của observer này
+      obs.observe = function (target, opts) {
+        opts = opts || {};
+        if (!(opts.childList || opts.attributes || opts.characterData || opts.attributeFilter || opts.attributeOldValue || opts.characterDataOldValue)) throw new TypeError("Failed to execute 'observe' on 'MutationObserver': The options object must set at least one of 'attributes', 'characterData', or 'childList' to true.");
+        var h = hubFor(target);
+        var existing = mine.filter(function (en) { return en.hub === h; })[0];
+        if (existing) { existing.opts = opts; } else {
+          var en = { cb: cb, obs: obs, opts: opts, target: target, info: info, hub: h, match: null };
+          en.match = function (r) {
+            var o = en.opts;
+            if (r.type === 'childList') { if (!o.childList) return false; }
+            else if (r.type === 'attributes') {
+              if (!(o.attributes || o.attributeFilter || o.attributeOldValue)) return false;
+              if (o.attributes === false) return false;
+              if (o.attributeFilter && o.attributeFilter.indexOf(r.attributeName) < 0) return false;
+            } else if (r.type === 'characterData') { if (!o.characterData && !o.characterDataOldValue) return false; }
+            return r.target === en.target || (!!o.subtree && en.target.contains(r.target));
+          };
+          mine.push(en); h.entries.push(en); info.hubs = mine.length;
+        }
+        info.live = true; reobserve(h);
+      };
+      obs.disconnect = function () { mine.forEach(function (en) { var i = en.hub.entries.indexOf(en); if (i >= 0) en.hub.entries.splice(i, 1); reobserve(en.hub); }); mine = []; info.live = false; };
+      obs.takeRecords = function () { return []; };
+      return obs;
     };
     window.MutationObserver.prototype = RawMO.prototype;
+    window.MutationObserver.raw = RawMO;
+    window.LG_OBSERVER_HUBS = function () { return hubs.filter(function (h) { return h.entries.length; }).map(function (h) { return { target: (h.target.id || h.target.nodeName || '').toString(), entries: h.entries.length }; }); };
   }
   // GPS: mỗi watchPosition có clearWatch tương ứng; ẩn app thì tạm dừng, hiện lại thì đăng ký lại (id gọi hàm giữ nguyên)
   try {
@@ -23365,8 +23423,11 @@ div[style*="Made with Replit"], .lg73-killed { display: none !important; visibil
     if (hud) hud.style.visibility = vis ? '' : 'hidden';
     if (pill) pill.style.visibility = vis ? '' : 'hidden';
   }
-  try { new MutationObserver(hudAutoHide).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q267'); }
-  setInterval(hudAutoHide, 800);
+  // HM-07c: không quét toàn trang theo từng thay đổi DOM — gộp (tối đa 1 lần/400 ms), chu kỳ dự phòng thưa 3 s
+  var hudT = 0;
+  function hudSched() { if (hudT) return; hudT = setTimeout(function () { hudT = 0; hudAutoHide(); }, 400); }
+  try { new MutationObserver(hudSched).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q267'); }
+  setInterval(hudAutoHide, 3000);
 
   function dirName(h) {
     var n = ['B', 'ĐB', 'Đ', 'ĐN', 'N', 'TN', 'T', 'TB'];
@@ -30847,7 +30908,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
     if ((!okC || !okE) && ++tries < 60) { setTimeout(boot, 250); return; }
     // A4-2: gộp CSS trùng sau khi mọi khối style đã nạp (bỏ qua nếu ?lgNoCssMerge)
     setTimeout(function () {
-      if (!qflag('lgNoCssMerge')) { try { cssMerge(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q417'); } }
+      if (qflag('lgCssMerge')) { try { cssMerge(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q417'); } }
       try {
         var old = document.querySelector('.lg120-badge'); if (old) old.remove();
         var b = document.createElement('div');
@@ -31278,7 +31339,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
   (function boot() {
     if (!buildFab() && ++tries < 60) { setTimeout(boot, 250); return; }
     setTimeout(function () {
-      if (!qflag('lgNoCssMerge2')) { try { cssMerge2(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q427'); } try { cssPrune(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q428'); } }
+      if (qflag('lgCssMerge2')) { try { cssMerge2(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q427'); } try { cssPrune(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q428'); } }
       try {
         var old = document.querySelector('.lg121-badge');
         if (old) old.textContent = window.LG_VERSION;
