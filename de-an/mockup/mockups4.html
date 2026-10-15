@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Land GIS giáp ranh</title>
+<link rel="stylesheet" href="base.css">
+<style>
+.badge.bad{background:var(--badbg);color:var(--bad)}.badge.mut{background:#ECEFED;color:var(--mut)}.badge.warn{background:#FFF1CC;color:#7A5600}
+table.gr td{font-family:inherit;font-size:13px;height:auto;padding:8px 4px;vertical-align:top;letter-spacing:0}
+table.gr th{font-size:11.5px}
+.src{font-size:11px;color:var(--mut)}
+tr.bad td{background:var(--badbg)}
+.nchip{position:absolute;background:#fff;border:2px solid #1565C0;color:#0D47A1;border-radius:10px;padding:3px 8px;font-size:12.5px;font-weight:800;box-shadow:0 1px 4px rgba(0,0,0,.25);white-space:nowrap}
+.nchip small{display:block;font-size:10.5px;font-weight:600;color:#5B6B63}
+.nchip.road{border-color:#8D6E63;color:#5D4037}
+</style></head><body>
+
+<!-- 20. HỒ SƠ — TAB GIÁP RANH -->
+<div class="phone" id="g20">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Thửa 131 · Tờ 10.1<br><small>Đất ở đô thị · 89,9 m² · ✓ Đạt</small></h1><div class="ib">⇪</div></div>
+  <div class="seg"><div>Tổng quan</div><div>Toạ độ</div><div class="on">Giáp ranh</div><div>Ảnh</div></div>
+  <div class="card" style="padding:6px;display:flex;justify-content:center"><svg width="330" height="200" id="gsvg"></svg></div>
+  <div style="padding:0 12px">
+  <table class="gr"><tr><th>Cạnh</th><th>Dài</th><th>Hướng</th><th>Giáp</th><th>Sổ</th></tr>
+   <tr><td><b>3–4</b></td><td>17,58</td><td>Tây</td><td><b>Thửa 130 · tờ 10.1</b><div class="src">nguồn: sổ + hình học</div></td><td><span class="badge ok">✓ có</span></td></tr>
+   <tr><td><b>7–8</b></td><td>19,32</td><td>Đông</td><td><b>Thửa 132 · tờ 10.1</b><div class="src">nguồn: sổ + hình học</div></td><td><span class="badge warn">lệch</span></td></tr>
+   <tr><td><b>5–6</b></td><td>4,50</td><td>Nam</td><td><b>Đường Phạm Ngũ Lão</b><div class="src">nguồn: sổ</div></td><td>—</td></tr>
+   <tr><td><b>8–1</b></td><td>7,81</td><td>Bắc</td><td><b>Chưa rõ</b><div class="src">sổ ghi "BHK" — cần xác nhận</div></td><td><span class="badge mut">chưa</span></td></tr>
+  </table></div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">✎ Sửa giáp ranh</div><div class="btn p" style="flex:1.3">⇄ Đối chiếu thửa 132</div></div></div>
+</div>
+
+<!-- 21. ĐỐI CHIẾU VỚI SỔ THỬA BÊN CẠNH -->
+<div class="phone" id="g21">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Đối chiếu 131 ⇄ 132<br><small>Cạnh chung 7–8 · 2 sổ đã nhập</small></h1></div>
+  <div class="card" style="padding:6px;display:flex;justify-content:center"><svg width="330" height="210" id="csvg"></svg></div>
+  <div class="card" style="background:#FFF6E0;border-color:#F1D9A0;font-size:13.5px;line-height:1.45"><b>⚠ Mốc 8 lệch 0,12 m</b> giữa hai sổ (ngưỡng khớp 0,05 m). Có thể do đo đạc hai thời điểm khác nhau. Phần hai sổ cùng nhận ≈ <b>0,07 m²</b> (hình tam giác dọc cạnh 7–8).</div>
+  <div style="padding:0 12px">
+  <table class="gr"><tr><th>Mốc chung</th><th>Sổ thửa 131 (X, Y)</th><th>Sổ thửa 132 (X, Y)</th><th>Lệch</th></tr>
+   <tr><td><b>7</b></td><td>2259317,37<br>568036,15</td><td>2259317,37<br>568036,15</td><td><span class="badge ok">0,00</span></td></tr>
+   <tr class="bad"><td><b>8</b></td><td>2259336,65<br>568034,94</td><td>2259336,77<br>568034,94</td><td><span class="badge bad">0,12</span></td></tr>
+  </table>
+  <div class="row" style="justify-content:space-between;font-size:14px;margin:10px 4px"><span>Cạnh chung theo sổ 131 / 132</span><b>19,32 / 19,44 m</b></div></div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">Ghi chú hồ sơ</div><div class="btn p" style="flex:1.3">📄 Xuất biên bản đối chiếu</div></div></div>
+</div>
+
+<!-- 22. BẢN ĐỒ: NHÃN THỬA GIÁP RANH -->
+<div class="phone" id="g22">
+  <div class="map"><svg width="390" height="844" id="msvg"></svg></div>
+  <div class="status" style="position:absolute;top:0;left:0;right:0;color:#fff">9:41<span>●●● 5G ▮</span></div>
+  <div class="search">🔍 Tìm thửa, tờ bản đồ, địa chỉ…<div class="av">≡</div></div>
+  <div class="chips"><div class="chip" style="background:#E3F2FD;color:#0D47A1">▣ Giáp ranh: bật</div><div class="chip">🧭 KTT 105°30′</div></div>
+  <div class="nchip" style="left:56px;top:300px">130 · tờ 10.1<small>có sổ ✓</small></div>
+  <div class="nchip" style="left:262px;top:290px">132 · tờ 10.1<small>lệch mốc 8 ⚠</small></div>
+  <div class="nchip road" style="left:118px;top:466px">Đường Phạm Ngũ Lão</div>
+  <div class="nchip" style="left:150px;top:160px;border-style:dashed;color:#5B6B63;border-color:#9AA8A0">? phía Bắc<small>chưa xác định</small></div>
+  <div class="sheet" style="top:600px;bottom:98px">
+    <div class="handle"></div>
+    <div class="row" style="justify-content:space-between"><div><div class="t">Thửa 131 · Tờ 10.1</div><div class="m">Giáp: Tây 130 · Đông 132 · Nam đường</div></div><span class="badge ok">✓ ĐẠT</span></div>
+    <div class="row" style="gap:8px;margin-top:10px"><div class="btn p" style="flex:1">📄 Hồ sơ</div><div class="btn s" style="flex:1.2">＋ Nhập sổ thửa 132</div></div>
+  </div>
+  <div class="dock"><div class="on"><b>🗺</b>Bản đồ</div><div><b>▤</b>Thửa</div><div class="plus"><b>＋</b>Nhập sổ</div><div><b>📄</b>Hồ sơ</div><div><b>⋯</b>Thêm</div></div><div class="homebar"></div>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const P=[[2259336.23,568027.14],[2259334.17,568027.23],[2259334.42,568031.07],[2259316.85,568031.69],[2259316.59,568031.70],[2259316.99,568036.18],[2259317.37,568036.15],[2259336.65,568034.94]];
+const N130=[[2259334.42,568031.07],[2259334.30,568024.10],[2259316.70,568024.80],[2259316.85,568031.69]];
+const N132=[[2259317.37,568036.15],[2259317.80,568041.20],[2259336.95,568040.10],[2259336.77,568034.94]];
+function el(s,n,a,txt){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;s.appendChild(e);return e}
+function poly(s,pts,a){return el(s,'polygon',Object.assign({points:pts.map(p=>p.join(',')).join(' ')},a))}
+// chiếu: ngang = Đông (Y), dọc = Bắc lên trên (X)
+function proj(sc,ox,oy){return p=>[ox+(p[1]-568032)*sc, oy-(p[0]-2259326)*sc]}
+// 20: sơ đồ có nhãn giáp ranh 4 phía
+(function(){const s=document.getElementById('gsvg');const f=proj(7.2,165,100);
+ poly(s,N130.map(f),{fill:'#E3F2FD',stroke:'#64B5F6','stroke-width':1.5,'stroke-dasharray':'4 3'});
+ poly(s,N132.map(f),{fill:'#E3F2FD',stroke:'#64B5F6','stroke-width':1.5,'stroke-dasharray':'4 3'});
+ poly(s,P.map(f),{fill:'#EEF5F1',stroke:'#B3261E','stroke-width':2});
+ P.forEach((p,i)=>{const q=f(p);el(s,'circle',{cx:q[0],cy:q[1],r:2.5,fill:'#B3261E'});el(s,'text',{x:q[0]+([0,1,2].includes(i)?-11:5),y:q[1]+(i===7||i===0?-4:12),'font-size':10,'font-weight':700,fill:'#14231C'},String(i+1))});
+ const c=f([2259326,568031.5]);el(s,'text',{x:c[0]-14,y:c[1]+4,'font-size':12,'font-weight':800,fill:'#0F4C34'},'131');
+ const a=f([2259326,568027.5]);el(s,'text',{x:a[0]-40,y:a[1]+4,'font-size':11,'font-weight':800,fill:'#0D47A1'},'130');
+ const b=f([2259326,568038.5]);el(s,'text',{x:b[0]-6,y:b[1]+4,'font-size':11,'font-weight':800,fill:'#0D47A1'},'132');
+ el(s,'rect',{x:110,y:178,width:110,height:16,rx:4,fill:'#EFE7DA'});el(s,'text',{x:118,y:190,'font-size':10.5,fill:'#5D4037','font-weight':700},'Đường Phạm Ngũ Lão');
+ el(s,'text',{x:132,y:14,'font-size':10.5,fill:'#5B6B63','font-weight':700},'Bắc: chưa rõ');el(s,'text',{x:300,y:14,'font-size':12,'font-weight':800,fill:'#0F4C34'},'B↑');
+})();
+// 21: phóng to cạnh chung 7–8, tô vùng lệch
+(function(){const s=document.getElementById('csvg');const f=proj(8.5,160,105);
+ poly(s,P.map(f),{fill:'#EEF5F1',stroke:'#B3261E','stroke-width':2});
+ poly(s,N132.map(f),{fill:'rgba(33,150,243,.12)',stroke:'#1E88E5','stroke-width':2});
+ const g=[P[6],P[7],N132[3]].map(f);poly(s,g,{fill:'rgba(179,38,30,.55)'});
+ const a=f(P[7]),b=f(N132[3]);el(s,'circle',{cx:a[0],cy:a[1],r:4,fill:'#B3261E'});el(s,'circle',{cx:b[0],cy:b[1],r:4,fill:'#1E88E5'});
+ el(s,"text",{x:a[0]-118,y:a[1]+34,'font-size':11,'font-weight':800,fill:'#B3261E'},'8 (sổ 131)');el(s,'text',{x:b[0]+6,y:b[1]-6,'font-size':11,'font-weight':800,fill:'#1565C0'},'8 (sổ 132)');
+ const c7=f(P[6]);el(s,'text',{x:c7[0]+6,y:c7[1]+14,'font-size':11,'font-weight':800,fill:'#14231C'},'7 khớp');
+ el(s,'text',{x:60,y:110,'font-size':13,'font-weight':800,fill:'#0F4C34'},'131');el(s,'text',{x:240,y:110,'font-size':13,'font-weight':800,fill:'#1565C0'},'132');
+ el(s,'text',{x:12,y:202,'font-size':10.5,fill:'#5B6B63'},'Vùng đỏ: phần hai sổ cùng nhận (phóng đại để dễ nhìn)');
+})();
+// 22: bản đồ
+(function(){const s=document.getElementById('msvg');const cols=['#71835c','#7d8d63','#66784f','#8a9470','#5f7149','#9aa07e'];let sd=7;const r=()=>(sd=(sd*9301+49297)%233280)/233280;
+ for(let i=0;i<60;i++)el(s,'rect',{x:r()*390,y:r()*844,width:40+r()*110,height:30+r()*90,fill:cols[i%6]});
+ el(s,'path',{d:'M0 470 C120 462 260 482 390 476',stroke:'#d9d4c7','stroke-width':26,fill:'none'});
+ const f=proj(10,200,320);
+ poly(s,N130.map(f),{fill:'rgba(33,150,243,.18)',stroke:'#90CAF9','stroke-width':2.5});
+ poly(s,N132.map(f),{fill:'rgba(33,150,243,.18)',stroke:'#90CAF9','stroke-width':2.5});
+ poly(s,P.map(f),{fill:'rgba(229,57,53,.2)',stroke:'#FF3B30','stroke-width':3});
+ const c=f([2259326,568031.5]);el(s,'text',{x:c[0]-14,y:c[1],'font-size':15,'font-weight':800,fill:'#fff',style:'paint-order:stroke;stroke:#000a;stroke-width:3px'},'131');
+})();
+</script>
+</body></html>
