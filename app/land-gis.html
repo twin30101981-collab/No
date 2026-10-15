@@ -25894,19 +25894,65 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function clickIf(id) { var e = document.getElementById(id); if (e) { e.click(); return true; } return false; }
   function plotsAll() { try { return window.plots || []; } catch (e) { return []; } }
+  /* ============ HM-08i — MÀN THỬA (mockup ⑦): danh sách ảo hoá + tìm + lọc Đạt/Không đạt + trạng thái đồng bộ ============ */
+  var plotFilter = { q: '', f: 'all' };
+  var ROW_H = 54;
+  function normQ(t) { try { return String(t == null ? '' : t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); } catch (e) { return String(t || '').toLowerCase(); } }
+  function syncIds() {
+    var set = {};
+    try { ((window.LG172 && window.LG172.rows) || []).forEach(function (r) { if (r && r.ma_thua != null) set[String(r.ma_thua)] = true; }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8i0'); }
+    return set;
+  }
+  /* Mô hình danh sách (hàm thuần, dùng chung cho hiển thị và kiểm thử) */
+  function plotListItems(ps, flt) {
+    var synced = syncIds(), q = normQ(flt && flt.q || '').trim(), f = (flt && flt.f) || 'all';
+    return (ps || []).map(function (p) {
+      var m = p.meta || {}, area = (typeof calcArea === 'function') ? calcArea(p.points) : LG.cad.area(p.points);
+      var gcn = parseFloat(m.dien_tich_m2), verdict = 'none';
+      if (isFinite(gcn) && gcn > 0 && typeof lgAreaVerdict === 'function') verdict = lgAreaVerdict(area, gcn, parseFloat(m.dien_tich_khong_cap_gcn) || 0).ok ? 'ok' : 'bad';
+      var hay = normQ([p.id, m.so_thua ? 'thua ' + m.so_thua : '', m.to_ban_do ? 'to ' + m.to_ban_do : '', m.dia_chi, m.phuong_xa, m.tinh_thanh].filter(Boolean).join(' '));
+      return { id: p.id, area: area, n: (p.points || []).length, verdict: verdict, sync: !!synced[String(p.id)] || !!(m.ma_thua && synced[String(m.ma_thua)]), hay: hay };
+    }).filter(function (it) {
+      if (q && it.hay.indexOf(q) < 0) return false;
+      return f === 'all' || it.verdict === f || (f === 'unsynced' && !it.sync);
+    });
+  }
+  window.lgPlotListItems = plotListItems;
+  function rowHTML(it, top, sel) {
+    var vtxt = it.verdict === 'ok' ? '<span style="color:#1f7a3d">✔ Đạt</span>' : it.verdict === 'bad' ? '<span style="color:#8a1f1f">✕ Không đạt</span>' : '<span style="color:#777">— chưa có GCN</span>';
+    return '<button class="lg103-abtn lg103-prow" style="position:absolute;left:0;right:0;top:' + top + 'px;height:' + (ROW_H - 4) + 'px;text-align:left;margin:0' + (it.id === sel ? ';border-color:#0f4c34;font-weight:700' : '') + '" data-lg103-act="plot-select" data-pid="' + escA4(it.id) + '">' +
+      '<b>' + escA4(it.id) + '</b> · ' + it.area.toFixed(1) + ' m² · ' + it.n + ' mốc<br><small>' + vtxt + ' · ' + (it.sync ? '☁ Đã đồng bộ' : '📱 Chỉ trên máy') + '</small></button>';
+  }
+  var plistItems = [];
+  function renderPlotWindow() {
+    var box = document.getElementById('lg103-plist'); if (!box) return;
+    var inner = box.firstElementChild, st = box.scrollTop, h = box.clientHeight || 360;
+    var start = Math.max(0, Math.floor(st / ROW_H) - 4), end = Math.min(plistItems.length, Math.ceil((st + h) / ROW_H) + 4);
+    var sel = (function () { try { return window.selectedPlotId; } catch (e) { return null; } })(), html = '';
+    for (var i = start; i < end; i++) html += rowHTML(plistItems[i], i * ROW_H, sel);
+    inner.style.height = (plistItems.length * ROW_H) + 'px';
+    inner.innerHTML = html;
+    var cnt = document.getElementById('lg103-pcount'); if (cnt) cnt.textContent = plistItems.length + ' / ' + plotsAll().length + ' thửa';
+  }
+  function refreshPlotList() { plistItems = plotListItems(plotsAll(), plotFilter); renderPlotWindow(); }
+  window.lgRefreshPlotList = refreshPlotList;
+  function bindPlotList() {
+    var box = document.getElementById('lg103-plist'), q = document.getElementById('lg103-pq'); if (!box) return;
+    var raf = 0; box.addEventListener('scroll', function () { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; renderPlotWindow(); }); });
+    if (q) { var tm = 0; q.addEventListener('input', function () { plotFilter.q = q.value; clearTimeout(tm); tm = setTimeout(function () { box.scrollTop = 0; refreshPlotList(); }, 120); }); }
+    refreshPlotList();
+  }
   function tabPlots() {
     var ps = plotsAll();
-    var head = '<div class="lg103-kv"><span>Số thửa</span><span>' + ps.length + '</span></div>';
-    if (!ps.length) return head + '<div class="lg103-empty">Chưa có thửa nào. Bấm ＋ Nhập sổ để thêm thửa đầu tiên.</div>' +
+    if (!ps.length) return '<div class="lg103-kv"><span>Số thửa</span><span>0</span></div><div class="lg103-empty">Chưa có thửa nào. Bấm ＋ Nhập sổ để thêm thửa đầu tiên.</div>' +
       '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="goto-import">＋ Nhập sổ</button></div>';
-    var sel = (function () { try { return window.selectedPlotId; } catch (e) { return null; } })();
-    var rows = ps.map(function (p) {
-      var area = (typeof calcArea === 'function') ? calcArea(p.points) : LG.cad.area(p.points);
-      return '<button class="lg103-abtn" style="text-align:left;width:100%;margin:3px 0' + (p.id === sel ? ';border-color:#0f4c34;font-weight:700' : '') + '" data-lg103-act="plot-select" data-pid="' + escA4(p.id) + '">' +
-        escA4(p.id) + ' · ' + area.toFixed(1) + ' m² · ' + (p.points || []).length + ' mốc</button>';
-    }).join('');
-    return head + '<div class="lg103-actions" style="flex-direction:column">' + rows + '</div>' +
-      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="legacy-plots">▤ Quản lý thửa đầy đủ (tìm, sửa, đối soát)</button></div>';
+    var chip = function (k, t) { return '<button class="lg103-abtn" data-lg103-act="pf-' + k + '"' + (plotFilter.f === k ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t + '</button>'; };
+    setTimeout(bindPlotList, 0);
+    return '<input id="lg103-pq" type="search" placeholder="Tìm thửa · tờ · địa chỉ" value="' + escA4(plotFilter.q) + '" style="width:100%;padding:10px;border:1px solid #cfd8dc;border-radius:10px;font-size:var(--lg-fs);margin-bottom:6px">' +
+      '<div class="lg103-actions">' + chip('all', 'Tất cả') + chip('ok', '✔ Đạt') + chip('bad', '✕ Không đạt') + chip('none', '— Chưa GCN') + chip('unsynced', '📱 Chưa đồng bộ') + '</div>' +
+      '<div class="lg103-kv"><span>Hiển thị</span><span id="lg103-pcount"></span></div>' +
+      '<div id="lg103-plist" style="position:relative;overflow:auto;height:46vh;border:1px solid #e3e8e5;border-radius:10px"><div style="position:relative"></div></div>' +
+      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="legacy-plots">▤ Quản lý thửa đầy đủ (sửa, đối soát)</button></div>';
   }
   function tabImport() {
     return '<h5>Nhập sổ — chọn cách nhập</h5><div class="lg103-actions">' +
@@ -25993,6 +26039,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
       case 'goto-import': selectTab('import'); return true;
+      case 'pf-all': case 'pf-ok': case 'pf-bad': case 'pf-none': case 'pf-unsynced':
+        plotFilter.f = act.slice(3); body.innerHTML = tabPlots(); return true;
       case 'plot-select': {
         var id = t.getAttribute('data-pid');
         try { if (typeof window.setSelectedPlotId === 'function') window.setSelectedPlotId(id); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8b1'); }
