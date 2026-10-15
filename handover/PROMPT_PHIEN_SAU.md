@@ -1,5 +1,5 @@
 Áp dụng skill web-app-repair-upgrade (đính kèm file skill) cho phiên tiếp theo của đề án LANDGIS.
-Tôi đính kèm ZIP bàn giao: LANDGIS_P01_KHOITAO_V16_20261015.zip (và quyết định duyệt đề án: ...).
+Tôi đính kèm ZIP bàn giao: LANDGIS_P01_KHOITAO_V17_20261015.zip (và quyết định duyệt đề án: ...).
 Hãy: (1) giải nén, đọc handover/HANDOVER.md và backlog.json, xác minh MANIFEST.sha256;
 (2) kiểm tra môi trường một lần (Playwright có chạy được không);
 (3) xác nhận với tôi hạng mục kế tiếp HM-00 + HM-00b (P0) bằng một câu hỏi ngắn;
