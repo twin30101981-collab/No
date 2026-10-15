@@ -12,7 +12,8 @@ Skill áp dụng: `handover/skill/web-app-repair-upgrade-v3.2.0.md` (đọc Mụ
 ## 2. Vòng mỗi hạng mục (theo skill Mục 4.3–4.4, 7–9)
 1. Lấy hạng mục đầu tiên trong `thu_tu_thuc_thi` có trạng thái CHUA_LAM/DANG_LAM và phụ thuộc đã xong (phụ thuộc chưa xong → lấy hạng mục kế; nếu phụ thuộc chỉ là "nên có" thì làm phần độc lập).
 2. Ghi trước (write-ahead) vào HANDOVER §11: "mở HM-xx". Sao lưu `app/land-gis.html` → `backup/HM-xx.orig.html` (thư mục backup/ không commit).
-3. Tái hiện bằng test (V3 Playwright, giả lập mạng/AI như `tests/tools/*.js`), sửa **tại nguyên nhân gốc**, viết test chống tái diễn vào `tests/` (FAIL trên baseline, PASS sau sửa).
+3. (Từ HM-11) Mỗi lần sửa `app/land-gis.html`: chạy `python3 handover/tools/deploy_pages.py` (sinh lại index.html + sw.js), nếu không test hm11_pwa sẽ FAIL.
+3b. Tái hiện bằng test (V3 Playwright, giả lập mạng/AI như `tests/tools/*.js`), sửa **tại nguyên nhân gốc**, viết test chống tái diễn vào `tests/` (FAIL trên baseline, PASS sau sửa).
 4. Chạy lại: test của hạng mục + bộ hồi quy tối thiểu (khói 360/390 px không pageerror; Mẫu A/B qua tests/fixtures). Không đạt → sửa tiếp (tối đa 2 vòng không tiến triển → BI_CHAN, ghi lý do, sang hạng mục kế).
 5. Cập nhật backlog.json (trang_thai DAT_V3/DAT_V2, bang_chung, chi_phi_thuc_te_pct, model_effort_actual), HANDOVER, TIEN_DO.md (1 dòng).
 6. `git add` đúng file → commit `HM-xx: <tên ngắn>` (kèm dòng attribution của hệ thống) → `git push -u origin ccr-9dbbe50d-dw0kll` (lỗi mạng: thử lại 2s/4s/8s/16s).
