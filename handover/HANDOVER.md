@@ -57,3 +57,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-04b DAT_V3: KTT theo địa bàn cũ sau sáp nhập + hỏi người dùng khi không rõ + ưu tiên dòng KTT trên sổ. Kế tiếp: HM-08a.
 - HM-08a DAT_V3: token --lg-dock-clear + 1 toast/lớp + theme FAB nằm trên dock; chạm 5 nút dock luôn trúng (360/390/430). Còn: thang z-index thống nhất, gộp 2 lớp toast. Kế tiếp: HM-07a.
 - HM-07a DAT_V3: LG_TIMERS (đăng ký bộ đếm/observer/GPS), ẩn app thì ngủ, DOM nhàn rỗi −69%. Kế tiếp: HM-07b (rail/dock).
+- HM-07b DAT_V3: rail 128→0, dock 75→0 thay đổi DOM khi nhàn rỗi (sửa gốc thực hiện ở HM-07a). Kế tiếp: HM-07c.
