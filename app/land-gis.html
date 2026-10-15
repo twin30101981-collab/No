@@ -22923,37 +22923,9 @@ div[style*="Made with Replit"], .lg73-killed { display: none !important; visibil
     try { console.log('[v73]', t, d || ''); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q252'); }
   }
 
-  /* ======================================================================
-     1) XOÁ BADGE REPLIT — CSS chỉ đủ với DOM ban đầu; Replit chèn lại sau
-        khi tải xong (kể cả nút "Build for free"), nên cần MutationObserver.
-     ====================================================================== */
-  var RE_REPLIT = /(made|built|build)\s+(with|for)\s+(replit|free)|replit\.com/i;
-  function killReplit(root) {
-    try {
-      var nodes = (root || document).querySelectorAll('a,div,span,iframe,button,[id*="replit"],[class*="replit"]');
-      for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (n.id === 'lg73-hud' || n.closest && n.closest('#lg73-hud')) continue;
-        var txt = (n.textContent || '').slice(0, 60);
-        var src = n.getAttribute && (n.getAttribute('href') || n.getAttribute('src') || '');
-        var idc = (n.id || '') + ' ' + String(n.className || '');
-        if (/replit/i.test(idc)) { try { n.remove(); } catch (e2) { window.lgQuiet && window.lgQuiet(e2, 'q253'); } continue; }
-        if ((src && /replit\.com/i.test(src)) || (n.children.length === 0 && RE_REPLIT.test(txt))) {
-          n.classList.add('lg73-killed');
-          if (n.parentNode) try { n.parentNode.removeChild(n); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q254'); }
-        }
-      }
-    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q255'); }
-  }
-  killReplit();
-  try {
-    new MutationObserver(function (ms) {
-      for (var i = 0; i < ms.length; i++) for (var j = 0; j < ms[i].addedNodes.length; j++) {
-        var n = ms[i].addedNodes[j];
-        if (n.nodeType === 1) killReplit(n.parentNode || document);
-      }
-    }).observe(document.documentElement, { childList: true, subtree: true });
-  } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q256'); }
+  /* HM-00b — 1) Huy hiệu Replit: đã gỡ bộ quét killReplit + MutationObserver toàn trang
+     (mỗi thay đổi DOM quét lại toàn bộ a/div/span → 50 thửa mở mất ~60 s, 64% thời gian
+     nạp). App không còn chạy trên Replit; CSS ẩn huy hiệu ở trên là đủ. */
 
   /* ======================================================================
      2) GPS — NGUYÊN NHÂN GỐC & LỚP ĐỆM
