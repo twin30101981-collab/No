@@ -39,7 +39,7 @@ def ring_of(g):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('src'); ap.add_argument('--xa', required=True)
-    ap.add_argument('--out', required=True); ap.add_argument('--crs', default='VN2000'); ap.add_argument('--tol', type=float, default=0.05, help='sai lệch tương đối diện tích hình học/thuộc tính để báo (mặc định 5%%)')
+    ap.add_argument('--out', required=True); ap.add_argument('--crs', default='VN2000'); ap.add_argument('--ktt', type=float, default=None, help='kinh tuyến trục (độ), vd 105.5'); ap.add_argument('--mui', type=int, default=3); ap.add_argument('--tol', type=float, default=0.05, help='sai lệch tương đối diện tích hình học/thuộc tính để báo (mặc định 5%%)')
     a = ap.parse_args()
     feats = load(a.src); os.makedirs(a.out, exist_ok=True)
     field_map, dropped = {}, {}
@@ -75,7 +75,7 @@ def main():
         if key in seen: dup.append({'to': to, 'thua': th, 'idx': [seen[key], i]})
         else: seen[key] = i
         out.append({'to': to, 'thua': th, 'dt': dtv, 'dtHH': area, 'ld': ld, 'ring': [[round(x, 3), round(y, 3)] for x, y in p.exterior.coords]})
-    pj = json.dumps({'xa': a.xa, 'crs': a.crs, 'n': len(out), 'parcels': out}, ensure_ascii=False, separators=(',', ':'))
+    pj = json.dumps({'xa': a.xa, 'crs': a.crs, 'ktt': a.ktt, 'mui': a.mui, 'n': len(out), 'parcels': out}, ensure_ascii=False, separators=(',', ':'))
     open(os.path.join(a.out, 'parcels.json'), 'w', encoding='utf-8').write(pj)
     rep = {'xa': a.xa, 'nguon': os.path.basename(a.src), 'tong_doi_tuong': len(feats), 'thua_ghi': len(out), 'truong_nhan_dien': field_map,
            'truong_bi_loai': dropped, 'thua_loi_hinh': bad, 'thua_trung_to_thua': dup, 'thieu_dien_tich_thuoc_tinh': noattr,

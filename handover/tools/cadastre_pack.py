@@ -54,6 +54,6 @@ def main():
     src, out = sys.argv[1], sys.argv[2]; d = json.load(open(src, encoding='utf-8'))
     blob, n = build(d['parcels']); os.makedirs(out, exist_ok=True)
     gz = gzip.compress(blob, 9, mtime=0); open(os.path.join(out, 'pack.lgpk.gz'), 'wb').write(gz)
-    m = {'xa': d['xa'], 'crs': d['crs'], 'dinh_dang': 'LGPK1', 'so_thua': n, 'byte_nen': len(gz), 'byte_giai_nen': len(blob), 'sha256': hashlib.sha256(gz).hexdigest()}
+    m = {'xa': d['xa'], 'crs': d['crs'], 'ktt': d.get('ktt'), 'mui': d.get('mui', 3), 'dinh_dang': 'LGPK1', 'so_thua': n, 'byte_nen': len(gz), 'byte_giai_nen': len(blob), 'sha256': hashlib.sha256(gz).hexdigest()}
     json.dump(m, open(os.path.join(out, 'manifest.json'), 'w'), ensure_ascii=False, indent=1); print(json.dumps(m, ensure_ascii=False))
 if __name__ == '__main__': main()

@@ -16,6 +16,10 @@
       n, ld,
       get(to, thua) { let lo = 0, hi = n - 1; while (lo <= hi) { const m = (lo + hi) >> 1, o = P + m * 44, t = dv.getUint32(o, true), h = dv.getUint32(o + 4, true); if (t === to && h === thua) return out(row(m)); (t < to || (t === to && h < thua)) ? lo = m + 1 : hi = m - 1; } return null; },
       at(x, y) { const X = Math.round((x - ox) * 1000), Y = Math.round((y - oy) * 1000), st = [nn - 1]; while (st.length) { const k = st.pop(), o = k * 6; if (X < nd[o] || Y < nd[o + 1] || X > nd[o + 2] || Y > nd[o + 3]) continue; const f = ndu[o + 4], c = ndu[o + 5]; if (k < nLeaf) { for (let j = 0; j < c; j++) { const r = row(perm[f + j]); if (pip(r, X, Y)) return out(r); } } else for (let j = 0; j < c; j++) st.push(f + j); } return null; },
+      /* mọi thửa có hộp giao khung [minx,miny,maxx,maxy] (mét VN-2000), tối đa max; trả mảng {to,thua,dt,ld,ring} */
+      search(a, b, c, d, max) { const A = Math.round((a - ox) * 1000), B = Math.round((b - oy) * 1000), C = Math.round((c - ox) * 1000), D = Math.round((d - oy) * 1000), res = [], st = [nn - 1]; max = max || 1e9;
+        while (st.length && res.length < max) { const k = st.pop(), o = k * 6; if (C < nd[o] || D < nd[o + 1] || A > nd[o + 2] || B > nd[o + 3]) continue; const f = ndu[o + 4], cnt = ndu[o + 5]; if (k < nLeaf) { for (let j = 0; j < cnt && res.length < max; j++) { const i = perm[f + j], q = P + i * 44; if (dv.getInt32(q + 28, true) > C || dv.getInt32(q + 32, true) > D || dv.getInt32(q + 36, true) < A || dv.getInt32(q + 40, true) < B) continue; res.push(out(row(i))); } } else for (let j = 0; j < cnt; j++) st.push(f + j); }
+        return res; },
       bbox() { const k = (nn - 1) * 6; return [ox + nd[k] / 1000, oy + nd[k + 1] / 1000, ox + nd[k + 2] / 1000, oy + nd[k + 3] / 1000]; },
       edges(to, thua) { const p = this.get(to, thua); if (!p) return null; const e = []; for (let i = 1; i < p.ring.length; i++) { const [x1, y1] = p.ring[i - 1], [x2, y2] = p.ring[i]; e.push({ dx: x2 - x1, dy: y2 - y1, len: Math.hypot(x2 - x1, y2 - y1) }); } return e; }
     };
