@@ -4,15 +4,16 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.3",
+  "phien_ban": "1.4",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.3.docx",
+  "tep": "de-an/DE_AN_LANDGIS_v1.4.docx",
   "so_phien_uoc_tinh": "6-8",
   "dieu_chinh": [
    "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi",
    "v1.2: chuyển sang giao diện chỉ-mobile; thay HM-08, HM-12b bằng HM-08a..08f",
-   "v1.3: rà soát sâu — thêm P0 HM-00 (mất dữ liệu khi bộ nhớ đầy), HM-06c, HM-11b, Đợt 4–5 tính năng (HM-15..21)"
+   "v1.3: rà soát sâu — thêm P0 HM-00 (mất dữ liệu khi bộ nhớ đầy), HM-06c, HM-11b, Đợt 4–5 tính năng (HM-15..21)",
+   "v1.4: thêm P0 HM-00b (treo app do killReplit), HM-07c, HM-08g/h/i, HM-09b; mockup bộ 2 + sơ đồ luồng + cây dữ liệu/thành phần"
   ]
  },
  "moi_truong": {
@@ -64,6 +65,43 @@
    "zip": ""
   },
   {
+   "id": "HM-00b",
+   "ten": "CHẶN TREO APP: gỡ bộ quét 'killReplit' chạy trên mọi thay đổi DOM",
+   "dot": 0,
+   "uu_tien": "P0",
+   "effort": "XS",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 3,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [],
+   "pham_vi": "khối v73 L22852–22893 (killReplit + MutationObserver toàn trang); chỉ giữ CSS ẩn huy hiệu",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "50 thửa: thời gian mở app ≤ 3 s trên máy kiểm thử (baseline 70,5 s; thử nghiệm đã đạt 2,1 s)",
+    "Profile: không còn hàm nào > 30% thời gian nạp",
+    "Test hiệu năng 5/20/50 thửa nằm trong bộ HM-01"
+   ],
+   "rui_ro": "Thấp: chỉ gỡ mã dọn huy hiệu Replit (app không còn chạy trên Replit)",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (P0, profile + thử nghiệm)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-01",
    "ten": "Hạ tầng kiểm thử hồi quy tối thiểu (Playwright + fixture 2 sổ mẫu)",
    "dot": 0,
@@ -77,7 +115,8 @@
    "chi_phi_uoc_tinh_pct": 6,
    "chi_phi_thuc_te_pct": null,
    "phu_thuoc": [
-    "HM-00"
+    "HM-00",
+    "HM-00b"
    ],
    "pham_vi": "tests/ mới; không sửa app",
    "hanh_vi_mong_doi": "",
@@ -123,7 +162,9 @@
    "tieu_chi_nghiem_thu": [
     "Bảng kê đầy đủ Mẫu A → vòng chính 7 mốc, diện tích 29,70 m²; khối phụ 8–11 tách riêng ≈ 7,10 m²",
     "Dòng lặp mốc 1 giữa bảng = điểm khép vòng",
-    "Mẫu B không hồi quy"
+    "Mẫu B không hồi quy",
+    "Không bỏ qua dòng âm thầm: dòng không đọc được hiện cảnh báo, kiểm STT mốc liên tục (mockup ⑨)",
+    "Đọc được '2.259.336,23' và số có khoảng trắng; O/l thay 0/1 được sửa kèm cảnh báo"
    ],
    "rui_ro": "Trung bình: đổi kết quả với bảng kê nhập tay cũ",
    "kiem_chung_du_kien": "V3",
@@ -418,6 +459,45 @@
    "zip": ""
   },
   {
+   "id": "HM-07c",
+   "ten": "Gom 21 MutationObserver toàn trang về 1 bộ điều phối; bỏ cssMerge và hudAutoHide kiểu quét toàn trang",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-07a"
+   ],
+   "pham_vi": "L19704, 22006, 22061, 22397, 23086, 23195, 23335, 23441, 28954, 29384, 31846, 34975, 36140, 38476 …; cssMerge L30037",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Còn ≤ 3 observer, mỗi cái theo dõi vùng hẹp",
+    "Không xoá quy tắc CSS lúc chạy",
+    "Nạp 50 thửa ≤ 2 s; kéo bản đồ trung vị ≤ 10 ms/khung"
+   ],
+   "rui_ro": "Trung bình: hành vi lớp vá phụ thuộc observer",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (đếm + profile)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-08a",
    "ten": "Khung layout mobile: token, safe-area, thang z-index, một khe toast không chặn chạm dock",
    "dot": 2,
@@ -482,6 +562,44 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3 (360/390/430)",
    "nhan_xac_minh": "Đã xác minh (F-16)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08i",
+   "ten": "Màn Thửa: danh sách, tìm, lọc Đạt/Không đạt, trạng thái đồng bộ (mockup ⑦)",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08b"
+   ],
+   "pham_vi": "Quản lý thửa (tab cũ)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Đúng mockup ⑦; 500 thửa cuộn mượt (danh sách ảo)",
+    "Lọc theo trạng thái đối chiếu và đồng bộ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất thiết kế",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -614,6 +732,45 @@
    "zip": ""
   },
   {
+   "id": "HM-08g",
+   "ten": "Xoá có xác nhận + Thùng rác 30 ngày + hoàn tác bền",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-00"
+   ],
+   "pham_vi": "deletePlot (L7659), lastDeletedPlot (chỉ trong bộ nhớ)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Xoá hiện thanh Hoàn tác 6 s (mockup ⑦)",
+    "Mở lại app vẫn khôi phục được từ Thùng rác",
+    "Xoá tất cả cần xác nhận 2 bước"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-08f",
    "ten": "Gỡ bố cục desktop/sidebar và CSS chồng lớp không còn dùng",
    "dot": 3,
@@ -654,6 +811,45 @@
    "zip": ""
   },
   {
+   "id": "HM-08h",
+   "ten": "Truy cập: tên nút, nhãn ô nhập, thứ bậc tiêu đề, bỏ onclick nội dòng",
+   "dot": 3,
+   "uu_tien": "P3",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08f"
+   ],
+   "pham_vi": "11 nút không tên, 15 ô không nhãn, H1→H3, 27 onclick",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "0 nút/ô thiếu tên (quét tự động)",
+    "Tiêu đề không nhảy cấp",
+    "Đọc được bằng TalkBack các màn chính (V1)"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 + V1",
+   "nhan_xac_minh": "Đã xác minh (quét DOM)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-09",
    "ten": "Tự đổi lớp nền khi ô bản đồ lỗi (vòng lặp nghi vấn)",
    "dot": 2,
@@ -678,6 +874,44 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3 (giả lập)",
    "nhan_xac_minh": "Giả thuyết",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-09b",
+   "ten": "Hiện lại ghi nguồn bản đồ (attribution) theo điều khoản nhà cung cấp",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "XS",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 3,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08c"
+   ],
+   "pham_vi": "L22383–22397 ẩn .leaflet-control-attribution",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Ghi nguồn hiện gọn ở góc bản đồ (chữ 10 px, bấm mở rộng)",
+    "Đúng tên nguồn theo lớp nền đang dùng"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (mã)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
