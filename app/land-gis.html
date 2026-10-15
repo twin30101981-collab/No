@@ -1089,8 +1089,10 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     var k = (Number(zone) === 6) ? 0.9996 : 0.9999;
     var key = lon0 + '|' + t + '|' + k;
     if (!defCache[key]) {
-      defCache[key] = '+proj=tmerc +lat_0=0 +lon_0=' + lon0 +
-        ' +k=' + k + ' +x_0=500000 +y_0=0 +ellps=WGS84 +towgs84=' + t + ' +units=m +no_defs';
+      var G = window.LGCore && window.LGCore.Geometry;   // HM-04: dùng định nghĩa chung của lõi khi đã nạp
+      defCache[key] = (G && G.vn2000 && typeof G.vn2000.def === 'function')
+        ? G.vn2000.def({ ktt: lon0, mui: Number(zone), towgs84: t })
+        : '+proj=tmerc +lat_0=0 +lon_0=' + lon0 + ' +k=' + k + ' +x_0=500000 +y_0=0 +ellps=WGS84 +towgs84=' + t + ' +units=m +no_defs';
     }
     return defCache[key];
   }
@@ -3949,6 +3951,9 @@ function towgs84NameOf(key){
 // v23: zone là tham số TƯỜNG MINH. Không còn đọc dropdown trong lúc quy đổi.
 // v24: thêm towKey tường minh -> mỗi thửa giữ đúng bộ tham số lúc lập.
 function generateVN2000Proj4(lon0, zone, towKey){
+  // HM-04: MỘT định nghĩa VN-2000 duy nhất — LGCore.Geometry.vn2000.def (nạp sau; trước đó dùng bản dưới, cùng chuỗi).
+  const G = window.LGCore && window.LGCore.Geometry;
+  if (G && G.vn2000 && typeof G.vn2000.def === 'function') return G.vn2000.def({ ktt: lon0, mui: Number(zone), towgs84: towgs84ParamsOf(towKey || activeTowgs84Key) });
   return `+proj=tmerc +lat_0=0 +lon_0=${lon0} +k=${scaleFactorOfZone(zone)} +x_0=500000 +y_0=0 +ellps=WGS84 +towgs84=${towgs84ParamsOf(towKey || activeTowgs84Key)} +units=m +no_defs`;
 }
 
@@ -4307,16 +4312,23 @@ function detectNearestProvinceByGPS(lat, lng) {
   return nearest;
 }
 
+// HM-04 — MỘT lõi diện tích: mọi bản shoelace/ringArea trong app gọi LGCore.Geometry (dịch gốc toạ độ về mốc đầu
+// để không mất độ chính xác với toạ độ cỡ 10^6). Trước lõi nạp xong dùng bản dự phòng cùng công thức.
+function lgCoreSignedArea(pts){
+  const G = window.LGCore && window.LGCore.Geometry;
+  if (G && typeof G.signedArea === 'function') return G.signedArea(pts);
+  if (!pts || pts.length < 3) return 0;
+  const x0 = pts[0].x, y0 = pts[0].y; let s = 0;
+  for (let i = 0; i < pts.length; i++){ const a = pts[i], b = pts[(i + 1) % pts.length]; s += (a.x - x0) * (b.y - y0) - (b.x - x0) * (a.y - y0); }
+  return s / 2;
+}
+function lgCoreArea(pts){ return Math.abs(lgCoreSignedArea(pts)); }
+window.lgCoreSignedArea = lgCoreSignedArea; window.lgCoreArea = lgCoreArea;
 function calcArea(pts){
   // v57: một cửa duy nhất tính diện tích — luôn đo trên vòng ranh đã chuẩn hoá để
   // con số trên bản đồ, trong ô đánh giá sai số và trong hồ sơ PDF không thể lệch nhau.
   if (window.LG57 && window.LG57.ringAreaSafe) return window.LG57.ringAreaSafe(pts);
-  let area = 0;
-  for (let i = 0; i < pts.length; i++){
-    const j = (i + 1) % pts.length;
-    area += pts[i].x * pts[j].y - pts[j].x * pts[i].y;
-  }
-  return Math.abs(area / 2);
+  return lgCoreArea(pts);
 }
 
 function calcEdgeLength(p1, p2){
@@ -12818,11 +12830,7 @@ async function lgOfflineRefreshUI(){
   window.lg32Shoot = shoot;
 
   /* ---------- 4. KIỂM TRA CHỒNG LẤN ---------- */
-  function polyArea(ring){
-    let s = 0;
-    for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; s += a.x * b.y - b.x * a.y; }
-    return Math.abs(s) / 2;
-  }
+  function polyArea(ring){ return window.lgCoreArea(ring); }   // HM-04: lõi chung
   // Cắt đa giác Sutherland–Hodgman (thửa đất luôn lồi/đơn giản trong hồ sơ địa chính;
   // với đa giác lõm kết quả là cận trên -> vẫn đủ để CẢNH BÁO).
   function clip(subject, clipper){
@@ -12991,12 +12999,7 @@ async function lgOfflineRefreshUI(){
   //   3) cỡ chữ tự co theo cạnh ngắn nhất;
   //   4) nhãn diện tích neo ở tâm thửa và luôn được vẽ SAU CÙNG (trên cùng).
   function lgV49Ring(pts){
-    let a = 0;
-    for (let i = 0; i < pts.length; i++) {
-      const q = pts[i], n = pts[(i + 1) % pts.length];
-      a += q.x * n.y - n.x * q.y;
-    }
-    return a; // >0: ngược chiều kim đồng hồ trong hệ (x sang phải, y lên trên)
+    return 2 * window.lgCoreSignedArea(pts); // HM-04: lõi chung. >0: ngược chiều kim đồng hồ trong hệ (x sang phải, y lên trên)
   }
   /* v105 — SỬA GỐC RỄ "nhãn kích thước cạnh (vd 30.00 m) bị cắt mất chữ ở mép khung SVG".
      Ba nguyên nhân, vá đủ cả ba, KHÔNG đổi bố cục:
@@ -15586,12 +15589,7 @@ try {
     }
     return out;
   }
-  function ringArea(r) {
-    if (!r || r.length < 3) return 0;
-    var s = 0;
-    for (var i = 0; i < r.length; i++) { var a = r[i], b = r[(i + 1) % r.length]; s += a.x * b.y - b.x * a.y; }
-    return Math.abs(s) / 2;
-  }
+  function ringArea(r) { return (!r || r.length < 3) ? 0 : window.lgCoreArea(r); }
   // Tách thửa theo cạnh index `ei`, bề rộng `w` mét kể từ cạnh đó vào trong.
   // Trả về { strip, rest, areaStrip, areaRest }.
   LG.splitByEdgeStrip = function (points, ei, w) {
@@ -16115,11 +16113,7 @@ try {
     } catch (e) { return null; }
   };
   function euclid(a, b) { return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)); }
-  function shoelace(pts) {
-    var s = 0, n = pts.length;
-    for (var i = 0; i < n; i++) { var a = pts[i], b = pts[(i + 1) % n]; s += a.x * b.y - b.x * a.y; }
-    return Math.abs(s) / 2;
-  }
+  function shoelace(pts) { return window.lgCoreArea(pts); }
   LG.EDGE_TOL = 0.02;     // m — ngưỡng cảnh báo mỗi cạnh
   LG.AREA_TOL_PCT = 0.5;  // % — ngưỡng cảnh báo diện tích
 
@@ -18018,10 +18012,7 @@ try {
   function num(v) { var n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : null; }
   function fmt(n, d) { return (n == null || !isFinite(n)) ? '—' : Number(n).toFixed(d == null ? 2 : d).replace('.', ','); }
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-  function ringArea(pts) {
-    var a = 0; for (var i = 0; i < pts.length; i++) { var p = pts[i], q = pts[(i + 1) % pts.length]; a += p.x * q.y - q.x * p.y; }
-    return Math.abs(a) / 2;
-  }
+  function ringArea(pts) { return window.lgCoreArea(pts); }
   function edgeList(pts) {
     var out = []; for (var i = 0; i < pts.length; i++) out.push({ i: i, from: pts[i], to: pts[(i + 1) % pts.length], len: dist(pts[i], pts[(i + 1) % pts.length]) });
     return out;
@@ -18922,11 +18913,8 @@ try {
 
   /* ================= 1. LÕI HÌNH HỌC ================= */
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-  function signedArea(p) {
-    var a = 0; for (var i = 0; i < p.length; i++) { var q = p[(i + 1) % p.length]; a += p[i].x * q.y - q.x * p[i].y; }
-    return a / 2;
-  }
-  function ringArea(p) { return Math.abs(signedArea(p)); }
+  function signedArea(p) { return window.lgCoreSignedArea(p); }
+  function ringArea(p) { return window.lgCoreArea(p); }
 
   function properIntersect(a, b, c, d) {
     function cr(o, p, q) { return (p.y - o.y) * (q.x - o.x) - (p.x - o.x) * (q.y - o.y); }
@@ -27134,8 +27122,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         if (!window.proj4) return { pass: false, detail: 'Chưa nạp proj4 — không kiểm được phép chiếu.' };
         var maxErr = 0, tested = 0, ktts = [102.0, 103.0, 104.5, 105.0, 105.5, 106.0, 107.0, 107.75, 108.5];
         for (var i = 0; i < ktts.length; i++) {
-          var def = '+proj=tmerc +lat_0=0 +lon_0=' + ktts[i] + ' +k=0.9999 +x_0=500000 +y_0=0 +ellps=WGS84 ' +
-                    '+towgs84=-191.90441429,-39.30318279,-111.45032835,-0.00928836,0.01975479,-0.00427372,0.252906278 +units=m +no_defs';
+          var def = window.LGCore.Geometry.vn2000.def({ ktt: ktts[i], mui: 3 });   // HM-04: định nghĩa chung
           try {
             var xy = [567289.23, 2256045.02];
             var ll = proj4(def, 'WGS84', xy);
@@ -30690,7 +30677,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
 
     cases.push(tc('Khứ hồi VN-2000 ↔ WGS84 (≤ 1 mm)', function () {
       if (!window.proj4) return { pass: true, detail: 'bỏ qua — proj4 chưa nạp' };
-      var def = '+proj=tmerc +lat_0=0 +lon_0=105.5 +k=0.9999 +x_0=500000 +y_0=0 +ellps=WGS84 +towgs84=-191.90441429,-39.30318279,-111.45032835,-0.00928836,0.01975479,-0.00427372,0.252906278 +units=m +no_defs';
+      var def = window.LGCore.Geometry.vn2000.def({ ktt: 105.5, mui: 3 });   // HM-04: định nghĩa chung
       var xy = [563000.123, 2242000.456];
       var ll = window.proj4(def, 'WGS84', xy), back = window.proj4('WGS84', def, ll);
       var dx = Math.abs(back[0] - xy[0]) * 1000, dy = Math.abs(back[1] - xy[1]) * 1000;
@@ -31663,11 +31650,7 @@ body.lg125-modal-open{ overflow:hidden; }
     var LG57 = window.LG57; if (!LG57 || !LG57.normalizeRing) return;
     var origNorm = LG57.normalizeRing;
 
-    function shoelace(pts) { // chuẩn DUY NHẤT: mặt phẳng VN-2000
-      var s = 0, n = pts.length;
-      for (var i = 0; i < n; i++) { var a = pts[i], b = pts[(i + 1) % n]; s += a.x * b.y - b.x * a.y; }
-      return Math.abs(s / 2);
-    }
+    function shoelace(pts) { return window.lgCoreArea(pts); }   // chuẩn DUY NHẤT: LGCore.Geometry (mặt phẳng VN-2000)
     function num(v) { var n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : null; }
     function bookGross(meta) {
       var m = meta || {}, a = num(m.dien_tich_m2);
@@ -32359,11 +32342,7 @@ body.lg125-modal-open{ overflow:hidden; }
       ]
     }
   ];
-  function shoelace(pts) {
-    var a = 0, n = pts.length;
-    for (var i = 0; i < n; i++) { var p = pts[i], q = pts[(i + 1) % n]; a += p.x * q.y - q.x * p.y; }
-    return Math.abs(a) / 2;
-  }
+  function shoelace(pts) { return window.lgCoreArea(pts); }
   function edges(pts) {
     var out = [], n = pts.length;
     for (var i = 0; i < n; i++) { var p = pts[i], q = pts[(i + 1) % n]; out.push(Math.hypot(q.x - p.x, q.y - p.y)); }
@@ -33147,16 +33126,8 @@ body.lg62:not(.lg62-map) #lg138-bar{
   LG142.version = '142';
 
   /* ================= 0. Tiện ích hình học ================= */
-  function ringArea(p) {
-    var a = 0, n = p.length;
-    for (var i = 0; i < n; i++) { var q = p[i], r = p[(i + 1) % n]; a += q.x * r.y - r.x * q.y; }
-    return Math.abs(a) / 2;
-  }
-  function signedArea(p) {
-    var a = 0, n = p.length;
-    for (var i = 0; i < n; i++) { var q = p[i], r = p[(i + 1) % n]; a += q.x * r.y - r.x * q.y; }
-    return a / 2;
-  }
+  function ringArea(p) { return window.lgCoreArea(p); }
+  function signedArea(p) { return window.lgCoreSignedArea(p); }
   function centroid(p) {
     var sx = 0, sy = 0; p.forEach(function (q) { sx += q.x; sy += q.y; });
     return { x: sx / p.length, y: sy / p.length };
@@ -34781,11 +34752,7 @@ body.lg62:not(.lg62-map) #lg138-bar{
   function log(m) { LG144.report.push(m); try { console.log('[v144] ' + m); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'p0c5'); } }
 
   /* ---------- Tiện ích hình học (chuẩn duy nhất: mặt phẳng VN-2000) ---------- */
-  function shoelace(pts) {
-    var s = 0, n = pts.length;
-    for (var i = 0; i < n; i++) { var a = pts[i], b = pts[(i + 1) % n]; s += a.x * b.y - b.x * a.y; }
-    return Math.abs(s / 2);
-  }
+  function shoelace(pts) { return window.lgCoreArea(pts); }
   function edgeLens(pts) {
     var out = [], n = pts.length;
     for (var i = 0; i < n; i++) { var a = pts[i], b = pts[(i + 1) % n]; out.push(Math.hypot(b.x - a.x, b.y - a.y)); }
@@ -36898,13 +36865,8 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
   /* --------------------------- 2) HÌNH HỌC THUẦN -------------------------- */
   // Diện tích Gauss (shoelace) trên toạ độ phẳng VN-2000 — KHÔNG phụ thuộc bản đồ.
   LG172.area = function (pts) {
-    var n = pts.length, a = 0, i;
-    if (n < 3) return 0;
-    for (i = 0; i < n; i++) {
-      var p = pts[i], q = pts[(i + 1) % n];
-      a += p.x * q.y - q.x * p.y;
-    }
-    return Math.abs(a) / 2;
+    if (pts.length < 3) return 0;
+    return window.lgCoreArea(pts);   // HM-04: lõi chung
   };
   LG172.perimeter = function (pts) {
     var n = pts.length, s = 0, i;
@@ -39334,9 +39296,7 @@ body.lg175-stack-open #lg124-stack{
   /* ---------- diện tích & so khớp ---------- */
   LG184.shoelace = function (pts) {
     if (!pts || pts.length < 3) return 0;
-    var s = 0, i, n = pts.length;
-    for (i = 0; i < n; i++) { var a = pts[i], b = pts[(i + 1) % n]; s += a.x * b.y - b.x * a.y; }
-    return Math.abs(s) / 2;
+    return window.lgCoreArea(pts);
   };
   LG184.areaCandidates = function (text) {
     var t0 = String(text || '').replace(/\s+/g, ' ');
@@ -41077,10 +41037,10 @@ body.lg175-stack-open #lg124-stack{
   function signedArea(points) {
     var p = normalize(points);
     if (p.length < 3) return 0;
-    var s = 0;
+    var s = 0, x0 = p[0].x, y0 = p[0].y;   // HM-04: dịch gốc về mốc đầu — toạ độ cỡ 10^6 nhân nhau mất độ chính xác
     for (var i = 0, n = p.length; i < n; i++) {
       var q = p[(i + 1) % n];
-      s += (p[i].x * q.y) - (q.x * p[i].y);
+      s += ((p[i].x - x0) * (q.y - y0)) - ((q.x - x0) * (p[i].y - y0));
     }
     return s / 2;
   }
@@ -41146,6 +41106,25 @@ body.lg175-stack-open #lg124-stack{
                ' +x_0=500000 +y_0=0 +ellps=WGS84 +towgs84=' + t + ' +units=m +no_defs';
       },
 
+      /* HM-04 — API đặt tên rõ: bac = X (hướng Bắc, ~2,0–2,7 triệu m), dong = Y (hướng Đông, ~0,4–0,7 triệu m) như bảng kê
+         sổ đỏ; nhận lon0 (KTT, độ) + zone (3|6); từ chối toạ độ ngoài Việt Nam (trả null + ghi lỗi) thay vì đoán. */
+      validBacDong: function (bac, dong) {
+        bac = Number(bac); dong = Number(dong);
+        return isFinite(bac) && isFinite(dong) && bac > 1000000 && bac < 2700000 && dong > 200000 && dong < 800000;
+      },
+      bacDongToWGS84: function (bac, dong, opts) {
+        if (!geom.vn2000.validBacDong(bac, dong)) { fail('bacDongToWGS84', 'toa do ngoai pham vi Viet Nam (X Bac 1.0-2.7 trieu m, Y Dong 0.2-0.8 trieu m): ' + bac + ', ' + dong); return null; }
+        var o = opts || {};
+        var r = geom.vn2000.toWGS84(dong, bac, { ktt: o.lon0 != null ? o.lon0 : o.ktt, mui: o.zone != null ? o.zone : o.mui, towgs84: o.towgs84 });
+        if (r && !(r.lat > 7.5 && r.lat < 24.5 && r.lng > 101.5 && r.lng < 110.5)) { fail('bacDongToWGS84', 'ket qua ngoai bien Viet Nam — sai KTT/mui hoac nham X/Y'); return null; }
+        return r;
+      },
+      wgs84ToBacDong: function (lat, lng, opts) {
+        var o = opts || {};
+        var r = geom.vn2000.fromWGS84(lat, lng, { ktt: o.lon0 != null ? o.lon0 : o.ktt, mui: o.zone != null ? o.zone : o.mui, towgs84: o.towgs84 });
+        return r ? { bac: r.y, dong: r.x } : null;
+      },
+      /* (E,N) theo thứ tự proj4 — GIỮ để mã cũ chạy; mã mới dùng bacDongToWGS84 */
       toWGS84: function (x, y, opts) {
         try {
           if (typeof window.proj4 !== 'function') { fail('toWGS84', 'proj4 chua san sang'); return null; }
