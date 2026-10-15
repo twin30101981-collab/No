@@ -36825,10 +36825,45 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
   var API = CFG.url ? (CFG.url.replace(/\/+$/, '') + '/rest/v1/thua_dat') : null;
   var LG172 = window.LG172 = { version: '172', rows: [], editing: null };
 
-  function headers(extra) {
+  /* ------------------ HM-06c — ĐĂNG NHẬP EMAIL OTP (Supabase Auth) ------------------
+     Trước đây mọi thao tác dùng khoá công khai, không đăng nhập: ai có địa chỉ đều đọc/ghi/xoá được.
+     Nay: gửi mã OTP qua email → xác nhận → access_token dùng cho mọi lệnh; máy chủ (RLS, xem
+     handover/supabase/06c_auth_rls.sql) chỉ cho mỗi người thấy/sửa thửa của mình. Chưa đăng nhập thì
+     app KHÔNG gọi CSDL. Xoá = xoá mềm (deleted_at), khôi phục được từ “Thùng rác”. */
+  var AUTH_KEY = 'lg172_auth';
+  var AUTH_BASE = CFG.url ? CFG.url.replace(/\/+$/, '') + '/auth/v1' : null;
+  var auth = LG172.auth = { session: null };
+  try { auth.session = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch (e) { auth.session = null; }
+  function saveSession(j) {
+    if (!j || !j.access_token) return null;
+    auth.session = { access_token: j.access_token, refresh_token: j.refresh_token || (auth.session && auth.session.refresh_token) || null,
+      expires_at: j.expires_at || (Math.floor(Date.now() / 1000) + (j.expires_in || 3600)), email: (j.user && j.user.email) || (auth.session && auth.session.email) || '' };
+    try { localStorage.setItem(AUTH_KEY, JSON.stringify(auth.session)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6c0'); }
+    return auth.session;
+  }
+  function authFetch(path, body, qs) {
+    return fetch(AUTH_BASE + path + (qs || ''), { method: 'POST', headers: { apikey: CFG.key || '', 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error((j && (j.msg || j.error_description || j.message)) || ('HTTP ' + r.status)); return j; }); });
+  }
+  auth.loggedIn = function () { return !!(auth.session && auth.session.access_token); };
+  auth.sendOtp = function (email) { return authFetch('/otp', { email: String(email || '').trim(), create_user: true }); };
+  auth.verifyOtp = function (email, code) {
+    return authFetch('/verify', { type: 'email', email: String(email || '').trim(), token: String(code || '').trim() }).then(function (j) { return saveSession(j); });
+  };
+  auth.signOut = function () { auth.session = null; try { localStorage.removeItem(AUTH_KEY); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h6c1'); } LG172.rows = []; };
+  // Làm mới token khi sắp hết hạn (< 60 giây); hết hạn không làm mới được → coi như chưa đăng nhập.
+  auth.token = function () {
+    var ss = auth.session; if (!ss) return Promise.resolve(null);
+    if (ss.expires_at - Math.floor(Date.now() / 1000) > 60) return Promise.resolve(ss.access_token);
+    if (!ss.refresh_token) { auth.signOut(); return Promise.resolve(null); }
+    return authFetch('/token', { refresh_token: ss.refresh_token }, '?grant_type=refresh_token').then(function (j) { return saveSession(j).access_token; })
+      .catch(function () { auth.signOut(); return null; });
+  };
+  function needLogin() { return Promise.reject(new Error('Cần đăng nhập (email + mã OTP) trước khi dùng CSDL.')); }
+  function headers(extra, token) {
     var h = {
       'apikey': CFG.key || '',
-      'Authorization': 'Bearer ' + (CFG.key || ''),
+      'Authorization': 'Bearer ' + (token || CFG.key || ''),
       'Content-Type': 'application/json'
     };
     if (extra) for (var k in extra) h[k] = extra[k];
@@ -36843,25 +36878,21 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
   }
 
   /* ------------------------- 1) LỚP TRUY CẬP CSDL ------------------------- */
+  function rest(method, qs, body, prefer) {
+    return auth.token().then(function (tk) {
+      if (!tk) return needLogin();
+      return fetch(API + (qs || ''), { method: method, headers: headers(prefer ? { Prefer: prefer } : null, tk), body: body ? JSON.stringify(body) : undefined })
+        .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.status === 204 ? true : r.json().catch(function () { return true; }); });
+    });
+  }
   LG172.db = {
     ready: function () { return !!API; },
-    list: function () {
-      if (!API) return Promise.resolve([]);
-      return fetch(API + '?select=*&order=ma_thua.asc', { headers: headers() })
-        .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.json(); });
-    },
-    insert: function (rec) {
-      return fetch(API, { method: 'POST', headers: headers({ Prefer: 'return=representation' }), body: JSON.stringify(rec) })
-        .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.json(); });
-    },
-    update: function (id, rec) {
-      return fetch(API + '?id=eq.' + encodeURIComponent(id), { method: 'PATCH', headers: headers({ Prefer: 'return=representation' }), body: JSON.stringify(rec) })
-        .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.json(); });
-    },
-    remove: function (id) {
-      return fetch(API + '?id=eq.' + encodeURIComponent(id), { method: 'DELETE', headers: headers() })
-        .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return true; });
-    }
+    list: function () { return rest('GET', '?select=*&deleted_at=is.null&order=ma_thua.asc'); },
+    listDeleted: function () { return rest('GET', '?select=*&deleted_at=not.is.null&order=deleted_at.desc'); },
+    insert: function (rec) { return rest('POST', '', rec, 'return=representation'); },
+    update: function (id, rec) { return rest('PATCH', '?id=eq.' + encodeURIComponent(id), rec, 'return=representation'); },
+    remove: function (id) { return rest('PATCH', '?id=eq.' + encodeURIComponent(id), { deleted_at: new Date().toISOString() }, 'return=representation').then(function () { return true; }); },   // xoá mềm
+    restore: function (id) { return rest('PATCH', '?id=eq.' + encodeURIComponent(id), { deleted_at: null }, 'return=representation').then(function () { return true; }); }
   };
 
   /* --------------------------- 2) HÌNH HỌC THUẦN -------------------------- */
@@ -36990,6 +37021,7 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
     wrap.innerHTML =
       '<div id="lg172-box">' +
       '<h2>🗂 Quản lý thửa đất — CSDL thật</h2>' +
+      '<div id="lg172-auth" style="margin:6px 0"></div>' +
       '<div id="lg172-status" style="font-size:12px;color:#5b6b63"></div>' +
       '<div style="margin-top:8px">' +
       '<button class="lg172-b p" id="lg172-new">+ Thêm thửa</button>' +
@@ -37035,7 +37067,7 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
     if (isFinite(gcn) && gcn > 0) {
       var d = (a - gcn), pc = Math.abs(d) / gcn * 100;
       html += '<br/>Đối chiếu GCN ' + gcn.toFixed(1) + ' m²: chênh ' + d.toFixed(2) + ' m² (' + pc.toFixed(2) + '%) ' +
-        (pc <= 0.5 ? '<span class="lg172-ok">✔ khớp</span>' : '<span class="lg172-warn">⚠ vượt ngưỡng 0,5% — kiểm tra lại bảng toạ độ</span>');
+        (Math.abs(d) <= calcPermissibleAreaError(gcn) ? '<span class="lg172-ok">✔ khớp (trong sai số cho phép ±' + calcPermissibleAreaError(gcn).toFixed(2) + ' m²)</span>' : '<span class="lg172-warn">⚠ vượt sai số cho phép ±' + calcPermissibleAreaError(gcn).toFixed(2) + ' m² — kiểm tra lại bảng toạ độ</span>');
     }
     document.getElementById('lg172-f-calc').innerHTML = html;
     return { pts: pts, area: a, perimeter: p };
@@ -37092,7 +37124,7 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
   }
 
   function removeRow(row) {
-    if (!window.confirm('Xoá thửa ' + row.ma_thua + ' khỏi CSDL?')) return;
+    if (!window.confirm('Chuyển thửa ' + row.ma_thua + ' vào Thùng rác? (xoá mềm — khôi phục được)')) return;
     LG172.db.remove(row.id).then(function () {
       try { if (typeof deletePlot === 'function') deletePlot(row.ma_thua, false); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'p0c33'); }
       note('🗑 Đã xoá thửa', row.ma_thua);
@@ -37111,7 +37143,7 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
       var cmp = '';
       if (isFinite(gcn) && gcn > 0) {
         var pc = Math.abs(a - gcn) / gcn * 100;
-        cmp = pc <= 0.5 ? '<span class="lg172-ok">✔ khớp GCN (' + pc.toFixed(2) + '%)</span>' : '<span class="lg172-warn">⚠ lệch ' + pc.toFixed(2) + '%</span>';
+        cmp = Math.abs(a - gcn) <= calcPermissibleAreaError(gcn) ? '<span class="lg172-ok">✔ khớp GCN (' + pc.toFixed(2) + '%)</span>' : '<span class="lg172-warn">⚠ lệch ' + pc.toFixed(2) + '% (vượt sai số cho phép)</span>';
       } else cmp = '<span class="lg172-warn">⚠ chưa có DT trên GCN để đối chiếu</span>';
       var coords = pts.slice(0, 3).map(function (p) { return p.ten + ': ' + p.x.toFixed(2) + ' / ' + p.y.toFixed(2); }).join('<br/>');
       if (pts.length > 3) coords += '<br/>… ' + pts.length + ' mốc';
@@ -37144,6 +37176,12 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
       if (s) s.innerHTML = '<span class="lg172-warn">⛔ Chưa cấu hình CSDL (LG172_CFG).</span>';
       return Promise.resolve([]);
     }
+    renderAuth();
+    if (!auth.loggedIn()) {
+      if (s) s.innerHTML = '<span class="lg172-warn">🔒 Cần đăng nhập để xem/sửa thửa trong CSDL (không đăng nhập thì không đọc/ghi/xoá được).</span>';
+      LG172.rows = []; LG172.render();
+      return Promise.resolve([]);
+    }
     if (s) s.textContent = 'Đang tải danh sách thửa từ CSDL…';
     return LG172.db.list().then(function (rows) {
       LG172.rows = rows || [];
@@ -37153,10 +37191,41 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
       return LG172.rows;
     }).catch(function (e) {
       if (s) s.innerHTML = '<span class="lg172-warn">⛔ Không tải được CSDL: ' + esc(e.message || e) + '</span>';
+      renderAuth();
       throw e;
     });
   };
 
+  function renderAuth() {
+    var h = document.getElementById('lg172-auth'); if (!h) return;
+    if (auth.loggedIn()) {
+      h.innerHTML = '👤 ' + esc(auth.session.email || 'đã đăng nhập') + ' <button class="lg172-b e" id="lg172-a-out">Đăng xuất</button> <button class="lg172-b e" id="lg172-a-trash">🗑 Thùng rác</button>';
+      document.getElementById('lg172-a-out').onclick = function () { auth.signOut(); LG172.refresh(true); };
+      document.getElementById('lg172-a-trash').onclick = function () { LG172.showTrash(); };
+      return;
+    }
+    h.innerHTML = '<b>Đăng nhập bằng email</b> <input id="lg172-a-mail" type="email" placeholder="email@..." style="min-width:180px"/> ' +
+      '<button class="lg172-b p" id="lg172-a-send">Gửi mã OTP</button> <input id="lg172-a-code" inputmode="numeric" placeholder="Mã 6 số" style="width:100px"/> ' +
+      '<button class="lg172-b p" id="lg172-a-ok">Xác nhận</button><div id="lg172-a-msg" style="font-size:12px;color:#5b6b63;margin-top:4px"></div>';
+    var msg = function (t, bad) { var m = document.getElementById('lg172-a-msg'); if (m) { m.textContent = t; m.style.color = bad ? '#8a1f1f' : '#5b6b63'; } };
+    document.getElementById('lg172-a-send').onclick = function () {
+      auth.sendOtp(document.getElementById('lg172-a-mail').value).then(function () { msg('Đã gửi mã tới email — nhập mã 6 số bên cạnh.'); }).catch(function (e) { msg('Không gửi được mã: ' + e.message, true); });
+    };
+    document.getElementById('lg172-a-ok').onclick = function () {
+      auth.verifyOtp(document.getElementById('lg172-a-mail').value, document.getElementById('lg172-a-code').value)
+        .then(function () { LG172.refresh(true); }).catch(function (e) { msg('Mã không đúng/đã hết hạn: ' + e.message, true); });
+    };
+  }
+  LG172.showTrash = function () {
+    var host = document.getElementById('lg172-list');
+    return LG172.db.listDeleted().then(function (rows) {
+      host.innerHTML = '<h3 style="margin:8px 0">🗑 Thùng rác (' + rows.length + ') <button class="lg172-b e" id="lg172-t-back">← Quay lại</button></h3>' + (rows.length ? '<table><tbody>' +
+        rows.map(function (r, i) { return '<tr><td><b>' + esc(r.ma_thua) + '</b><br/><span style="font-size:11px">xoá lúc ' + esc(r.deleted_at) + '</span></td><td><button class="lg172-b p" data-i="' + i + '">♻ Khôi phục</button></td></tr>'; }).join('') + '</tbody></table>' : '<p>Thùng rác trống.</p>');
+      document.getElementById('lg172-t-back').onclick = function () { LG172.refresh(true); };
+      host.querySelectorAll('button[data-i]').forEach(function (b) { b.onclick = function () { LG172.db.restore(rows[+b.dataset.i].id).then(function () { note('✔ Đã khôi phục', rows[+b.dataset.i].ma_thua); LG172.refresh(true); }).catch(function (e) { note('⛔ Không khôi phục được', String(e.message || e), true); }); }; });
+      return rows;
+    }).catch(function (e) { note('⛔ Không mở được thùng rác', String(e.message || e), true); });
+  };
   LG172.open = function () { ensureUI(); document.getElementById('lg172-panel').classList.add('on'); LG172.refresh(true); };
   LG172.close = function () { var p = document.getElementById('lg172-panel'); if (p) p.classList.remove('on'); };
 
