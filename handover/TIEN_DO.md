@@ -5,3 +5,4 @@
 - 15/10 · P02 · HM-01 ĐẠT V3: bộ hồi quy 1 lệnh (tests/run.js), 2 lỗi Mẫu A/B tái hiện được.
 - 15/10 · P02 · HM-02 ĐẠT V3: bảng kê nhiều khối (Mẫu A 7 mốc 29,70 + phụ 7,10), đọc số VN/khoảng trắng/O-l, cảnh báo dòng lỗi.
 - 15/10 · P02 · HM-03 ĐẠT V3: một công thức sai số diện tích cho mọi luồng; Mẫu B đạt sau khi trừ 1,44 m² không cấp GCN.
+- 15/10 · P02 · HM-41 ĐẠT V3: quét không còn tự ép diện tích/dịch mốc; bình sai chỉ khi người dùng chọn.

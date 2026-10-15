@@ -34826,21 +34826,23 @@ body.lg62:not(.lg62-map) #lg138-bar{
     return { pts: out, shifts: shifts, iters: it, maxRes: maxRes };
   };
 
-  LG144.auditTable = function (pts, sides, gcnArea) {
+  LG144.auditTable = function (pts, sides, gcnArea, excl) {
+    excl = (excl != null && isFinite(excl) && excl > 0) ? +excl : 0;   // HM-03: phần không cấp GCN
     var src = pts.map(function (p) { return { x: +p.x, y: +p.y }; });
     var areaBefore = shoelace(src), edgesBefore = edgeLens(src);
-    var devArea = (isFinite(gcnArea) && gcnArea > 0) ? Math.abs(areaBefore - gcnArea) / gcnArea : null;
+    var hasG = isFinite(gcnArea) && gcnArea > 0;
+    var devArea = hasG ? Math.abs(areaBefore - excl - gcnArea) / gcnArea : null;
     var devEdge = 0;
     if (sides && sides.length === src.length) for (var i = 0; i < sides.length; i++) devEdge = Math.max(devEdge, Math.abs(edgesBefore[i] - sides[i]));
-    // ngưỡng nghiệm thu: diện tích lệch ≤ 0,5% và mọi cạnh lệch ≤ 2 cm
-    var ok = (devArea == null || devArea <= 0.005) && devEdge <= 0.02;
+    // ngưỡng nghiệm thu (HM-03): diện tích theo MỘT quy tắc chung lgAreaVerdict, mọi cạnh lệch ≤ 2 cm
+    var ok = (!hasG || lgAreaVerdict(areaBefore, gcnArea, excl).ok) && devEdge <= 0.02;
     var res = {
       pts: src, ok: ok, areaBefore: areaBefore, areaAfter: areaBefore,
       edgesBefore: edgesBefore, edgesAfter: edgesBefore, shifts: null,
       gcnArea: gcnArea, sides: sides, devArea: devArea, devEdge: devEdge, fixes: []
     };
     if (ok) return res;
-    var adj = LG144.adjustRing(src, sides, gcnArea);
+    var adj = LG144.adjustRing(src, sides, hasG ? gcnArea + excl : gcnArea);
     if (!adj) return res;
     res.pts = adj.pts; res.shifts = adj.shifts; res.iters = adj.iters;
     res.areaAfter = shoelace(adj.pts); res.edgesAfter = edgeLens(adj.pts);
@@ -34864,7 +34866,7 @@ body.lg62:not(.lg62-map) #lg138-bar{
     // đã tự phát hiện quy ước cột S ở gốc — xem chú thích tại đó) cho nhất quán
     // với phần còn lại của ứng dụng, không tự dựng lại cách đọc riêng ở đây nữa.
     var sides = (window.LG51 && window.LG51.gcnEdgeLens) ? window.LG51.gcnEdgeLens(plot, pts.length) : null;
-    var res = LG144.auditTable(pts, sides, gcn);
+    var res = LG144.auditTable(pts, sides, gcn, num(m.dien_tich_khong_cap_gcn));
     res.plot = plot; res.ktt = LG144.auditKTT(plot);
     return res;
   };
@@ -35509,24 +35511,31 @@ body.lg62:not(.lg62-map) #lg138-bar{
     }
     return pts;
   }
+  /* HM-41 — SỬA GỐC RỄ: trước đây sau mỗi lần quét, autoAdjust TỰ ÉP diện tích về số trên sổ và
+     ghi đè toạ độ mốc (Mẫu B: dịch mốc để 91,29 → 89,90 dù 89,90 đã tính cả phần không cấp GCN).
+     Nay autoAdjust CHỈ ĐỐI SOÁT và đề xuất; toạ độ chỉ đổi khi người dùng chủ động gọi
+     LG145.applyPendingAdjust() (nút “Áp dụng bình sai” trong hộp đối soát). Bản gốc luôn còn trong
+     lastAdjust.before để hoàn tác/in hồ sơ. */
   LG145.autoAdjust = function () {
     if (typeof sodoCoords === 'undefined' || !sodoCoords || sodoCoords.length < 3) return null;
     var meta = (typeof sodoMeta !== 'undefined' && sodoMeta) ? sodoMeta : {};
     var book = LG145.bookRef || {};
     var gcn = parseFloat(book.dien_tich_m2 != null ? book.dien_tich_m2 : meta.dien_tich_m2);
+    var kc = parseFloat(book.khong_cap_m2 != null ? book.khong_cap_m2 : meta.dien_tich_khong_cap_gcn) || 0;
     var sides = book.sides || meta.canh_gcn || null;
     var pts = ringOf(sodoCoords);
     if (sides && sides.length === pts.length + 1) sides = sides.slice(0, pts.length);
+    LG145.pendingAdjust = null;
     if (!(sides && sides.length === pts.length) && !(isFinite(gcn) && gcn > 0)) {
-      log('bỏ qua bình sai: chưa có cạnh S(m) lẫn diện tích GCN');
+      log('bỏ qua đối soát: chưa có cạnh S(m) lẫn diện tích GCN');
       return null;
     }
     if (!window.LG144 || !window.LG144.auditTable) return null;
-    var res = window.LG144.auditTable(pts, sides && sides.length === pts.length ? sides : null, gcn);
+    var res = window.LG144.auditTable(pts, sides && sides.length === pts.length ? sides : null, gcn, kc);
     LG145.lastAudit = res;
     if (res.ok) {
       LG145.lastAdjust = { applied: false, reason: 'Bảng kê đã khớp sổ (diện tích ' + res.areaBefore.toFixed(2) + ' m²)' };
-      say({ title: '✔ Bảng kê khớp sổ đỏ', description: 'Diện tích ' + res.areaBefore.toFixed(2) + ' m² — không cần bình sai.' });
+      say({ title: '✔ Bảng kê khớp sổ đỏ', description: 'Diện tích ' + res.areaBefore.toFixed(2) + (kc ? ' − ' + kc.toFixed(2) + ' (không cấp GCN)' : '') + ' m² — toạ độ giữ nguyên như sổ.' });
       return res;
     }
     if (!res.fixes || !res.fixes.length) {
@@ -35534,7 +35543,13 @@ body.lg62:not(.lg62-map) #lg138-bar{
       say({ title: '⚠ Lệch sổ, chưa bình sai được', description: 'Diện tích đo ' + res.areaBefore.toFixed(2) + ' m² so với sổ ' + (isFinite(gcn) ? gcn.toFixed(2) : '—') + ' m². Hãy kiểm tra lại bảng kê.', variant: 'destructive' });
       return res;
     }
-    // ÁP DỤNG (người dùng đã chọn chế độ tự động, mọi mức dịch được ghi ra hồ sơ)
+    LG145.pendingAdjust = res;
+    LG145.lastAdjust = { applied: false, proposed: true, reason: 'Lệch sổ ' + res.areaBefore.toFixed(2) + ' m² so với ' + (isFinite(gcn) ? gcn.toFixed(2) : '—') + ' m² — đề xuất bình sai, CHƯA áp dụng (toạ độ giữ nguyên).', areaBefore: res.areaBefore, areaAfter: res.areaAfter, fixes: res.fixes };
+    say({ title: '⚠ Bảng kê lệch sổ — toạ độ giữ nguyên', description: 'Diện tích ' + res.areaBefore.toFixed(2) + ' m² so với sổ ' + (isFinite(gcn) ? gcn.toFixed(2) : '—') + ' m². Có đề xuất bình sai (' + res.areaBefore.toFixed(2) + ' → ' + res.areaAfter.toFixed(2) + ' m²); chỉ áp dụng khi bạn chọn.', variant: 'destructive' });
+    return res;
+  };
+  LG145.applyPendingAdjust = function () {
+    var res = LG145.pendingAdjust; if (!res || !res.fixes || !res.fixes.length) return false;
     var before = sodoCoords.map(function (p) { return { ten: p.ten, x: p.x, y: p.y }; });
     res.pts.forEach(function (p, i) { if (sodoCoords[i]) { sodoCoords[i].x = p.x; sodoCoords[i].y = p.y; } });
     if (sodoCoords.length === res.pts.length + 1) {
@@ -35545,19 +35560,17 @@ body.lg62:not(.lg62-map) #lg138-bar{
       applied: true, at: new Date().toISOString(),
       areaBefore: res.areaBefore, areaAfter: res.areaAfter,
       edgesBefore: res.edgesBefore, edgesAfter: res.edgesAfter,
-      gcnArea: gcn, sides: sides,
+      gcnArea: res.gcnArea, sides: res.sides,
       before: before,
       after: res.pts.map(function (p, i) { return { ten: String(i + 1), x: p.x, y: p.y }; }),
       fixes: res.fixes
     };
+    LG145.pendingAdjust = null;
     safe(function () { window.renderSodoList && window.renderSodoList(); }, 'render');
     safe(function () { typeof renderSodoList === 'function' && renderSodoList(); }, 'render2');
-    say({
-      title: '⚖ Đã bình sai ràng buộc theo sổ',
-      description: 'Diện tích ' + res.areaBefore.toFixed(2) + ' → ' + res.areaAfter.toFixed(2) + ' m². Mức dịch từng mốc được in trong hồ sơ.'
-    });
-    log('bình sai: ' + res.areaBefore.toFixed(2) + ' -> ' + res.areaAfter.toFixed(2));
-    return res;
+    say({ title: '⚖ Đã áp dụng bình sai theo lựa chọn của bạn', description: 'Diện tích ' + res.areaBefore.toFixed(2) + ' → ' + res.areaAfter.toFixed(2) + ' m². Mức dịch từng mốc được in trong hồ sơ; toạ độ gốc còn trong bản đo.' });
+    log('bình sai (người dùng chọn): ' + res.areaBefore.toFixed(2) + ' -> ' + res.areaAfter.toFixed(2));
+    return true;
   };
 
   safe(function () {
