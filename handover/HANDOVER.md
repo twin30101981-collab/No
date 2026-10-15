@@ -87,3 +87,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 16. ĐÓNG PHIÊN P04 (ngữ cảnh ≈ 70%)
 Đã xong: HM-08e, HM-06e, HM-39 (DAT_V3), HM-33 (CHO_NGUOI_DUNG — cơ chế xong, thiếu dữ liệu). Bộ hồi quy `node tests/run.js app/land-gis.html` PASS (hm07c nap_50_thua sát ngưỡng: 1,7–1,8 s khi chạy riêng, ~2,1 s khi nằm trong bộ → nếu FAIL chỉ ở đây thì chạy riêng lại; đừng chạy 2 bộ song song; run.js không có tham số lọc, chạy test lẻ bằng `node tests/regress/<tên>.js app/land-gis.html`). Việc dở dang: không. Kế tiếp theo thu_tu_thuc_thi: HM-26 (CHO_NGUOI_DUNG), HM-27a, HM-27b, HM-28 (CHO_NGUOI_DUNG), HM-29, HM-30 … Lưu ý: get_session.context_usage không cập nhật.
+- S-OPEN phiên 5 (P05, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Nhánh cục bộ phải ff từ origin trước. Mở HM-27a.
