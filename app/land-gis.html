@@ -25673,6 +25673,9 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lg103-abtn:active{ opacity:.85; }
 /* HM-08e — màn Thêm dạng danh sách + đầu Hồ sơ (mockup ⑤⑥) */
 .lg8e-list h5{ margin:14px 0 4px; font-size:var(--lg103-fs-h); letter-spacing:.04em; text-transform:uppercase; color:var(--lg103-muted); }
+.lgpk-gauge{ height:8px; border-radius:4px; background:var(--lg103-line); overflow:hidden; } .lgpk-gauge i{ display:block; height:100%; background:var(--lg103-accent,#1b6ef3); }
+.lgpk-sub,.lgpk-msg{ font-size:var(--lg103-fs-small,12px); margin:6px 0 10px; } .lgpk-row{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; min-height:52px; padding:8px 4px; border-bottom:1px solid var(--lg103-line); }
+.lgpk-row b{ flex:1 1 60%; } .lgpk-row small{ flex:1 1 100%; opacity:.75; order:3; } .lgpk-row button{ min-height:44px; min-width:64px; border-radius:8px; border:1px solid var(--lg103-line); background:transparent; color:inherit; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26192,6 +26195,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
+      mRow('🗺', 'Gói dữ liệu địa chính', 'data-lg103-act="packs"') +
       mRow('🎚', 'Căn ảnh vệ tinh', 'data-lg103-act="align"') +
       mRow('📡', 'GPS trung bình', 'data-lg103-act="gps-avg"') +
       mRow('🧭', 'La bàn', 'data-lg103-act="compass"') +
@@ -26261,6 +26265,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'imagery': closeSheet(); clickIf('lg31-fab-img'); return true;
       case 'compare': closeSheet(); clickIf('lg185-cmp-fab'); return true;
       case 'theme': clickIf('lg185-theme-fab'); if (currentTab === 'more') setTimeout(function () { body.innerHTML = tabMore(); }, 60); return true;
+      case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
       case 'ai-key': closeSheet(); if (typeof window.openKeyModal === 'function') window.openKeyModal(); else clickIf('btn-open-key-modal'); return true;
       case 'backup': closeSheet(); clickIf('btn-backup-project'); return true;
@@ -46112,6 +46117,112 @@ body.lg175-stack-open #lg124-stack{
     if (/^https?:/.test(location.protocol) && typeof fetch === 'function') fetch('admin-map.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) { if (j && Array.isArray(j.rows)) load(j.rows); }).catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h33b'); });
   } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h33c'); }
+})();
+</script>
+<script>
+/* HM-29 — GÓI DỮ LIỆU ĐỊA CHÍNH THEO XÃ: tải (tiếp tục khi rớt mạng), kiểm sha256, lưu bền (IndexedDB 'landgis_packs'), báo bản mới, xoá, đồng hồ dung lượng.
+   Danh mục: LGPacks.config({catalogUrl, headers:()=>({Authorization:..}), resolveUrl:(item)=>Promise<url>}) — HM-28 sẽ cấp link ký có hạn.
+   Danh mục JSON: {"packs":[{"id","ten","ver","bytes","sha256","url"}]} (khớp manifest.json do handover/tools/cadastre_pack.py sinh). Không gói nào mặc định → màn trống. */
+(function () {
+  'use strict';
+  var cfg = { catalogUrl: 'packs/catalog.json', headers: null, resolveUrl: null }, DB = 'landgis_packs', CHUNK = 1 << 20;
+  function db() {
+    return new Promise(function (ok, no) {
+      var r = indexedDB.open(DB, 1);
+      r.onupgradeneeded = function () { var d = r.result; d.createObjectStore('packs', { keyPath: 'id' }); d.createObjectStore('part', { keyPath: 'id' }); };
+      r.onsuccess = function () { ok(r.result); }; r.onerror = function () { no(r.error); };
+    });
+  }
+  function tx(store, mode, fn) {
+    return db().then(function (d) { return new Promise(function (ok, no) { var t = d.transaction(store, mode), s = t.objectStore(store), q = fn(s); t.oncomplete = function () { ok(q && q.result); d.close(); }; t.onerror = t.onabort = function () { no(t.error); d.close(); }; }); });
+  }
+  function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function sha256(blob) { return blob.arrayBuffer().then(function (b) { return crypto.subtle.digest('SHA-256', b); }).then(hex); }
+  function hdrs(extra) { var h = {}, c = cfg.headers ? cfg.headers() : null; if (c) for (var k in c) h[k] = c[k]; if (extra) for (var j in extra) h[j] = extra[j]; return h; }
+  function catalog() {
+    return fetch(cfg.catalogUrl, { cache: 'no-cache', headers: hdrs() }).then(function (r) { if (!r.ok) throw new Error('catalog ' + r.status); return r.json(); }).then(function (j) { return (j && j.packs) || []; });
+  }
+  function installed() { return tx('packs', 'readonly', function (s) { return s.getAll(); }).then(function (a) { return (a || []).map(function (p) { return { id: p.id, ten: p.ten, ver: p.ver, bytes: p.bytes, sha256: p.sha256, at: p.at }; }); }); }
+  function partial(id) { return tx('part', 'readonly', function (s) { return s.get(id); }); }
+  /* Tải gói: nếu đã có phần dở dang cùng sha256 thì gửi Range để tiếp tục. Trả {ok, resumable, error}. */
+  function install(item, onProgress) {
+    var tot = item.bytes, parts = [], got = 0, key = item.id;
+    return partial(key).then(function (p) { if (p && p.sha256 === item.sha256 && p.blob) { parts = [p.blob]; got = p.blob.size; } })
+      .then(function () { return cfg.resolveUrl ? cfg.resolveUrl(item) : item.url; })
+      .then(function (url) { return fetch(url, { headers: hdrs(got ? { Range: 'bytes=' + got + '-' } : null) }); })
+      .then(function (resp) {
+        if (resp.status === 200 && got) { parts = []; got = 0; } // máy chủ bỏ qua Range → tải lại từ đầu
+        else if (!resp.ok && resp.status !== 206) throw new Error('HTTP ' + resp.status);
+        var rd = resp.body.getReader(), buf = [], bufN = 0;
+        function save() { return tx('part', 'readwrite', function (s) { return s.put({ id: key, sha256: item.sha256, blob: new Blob(parts) }); }); }
+        function pump() {
+          return rd.read().then(function (r) {
+            if (r.done) return;
+            buf.push(r.value); bufN += r.value.length; got += r.value.length;
+            if (onProgress) try { onProgress(got, tot); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h29p'); }
+            if (bufN >= CHUNK) { parts.push(new Blob(buf)); buf = []; bufN = 0; return save().then(pump); }
+            return pump();
+          });
+        }
+        return pump().then(function () { if (buf.length) parts.push(new Blob(buf)); return save(); });
+      })
+      .catch(function (e) { return { fail: e }; })
+      .then(function (r) {
+        var blob = new Blob(parts);
+        if (r && r.fail) return partial(key).then(function () { return tx('part', 'readwrite', function (s) { return s.put({ id: key, sha256: item.sha256, blob: blob }); }); }).then(function () { return { ok: false, resumable: true, got: blob.size, error: String(r.fail.message || r.fail) }; });
+        if (blob.size < tot) return tx('part', 'readwrite', function (s) { return s.put({ id: key, sha256: item.sha256, blob: blob }); }).then(function () { return { ok: false, resumable: true, got: blob.size, error: 'Mới nhận ' + blob.size + '/' + tot + ' byte' }; });
+        return sha256(blob).then(function (h) {
+          if (h !== item.sha256) return tx('part', 'readwrite', function (s) { return s.delete(key); }).then(function () { return { ok: false, resumable: false, error: 'Sai mã kiểm tra sha256 — đã bỏ phần tải, hãy tải lại' }; });
+          return tx('packs', 'readwrite', function (s) { return s.put({ id: key, ten: item.ten, ver: item.ver, bytes: blob.size, sha256: h, at: Date.now(), blob: blob }); })
+            .then(function () { return tx('part', 'readwrite', function (s) { return s.delete(key); }); }).then(function () { return { ok: true }; });
+        });
+      });
+  }
+  function remove(id) { return tx('packs', 'readwrite', function (s) { return s.delete(id); }).then(function () { return tx('part', 'readwrite', function (s) { return s.delete(id); }); }); }
+  function getBlob(id) { return tx('packs', 'readonly', function (s) { return s.get(id); }).then(function (p) { return p ? p.blob : null; }); }
+  function usage() { try { return navigator.storage.estimate().then(function (e) { return { used: e.usage || 0, quota: e.quota || 0 }; }); } catch (e) { return Promise.resolve({ used: 0, quota: 0 }); } }
+  function persist() { try { return navigator.storage.persist ? navigator.storage.persist() : Promise.resolve(false); } catch (e) { return Promise.resolve(false); } }
+  /* gói đã cài có bản mới trên danh mục không */
+  function status(cat, inst) { var m = {}; inst.forEach(function (p) { m[p.id] = p; }); return cat.map(function (c) { var i = m[c.id]; return { item: c, state: !i ? 'chua' : (i.sha256 !== c.sha256 || i.ver !== c.ver ? 'co-ban-moi' : 'moi-nhat'), installed: i || null }; }); }
+  window.LGPacks = { config: function (o) { for (var k in o) cfg[k] = o[k]; return cfg; }, catalog: catalog, installed: installed, install: install, remove: remove, blob: getBlob, usage: usage, persist: persist, status: status, partial: partial };
+
+  /* ---- Giao diện: màn "Gói dữ liệu địa chính" (mở từ Thêm) ---- */
+  function mb(n) { return (n / 1048576).toFixed(n < 1048576 * 10 ? 1 : 0) + ' MB'; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var cur = [];
+  function render(msg) {
+    return Promise.all([catalog().catch(function () { return null; }), installed(), usage()]).then(function (a) {
+      var cat = a[0], inst = a[1], u = a[2], h = '<div class="lgpk">';
+      var pct = u.quota ? Math.min(100, Math.round(100 * u.used / u.quota)) : 0;
+      h += '<div class="lgpk-gauge" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><p class="lgpk-sub">Đã dùng ' + mb(u.used) + (u.quota ? ' / ' + mb(u.quota) : '') + ' trên máy này</p>';
+      if (msg) h += '<p class="lgpk-msg" role="status">' + esc(msg) + '</p>';
+      var st = cat ? status(cat, inst) : null; cur = cat || [];
+      if (!cat) h += '<p class="lgpk-msg">Không lấy được danh mục gói (đang ngoại tuyến hoặc chưa đăng nhập). Các gói đã tải vẫn dùng được.</p>';
+      else if (!cat.length) h += '<p class="lgpk-msg">Chưa có gói nào được phát hành.</p>';
+      (st || []).forEach(function (s) {
+        var c = s.item, lab = s.state === 'moi-nhat' ? 'Đã tải' : s.state === 'co-ban-moi' ? 'Có bản mới' : 'Chưa tải';
+        h += '<div class="lgpk-row" data-id="' + esc(c.id) + '"><b>' + esc(c.ten) + '</b><small>' + mb(c.bytes) + ' · ' + esc(c.ver || '') + ' · ' + lab + '</small><span class="lgpk-prog" hidden></span>' +
+          (s.state === 'moi-nhat' ? '' : '<button type="button" data-lgpk-act="dl" data-id="' + esc(c.id) + '">' + (s.state === 'chua' ? 'Tải' : 'Cập nhật') + '</button>') +
+          (s.installed ? '<button type="button" data-lgpk-act="rm" data-id="' + esc(c.id) + '">Xoá</button>' : '') + '</div>';
+      });
+      inst.filter(function (p) { return !cat || !cat.some(function (c) { return c.id === p.id; }); }).forEach(function (p) {
+        h += '<div class="lgpk-row"><b>' + esc(p.ten) + '</b><small>' + mb(p.bytes) + ' · ' + esc(p.ver || '') + ' · Đã tải (không còn trong danh mục)</small><button type="button" data-lgpk-act="rm" data-id="' + esc(p.id) + '">Xoá</button></div>';
+      });
+      return h + '</div>';
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-lgpk-act]'); if (!t) return;
+    var id = t.getAttribute('data-id'), act = t.getAttribute('data-lgpk-act'), root = t.closest('.lgpk') || document;
+    if (act === 'rm') { if (confirm('Xoá gói này khỏi máy?')) remove(id).then(function () { refresh(); }); return; }
+    var item = cur.filter(function (c) { return c.id === id; })[0]; if (!item) return;
+    var pr = root.querySelector('.lgpk-row[data-id="' + id + '"] .lgpk-prog'); t.disabled = true; persist();
+    install(item, function (g, n) { if (pr) { pr.hidden = false; pr.textContent = Math.round(100 * g / n) + '%'; } }).then(function (r) {
+      refresh(r.ok ? 'Đã tải xong và kiểm tra hợp lệ.' : (r.resumable ? 'Bị gián đoạn (' + r.error + '). Bấm Tải để tiếp tục từ chỗ dở.' : r.error));
+    });
+  });
+  function refresh(msg) { return render(msg).then(function (h) { var el = document.querySelector('.lgpk'); if (el) el.outerHTML = h; return h; }); }
+  window.LGPacksUI = { render: render, refresh: refresh };
 })();
 </script>
 </body>
