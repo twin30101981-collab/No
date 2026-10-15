@@ -4,12 +4,14 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.0",
+  "phien_ban": "1.1",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.0.docx",
-  "so_phien_uoc_tinh": "3-5",
-  "dieu_chinh": []
+  "tep": "de-an/DE_AN_LANDGIS_v1.1.docx",
+  "so_phien_uoc_tinh": "4-5",
+  "dieu_chinh": [
+   "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi"
+  ]
  },
  "moi_truong": {
   "node": "v22.22.0",
@@ -116,9 +118,9 @@
    "pham_vi": "LG145.checkBook, areaDeviationBadgeHTML (~L7927), v143 (~L33331), calcPermissibleAreaError",
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
-    "Mẫu B: 91,29 − 1,44 ≈ 89,85 → ĐẠT so với 89,9 m² ở cả luồng Tra sổ và luồng chính",
-    "Một hàm sai số dùng chung, có ghi căn cứ",
-    "Mẫu A vẫn ĐẠT"
+    "Một hàm sai số duy nhất 0,05√A + 0,0003A cho mọi luồng; gỡ ngưỡng max(0,05; 0,5%·A) và 0,005·A+0,05√A",
+    "Mẫu B: |(91,29 − 1,44) − 89,9| ≈ 0,05 ≤ 0,50 → ĐẠT ở luồng Tra sổ và luồng chính",
+    "Mẫu A: |29,70 − 29,7| ≤ 0,28 → ĐẠT; bảng kê gộp sai (29,85) → KHÔNG ĐẠT vì vượt cạnh/khối"
    ],
    "rui_ro": "Trung bình: đổi kết luận đạt/không đạt — cần người dùng chốt công thức",
    "kiem_chung_du_kien": "V3",
@@ -177,7 +179,7 @@
   },
   {
    "id": "HM-05",
-   "ten": "Gỡ dữ liệu cá nhân thật nhúng trong mã (LG_AUDIT) và nhật ký",
+   "ten": "Xoá dữ liệu cũ gây mất an toàn (LG_AUDIT, khoá lưu trữ cũ/hỏng, nhật ký)",
    "dot": 1,
    "uu_tien": "P1",
    "effort": "S",
@@ -194,11 +196,12 @@
    "pham_vi": "window.LG_AUDIT (~L36207), landgis_v42_diag_log, landgis_v87_log",
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
-    "Không còn họ tên/địa chỉ chủ sử dụng thật trong file",
-    "Bộ kiểm thử dùng dữ liệu ẩn danh vẫn chạy",
-    "Nhật ký không ghi CMND/CCCD"
+    "Không còn LG_AUDIT và mã chỉ dùng cho nó; 0 pageerror",
+    "Lần mở đầu sau nâng cấp: dọn landgis_v42_diag_log, landgis_v87_log, lgv80_log, land_gis_v18_cache_corrupt_*; có danh sách khoá được giữ",
+    "Dữ liệu thửa/khoá cấu hình của người dùng còn nguyên (test có dữ liệu giả lập)",
+    "Nhật ký mới không ghi CMND/CCCD, họ tên"
    ],
-   "rui_ro": "Thấp",
+   "rui_ro": "Trung bình: xoá nhầm dữ liệu người dùng — dùng danh sách khoá được phép xoá (allowlist), không xoá theo mẫu rộng",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh",
    "trang_thai": "CHUA_LAM",
@@ -239,7 +242,7 @@
     "Báo cáo RLS bảng thua_dat (người dùng xác nhận)"
    ],
    "rui_ro": "Trung bình: đổi nguồn thư viện có thể hỏng nạp offline",
-   "kiem_chung_du_kien": "V3 + V1 (RLS)",
+   "kiem_chung_du_kien": "V3 + V1 (người dùng kiểm RLS theo kịch bản)",
    "nhan_xac_minh": "Nghi vấn cần xác minh",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
@@ -638,7 +641,11 @@
    "zip": ""
   }
  ],
- "quyet_dinh_da_chot": [],
+ "quyet_dinh_da_chot": [
+  "Sai số cho phép duy nhất = 0,05·√A + 0,0003·A (công thức luồng chính); ĐẠT chỉ khi |(diện tích đo − không cấp GCN) − diện tích GCN| ≤ mức này; bỏ các ngưỡng nới khác (max(0,05; 0,5%·A), 0,005·A+0,05√A) — người dùng chốt 15/10/2026",
+  "Xoá hết dữ liệu cũ gây mất an toàn: gỡ hẳn LG_AUDIT (10 hồ sơ thật) và mã chỉ phục vụ nó; dọn khoá localStorage cũ/hỏng và nhật ký chẩn đoán; KHÔNG xoá dữ liệu thửa người dùng đang lưu — người dùng chốt 15/10/2026",
+  "Người dùng có quyền vào Supabase: kiểm RLS bảng thua_dat theo kịch bản V1 do Claude soạn; Đợt 4 nằm trong phạm vi — người dùng chốt 15/10/2026"
+ ],
  "loi_nen_ngoai_pham_vi": [
   "168–528 request ô bản đồ lỗi trong môi trường S0 do chặn mạng — không phải lỗi app"
  ]
