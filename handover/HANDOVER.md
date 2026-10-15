@@ -123,3 +123,7 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-22 CHO_NGUOI_DUNG (phần mã xong): LGGnss — máy thu GNSS/RTK qua Bluetooth BLE/Web Serial, NMEA, RTK Fixed/Float, HM-19 dùng GNSS ngoài; test giả lập hm22_gnss. Cần máy thu thật (VIEC_CUA_BAN 12).
 - HM-28 CHO_NGUOI_DUNG (phần mã xong): sign-pack (Edge Function + SQL bucket riêng tư/quyền/nhật ký) + app xin link ký cho gói rieng_tu; test hm28_signpack; bộ đầy đủ PASS. Việc của bạn: VIEC_CUA_BAN 13.
 - HM-25 CHO_NGUOI_DUNG (phần mã xong): LGForms — nạp biểu mẫu HTML/JSON của bạn, điền dữ liệu thửa, in PDF / Excel / CSV; 3 mẫu có sẵn. Test hm25_forms; bộ đầy đủ PASS. Cần mẫu thật (VIEC_CUA_BAN 14).
+- HM-08f DAT_V3 (một phần): gỡ luật CSS chết bằng prune_dead_css.py (−10 luật, −4 !important); ảnh 360/390/430 khớp; test hm08f_css. Sidebar/!important còn sống để lại (xem TONG_KET §4).
+
+## 19. ĐÓNG PHIÊN P06 — KẾT THÚC CHUỖI (ngữ cảnh ≈ 35%)
+Đã xong: HM-18a, 18b, 19, 20 (DAT_V3); HM-22, 25, 28 (CHO_NGUOI_DUNG, phần mã xong); HM-08f (một phần, DAT_V3). Không còn hạng mục CHUA_LAM. Bộ hồi quy `node tests/run.js app/land-gis.html` = PASS. Việc dở dang: không. **Không sinh phiên P07** (AUTORUN §6): đã viết handover/TONG_KET.md. Người dùng xem VIEC_CUA_BAN.md (mục 12–14 mới).
