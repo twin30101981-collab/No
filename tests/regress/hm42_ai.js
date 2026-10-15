@@ -28,7 +28,7 @@ const { open, report } = require('../lib');
     // Claude: structured outputs
     reqs.length = 0; lgKeySet('landgis_ai_provider_mode', 'claude'); lgKeySet('claude_api_key', 'sk-ant-x'); localStorage.setItem('claude_api_key', 'sk-ant-x');
     const r2 = await callGemini25FlashAPI('AAAA'); const cq = reqs.find(q => /anthropic/.test(q.u));
-    out.claudeCalls = reqs.filter(q => /anthropic/.test(q.u)).length; const fmt = cq && cq.body.output_config && cq.body.output_config.format;
+    out.claudeCalls = reqs.filter(q => /anthropic/.test(q.u) && q.body && q.body.messages).length; const fmt = cq && cq.body.output_config && cq.body.output_config.format;
     out.schema = !!fmt && fmt.type === 'json_schema' && fmt.schema.additionalProperties === false && !!fmt.schema.properties.khoi_phu && !!fmt.schema.properties.giap_ranh;
     out.claudeMain = r2.diem_moc.length; out.dbg = JSON.stringify(cq && cq.body && Object.keys(cq.body)) + JSON.stringify(fmt && Object.keys(fmt));
     // UI rà soát: 80–90% tô vàng

@@ -31,3 +31,4 @@
 - 15/10 · P03 đóng: HM-10, HM-42 xong; sinh P04.
 - 15/10 · P04 · HM-08e ĐẠT V3: Hồ sơ thửa + màn Thêm dạng danh sách + Chế độ chuyên gia (mặc định tắt).
 - 15/10 · P04 · HM-06e ĐẠT V3: bỏ nhập Excel, chỉ giữ xuất.
+- 15/10 · P04 · HM-39 ĐẠT V3: lớp nền — ngoại tuyến không đổi lớp, chặn Google đổi 1 lần sang Esri, ranh giới tắt mặc định (−42% ô ảnh).

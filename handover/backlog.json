@@ -849,11 +849,11 @@
    "effort": "M",
    "model_version": "unknown",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "sonnet-5-5/medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 8,
    "phu_thuoc": [
     "HM-07c",
     "HM-08a"
@@ -869,16 +869,18 @@
    "rui_ro": "Trung bình: đổi lớp mặc định khác thói quen",
    "kiem_chung_du_kien": "V3 (3 kịch bản)",
    "nhan_xac_minh": "Đã xác minh (F-38, F-39, F-40)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html",
+    "pass": 31,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm39_layers.js"
+    ]
    },
-   "nguyen_nhan_goc": "",
+   "nguyen_nhan_goc": "(1) Ô lỗi được thay bằng PNG trống rồi Leaflet bắn thêm tileload → bộ đo tính 8 lỗi + 8 \"tốt\" = 50% nên không bao giờ đổi lớp; (2) chuỗi vá từng ô Esri→Google→OSM che lỗi và nhân 2–3 lượt tải; (3) lớp phủ ranh giới Esri bật mặc định; (4) ngoại tuyến vẫn đếm lỗi/báo \"tải chậm\" lặp lại.",
    "ghi_chu_ban_giao": "",
    "zip": "",
    "can_nguoi_dung": null
