@@ -50,3 +50,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-05 DAT_V3: gỡ LG_AUDIT + mục UI v148; SCHEMA 120 dọn nhật ký cũ một lần (giữ KEEP_KEYS); lgScrub che CCCD/họ tên trong nhật ký. Kế tiếp: HM-00c.
 - HM-00c DAT_V3: nhập .landgis kiểm tra trước, báo hợp lệ/không, tự lưu bản sao + Hoàn tác. Kế tiếp theo thứ tự: HM-06 (CHO_NGUOI_DUNG — làm phần mã).
 - HM-06d DAT_V3: chế độ khoá phiên nhớ bền + xoá bản lâu dài (landgis_key_session_pref). Kế tiếp: HM-06 (SRI/ghim; phần Supabase/SheetJS cần người dùng).
+- HM-06 CHO_NGUOI_DUNG (phần mã xong): SRI + ghim phiên bản + cảnh báo khoá; còn SheetJS và RLS (VIEC_CUA_BAN 5–6). Kế tiếp: HM-06c (cần HM-06 → làm phần SQL/hướng dẫn, đánh CHO_NGUOI_DUNG), HM-04.
