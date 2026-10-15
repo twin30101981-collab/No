@@ -47,3 +47,4 @@
 - 15/10 · P05 · HM-10b phần mã xong (CHỜ BẠN triển khai Edge Function): AI qua máy chủ, không giữ khoá trong trình duyệt.
 - 15/10 · P05 · HM-08h ĐẠT V3: truy cập — mọi nút/ô có tên, tiêu đề không nhảy cấp, bỏ onclick nội dòng (TalkBack thật chờ bạn thử). HM-08f hoãn sang phiên riêng.
 - 15/10 · P05 · HM-12a ĐẠT V3: gỡ mã chẩn đoán/rollout song song không dùng (file nhỏ đi 192 KB), không hồi quy.
+- 15/10 · P05 · HM-35 ĐẠT V3: giáp ranh đọc từ sơ đồ sổ thành dữ liệu có cấu trúc (thửa/đường/ngõ/chưa rõ), bạn xác nhận hoặc sửa trước khi lưu.

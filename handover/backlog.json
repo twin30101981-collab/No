@@ -2622,11 +2622,11 @@
    "effort": "M",
    "model_version": "unknown",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 5,
    "phu_thuoc": [
     "HM-10",
     "HM-04"
@@ -2641,17 +2641,19 @@
    "rui_ro": "Trung bình: chất lượng ảnh sơ đồ",
    "kiem_chung_du_kien": "V3 + V1 (ảnh thật)",
    "nhan_xac_minh": "Đề xuất",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3 (AI giả lập; ảnh sổ thật chưa thử)",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 47 test); node tests/regress/hm35_giap_ranh.js",
+    "pass": 47,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm35_giap_ranh.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "LG35: nhãn → {loai thua/duong/ngo/khac/chua_ro, so_thua, dien_tich, ten}; Mẫu A (460/68,5; 500/25,5; Ngõ Quang Trung) và Mẫu B (130; 132; Đường Phạm Ngũ Lão; Bắc trống → chưa rõ) đúng trên kết quả AI giả lập. Form “Xác nhận giáp ranh” ở Hồ sơ → Tổng quan; lưu meta.giap_ranh_ds (xac_nhan) + cập nhật 4 ô chữ cũ + giap_ranh. Chưa tự bật form ngay sau khi quét AI (người dùng mở từ Hồ sơ). “T460” được hiểu là thửa 460 theo mẫu (không phải tờ).",
    "zip": "",
    "can_nguoi_dung": null
   },
