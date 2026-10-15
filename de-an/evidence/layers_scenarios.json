@@ -1,0 +1,97 @@
+{
+ "ok": {
+  "tileReq": 109,
+  "hosts": {
+   "*.google.com": 62,
+   "server.arcgisonline.com": 46,
+   "s3-us-west-2.amazonaws.com": 1
+  },
+  "s1": {
+   "tag": "t8s",
+   "zoom": 6,
+   "tileLayers": [
+    "Nguồn ảnh: Google|{s}.google.com/vt/lyrs=y&hl=|nz21|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "s2": {
+   "tag": "after_pan_zoom20",
+   "zoom": 20,
+   "tileLayers": [
+    "Nguồn ảnh: Google|{s}.google.com/vt/lyrs=y&hl=|nz21|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "retina": false,
+  "dpr": 3,
+  "failTried": [],
+  "toasts": [],
+  "nToasts": 0
+ },
+ "google_blocked": {
+  "tileReq": 201,
+  "hosts": {
+   "*.google.com": 131,
+   "server.arcgisonline.com": 69,
+   "s3-us-west-2.amazonaws.com": 1
+  },
+  "s1": {
+   "tag": "t8s",
+   "zoom": 6,
+   "tileLayers": [
+    "Nguồn ảnh: Google|{s}.google.com/vt/lyrs=y&hl=|nz21|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "s2": {
+   "tag": "after_pan_zoom20",
+   "zoom": 20,
+   "tileLayers": [
+    "Nguồn ảnh: Google|{s}.google.com/vt/lyrs=y&hl=|nz21|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "retina": false,
+  "dpr": 3,
+  "failTried": [],
+  "toasts": [],
+  "nToasts": 0
+ },
+ "offline": {
+  "tileReq": 629,
+  "hosts": {
+   "*.google.com": 219,
+   "server.arcgisonline.com": 285,
+   "s3-us-west-2.amazonaws.com": 1,
+   "tile.openstreetmap.org": 49,
+   "*basemaps.cartocdn.com": 75
+  },
+  "s1": {
+   "tag": "t8s",
+   "zoom": 6,
+   "tileLayers": [
+    "Nguồn ảnh: Google|{s}.google.com/vt/lyrs=s&hl=|nz21|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "s2": {
+   "tag": "after_pan_zoom20",
+   "zoom": 20,
+   "tileLayers": [
+    "Esri|server.arcgisonline.com/ArcG|nz19|r0",
+    "Esri|server.arcgisonline.com/ArcG|nz18|r0"
+   ]
+  },
+  "retina": false,
+  "dpr": 3,
+  "failTried": [
+   "ggl_hybrid",
+   "esri_img",
+   "ggl_sat",
+   "ggl_map",
+   "osm"
+  ],
+  "toasts": [],
+  "nToasts": 0
+ }
+}

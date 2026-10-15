@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Land GIS rà soát AI, lớp nền, hồ sơ</title>
+<link rel="stylesheet" href="base.css">
+<style>
+.badge.bad{background:var(--badbg);color:var(--bad)}.badge.mut{background:#ECEFED;color:var(--mut)}.badge.warn{background:#FFF1CC;color:#7A5600}
+.img{margin:8px 16px;height:200px;border-radius:12px;background:#F4EBD0;position:relative;overflow:hidden;border:1px solid var(--line)}
+.img .tb{position:absolute;left:14px;top:14px;font-family:"DejaVu Sans Mono",monospace;font-size:10.5px;line-height:1.75;color:#5d5032}
+.hl{position:absolute;border:2.5px solid #1E88E5;border-radius:4px;background:rgba(30,136,229,.08)}
+.hl.sub{border-color:#B98500;background:rgba(255,193,7,.12)}
+table.r td{font-size:13px;height:38px}
+.conf{font-family:inherit!important;font-size:11px!important;color:var(--mut)}
+.lrow{display:flex;align-items:center;gap:12px;min-height:62px;padding:0 16px;border-bottom:1px solid var(--line);background:#fff}
+.lrow .nm{flex:1}.lrow .nm b{display:block;font-size:15px}.lrow .nm span{font-size:12px;color:var(--mut)}
+.radio{width:22px;height:22px;border-radius:11px;border:2px solid #9AA8A0}.radio.on{border:7px solid var(--g)}
+.paper{position:absolute;left:22px;top:110px;width:346px;height:490px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:16px 16px;font-family:"DejaVu Serif",serif;font-size:7.6px;line-height:1.45;color:#111}
+.paper h4{font-size:9.5px;text-align:center;margin:2px 0}.paper .s{font-weight:700;margin-top:6px;font-size:8px}
+.paper table{width:100%;border-collapse:collapse}.paper td,.paper th{border:0.6px solid #888;padding:1.5px 3px;font-size:7px;height:auto;font-family:inherit;letter-spacing:0}
+</style></head><body>
+
+<!-- 23. RÀ SOÁT KẾT QUẢ AI -->
+<div class="phone" id="h23">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Rà soát kết quả đọc sổ<br><small>Thửa 501 · Tờ 10 · bảng kê có 2 khối</small></h1></div>
+  <div class="img"><div class="tb">1 2260081.59 570346.55 0.50<br>2 2260081.96 570346.89 3.02<br>3 2260083.99 570349.13 5.59<br>4 2260080.98 570353.84 4.54<br>5 2260077.72 570350.68 1.38<br>6 2260076.73 570349.72 5.64<br>7 2260080.72 570345.74 1.19<br>1 2260081.59 570346.55<br><br>8 2260077.72 570350.68 2.69<br>9 2260079.53 570348.69 1.06</div>
+   <div class="hl" style="left:8px;top:10px;width:212px;height:128px"></div><div class="hl sub" style="left:8px;top:156px;width:212px;height:40px"></div>
+   <div style="position:absolute;right:10px;top:16px;font-size:11px;font-weight:800;color:#1565C0">Khối chính · 7 mốc</div><div style="position:absolute;right:10px;top:160px;font-size:11px;font-weight:800;color:#7A5600">Khối phụ · 4 mốc</div></div>
+  <div class="seg" style="margin-top:4px"><div class="on">Khối chính · 7</div><div>Khối phụ (chỉ giới QH) · 4</div></div>
+  <div style="padding:0 12px"><table class="r"><tr><th>#</th><th>X</th><th>Y</th><th>S</th><th>Tin cậy</th></tr>
+   <tr><td class="n">1</td><td>2260081,59</td><td>570346,55</td><td>0,50</td><td class="conf">99%</td></tr>
+   <tr><td class="n">2</td><td>2260081,96</td><td>570346,89</td><td>3,02</td><td class="conf">99%</td></tr>
+   <tr><td class="n">3</td><td>2260083,99</td><td>570349,13</td><td>5,59</td><td class="conf">97%</td></tr>
+   <tr style="background:#FFF6E0"><td class="n">4</td><td>2260080,98</td><td>570353,84</td><td>4,54</td><td class="conf" style="color:#7A5600">78% ⚠</td></tr></table></div>
+  <div class="card" style="margin-top:8px;font-size:13px;line-height:1.45"><b>Diện tích khối chính 29,70 m²</b> = GCN 29,7 m² ✓ · Cạnh 7/7 khớp sổ ✓<br><span class="m">Không bình sai — toạ độ giữ nguyên như sổ.</span></div>
+  <div class="bar"><div class="btn p">Xác nhận → Đối chiếu</div></div>
+</div>
+
+<!-- 24. QUẢN LÝ LỚP NỀN -->
+<div class="phone" id="h24">
+  <div class="status dark">9:41<span>✈ ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Lớp bản đồ<br><small>Một nơi chọn · không tự đổi khi mất mạng</small></h1></div>
+  <div class="banner" style="background:#FFF1CC;color:#6B4A00;display:flex;gap:8px;padding:10px 16px;font-size:13px;font-weight:700">📴 Ngoại tuyến — đang dùng ô ảnh đã lưu (Esri, 1.820 ô). Không tự chuyển lớp.</div>
+  <div class="grp">Ảnh nền</div>
+  <div class="lrow"><div class="radio on"></div><div class="nm"><b>Esri World Imagery</b><span>có ghi nguồn · đã lưu 1.820 ô quanh 6 xã · dùng được cho hồ sơ PDF</span></div><span class="badge ok">Sẵn sàng</span></div>
+  <div class="lrow"><div class="radio"></div><div class="nm"><b>Google (khoá Map Tiles API của bạn)</b><span>hợp lệ theo điều khoản · cần mạng</span></div><span class="badge mut">Chưa có khoá</span></div>
+  <div class="lrow"><div class="radio"></div><div class="nm"><b>Bản đồ đường OpenStreetMap</b><span>nhẹ, hợp cho mạng yếu</span></div><span class="badge mut">Cần mạng</span></div>
+  <div class="lrow"><div class="radio"></div><div class="nm"><b>Địa chính (gói xã đã tải)</b><span>vector, không cần mạng · Đợt 6</span></div><span class="badge ok">6 xã</span></div>
+  <div class="grp">Lớp phủ</div>
+  <div class="lrow"><div class="nm"><b>Nhãn đường, địa danh</b><span>tắt khi nền đã có nhãn</span></div><div class="sw"></div></div>
+  <div class="lrow"><div class="nm"><b>Ranh giới hành chính</b><span>tắt mặc định — tiết kiệm ~40% dữ liệu tải</span></div><div class="sw"></div></div>
+  <div class="lrow"><div class="nm"><b>Thửa giáp ranh</b><span>nhãn tờ/thửa</span></div><div class="sw" style="background:var(--g2)"></div></div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">⬇ Lưu ô vùng đang xem</div><div class="btn p" style="flex:1">Xong</div></div></div>
+</div>
+
+<!-- 25. HỒ SƠ PDF MỚI (TRANG 1) -->
+<div class="phone" id="h25" style="background:#DDE3E0">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Xem trước hồ sơ · 3 trang<br><small>A4 · tự ngắt trang · không cắt mép</small></h1></div>
+  <div class="paper">
+    <div style="text-align:center;font-weight:700">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div style="text-align:center">Độc lập – Tự do – Hạnh phúc</div>
+    <h4>HỒ SƠ KỸ THUẬT THỬA ĐẤT (THAM KHẢO)</h4>
+    <div style="text-align:center">Thửa 131 · Tờ 10.1 · Đường Phạm Ngũ Lão, xóm B, Phúc Trọng, xã Mỹ Xá</div>
+    <div class="s">I. Chủ sử dụng</div><div>Theo GCN: <i>(chưa đọc được từ ảnh — để trống, không suy đoán)</i></div>
+    <div class="s">II. Thửa đất</div>
+    <table><tr><td>Diện tích GCN</td><td>89,9 m²</td><td>KTT / múi</td><td>105°30′ / 3°</td></tr><tr><td>Không cấp GCN</td><td>1,4 m²</td><td>Mục đích</td><td>ODT · Lâu dài</td></tr></table>
+    <div class="s">III. Tứ cận</div><div>Bắc: chưa rõ · Đông: thửa 132 tờ 10.1 · Nam: đường Phạm Ngũ Lão · Tây: thửa 130 tờ 10.1</div>
+    <div class="s">IV. Bảng kê toạ độ (đúng như sổ, không bình sai)</div>
+    <table><tr><th>Mốc</th><th>X (m)</th><th>Y (m)</th><th>S (m)</th><th>S đo</th></tr>
+    <tr><td>1</td><td>2259336,23</td><td>568027,14</td><td>2,06</td><td>2,06</td></tr><tr><td>2</td><td>2259334,17</td><td>568027,23</td><td>3,85</td><td>3,85</td></tr><tr><td>3</td><td>2259334,42</td><td>568031,07</td><td>17,58</td><td>17,58</td></tr><tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr></table>
+    <div class="s">V. Kết luận đối chiếu</div>
+    <div>Đo 91,29 m² − không cấp 1,44 m² = 89,85 m² · GCN 89,9 m² · lệch 0,05 m² ≤ cho phép 0,50 m² (0,05√A + 0,0003A) → <b>ĐẠT</b>. Cạnh 8/8 khớp sổ.</div>
+    <div style="margin-top:8px;font-size:6.6px;color:#555">Nguồn: GCN số vào sổ 13-69907570 · Lập bằng Land GIS ngày 15/10/2026 · Tài liệu tham khảo, không thay thế trích lục/trích đo.</div>
+  </div>
+  <div class="bar" style="background:#fff"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">Tuỳ chọn phụ lục</div><div class="btn p" style="flex:1.3">⬇ Tải PDF</div></div></div>
+</div>
+</body></html>
