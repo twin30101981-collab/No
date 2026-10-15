@@ -16,3 +16,4 @@
 - 15/10 · P02 · HM-43 ĐẠT V3: kiểm tra hình học đầy đủ (đỉnh trùng/chạm/tự cắt); bảng kê gộp sai báo 'mốc 5 trùng mốc 8'.
 - 15/10 · P02 · HM-04b ĐẠT V3: KTT đúng theo địa bàn cũ (Vũng Tàu 107°45′, Hải Dương 105°30′), không tự đoán — hỏi khi nhiều KTT, ưu tiên dòng KTT in trên sổ.
 - 15/10 · P02 · HM-08a ĐẠT V3: toast/nút nổi không còn che 5 nút dock ở 360/390/430 px; tối đa 1 toast, gộp tin trùng.
+- 15/10 · P02 · HM-07a ĐẠT V3: sổ đăng ký bộ đếm nền, ẩn app thì dừng bộ đếm/GPS, thay đổi DOM lúc nhàn rỗi giảm 69%.
