@@ -20604,14 +20604,26 @@ try {
 .lg60-annex-scale{position:absolute;top:0;left:0;width:210mm;transform-origin:top left;transform:scale(var(--lg60sc))}
 .lg60-annex-empty{border:1px dashed #bbb;background:#fcfcfc;padding:26px 16px;text-align:center;color:#666;font-size:var(--lg-fs-print)}
 .lg60-annex-empty button{border:1px solid #1f3a8a;background:#fff;color:#1f3a8a;font:inherit;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer}
-@page{size:A4;margin:8mm}
+@page{size:A4;margin:14mm 10mm 14mm}
+@page{@bottom-right{content:"Trang " counter(page) " / " counter(pages);font:9pt "Times New Roman",serif;color:#666}}
 @media print{
   body.lg60-printing>*:not(.lg60-host){display:none!important}
   .lg60-host{position:static!important;overflow:visible!important;background:#fff!important}
   .lg60-toolbar{display:none!important}
   .lg60-root{--lg60sc:.8286;padding:0}
-  .lg60-page{margin:0;box-shadow:none;width:auto;min-height:0;padding:11mm 10mm}
+  .lg60-page{margin:0;box-shadow:none;width:auto;min-height:0;padding:0}
   .lg60-root button{display:none!important}
+  /* HM-44 — bố cục theo DÒNG CHẢY: các "trang" logic nối liền nhau, tự ngắt trang khi hết khổ giấy; không chừa trang trống */
+  .lg60-page{break-after:auto;page-break-after:auto}
+  .lg60-page:has(.lg60-annex-body){break-before:page;page-break-before:always;break-inside:avoid;page-break-inside:avoid}
+  .lg60-page:not(.lg60-page1):not(:has(.lg60-annex-body)) .lg60-runhead{display:none}
+  .lg60-root .lg60-pageno{display:none}
+  .lg60-root table.lg60-t{table-layout:auto;max-width:100%}
+  .lg60-root table.lg60-t thead{display:table-header-group}
+  .lg60-root table.lg60-t tr,.lg60-root .lg60-drawbox,.lg60-root .lg60-signs,.lg60-root dl.lg60-kv>div{break-inside:avoid;page-break-inside:avoid}
+  .lg60-root h1,.lg60-root h2.lg60-sec,.lg60-root h3.lg60-sub{break-after:avoid;page-break-after:avoid}
+  .lg60-root .lg60-t td,.lg60-root .lg60-t th,.lg60-root dd{overflow-wrap:anywhere}
+  .lg60-root .lg60-drawbox svg{max-height:88mm;width:auto;max-width:100%}
 }
 </style>
 <script>
@@ -21108,6 +21120,11 @@ try {
   LG60.preparePrint = async function () {
     if (hostEl && currentPlot) await loadAllAnnex(hostEl, currentPlot);
     document.body.classList.add('lg60-printing');
+    try {   // HM-44: dòng chạy đầu trang theo thửa (hộp lề @page, không phụ thuộc vị trí ngắt trang)
+      var mm = (currentPlot && currentPlot.meta) || {}, txt = 'Hồ sơ kỹ thuật thửa đất — Thửa ' + (mm.so_thua || (currentPlot && currentPlot.id) || '') + ', Tờ bản đồ ' + (mm.to_ban_do || '');
+      var st = document.getElementById('lg60-pagehead') || document.head.appendChild(Object.assign(document.createElement('style'), { id: 'lg60-pagehead' }));
+      st.textContent = '@page{@top-left{content:' + JSON.stringify(txt) + ';font:9pt "Times New Roman",serif;color:#666}}';
+    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h44a'); }
   };
   LG60.printReport = async function () {
     await LG60.preparePrint();
