@@ -65,3 +65,7 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08d DAT_V3: luồng Nhập bảng kê 3 bước (Mẫu A/B hết luồng 390 px, footer không bị che). Phần ảnh/camera chưa nối vào bước 2. Kế tiếp: HM-08e.
 - HM-08g DAT_V3: xoá có Hoàn tác 6 s + Thùng rác 30 ngày bền + xoá tất cả 2 bước. Kế tiếp theo thứ tự: HM-08e (M), HM-09, HM-09b, HM-10…
 - HM-09 DAT_V3: tự đổi lớp nền tối đa 3 lần rồi dừng + báo; ngoại tuyến không đổi. Kế tiếp: HM-09b (XS).
+- HM-09b DAT_V3: ghi nguồn bản đồ hiện lại (ⓘ Nguồn). 
+
+## 12. ĐÓNG PHIÊN P02 (ngữ cảnh ≈ 70%)
+Đã xong 26 hạng mục (xem backlog `chuoi_phien.nhat_ky`). Bộ hồi quy: `node tests/run.js app/land-gis.html` = 27/27 PASS. Việc dở dang: không. Kế tiếp trong thu_tu_thuc_thi: HM-42 (cần HM-10 — làm HM-10 trước, S), HM-08e (M), HM-10 (S), HM-39 (M), HM-33 (S) … HM-06/06c/…: CHO_NGUOI_DUNG (xem VIEC_CUA_BAN.md). Lưu ý: get_session.context_usage không cập nhật (đứng ở 124894) — tự ước lượng bằng total_tokens.

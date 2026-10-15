@@ -1,7 +1,7 @@
 {
  "du_an": "LANDGIS",
  "skill_version": "3.2.0",
- "phien_hien_tai": 2,
+ "phien_hien_tai": 3,
  "che_do": "3-tu-dong",
  "de_an": {
   "phien_ban": "1.8",
@@ -1301,13 +1301,13 @@
    "dot": 2,
    "uu_tien": "P2",
    "effort": "XS",
-   "model_version": "unknown",
+   "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 3,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 2,
    "phu_thuoc": [
     "HM-08c"
    ],
@@ -1320,17 +1320,19 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (mã)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/regress/hm09b_attr.js app/land-gis.html",
+    "pass": 4,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "run.js 27/27 PASS"
+    ]
    },
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "nguyen_nhan_goc": "CSS v69 ẩn hẳn .leaflet-control-attribution (vi phạm điều khoản ghi nguồn của Google/Esri/OSM/CARTO).",
+   "ghi_chu_ban_giao": "Ghi nguồn thu gọn ⓘ Nguồn (góc dưới trái), bấm mở rộng chữ 10 px; tên nguồn mặc định cho lớp thiếu attribution (lg9b-attr-js). Lưu ý: overlay nhãn/ranh giới cũng đóng góp nguồn.",
    "zip": "",
    "can_nguoi_dung": null
   },
@@ -2835,6 +2837,39 @@
     "phien": 1,
     "session": "session_019C1PXFKUHAJJMo1HwKVFwe",
     "viec": "S0 phân tích + đề án v1.0→v1.8; chuẩn bị chạy tự động"
+   },
+   {
+    "phien": 2,
+    "session_id": "session_01CEjSueS4vgp8B5GB3X1Lca",
+    "hang_muc_xong": [
+     "HM-00",
+     "HM-00b",
+     "HM-01",
+     "HM-02",
+     "HM-03",
+     "HM-41",
+     "HM-45",
+     "HM-05",
+     "HM-00c",
+     "HM-06d",
+     "HM-06(CHO_NGUOI_DUNG)",
+     "HM-06c(CHO_NGUOI_DUNG)",
+     "HM-04",
+     "HM-43",
+     "HM-04b",
+     "HM-08a",
+     "HM-07a",
+     "HM-07b",
+     "HM-07c",
+     "HM-08b",
+     "HM-08i",
+     "HM-08c",
+     "HM-08d",
+     "HM-08g",
+     "HM-09",
+     "HM-09b"
+    ],
+    "ly_do_dong": "ngữ cảnh ≈ 70%"
    }
   ]
  }
