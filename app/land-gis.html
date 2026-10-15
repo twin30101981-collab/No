@@ -6726,15 +6726,26 @@ function initMap(){
       const total = loaded + errored;
       const ratio = total ? loaded / total : (loaded > 0 ? 1 : 0);
       if (total >= 2 && ratio < 0.5) {
+        // HM-09 — CHẶN VÒNG LẶP: tối đa LG_FAILOVER_MAX lần tự đổi lớp rồi DỪNG và báo (trước đây hết chuỗi lại clear() rồi đổi tiếp mãi,
+        // mỗi lần kéo bản đồ lại thử lại → nháy nền, tải lại liên tục khi mạng chặn). Đang ngoại tuyến thì không đổi gì cả.
+        if (navigator.onLine === false) return;
+        if (window.__lgFailoverHalted) return;
+        window.__lgFailoverCount = window.__lgFailoverCount || 0;
+        if (window.__lgFailoverCount >= (window.LG_FAILOVER_MAX || 3)) {
+          window.__lgFailoverHalted = true;
+          toast({ title: '⚠️ Đã dừng tự đổi lớp nền', description: 'Đã thử ' + window.__lgFailoverCount + ' lớp nhưng ảnh nền vẫn tải kém tại vị trí này (mạng yếu/bị chặn). Hãy tự chọn lớp ở nút ◫, hoặc dùng vùng đã tải trước. App sẽ không tự đổi lớp nữa cho tới khi bạn chọn lớp hoặc có mạng trở lại.', variant: 'destructive' });
+          return;
+        }
         window.__lgFailoverTried.add(layerKey);
         const next = window.LG_FAILOVER_CHAIN.find(k => !window.__lgFailoverTried.has(k) && LG_LAYER_DEFS[k] && LG_LAYER_DEFS[k] !== def);
         if (next) {
+          window.__lgFailoverCount++;
           toast({
             title: `⚠️ Lớp "${def.name}" tải kém (${loaded}/${total} ô ảnh)`,
             description: `Tự động chuyển sang "${LG_LAYER_DEFS[next].name}" để có ảnh nền đầy đủ hơn tại vị trí này. Có thể tự chọn lớp khác bất kỳ lúc nào ở bảng góc trên-phải.`
           });
-          map.removeLayer(layer);
-          LG_LAYER_DEFS[next].layer.addTo(map);
+          window.__lgAutoSwitching = true;   // Leaflet bắn 'baselayerchange' cả khi đổi bằng mã → đánh dấu để không tính là người dùng tự chọn
+          try { map.removeLayer(layer); LG_LAYER_DEFS[next].layer.addTo(map); } finally { window.__lgAutoSwitching = false; }
           try { localStorage.setItem('land_gis_base_layer_key', next); localStorage.setItem('land_gis_base_layer_name', LG_LAYER_DEFS[next].name); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'q64'); }
           if (window.lgUpdateSourceStatus) window.lgUpdateSourceStatus();
           // v39.1 — chuyển dự phòng này KHÔNG đi qua bảng chọn lớp Leaflet nên sự
@@ -6752,9 +6763,10 @@ function initMap(){
             description: 'Đã thử hết các lớp online cấu hình sẵn — có thể mạng đang chặn các máy chủ bản đồ. Dùng vùng đã "Tải trước" (bộ nhớ đệm ngoại tuyến) nếu có, hoặc gửi bộ phận CNTT mở các tên miền: ' + window.LG_REQUIRED_TILE_DOMAINS.join('; ') + '. (Xem thêm ở bảng "🛠 v42" → mục ⑤.)',
             variant: 'destructive'
           });
-          window.__lgFailoverTried.clear();
+          window.__lgFailoverHalted = true;   // HM-09: hết chuỗi → dừng hẳn (không clear() rồi lặp lại)
         }
       } else if (total >= 1) {
+        window.__lgFailoverCount = 0; window.__lgFailoverHalted = false;
         window.__lgFailoverTried.clear(); // lop hien tai tai tot -> mo lai toan bo chuoi cho lan doi lop sau
       }
     }
@@ -15604,6 +15616,7 @@ try {
         var deb = null;
         map.on('moveend zoomend', function () { clearTimeout(deb); deb = setTimeout(function () { probeActiveArea(false); }, 1800); });
         map.on('baselayerchange', function (e) {
+          if (!window.__lgAutoSwitching) { window.__lgFailoverCount = 0; window.__lgFailoverHalted = false; }   // HM-09: người dùng tự chọn lớp → mở lại cơ chế tự đổi
           window.LG_ACTIVE_LAYER_KEY = Object.keys(window.LG_LAYER_DEFS || {}).find(function (k) { return window.LG_LAYER_DEFS[k].name === e.name; });
           V.notify('ok', 'Đã chuyển lớp nền: ' + e.name, 'Đang tự dò lại độ nét cho khu vực đang xem.');
           setTimeout(function () { probeActiveArea(false); }, 600);
@@ -15611,7 +15624,7 @@ try {
       } else if (tries > 40) clearInterval(t);
     }, 500);
 
-    window.addEventListener('online', function () { V.resetOverpass(); nomiFails = 0; V.notify('ok', 'Đã có mạng trở lại', 'Tra địa chỉ ngoài và gợi ý đường/ngõ OSM hoạt động lại.'); });
+    window.addEventListener('online', function () { window.__lgFailoverCount = 0; window.__lgFailoverHalted = false; V.resetOverpass(); nomiFails = 0; V.notify('ok', 'Đã có mạng trở lại', 'Tra địa chỉ ngoài và gợi ý đường/ngõ OSM hoạt động lại.'); });
     window.addEventListener('offline', function () { V.notify('warn', 'Mất kết nối mạng ngoài', 'Các tính năng cần mạng tự ẩn. Đo vẽ, tính diện tích, xuất DXF/PDF offline vẫn chạy bình thường.'); });
     V.record('info', 'boot', 'Khoi nang cap v42 da nap xong');
   }
