@@ -3392,8 +3392,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <input type="text" id="input-claude-api-key" placeholder="sk-ant-..." style="font-family:var(--mono);margin-bottom:8px" />
       <label class="small bold" style="display:block;margin-bottom:4px">Model Claude:</label>
       <select id="select-claude-model" style="margin-bottom:12px">
-        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — nhanh, tiết kiệm ~20× (khuyên dùng)</option>
-        <option value="claude-sonnet-5">Claude Sonnet 5 — chính xác hơn (tốn credit nhiều hơn)</option>
+        <option value="claude-opus-5-5">Claude Opus 5.5 — chính xác nhất (mặc định)</option>
+        <option value="claude-sonnet-5-5">Claude Sonnet 5.5 — cân bằng</option>
+        <option value="claude-haiku-5-5">Claude Haiku 5.5 — nhanh, rẻ nhất</option>
       </select>
 
       <!-- v37.6 — MỚI: nhắc rõ khoá lưu ở đâu và rủi ro khi dùng máy chung, theo
@@ -3975,7 +3976,6 @@ function getEffectiveMistralKey() {
 // (~20 req/phút, ~200 req/ngày với tài khoản chưa nạp; 1.000+/ngày nếu đã nạp 1 lần).
 // Dùng key OpenRouter duy nhất, không cần key Anthropic riêng, không tốn credit.
 const OPENROUTER_VISION_MODELS = [
-  "anthropic/claude-haiku-3-5:free",
   "google/gemma-4-31b-it:free",
   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
   "google/gemma-4-26b-a4b-it:free"
@@ -3992,17 +3992,22 @@ const MISTRAL_VISION_MODEL = "pixtral-12b-2409";
 function getAiProviderMode() {
   return lgKeyGet('landgis_ai_provider_mode') || 'auto';
 }
-const CLAUDE_MODELS = {
-  // v71 — Haiku là mặc định: rẻ hơn ~20x so với Sonnet 5, tốc độ nhanh hơn,
-  // vẫn đủ chính xác cho bài toán đọc toạ độ sổ đỏ; Sonnet 5 chỉ nên chọn
-  // khi ảnh rất mờ/nghiêng và Haiku thất bại liên tục.
-  'claude-haiku-4-5-20251001': { label: 'Claude Haiku 4.5' },
-  'claude-sonnet-5': { label: 'Claude Sonnet 5' }
+// HM-10 — DANH MỤC MODEL AI MỘT CHỖ (đổi model chỉ sửa đây). Thứ tự = thứ tự thử khi model báo 404.
+// Mặc định Opus 5.5 (đọc số chính xác nhất); Haiku 3.5 đã ngừng 19/02/2026 nên không còn trong danh mục.
+const LG_AI_MODELS = {
+  claude: [
+    { id: 'claude-opus-5-5',   label: 'Claude Opus 5.5' },
+    { id: 'claude-sonnet-5-5', label: 'Claude Sonnet 5.5' },
+    { id: 'claude-haiku-5-5',  label: 'Claude Haiku 5.5' }
+  ],
+  claudeMaxTokens: 16000
 };
+const CLAUDE_MODELS = {};
+LG_AI_MODELS.claude.forEach(m => { CLAUDE_MODELS[m.id] = { label: m.label }; });
 function getActiveClaudeModel() {
   const saved = lgKeyGet('landgis_claude_model');
-  // v71 — đổi mặc định sang Haiku 4.5 (tiết kiệm hơn ~20x, không cần nâng cấp)
-  return (saved && CLAUDE_MODELS[saved]) ? saved : 'claude-haiku-4-5-20251001';
+  // model cũ/không còn trong danh mục (ID đời cũ) → về mặc định
+  return (saved && CLAUDE_MODELS[saved]) ? saved : LG_AI_MODELS.claude[0].id;
 }
 
 function openKeyModal() {
@@ -5432,6 +5437,9 @@ function classifyClaudeError(status, errJson) {
   if (status === 401 || low.includes('invalid x-api-key') || low.includes('authentication_error')) {
     return { kind: 'auth', message: rawMsg };
   }
+  if (status === 404 || low.includes('not_found_error')) {
+    return { kind: 'notfound', message: rawMsg };
+  }
   if (status === 429 || low.includes('rate_limit')) {
     return { kind: 'quota', message: rawMsg };
   }
@@ -5462,7 +5470,7 @@ function friendlyClaudeError(err) {
 // promptText PHẢI tự mô tả rõ cấu trúc JSON cần trả về (Claude không có tham số ép
 // JSON schema cứng như Gemini responseSchema) — các prompt tái dùng từ Gemini trong
 // app này đã sẵn mô tả JSON rõ ràng nên dùng lại nguyên văn được.
-async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image) {
+async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image, schema) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -5473,12 +5481,14 @@ async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image) 
     },
     body: JSON.stringify({
       model: modelName,
-      max_tokens: 2048,
+      max_tokens: LG_AI_MODELS.claudeMaxTokens,
+      // Có schema → structured outputs (đầu ra bị ép đúng JSON schema); không có → dặn trong prompt như cũ.
+      ...(schema ? { output_config: { format: { type: 'json_schema', schema } } } : {}),
       messages: [{
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64Image } },
-          { type: 'text', text: `${promptText}\n\nTRẢ VỀ DUY NHẤT CHUỖI JSON hợp lệ, không kèm markdown fences (không có \`\`\`), không giải thích gì thêm trước/sau JSON.` }
+          { type: 'text', text: schema ? promptText : `${promptText}\n\nTRẢ VỀ DUY NHẤT CHUỖI JSON hợp lệ, không kèm markdown fences (không có \`\`\`), không giải thích gì thêm trước/sau JSON.` }
         ]
       }]
     })
@@ -5494,6 +5504,8 @@ async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image) 
   }
 
   const result = await response.json();
+  if (result.stop_reason === 'refusal') { const er = new Error('Claude từ chối xử lý ảnh này (refusal).'); er.kind = 'refusal'; throw er; }
+  if (result.stop_reason === 'max_tokens') { const er = new Error('Claude trả lời quá dài và bị cắt (max_tokens) — kết quả không đầy đủ, không dùng.'); er.kind = 'max_tokens'; throw er; }
   const text = (result.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
   if (!text) throw new Error('Claude API không trả về nội dung text.');
   const cleanedText = text.replace(/^```json\s*|^```\s*|```$/g, '').trim();
@@ -5503,7 +5515,7 @@ async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image) 
 // Hàm dùng chung tương đương callGeminiVisionJSON — tự lấy Key/model đã lưu, gọi
 // Claude, chuẩn hoá lỗi. Không có "model fallback" nhiều tầng như Gemini vì Claude
 // hiện chỉ cho chọn 1 trong 2 model (Sonnet 5 / Haiku 4.5) tại 1 thời điểm.
-async function callClaudeVisionJSON(promptText, base64Image) {
+async function callClaudeVisionJSON(promptText, base64Image, schema) {
   const activeKey = getEffectiveClaudeKey();
   if (!activeKey) {
     lgAutoKeyModal('claude-nokey');
@@ -5521,15 +5533,29 @@ async function callClaudeVisionJSON(promptText, base64Image) {
     e.fatal = false;
     throw e;
   }
-  const modelName = getActiveClaudeModel();
-  try {
-    return await callClaudeVisionOnce(modelName, activeKey, promptText, base64Image);
-  } catch (e) {
-    if (e.fatal) lgAutoKeyModal('claude-fatal');
-    const finalErr = new Error(friendlyClaudeError(e));
-    finalErr.kind = e.kind;
-    throw finalErr;
+  // Model báo 404 (ngừng/đổi tên) → chuyển model kế trong danh mục và BÁO rõ.
+  const first = getActiveClaudeModel();
+  const chain = [first].concat(LG_AI_MODELS.claude.map(m => m.id).filter(id => id !== first));
+  let e = null;
+  for (let i = 0; i < chain.length; i++) {
+    try {
+      const out = await callClaudeVisionOnce(chain[i], activeKey, promptText, base64Image, schema);
+      if (i > 0) { window.__lgClaudeModelUsed = chain[i]; }
+      return out;
+    } catch (err) {
+      e = err;
+      if (err.kind === 'notfound' && i + 1 < chain.length) {
+        try { toast({ title: 'Model Claude không còn dùng được', description: '"' + chain[i] + '" báo không tồn tại — thử "' + chain[i + 1] + '".', variant: 'destructive' }); } catch (t) { /* toast chưa sẵn sàng */ }
+        window.__lgClaudeFallbackNotes = (window.__lgClaudeFallbackNotes || []).concat([chain[i] + '→' + chain[i + 1]]);
+        continue;
+      }
+      break;
+    }
   }
+  if (e.fatal) lgAutoKeyModal('claude-fatal');
+  const finalErr = new Error(e.kind === 'notfound' ? 'Mọi model Claude trong danh mục đều không tồn tại với khoá này — cập nhật danh mục LG_AI_MODELS.' : friendlyClaudeError(e));
+  finalErr.kind = e.kind;
+  throw finalErr;
 }
 
 // ---------------------------------------------------------------
@@ -5793,10 +5819,10 @@ function friendlyGeminiError(err) {
 // Gọi Gemini API đúng 1 lần cho 1 model cụ thể (autoDetectTableRegion tự lo việc
 // thử lần lượt qua các model khác trong danh sách khi gặp lỗi).
 async function callGeminiVisionOnce(modelName, apiKey, payload) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
   const response = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
     body: JSON.stringify(payload)
   });
 
@@ -6093,14 +6119,14 @@ async function callGeminiVisionJSON(payload) {
 
   modelLoop:
   for (const modelName of modelOrder) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
     for (let attempt = 0; attempt <= quickRetryDelays.length; attempt++) {
       let info = null;
       try {
         const response = await fetch(endpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-goog-api-key": activeKey },
           body: JSON.stringify(payload)
         });
 
@@ -6159,7 +6185,7 @@ function providerLabel(providerId) {
   // v71 — bỏ nhãn "trả phí" vì Haiku nay dùng được miễn phí qua OpenRouter
   if (providerId === 'claude') {
     const m = CLAUDE_MODELS[getActiveClaudeModel()];
-    return `Claude (${m ? m.label : 'Haiku 4.5'})`;
+    return `Claude (${m ? m.label : LG_AI_MODELS.claude[0].label})`;
   }
   return { gemini: 'Gemini', openrouter: 'OpenRouter', mistral: 'Mistral' }[providerId] || providerId;
 }
@@ -22865,7 +22891,7 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
    (1) DANH SÁCH MODEL GHIM CỨNG TRONG CODE BỊ LẠC HẬU.
        - Gemini: "gemini-2.5-flash" nay trả 404 "no longer available to new
          users" với khoá mới → mỗi lần scan đều tốn 1 lượt gọi lỗi.
-       - OpenRouter: "anthropic/claude-haiku-3-5:free" không còn là model id
+       - OpenRouter: ID Haiku 3.5 miễn phí không còn là model id
          hợp lệ (400), 2 model gemma :free thường xuyên 429 upstream.
        - Mistral: MISTRAL_VISION_MODEL là const, không sửa được lúc chạy.
        → v72 TỰ DÒ danh sách model thật từ chính API của từng nhà cung cấp
@@ -22989,7 +23015,7 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
   async function discoverGemini() {
     var key = (lgKeyGet('gemini_api_key')).trim();
     if (!key) return [];
-    var j = await getJSON('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(key));
+    var j = await getJSON('https://generativelanguage.googleapis.com/v1beta/models', { 'x-goog-api-key': key });
     var ids = (j.models || [])
       .filter(function (m) { return (m.supportedGenerationMethods || []).indexOf('generateContent') >= 0; })
       .map(function (m) { return String(m.name || '').replace(/^models\//, ''); })
@@ -23061,12 +23087,10 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
       'anthropic-dangerous-direct-browser-access': 'true'
     });
     var ids = (j.data || []).map(function (m) { return m.id; }).filter(Boolean);
-    var haiku = ids.filter(function (i) { return /haiku/.test(i); });
-    var sonnet = ids.filter(function (i) { return /sonnet/.test(i); });
-    var out = haiku.concat(sonnet).slice(0, 4);
-    if (!out.length) throw new Error('Khoá Claude không truy cập được model nào.');
+    // HM-10: chỉ nhận model thuộc danh mục LG_AI_MODELS (theo thứ tự danh mục), không tự ghim Haiku.
+    var out = LG_AI_MODELS.claude.map(function (m) { return m.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
+    if (!out.length) throw new Error('Khoá Claude không truy cập được model nào trong danh mục (' + LG_AI_MODELS.claude.map(function (m) { return m.id; }).join(', ') + ').');
     discSave('claude', out);
-    try { localStorage.setItem('landgis_claude_model', out[0]); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q248'); }
     return out;
   }
   var DISCOVER = { gemini: discoverGemini, openrouter: discoverOpenRouter, mistral: discoverMistral, claude: discoverClaude };
@@ -23096,7 +23120,7 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
       var saved = (localStorage.getItem('landgis_claude_model') || '').trim();
       return d.indexOf(saved) >= 0 ? saved : d[0];
     }
-    return origClaudeModel ? origClaudeModel() : 'claude-haiku-4-5-20251001';
+    return origClaudeModel ? origClaudeModel() : LG_AI_MODELS.claude[0].id;
   };
 
   // Mistral: MISTRAL_VISION_MODEL là const nên phải thay hẳn hàm gọi, đồng thời

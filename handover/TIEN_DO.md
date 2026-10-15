@@ -26,3 +26,4 @@
 - 15/10 · P02 · HM-08g ĐẠT V3: xoá thửa có thanh Hoàn tác 6 s, Thùng rác 30 ngày còn sau khi mở lại app, Xoá tất cả cần xác nhận 2 bước.
 - 15/10 · P02 · HM-09 ĐẠT V3: nền bản đồ lỗi chỉ tự đổi tối đa 3 lần rồi dừng và báo; không còn vòng lặp đổi lớp.
 - 15/10 · P02 · HM-09b ĐẠT V3: hiện lại ghi nguồn bản đồ gọn (ⓘ Nguồn). Đóng P02: 26 hạng mục; sinh P03.
+- 15/10 · P03 · HM-10 ĐẠT V3: danh mục model AI một chỗ (mặc định Opus 5.5), model 404 tự chuyển + báo, kiểm cắt cụt/từ chối, khoá Gemini không còn nằm trong URL.

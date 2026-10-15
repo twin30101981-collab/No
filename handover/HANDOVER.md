@@ -69,3 +69,7 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 12. ĐÓNG PHIÊN P02 (ngữ cảnh ≈ 70%)
 Đã xong 26 hạng mục (xem backlog `chuoi_phien.nhat_ky`). Bộ hồi quy: `node tests/run.js app/land-gis.html` = 27/27 PASS. Việc dở dang: không. Kế tiếp trong thu_tu_thuc_thi: HM-42 (cần HM-10 — làm HM-10 trước, S), HM-08e (M), HM-10 (S), HM-39 (M), HM-33 (S) … HM-06/06c/…: CHO_NGUOI_DUNG (xem VIEC_CUA_BAN.md). Lưu ý: get_session.context_usage không cập nhật (đứng ở 124894) — tự ước lượng bằng total_tokens.
+
+## 13. Phiên P03
+- S-OPEN phiên 3 (P03, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-10.
+- HM-10 DAT_V3: danh mục `LG_AI_MODELS` (mặc định claude-opus-5-5; sonnet-5-5, haiku-5-5), bỏ ID cũ + haiku-3-5 OpenRouter; max_tokens 16000, kiểm stop_reason (max_tokens/refusal), 404 → model kế + báo; structured outputs khi có schema; khoá Gemini qua header x-goog-api-key. Test tests/regress/hm10_models.js. Kế tiếp: HM-42 (HM-10 xong).
