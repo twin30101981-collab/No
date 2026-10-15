@@ -35,3 +35,4 @@
 - 15/10 · P04 · HM-33 phần mã xong (CHỜ BẠN): cơ chế tra xã mới↔cũ↔KTT; cần danh sách 129 xã chính thức.
 - 15/10 · P04 đóng: HM-08e, HM-06e, HM-39 đạt V3; HM-33 chờ dữ liệu. Phiên P05 tiếp tục từ HM-27a.
 - 15/10 · P05 · HM-27a ĐẠT V2 / HM-27b ĐẠT V3: công cụ chuyển dữ liệu địa chính → gói theo xã (dữ liệu giả lập; chờ dữ liệu thật HM-26).
+- 15/10 · P05 · HM-29 ĐẠT V3: màn Gói dữ liệu địa chính — tải tiếp khi rớt mạng, kiểm sha256, báo bản mới, đồng hồ dung lượng.
