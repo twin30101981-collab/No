@@ -26452,6 +26452,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('☁', 'AI qua máy chủ', 'data-lg103-act="ai-proxy"', { sw: (localStorage.getItem('landgis_ai_proxy') === '1'), sub: 'Không giữ khoá AI trong trình duyệt · cần đăng nhập' }) +
       mRow('🌙', 'Giao diện tối', 'data-lg103-act="theme"', { sw: dark }) +
       mRow('🙈', 'Che số CCCD/CMND khi in / xuất', 'data-lg103-act="mask-id"', { sw: !!(window.lgMaskOn && lgMaskOn()), sub: 'Chỉ hiện 3 số cuối trên PDF, bản in A4, hồ sơ' }) +
+      mRow('🕘', 'Sao lưu tự động &amp; phiên bản', 'data-lg103-act="ver-open"', { sub: 'Lịch sử từng thửa · khôi phục · đồng bộ CSDL' }) +
       mRow('💾', 'Sao lưu dự án (.landgis)', 'data-lg103-act="backup"') +
       mRow('🗑', 'Thùng rác thửa (30 ngày)', 'data-lg103-act="trash"') +
       '<h5>Trợ giúp</h5>' +
@@ -26592,6 +26593,14 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         var fin = function (img) { LGField.note(fp3, fi3, ntxt, img); body.innerHTML = tabProfile(); }; if (ph) LGField.shrink(ph).then(fin, function () { fin(null); try { window.toast({ title: 'Không đọc được ảnh', description: 'Đã lưu ghi chú, chưa có ảnh.', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h19b'); } }); else fin(null); return true; }
       case 'fld-clear': { var fp4 = currentPlot(); if (fp4 && confirm('Xoá kết quả đối soát, ghi chú và ảnh của mốc này?')) { LGField.clear(fp4, +t.getAttribute('data-i')); body.innerHTML = tabProfile(); } return true; }
       case 'fld-report': { var fp5 = currentPlot(); if (fp5) { closeSheet(); LGField.openReport(fp5); } return true; }
+      case 'ver-open': case 'ver-refresh': { LGVersions.scan().then(function () { return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { openSheet('Sao lưu tự động & phiên bản', hh); }); return true; }
+      case 'ver-auto': { LGVersions.setAuto(!LGVersions.autoOn()); LGVersions.panelHTML(currentPlot()).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'ver-sync': { LGVersions.syncNow().then(function (r) { try { if (r.ok === false) window.toast({ title: 'Chưa đồng bộ', description: r.loi || r.loi_xac_thuc, variant: 'destructive' }); else window.toast({ title: 'Đã đồng bộ', description: r.tao_moi + ' mới · ' + r.cap_nhat + ' cập nhật · ' + r.da_khop + ' đã khớp' + (r.xung_dot ? ' · ' + r.xung_dot + ' xung đột' : '') + (r.loi ? ' · ' + r.loi + ' lỗi (sẽ thử lại)' : '') }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20u'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'ver-restore': { if (!confirm('Khôi phục thửa về phiên bản này? Bản đang có vẫn được giữ lại trong lịch sử.')) return true; LGVersions.restoreVersion(t.getAttribute('data-k')).then(function (r) { try { window.toast(r.ok ? { title: 'Đã khôi phục phiên bản', description: r.plot } : { title: 'Không khôi phục được', description: r.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20v'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'ver-bak-now': { LGVersions.backupNow().then(function () { return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'ver-bak-dl': { LGVersions.downloadBackup(t.getAttribute('data-k')); return true; }
+      case 'ver-bak-restore': { if (!confirm('Thay toàn bộ dự án hiện tại bằng bản sao lưu này? Trạng thái hiện tại được sao lưu lại trước.')) return true; LGVersions.restoreBackup(t.getAttribute('data-k')).then(function (r) { try { window.toast(r.ok ? { title: 'Đã khôi phục sao lưu', description: r.n + ' thửa' } : { title: 'Không khôi phục được', description: r.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20w'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
+      case 'ver-keep-local': case 'ver-keep-server': { LGVersions.resolve(t.getAttribute('data-id'), act === 'ver-keep-local' ? 'local' : 'server').then(function (r) { try { if (!r.ok) window.toast({ title: 'Chưa xử lý được', description: r.loi, variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20x'); } return LGVersions.panelHTML(currentPlot()); }).then(function (hh) { body.innerHTML = hh; }); return true; }
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -38022,6 +38031,7 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
   LG172.db = {
     ready: function () { return !!API; },
     list: function () { return rest('GET', '?select=*&deleted_at=is.null&order=ma_thua.asc'); },
+    get: function (ma) { return rest('GET', '?select=*&deleted_at=is.null&ma_thua=eq.' + encodeURIComponent(ma)); },
     listDeleted: function () { return rest('GET', '?select=*&deleted_at=not.is.null&order=deleted_at.desc'); },
     insert: function (rec) { return rest('POST', '', rec, 'return=representation'); },
     update: function (id, rec) { return rest('PATCH', '?id=eq.' + encodeURIComponent(id), rec, 'return=representation'); },
@@ -43257,6 +43267,193 @@ body.lg175-stack-open #lg124-stack{
   }
   window.LGField = { compare: compare, save: save, note: note, clear: clear, get: get, summary: summary, shrink: shrink, getFix: getFix, measure: measure, tabHTML: tabHTML, noteFormHTML: noteFormHTML, reportHTML: reportHTML, compass: compass, key: key,
     openReport: function (plot) { return window.LG21 ? window.LG21.openHTML(reportHTML(plot)) : null; } };
+})();
+</script>
+<script>
+/* HM-20 — SAO LƯU TỰ ĐỘNG + LỊCH SỬ PHIÊN BẢN THỬA + ĐỒNG BỘ CSDL KHI CÓ MẠNG.
+   • Mỗi lần nội dung một thửa thay đổi (toạ độ, KTT, hồ sơ) → lưu một phiên bản vào IndexedDB `landgis_versions` (tối đa 20/thửa); khôi phục được
+     (bản đang có được lưu lại trước nên khôi phục cũng hoàn tác được). Mất mạng vẫn lưu bình thường — mọi thứ ở máy.
+   • Sao lưu toàn bộ dự án tự động (≤ 1 bản/6 giờ khi có thay đổi, giữ 5 bản gần nhất).
+   • Đồng bộ CSDL (mặc định TẮT, cần đăng nhập OTP): thửa nào đổi sẽ vào hàng chờ; có mạng → tự đẩy lên. Máy chủ đã bị sửa từ lần đồng bộ trước ≠ bản máy này
+     → XUNG ĐỘT: không ghi đè, hiện để người dùng chọn giữ bản máy này hoặc lấy bản máy chủ (bản bị thay đều được lưu thành phiên bản trước). */
+(function () {
+  'use strict';
+  var DBN = 'landgis_versions', MAXV = 20, MAXB = 5, BK_GAP = 6 * 3600 * 1000, ST_KEY = 'landgis_sync_state', DIRTY_KEY = 'landgis_sync_dirty', CONF_KEY = 'landgis_sync_conflicts', AUTO_KEY = 'landgis_sync_auto';
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var lastHash = null, timer = null, running = false;
+  function ls(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20l'); } }
+  /* ---------- IndexedDB ---------- */
+  var dbp = null;
+  function db() { return dbp || (dbp = new Promise(function (ok, no) { var r = indexedDB.open(DBN, 1); r.onupgradeneeded = function () { var d = r.result; d.createObjectStore('ver', { keyPath: 'k', autoIncrement: true }).createIndex('plot', 'plot'); d.createObjectStore('bak', { keyPath: 'k', autoIncrement: true }); }; r.onsuccess = function () { ok(r.result); }; r.onerror = function () { dbp = null; no(r.error); }; })); }
+  function tx(store, mode, fn) { return db().then(function (d) { return new Promise(function (ok, no) { var t = d.transaction(store, mode), q = fn(t.objectStore(store)); t.oncomplete = function () { ok(q && q.result); }; t.onerror = t.onabort = function () { no(t.error); }; }); }); }
+  /* ---------- băm nội dung ---------- */
+  function canon(o) {
+    if (Array.isArray(o)) return '[' + o.map(canon).join(',') + ']';
+    if (o && typeof o === 'object') return '{' + Object.keys(o).sort().map(function (k) { return JSON.stringify(k) + ':' + canon(o[k]); }).join(',') + '}';
+    if (typeof o === 'number') return String(Math.round(o * 1000) / 1000);
+    return JSON.stringify(o === undefined ? null : o);
+  }
+  function hash(s) { var a = 5381, b = 52711; for (var i = 0; i < s.length; i++) { var c = s.charCodeAt(i); a = ((a << 5) + a) ^ c; b = ((b << 5) + b) ^ c; } return (a >>> 0).toString(36) + (b >>> 0).toString(36) + s.length.toString(36); }
+  var SKIP = { __nguon: 1, __restoring: 1, doi_soat_moc: 1, towgs84Key: 1, coordOrderConfirmed: 1 };
+  function cleanMeta(m) { var o = {}; Object.keys(m || {}).forEach(function (k) { if (!SKIP[k] && m[k] !== '' && m[k] != null && m[k] !== undefined) o[k] = m[k]; }); return o; }
+  function content(s) { return { p: (s.points || []).map(function (q) { return [q.ten == null ? '' : String(q.ten), +q.x, +q.y]; }), l: +s.lon0, z: +(s.zone || 3), m: cleanMeta(s.meta) }; }
+  function hashOf(s) { return hash(canon(content(s))); }
+  function snapOf(p) { return JSON.parse(JSON.stringify({ id: p.id, points: p.points, lon0: p.lon0, zone: p.zone, provCode: p.provCode, towgs84Key: p.towgs84Key, meta: p.meta || {} })); }
+  /* ---------- phiên bản ---------- */
+  function addVersion(snap, why) {
+    var rec = { plot: snap.id, at: Date.now(), h: hashOf(snap), why: why || 'thay đổi', snap: snap };
+    return tx('ver', 'readwrite', function (s) { return s.add(rec); }).then(function () { return prune(snap.id); });
+  }
+  function prune(id) {
+    return list(id).then(function (a) { var extra = a.slice(MAXV); if (!extra.length) return; return tx('ver', 'readwrite', function (s) { extra.forEach(function (r) { s.delete(r.k); }); }); });
+  }
+  function list(id) { return tx('ver', 'readonly', function (s) { return s.index('plot').getAll(id); }).then(function (a) { return (a || []).sort(function (x, y) { return y.at - x.at || y.k - x.k; }); }); }
+  function listAll() { return tx('ver', 'readonly', function (s) { return s.getAll(); }); }
+  function getV(k) { return tx('ver', 'readonly', function (s) { return s.get(+k); }); }
+  /* quét: thửa nào có nội dung khác bản gần nhất → thêm phiên bản + đánh dấu chờ đồng bộ */
+  function scan() {
+    var cur = (typeof plots !== 'undefined' ? plots : []).map(snapOf);
+    return listAll().then(function (all) {
+      if (!lastHash) { lastHash = {}; all.sort(function (a, b) { return a.at - b.at || a.k - b.k; }).forEach(function (r) { lastHash[r.plot] = r.h; }); }
+      var chg = [], jobs = Promise.resolve();
+      cur.forEach(function (s) { var hh = hashOf(s); if (lastHash[s.id] !== hh) { var first = lastHash[s.id] == null; lastHash[s.id] = hh; chg.push(s.id); jobs = jobs.then(function () { return addVersion(s, first ? 'bản đầu tiên' : 'thay đổi'); }); } });
+      return jobs.then(function () { if (chg.length) { markDirty(chg); maybeBackup(cur); } return chg; });
+    });
+  }
+  function schedule() { if (timer) clearTimeout(timer); timer = setTimeout(function () { timer = null; scan().then(function (chg) { if (chg && chg.length) autoSync(); }).catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h20s'); }); }, 2500); }
+  /* ---------- sao lưu tự động ---------- */
+  function maybeBackup(cur) {
+    return tx('bak', 'readonly', function (s) { return s.getAll(); }).then(function (a) {
+      a = (a || []).sort(function (x, y) { return y.at - x.at; }); if (a[0] && Date.now() - a[0].at < BK_GAP) return;
+      return addBackup(cur, 'tự động');
+    });
+  }
+  function addBackup(cur, why) {
+    var json = JSON.stringify(cur); return tx('bak', 'readwrite', function (s) { return s.add({ at: Date.now(), n: cur.length, why: why, json: json }); }).then(function () {
+      return tx('bak', 'readonly', function (s) { return s.getAll(); }).then(function (a) { a = (a || []).sort(function (x, y) { return y.at - x.at; }); var extra = a.slice(MAXB); if (extra.length) return tx('bak', 'readwrite', function (s) { extra.forEach(function (r) { s.delete(r.k); }); }); });
+    });
+  }
+  function backups() { return tx('bak', 'readonly', function (s) { return s.getAll(); }).then(function (a) { return (a || []).sort(function (x, y) { return y.at - x.at; }); }); }
+  function backupNow() { return addBackup((typeof plots !== 'undefined' ? plots : []).map(snapOf), 'thủ công'); }
+  /* ---------- áp dụng ---------- */
+  function has(id) { return (typeof plots !== 'undefined' ? plots : []).some(function (q) { return q.id === id; }); }
+  function drawSnap(snap, withProv) {
+    var m = Object.assign({}, snap.meta || {}, { __restoring: true, coordOrderConfirmed: 'as-is' }); if (withProv && snap.provCode) m.provCode = snap.provCode; if (snap.towgs84Key) m.towgs84Key = snap.towgs84Key;
+    try { drawPlot(snap.id, snap.points, snap.lon0 || 105.5, m, false, snap.zone || 3); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20d'); }
+    return has(snap.id);
+  }
+  /* Vẽ lại thửa theo bản ghi; không vẽ được thì dựng lại bản cũ — không bao giờ để mất thửa. */
+  function applyPlot(snap) {
+    var cur = (typeof plots !== 'undefined' ? plots : []).filter(function (q) { return q.id === snap.id; })[0], old = cur ? snapOf(cur) : null, ok;
+    try { if (typeof deletePlot === 'function') deletePlot(snap.id, false); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20d'); }
+    ok = drawSnap(snap, true) || drawSnap(snap, false);
+    if (!ok && old) drawSnap(old, true) || drawSnap(old, false);
+    try { saveToLocalStorage(); renderPlots(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20e'); }
+    return ok;
+  }
+  function restoreVersion(k) {
+    return getV(k).then(function (r) {
+      if (!r) return { ok: false, loi: 'Không thấy phiên bản' };
+      var cur = (typeof plots !== 'undefined' ? plots : []).filter(function (p) { return p.id === r.plot; })[0], pre = Promise.resolve();
+      if (cur) { var cs = snapOf(cur); if (hashOf(cs) !== r.h) pre = addVersion(cs, 'trước khi khôi phục'); }
+      return pre.then(function () { if (!applyPlot(r.snap)) return { ok: false, loi: 'Không vẽ lại được phiên bản này (dữ liệu giữ nguyên)' }; lastHash = lastHash || {}; lastHash[r.plot] = r.h; markDirty([r.plot]); autoSync(); return { ok: true, plot: r.plot }; });
+    });
+  }
+  function restoreBackup(k) {
+    return tx('bak', 'readonly', function (s) { return s.get(+k); }).then(function (b) {
+      if (!b) return { ok: false, loi: 'Không thấy bản sao lưu' };
+      var arr; try { arr = JSON.parse(b.json); } catch (e) { return { ok: false, loi: 'Bản sao lưu hỏng' }; }
+      var cur = (typeof plots !== 'undefined' ? plots : []).map(snapOf);
+      return addBackup(cur, 'trước khi khôi phục').then(function () {
+        var have = {}; arr.forEach(function (s) { have[s.id] = 1; });
+        cur.forEach(function (s) { if (!have[s.id]) { try { deletePlot(s.id, false); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20f'); } } });
+        arr.forEach(applyPlot); lastHash = null; return scan().then(function () { return { ok: true, n: arr.length }; });
+      });
+    });
+  }
+  /* ---------- đồng bộ CSDL ---------- */
+  function autoOn() { try { return localStorage.getItem(AUTO_KEY) === '1'; } catch (e) { return false; } }
+  function setAuto(on) { try { if (on) localStorage.setItem(AUTO_KEY, '1'); else localStorage.removeItem(AUTO_KEY); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20a'); } if (on) autoSync(); }
+  function markDirty(ids) { if (!autoOn()) return; var d = ls(DIRTY_KEY, []); ids.forEach(function (i) { if (d.indexOf(i) < 0) d.push(i); }); lsSet(DIRTY_KEY, d); }
+  function toRec(p) {
+    var m = Object.assign({}, p.meta || {}); delete m.__restoring; if (m.doi_soat_moc) { var b = {}; Object.keys(m.doi_soat_moc).forEach(function (k) { var r = Object.assign({}, m.doi_soat_moc[k]); delete r.anh; b[k] = r; }); m.doi_soat_moc = b; }   // ảnh chỉ lưu trên máy
+    var pts = (p.points || []).map(function (q) { return { ten: q.ten, x: q.x, y: q.y }; }), A = window.lgCoreArea ? window.lgCoreArea(pts) : 0, per = 0;
+    pts.forEach(function (q, i) { var n = pts[(i + 1) % pts.length]; per += Math.hypot(n.x - q.x, n.y - q.y); }); var g = parseFloat(m.dien_tich_m2);
+    return { ma_thua: p.id, so_thua: m.so_thua || null, to_ban_do: m.to_ban_do || null, dien_tich_gcn: isFinite(g) ? g : null, dien_tich_tinh: Number(A.toFixed(2)), chu_vi: Number(per.toFixed(2)), lon0: p.lon0, zone: p.zone === 6 ? 6 : 3, diem: pts, meta: m };
+  }
+  function rowSnap(row) { return { id: row.ma_thua, points: (row.diem || []).map(function (q, i) { return { ten: String(q.ten || i + 1), x: +q.x, y: +q.y }; }), lon0: +row.lon0 || 105.5, zone: +row.zone || 3, meta: Object.assign({}, row.meta || {}) }; }
+  function status() { var d = ls(DIRTY_KEY, []), c = ls(CONF_KEY, {}); return { auto: autoOn(), cho: d.length, xung_dot: Object.keys(c).length, dang_nhap: !!(window.LG172 && LG172.auth && LG172.auth.loggedIn()), co_mang: navigator.onLine !== false, san_sang: !!(window.LG172 && LG172.db && LG172.db.ready()) }; }
+  function syncOne(p) {
+    var snap = snapOf(p), hl = hashOf(snap), stt = ls(ST_KEY, {}), last = stt[p.id];
+    if (last === hl) return Promise.resolve('da-dong-bo');
+    return LG172.db.get(p.id).then(function (rows) {
+      var row = (rows || [])[0];
+      if (!row) return LG172.db.insert(toRec(p)).then(function () { stt = ls(ST_KEY, {}); stt[p.id] = hl; lsSet(ST_KEY, stt); return 'tao-moi'; });
+      var hs = hashOf(rowSnap(row));
+      if (hs === hl) { stt = ls(ST_KEY, {}); stt[p.id] = hl; lsSet(ST_KEY, stt); return 'da-khop'; }
+      if (last && last === hs) return LG172.db.update(row.id, toRec(p)).then(function () { stt = ls(ST_KEY, {}); stt[p.id] = hl; lsSet(ST_KEY, stt); return 'da-cap-nhat'; });
+      var c = ls(CONF_KEY, {}); c[p.id] = { row: row, at: Date.now() }; lsSet(CONF_KEY, c); return 'xung-dot';
+    });
+  }
+  function syncNow() {
+    var st = status();
+    if (!st.san_sang) return Promise.resolve({ ok: false, loi: 'Chưa cấu hình CSDL' });
+    if (!st.dang_nhap) return Promise.resolve({ ok: false, loi: 'Cần đăng nhập (email + mã OTP) trước' });
+    if (!st.co_mang) return Promise.resolve({ ok: false, loi: 'Đang ngoại tuyến — sẽ tự đồng bộ khi có mạng' });
+    if (running) return Promise.resolve({ ok: false, loi: 'Đang đồng bộ' }); running = true;
+    var out = { ok: true, tao_moi: 0, cap_nhat: 0, da_khop: 0, xung_dot: 0, loi: 0, chi_tiet: {} }, ids = ls(DIRTY_KEY, []).slice(), seq = Promise.resolve();
+    ids.forEach(function (id) {
+      seq = seq.then(function () {
+        var p = (typeof plots !== 'undefined' ? plots : []).filter(function (q) { return q.id === id; })[0]; if (!p) { drop(id); return; }
+        return syncOne(p).then(function (r) { out.chi_tiet[id] = r; if (r === 'tao-moi') out.tao_moi++; else if (r === 'da-cap-nhat') out.cap_nhat++; else if (r === 'xung-dot') out.xung_dot++; else out.da_khop++; drop(id); },
+          function (e) { out.loi++; out.chi_tiet[id] = 'loi: ' + String(e && e.message || e).slice(0, 120); if (/401|403|đăng nhập/i.test(out.chi_tiet[id])) throw e; });   // lỗi mạng/máy chủ: giữ trong hàng chờ
+      });
+    });
+    return seq.then(function () { running = false; return out; }, function (e) { running = false; out.ok = false; out.loi_xac_thuc = String(e && e.message || e); return out; });
+  }
+  function drop(id) { var d = ls(DIRTY_KEY, []).filter(function (x) { return x !== id; }); lsSet(DIRTY_KEY, d); }
+  function autoSync() { if (!autoOn()) return Promise.resolve(null); return syncNow().then(function (r) { try { if (r && r.xung_dot && window.toast) window.toast({ title: 'Xung đột đồng bộ', description: r.xung_dot + ' thửa khác nhau giữa máy và CSDL — mở Thêm → Sao lưu & phiên bản để chọn.', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h20t'); } return r; }, function () { return null; }); }
+  function conflicts() { var c = ls(CONF_KEY, {}); return Object.keys(c).map(function (id) { return { id: id, row: c[id].row, at: c[id].at }; }); }
+  function resolve(id, choice) {
+    var c = ls(CONF_KEY, {}), e = c[id]; if (!e) return Promise.resolve({ ok: false, loi: 'Không có xung đột' });
+    var p = (typeof plots !== 'undefined' ? plots : []).filter(function (q) { return q.id === id; })[0], row = e.row, stt = ls(ST_KEY, {});
+    var done = function () { delete c[id]; lsSet(CONF_KEY, c); return { ok: true }; };
+    if (choice === 'server') {
+      var pre = p ? addVersion(snapOf(p), 'bản máy trước khi lấy bản máy chủ') : Promise.resolve();
+      return pre.then(function () { var sn = rowSnap(row); applyPlot(sn); stt[id] = hashOf(sn); lsSet(ST_KEY, stt); lastHash = lastHash || {}; lastHash[id] = hashOf(sn); return addVersion(sn, 'bản từ CSDL'); }).then(done);
+    }
+    if (!p) return Promise.resolve({ ok: false, loi: 'Thửa không còn trên máy' });
+    return addVersion(rowSnap(row), 'bản CSDL trước khi ghi đè').then(function () { return LG172.db.update(row.id, toRec(p)); }).then(function () { stt[id] = hashOf(snapOf(p)); lsSet(ST_KEY, stt); return done(); });
+  }
+  window.addEventListener('online', function () { setTimeout(function () { autoSync(); }, 1500); });
+  /* ---------- móc vào lưu ---------- */
+  (function hook() {
+    if (typeof window.saveToLocalStorage !== 'function' || window.saveToLocalStorage.__lg20) { return; }
+    var orig = window.saveToLocalStorage; var w = function () { var r = orig.apply(this, arguments); schedule(); return r; }; w.__lg20 = 1;
+    try { window.saveToLocalStorage = w; saveToLocalStorage = w; } catch (e) { window.saveToLocalStorage = w; }
+  })();
+  setTimeout(function () { if (!timer) schedule(); }, 6000);   // quét lần đầu sau khi nạp (không đè bộ hẹn giờ đang chờ)
+  /* ---------- giao diện ---------- */
+  var when = function (t) { var d = new Date(t); return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); };
+  function panelHTML(plot) {
+    var st = status();
+    return Promise.all([plot ? list(plot.id) : Promise.resolve([]), backups()]).then(function (z) {
+      var vs = z[0], bs = z[1], cf = conflicts();
+      var sync = '<h5>Đồng bộ CSDL</h5><button type="button" class="lg8e-row" data-lg103-act="ver-auto" role="switch" aria-checked="' + (st.auto ? 'true' : 'false') + '"><span class="lg8e-ic" aria-hidden="true">☁</span><span class="lg8e-t">Tự đồng bộ khi có mạng<small>' + (st.auto ? 'Bật' : 'Tắt') + ' · cần đăng nhập · ảnh mốc không gửi lên' + '</small></span><span class="lg8e-sw' + (st.auto ? ' on' : '') + '" aria-hidden="true"></span></button>' +
+        '<p class="lg8e-note">' + (st.dang_nhap ? 'Đã đăng nhập' : 'Chưa đăng nhập') + ' · ' + (st.co_mang ? 'có mạng' : 'ngoại tuyến') + ' · chờ đồng bộ: <b>' + st.cho + '</b> · xung đột: <b>' + st.xung_dot + '</b></p><div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="ver-sync">Đồng bộ ngay</button></div>';
+      var cfh = cf.length ? '<h5>Xung đột cần chọn</h5>' + cf.map(function (c) { return '<div class="lg20-conf" style="border:1px solid #e0b000;border-radius:10px;padding:8px;margin:6px 0"><b>' + h(c.id) + '</b><br><small>CSDL đã được sửa ở nơi khác kể từ lần đồng bộ trước (' + (c.row.diem || []).length + ' mốc trên máy chủ).</small><div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="ver-keep-local" data-id="' + h(c.id) + '">Giữ bản trên máy</button><button type="button" class="lg103-abtn" data-lg103-act="ver-keep-server" data-id="' + h(c.id) + '">Lấy bản máy chủ</button></div></div>'; }).join('') : '';
+      var vh = '<h5>Lịch sử thửa ' + (plot ? h((plot.meta && plot.meta.so_thua) || plot.id) : '') + '</h5>' + (vs.length ? vs.map(function (r, i) { return '<div class="lg20-ver" style="display:flex;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;padding:6px 0"><span><b>' + h(when(r.at)) + '</b><br><small>' + h(r.why) + ' · ' + (r.snap.points || []).length + ' mốc' + (i === 0 ? ' · mới nhất' : '') + '</small></span>' + (i === 0 ? '' : '<button type="button" class="lg103-abtn" data-lg103-act="ver-restore" data-k="' + r.k + '">Khôi phục</button>') + '</div>'; }).join('') : '<p class="lg8e-note">' + (plot ? 'Chưa có phiên bản nào.' : 'Chọn một thửa để xem lịch sử.') + '</p>');
+      var bh = '<h5>Sao lưu tự động (' + bs.length + ')</h5>' + (bs.length ? bs.map(function (b) { return '<div class="lg20-bak" style="display:flex;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;padding:6px 0"><span><b>' + h(when(b.at)) + '</b><br><small>' + b.n + ' thửa · ' + h(b.why) + ' · ' + Math.round(b.json.length / 1024) + ' KB</small></span><span><button type="button" class="lg103-abtn" data-lg103-act="ver-bak-dl" data-k="' + b.k + '">Tải</button> <button type="button" class="lg103-abtn" data-lg103-act="ver-bak-restore" data-k="' + b.k + '">Khôi phục</button></span></div>'; }).join('') : '<p class="lg8e-note">Chưa có bản sao lưu.</p>') + '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="ver-bak-now">Sao lưu ngay</button></div>';
+      return sync + cfh + vh + bh;
+    });
+  }
+  function downloadBackup(k) {
+    return tx('bak', 'readonly', function (s) { return s.get(+k); }).then(function (b) { if (!b) return false; var data = { app: 'LandGIS-VN2000', fileType: 'landgis-project', version: 'v33', exportedAt: new Date(b.at).toISOString(), plots: JSON.parse(b.json) }, a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); a.download = 'LandGIS-SaoLuu_' + new Date(b.at).toISOString().slice(0, 10) + '.landgis'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); return true; });
+  }
+  window.LGVersions = { scan: scan, schedule: schedule, list: list, restoreVersion: restoreVersion, backups: backups, backupNow: backupNow, restoreBackup: restoreBackup, downloadBackup: downloadBackup,
+    hashOf: hashOf, status: status, setAuto: setAuto, autoOn: autoOn, syncNow: syncNow, conflicts: conflicts, resolve: resolve, panelHTML: panelHTML, toRec: toRec, rowSnap: rowSnap };
 })();
 </script>
 </body>

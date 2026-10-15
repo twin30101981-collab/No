@@ -62,3 +62,4 @@
 - 15/10 · P05 đóng: 26 hạng mục xong (HM-27a/b, 29–32, 34, 11, 11b, 40, 44, 10b, 08h, 12a, 35–38, 13–17, 21, 23, 24); còn HM-18a/b, 19, 20, 22, 25, 28 và HM-08f (hoãn); sinh P06.
 - 15/10 · P06 · HM-18a, HM-18b ĐẠT V3: mô phỏng tách thửa (đường thẳng/diện tích), bảng mốc mới, hồ sơ PDF và DXF cho từng thửa mới.
 - 15/10 · P06 · HM-19 ĐẠT V3: đối soát mốc thực địa (GPS so với sổ, ảnh + ghi chú theo mốc, báo cáo); cần thử máy thật.
+- 15/10 · P06 · HM-20 ĐẠT V3: phiên bản thửa + sao lưu tự động + đồng bộ CSDL (tuỳ chọn, có xung đột).
