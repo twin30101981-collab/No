@@ -114,3 +114,6 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 **Quy tắc mới cần nhớ:** (1) mỗi lần sửa `app/land-gis.html` chạy `python3 handover/tools/deploy_pages.py` rồi mới chạy bộ test (hm11_pwa kiểm index.html = app); (2) test Python riêng: `python3 tests/regress/hm27a_convert.py` (cần `pip install pyshp shapely`); (3) pip hoạt động trong môi trường; (4) tiện ích tests/tools/a11y_scan.js.
 **Việc người dùng cần làm (đã ghi VIEC_CUA_BAN.md):** dữ liệu địa chính thật (HM-26), danh sách xã mới/cũ (HM-33), Supabase RLS/Edge Function (HM-06/06c/10b/28), TalkBack (mục 11), thử máy thật các tính năng GPS/Bluetooth/camera.
 - Phiên kế: P06 = session_016bfgvkpo5ZM5L3ZStYgd1r (sinh lúc đóng P05).
+
+## 18. Phiên P06
+- S-OPEN phiên 6 (P06, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK; pip pyshp shapely OK. Mở HM-18a.
