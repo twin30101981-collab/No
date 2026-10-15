@@ -77,3 +77,6 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 14. ĐÓNG PHIÊN P03 (ngữ cảnh ≈ 70%)
 Đã xong HM-10, HM-42 (cả hai DAT_V3). `node tests/run.js app/land-gis.html` = PASS (lưu ý: hm07c_observers `nap_50_thua_duoi_2s` sát ngưỡng ở môi trường này, 1,87–2,1 s — đo lại một mình nếu FAIL do tải CPU; đừng chạy 2 bộ test song song). Việc dở dang: không. Kế tiếp: HM-08e (M), HM-39 (M), HM-33 (S), HM-26… Nhánh từ xa có thêm HM-06e (bỏ nhập Excel, chỉ giữ xuất) do người dùng thêm — kiểm tra backlog.
+
+## 15. Phiên P04
+- S-OPEN phiên 4 (P04, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-08e (rồi HM-06e, HM-39, HM-33).
