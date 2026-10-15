@@ -4,17 +4,18 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.5",
+  "phien_ban": "1.6",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.5.docx",
-  "so_phien_uoc_tinh": "7-9",
+  "tep": "de-an/DE_AN_LANDGIS_v1.6.docx",
+  "so_phien_uoc_tinh": "9-12",
   "dieu_chinh": [
    "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi",
    "v1.2: chuyển sang giao diện chỉ-mobile; thay HM-08, HM-12b bằng HM-08a..08f",
    "v1.3: rà soát sâu — thêm P0 HM-00 (mất dữ liệu khi bộ nhớ đầy), HM-06c, HM-11b, Đợt 4–5 tính năng (HM-15..21)",
    "v1.4: thêm P0 HM-00b (treo app do killReplit), HM-07c, HM-08g/h/i, HM-09b; mockup bộ 2 + sơ đồ luồng + cây dữ liệu/thành phần",
-   "v1.5: rà soát phần còn lại — HM-00c, HM-04b, HM-06d (P1), HM-10b; tính năng HM-22..25; HM-10 cập nhật model theo tài liệu Claude API hiện hành"
+   "v1.5: rà soát phần còn lại — HM-00c, HM-04b, HM-06d (P1), HM-10b; tính năng HM-22..25; HM-10 cập nhật model theo tài liệu Claude API hiện hành",
+   "v1.6: thêm Đợt 6 — bản đồ địa chính ngoại tuyến toàn tỉnh Ninh Bình mới (HM-26..34)"
   ]
  },
  "moi_truong": {
@@ -1765,6 +1766,394 @@
    ],
    "rui_ro": "Trung bình: cần mẫu thật từ bạn",
    "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-26",
+   "ten": "[Việc của bạn] Xin cấp dữ liệu địa chính thí điểm 1–2 xã/phường từ Sở NN&MT / VP Đăng ký đất đai Ninh Bình",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "XS",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 0,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [],
+   "pham_vi": "thủ tục hành chính, không phải mã",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Có tệp dữ liệu (DGN/SHP/GDB) + văn bản cho phép sử dụng đúng mục đích",
+    "Biết KTT/hệ toạ độ và ngày cập nhật của dữ liệu"
+   ],
+   "rui_ro": "Cao: phụ thuộc cơ quan cấp",
+   "kiem_chung_du_kien": "—",
+   "nhan_xac_minh": "Điều kiện tiên quyết",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-33",
+   "ten": "Bảng đơn vị hành chính 129 xã/phường mới ↔ xã/huyện cũ ↔ KTT (toàn tỉnh)",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-04b"
+   ],
+   "pham_vi": "admin-map.json; dùng chung với HM-04b",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Tra được từ tên xã cũ hoặc mới",
+    "Mỗi xã mới có KTT theo địa bàn cũ (có thể nhiều)"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V2 + V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-27a",
+   "ten": "Công cụ chuyển đổi trên máy tính: DGN/SHP/GDB → gói theo xã (giữ VN-2000, bỏ dữ liệu cá nhân)",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-26",
+    "HM-33"
+   ],
+   "pham_vi": "script Python + GDAL (ngoài app)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Chạy 1 lệnh cho 1 xã thí điểm",
+    "Báo cáo kiểm định: diện tích hình học ↔ thuộc tính, thửa trùng, thửa lỗi hình",
+    "Không có trường tên/CCCD trong gói"
+   ],
+   "rui_ro": "Trung bình: định dạng dữ liệu thật chưa biết",
+   "kiem_chung_du_kien": "V2",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-27b",
+   "ten": "Chỉ mục tờ/thửa + dãy cạnh + R-tree; nén; manifest có sha256",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-27a"
+   ],
+   "pham_vi": "index.bin, parcels.fgb",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Tra tờ/thửa < 50 ms trên điện thoại tầm trung",
+    "Gói 1 xã ≤ 6 MB (mục tiêu)"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V2 + V3",
+   "nhan_xac_minh": "Đề xuất (đã thử nghiệm khả thi)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-28",
+   "ten": "Kho gói dữ liệu riêng tư + link tải có hạn (Supabase Storage / Cloudflare R2)",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-06c",
+    "HM-27b"
+   ],
+   "pham_vi": "Edge Function ký link, bucket riêng",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Chưa đăng nhập không tải được",
+    "Link tải hết hạn sau N phút",
+    "Không có dữ liệu địa chính trên GitHub Pages"
+   ],
+   "rui_ro": "Trung bình: hạn mức dung lượng gói miễn phí",
+   "kiem_chung_du_kien": "V3 + V1",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-29",
+   "ten": "Tải, lưu bền và cập nhật gói theo xã trên điện thoại (OPFS/IndexedDB) — mockup ⑯",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-00",
+    "HM-28"
+   ],
+   "pham_vi": "màn Gói dữ liệu",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Tải theo xã/vùng bản đồ, tiếp tục khi rớt mạng",
+    "Kiểm sha256; báo bản mới; xoá xã không dùng",
+    "Đồng hồ dung lượng; xin persist"
+   ],
+   "rui_ro": "Trung bình: hạn mức lưu trữ trình duyệt khác nhau (Android/iOS)",
+   "kiem_chung_du_kien": "V3 (setOffline)",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-30",
+   "ten": "Lớp bản đồ địa chính vector trên Leaflet canvas, nhãn tờ/thửa, chạm chọn thửa",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-29",
+    "HM-07c"
+   ],
+   "pham_vi": "MapView",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Kéo/zoom mượt với 20.000 thửa trong xã (vẽ theo khung nhìn)",
+    "Chạm chọn đúng thửa (R-tree + kiểm điểm trong đa giác)",
+    "Chạy khi mất mạng"
+   ],
+   "rui_ro": "Trung bình: hiệu năng vẽ trên máy yếu",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-31",
+   "ten": "Tra thửa theo xã + tờ + thửa → dựng hồ sơ từ toạ độ CSDL — mockup ⑰⑱",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-30",
+    "HM-03"
+   ],
+   "pham_vi": "luồng Nhập sổ: thêm cách 'Tra địa chính'",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Nhập tên xã cũ vẫn tìm được",
+    "Lấy bảng toạ độ VN-2000 → đối chiếu GCN, in hồ sơ",
+    "Ghi nguồn 'dữ liệu địa chính ngày …' trên hồ sơ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-32",
+   "ten": "Tìm thửa theo hình dạng + diện tích + cạnh cho sổ không toạ độ — mockup ⑲",
+   "dot": 6,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-31"
+   ],
+   "pham_vi": "thuật toán so dãy cạnh",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mẫu B nằm top-1 khi mốc lệch điểm đầu/đảo chiều (đã thử nghiệm)",
+    "Hiện 3 ứng viên kèm % và lý do",
+    "Cảnh báo 'chỉ tham khảo'"
+   ],
+   "rui_ro": "Trung bình: sổ thiếu cạnh → kém chính xác",
+   "kiem_chung_du_kien": "V2 + V3",
+   "nhan_xac_minh": "Đề xuất (đã thử nghiệm khả thi)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-34",
+   "ten": "Tìm theo vị trí: GPS đang đứng → thửa chứa điểm",
+   "dot": 6,
+   "uu_tien": "P3",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-30"
+   ],
+   "pham_vi": "GPS + R-tree",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Hiện thửa chứa điểm và các thửa lân cận khi GPS sai số lớn"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (giả lập GPS)",
    "nhan_xac_minh": "Đề xuất",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
