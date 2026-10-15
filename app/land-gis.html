@@ -25833,6 +25833,12 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lg35 fieldset{ border:1px solid var(--lg103-line); border-radius:10px; margin:8px 0; padding:8px 10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; } .lg35 legend{ font-weight:700; padding:0 4px; } .lg35 label{ display:flex; flex-direction:column; font-size:var(--lg103-fs-small,12px); } .lg35 input,.lg35 select{ min-height:44px; font-size:16px; } .lg35 small{ grid-column:1/-1; opacity:.7; }
 .lg36-tag span{ background:rgba(255,255,255,.92); color:#8a1f1f; border:1px solid #8a1f1f; border-radius:6px; padding:1px 5px; font:600 11px/1.3 system-ui,sans-serif; white-space:nowrap; transform:translate(-50%,-50%); display:inline-block; }
 .lg24 label{ display:flex; flex-direction:column; margin:6px 0; font-size:var(--lg103-fs-small,12px); } .lg24 textarea,.lg24 select{ font-size:16px; min-height:44px; } .lg24-t{ width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; } .lg24-t th,.lg24-t td{ border:1px solid var(--lg103-line); padding:3px 5px; text-align:right; } .lg24-t tr.bad td{ text-align:left; color:#8a1f1f; }
+#lg21-host{ position:fixed; inset:0; z-index:100000; background:#e9ecef; overflow:auto; padding:8px 0 24px; } .lg21-bar{ display:flex; gap:8px; justify-content:center; padding:6px; position:sticky; top:0; z-index:1; background:#e9ecef; } .lg21-bar button{ min-height:44px; padding:0 14px; border-radius:8px; border:1px solid #1f3a8a; background:#1f3a8a; color:#fff; font-weight:700; }
+.lg21-page{ width:210mm; max-width:100%; min-height:100mm; margin:8px auto; background:#fff; color:#111; padding:12mm 12mm 10mm; box-sizing:border-box; font:12.5px/1.5 "Times New Roman",serif; box-shadow:0 2px 12px rgba(0,0,0,.2); } .lg21-head{ display:flex; justify-content:space-between; gap:8px; border-bottom:2px solid #1f3a8a; padding-bottom:6px; font-size:14px; } .lg21-ts{ white-space:nowrap; font-size:12px; color:#444; }
+.lg21-row{ display:grid; grid-template-columns:62mm 1fr; gap:6mm; margin-top:8px; } .lg21-sketch{ border:1px solid #333; padding:2mm; text-align:center; } .lg21-sketch svg{ max-width:100%; height:auto; max-height:70mm; } .lg21-t{ width:100%; border-collapse:collapse; } .lg21-t th,.lg21-t td{ border:1px solid #333; padding:3px 6px; text-align:left; } .lg21-t th{ background:#efefef; width:46%; font-weight:600; }
+.lg21-formula{ margin:8px 0 4px; } .lg21-concl{ border:2px solid #1f3a8a; padding:8px 10px; font-size:14px; margin:6px 0; } .lg21-note{ margin:4px 0; } .lg21-foot{ display:flex; gap:10px; align-items:center; margin-top:8px; border-top:1px solid #999; padding-top:6px; } .lg21-qr svg{ width:26mm; height:26mm; }
+@media (max-width:640px){ .lg21-row{ grid-template-columns:1fr; } }
+@media print{ body.lg21-printing>*:not(#lg21-host){ display:none !important; } #lg21-host{ position:static !important; background:#fff !important; padding:0 !important; overflow:visible !important; } .lg21-bar{ display:none !important; } .lg21-page{ box-shadow:none; margin:0; width:auto; padding:0; } }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26348,6 +26354,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<button class="lg103-abtn" data-lg103-act="a4">🖨 In A4</button>' +
       '<button class="lg103-abtn" data-lg103-act="pdf">📄 PDF</button>' +
       '<button class="lg103-abtn" data-lg103-act="share-pdf">📤 Chia sẻ</button>' +
+      '<button class="lg103-abtn" data-lg103-act="doichieu">📋 Báo cáo đối chiếu</button>' +
       '<button class="lg103-abtn" data-lg103-export="dxf">DXF</button>' +
       '<button class="lg103-abtn" data-lg103-act="exports-more">⋯</button></div>' +
       '<div class="lg103-actions" id="lg103-exports-more" style="display:none">' +
@@ -26483,6 +26490,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         });
         LG35.save(sp, list); closeSheet(); try { window.toast({ title: 'Đã lưu giáp ranh' }); } catch (e2) { window.lgQuiet && window.lgQuiet(e2, 'h35t'); } return true;
       }
+      case 'doichieu': { var dp = currentPlot(); if (dp && window.LG21) { closeSheet(); LG21.open(dp); } return true; }
       case 'share-pdf': try { window.toast({ title: 'Đang chuẩn bị file PDF để chia sẻ…' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15b'); } window.lgSharePlotPdf().then(function (r) { try { if (r === 'downloaded') window.toast({ title: 'Máy không hỗ trợ chia sẻ file — đã tải về', description: 'Gửi file từ thư mục Tải xuống.' }); else if (r === 'failed') window.toast({ title: 'Không tạo được PDF để chia sẻ', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15c'); } }); return true;
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
@@ -42716,6 +42724,53 @@ body.lg175-stack-open #lg124-stack{
     a.href = URL.createObjectURL(blob); a.download = 'quy-doi-toa-do-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 3000); return a.download;
   }
   window.LG24 = { convert: convert, toCSV: toCSV, download: download, last: null };
+})();
+</script>
+<script>
+/* HM-21 — BÁO CÁO ĐỐI CHIẾU 1 TRANG (gửi khách/ngân hàng): sơ đồ, bảng diện tích, công thức sai số, kết luận Đạt/Không đạt, ngày giờ, QR tra lại.
+   CCCD/CMND che theo tuỳ chọn HM-14. QR dài hơn sức chứa → rút gọn thành mã tra cứu (KHÔNG im lặng bỏ QR — F-35). */
+(function () {
+  'use strict';
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var f2 = function (n) { return (n == null || !isFinite(n)) ? '—' : Number(n).toFixed(2).replace('.', ','); };
+  function data(plot) {
+    var m = plot.meta || {}, pts = plot.points || [], area = (typeof calcArea === 'function') ? calcArea(pts) : 0, gcn = parseFloat(m.dien_tich_m2), kc = parseFloat(m.dien_tich_khong_cap_gcn) || 0;
+    var V = (isFinite(gcn) && gcn > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(area, gcn, kc) : null;
+    var hashSrc = [plot.id, plot.lon0, plot.zone, area.toFixed(3), pts.map(function (p) { return (p.ten != null ? p.ten : '') + ':' + p.x.toFixed(3) + ',' + p.y.toFixed(3); }).join('|')].join('#');
+    var hash = (typeof reportHash === 'function') ? reportHash(hashSrc) : '';
+    return { m: m, pts: pts, area: area, gcn: gcn, kc: kc, V: V, hash: hash, now: new Date() };
+  }
+  function qr(plot, D) {
+    var full = 'LANDGIS25|' + plot.id + '|KTT' + plot.lon0 + '|S=' + D.area.toFixed(2) + 'm2|GCN=' + (isFinite(D.gcn) ? D.gcn : '') + '|' + (D.V ? (D.V.ok ? 'DAT' : 'KHONGDAT') : 'CHUAXET') + '|N=' + D.pts.length + '|' + D.hash;
+    var short = 'LANDGIS25|' + D.hash, mode = 'day-du', txt = full;
+    if (typeof qrBuildMatrix === 'function' && qrBuildMatrix(full) == null) { txt = short; mode = 'rut-gon'; }
+    if (typeof qrBuildMatrix === 'function' && qrBuildMatrix(txt) == null) return { svg: '', mode: 'khong-tao-duoc', txt: '', bytes: new TextEncoder().encode(full).length };
+    return { svg: qrToSVG(txt, 104), mode: mode, txt: txt, bytes: new TextEncoder().encode(txt).length };
+  }
+  function html(plot) {
+    var D = data(plot), m = D.m, Q = qr(plot, D), svg = ''; try { svg = window.LG57.sketchSVG(plot, 150, 105); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h21a'); }
+    var d = D.now, ts = d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    var V = D.V, cc = window.lgMaskId ? window.lgMaskId(m.cccd_cmnd) : m.cccd_cmnd;
+    var kl = V ? (V.ok ? '<b style="color:#145a32">ĐẠT</b> — sai lệch ' + f2(Math.abs(V.diff)) + ' m² nằm trong mức cho phép ±' + f2(V.tol) + ' m²' : '<b style="color:#9a3412">KHÔNG ĐẠT</b> — sai lệch ' + f2(Math.abs(V.diff)) + ' m² vượt mức cho phép ±' + f2(V.tol) + ' m²') : 'Chưa có diện tích ghi trên GCN để đối chiếu';
+    var tc = ''; try { tc = (window.LG35 && LG35.fromPlot(plot).map(function (e) { return ({ bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' })[e.huong] + ': ' + (LG35.toText(e) || 'chưa rõ'); }).join(' · ')) || ''; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h21b'); }
+    return '<div class="lg21-page"><div class="lg21-head"><div><b>BÁO CÁO ĐỐI CHIẾU DIỆN TÍCH THỬA ĐẤT</b><br><span>Thửa ' + h(m.so_thua || plot.id) + (m.to_ban_do ? ' · Tờ bản đồ ' + h(m.to_ban_do) : '') + (m.dia_chi ? ' · ' + h(m.dia_chi) : '') + '</span></div><div class="lg21-ts">' + h(ts) + '</div></div>' +
+      '<div class="lg21-row"><div class="lg21-sketch">' + svg + '</div><div class="lg21-info"><table class="lg21-t"><tbody>' +
+      (m.chu_su_dung ? '<tr><th>Người sử dụng đất</th><td>' + h(m.chu_su_dung) + '</td></tr>' : '') + (cc ? '<tr><th>CCCD/CMND</th><td>' + h(cc) + '</td></tr>' : '') +
+      '<tr><th>Diện tích đo từ toạ độ</th><td>' + f2(D.area) + ' m²</td></tr><tr><th>Diện tích ghi trên GCN</th><td>' + (isFinite(D.gcn) ? f2(D.gcn) + ' m²' : '—') + '</td></tr>' +
+      '<tr><th>Diện tích không cấp GCN</th><td>' + f2(D.kc) + ' m²</td></tr><tr><th>Diện tích đo sau khi trừ</th><td>' + (V ? f2(V.effective) + ' m²' : '—') + '</td></tr>' +
+      '<tr><th>Chênh lệch</th><td>' + (V ? f2(V.diff) + ' m²' : '—') + '</td></tr><tr><th>Sai số cho phép</th><td>' + (V ? '±' + f2(V.tol) + ' m²' : '—') + '</td></tr>' +
+      '<tr><th>Số mốc · KTT</th><td>' + D.pts.length + ' mốc · ' + (plot.lon0 != null ? plot.lon0 + '°' : '—') + ' (VN-2000)</td></tr></tbody></table></div></div>' +
+      '<p class="lg21-formula">Công thức sai số cho phép: ± (0,05·√A + 0,0003·A), A = diện tích ghi trên GCN' + (V ? ' = ' + f2(D.gcn) + ' m² ⇒ ±' + f2(V.tol) + ' m²' : '') + '.</p>' +
+      '<div class="lg21-concl">Kết luận: ' + kl + '</div>' + (tc ? '<p class="lg21-note">Tứ cận: ' + h(tc) + '</p>' : '') +
+      '<div class="lg21-foot"><div class="lg21-qr">' + (Q.svg || '<small>Không tạo được QR</small>') + '</div><div><small>Mã tra cứu: <b>' + h(D.hash) + '</b>' + (Q.mode === 'rut-gon' ? '<br>QR chỉ chứa mã tra cứu (nội dung đầy đủ quá dài cho QR).' : '') + (Q.mode === 'khong-tao-duoc' ? '<br>⚠ Nội dung quá dài, không tạo được QR — dùng mã tra cứu.' : '') + '<br>Lập bằng Land GIS · số liệu chỉ có giá trị tham khảo đến khi được cơ quan có thẩm quyền xác nhận.</small></div></div></div>';
+  }
+  function open(plot) {
+    close(); var host = document.createElement('div'); host.id = 'lg21-host'; host.innerHTML = '<div class="lg21-bar"><button type="button" data-lg21="print">🖨 In / Lưu PDF</button><button type="button" data-lg21="close">✕ Đóng</button></div>' + html(plot);
+    host.addEventListener('click', function (e) { var b = e.target.closest('[data-lg21]'); if (!b) return; if (b.getAttribute('data-lg21') === 'close') close(); else { document.body.classList.add('lg21-printing'); var done = function () { document.body.classList.remove('lg21-printing'); window.removeEventListener('afterprint', done); }; window.addEventListener('afterprint', done); setTimeout(function () { window.print(); }, 100); setTimeout(done, 60000); } });
+    document.body.appendChild(host); return host;
+  }
+  function close() { var e = document.getElementById('lg21-host'); if (e) e.remove(); document.body.classList.remove('lg21-printing'); }
+  window.LG21 = { html: html, open: open, close: close, qr: function (plot) { return qr(plot, data(plot)); } };
 })();
 </script>
 </body>

@@ -54,3 +54,4 @@
 - 15/10 · P05 · HM-16 ĐẠT V3: dẫn đường cắm mốc giữ màn sáng + rung khi gần mốc (thử máy thật: chờ bạn).
 - 15/10 · P05 · HM-24 ĐẠT V3: Thêm → Quy đổi toạ độ hàng loạt VN-2000 ↔ WGS84, xuất CSV mở đúng tiếng Việt trong Excel.
 - 15/10 · P05 · HM-38 ĐẠT V3: hồ sơ có mục Tứ cận (Bắc/Đông/Nam/Tây giáp …) + cảnh báo khi trái hình học.
+- 15/10 · P05 · HM-21 ĐẠT V3: báo cáo đối chiếu 1 trang A4 gửi khách/ngân hàng (sơ đồ, diện tích, công thức, kết luận, QR).
