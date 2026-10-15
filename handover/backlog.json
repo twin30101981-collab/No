@@ -1,0 +1,645 @@
+{
+ "du_an": "LANDGIS",
+ "skill_version": "3.2.0",
+ "phien_hien_tai": 1,
+ "che_do": 1,
+ "de_an": {
+  "phien_ban": "1.0",
+  "trang_thai": "CHO_DUYET",
+  "ngay_duyet": null,
+  "tep": "de-an/DE_AN_LANDGIS_v1.0.docx",
+  "so_phien_uoc_tinh": "3-5",
+  "dieu_chinh": []
+ },
+ "moi_truong": {
+  "node": "v22.22.0",
+  "v3_kha_dung": true,
+  "ghi_chu": "Playwright 1.56.1 + Chromium headless; mạng ra ngoài bị chặn (ô bản đồ, AI, Supabase không kiểm được)"
+ },
+ "baseline": {
+  "tep": "baseline/Land-GIS-v237.html",
+  "sha256": "7ab2837e065712de459fea114022552ecb4a1aa6757f584019c6e0d824978b5a"
+ },
+ "hang_muc": [
+  {
+   "id": "HM-01",
+   "ten": "Hạ tầng kiểm thử hồi quy tối thiểu (Playwright + fixture 2 sổ mẫu)",
+   "dot": 0,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [],
+   "pham_vi": "tests/ mới; không sửa app",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Chạy 1 lệnh ra PASS/FAIL",
+    "Fixture Mẫu A, Mẫu B tái hiện được 2 lỗi HM-02/HM-03 (FAIL trên v237)",
+    "Quét khói 390px & 1366px: 0 pageerror"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất nền",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-02",
+   "ten": "Bộ đọc bảng kê nhận nhiều khối (vòng ranh chính + khối phụ quy hoạch)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "pham_vi": "LG145.parseBookText (~L35573), luồng Tra sổ v179 (~L37689)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Bảng kê đầy đủ Mẫu A → vòng chính 7 mốc, diện tích 29,70 m²; khối phụ 8–11 tách riêng ≈ 7,10 m²",
+    "Dòng lặp mốc 1 giữa bảng = điểm khép vòng",
+    "Mẫu B không hồi quy"
+   ],
+   "rui_ro": "Trung bình: đổi kết quả với bảng kê nhập tay cũ",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-03",
+   "ten": "Một quy tắc đối chiếu diện tích cho mọi luồng (trừ phần không cấp GCN, một công thức sai số)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-02"
+   ],
+   "pham_vi": "LG145.checkBook, areaDeviationBadgeHTML (~L7927), v143 (~L33331), calcPermissibleAreaError",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mẫu B: 91,29 − 1,44 ≈ 89,85 → ĐẠT so với 89,9 m² ở cả luồng Tra sổ và luồng chính",
+    "Một hàm sai số dùng chung, có ghi căn cứ",
+    "Mẫu A vẫn ĐẠT"
+   ],
+   "rui_ro": "Trung bình: đổi kết luận đạt/không đạt — cần người dùng chốt công thức",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-04",
+   "ten": "Một lõi hình học & một định nghĩa VN-2000 dùng chung",
+   "dot": 1,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-03"
+   ],
+   "pham_vi": "≥11 bản shoelace/ringArea, 5 chỗ dựng chuỗi proj4",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mọi luồng gọi LGCore.Geometry",
+    "Sai lệch diện tích < 0,001 m² so với tính chính xác (Decimal)",
+    "Toạ độ Mẫu A/B ra đúng phường (20,4307°N 106,1760°E; 20,4241°N 106,1538°E)"
+   ],
+   "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (trùng lặp); giả thuyết (rủi ro lệch)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-05",
+   "ten": "Gỡ dữ liệu cá nhân thật nhúng trong mã (LG_AUDIT) và nhật ký",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "pham_vi": "window.LG_AUDIT (~L36207), landgis_v42_diag_log, landgis_v87_log",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Không còn họ tên/địa chỉ chủ sử dụng thật trong file",
+    "Bộ kiểm thử dùng dữ liệu ẩn danh vẫn chạy",
+    "Nhật ký không ghi CMND/CCCD"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-06",
+   "ten": "Bảo mật: thư viện ngoài, khoá API, CSDL Supabase",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "pham_vi": "loadLib/CDN (L795, L1423), tesseract.js@5, xlsx 0.18.5, khoá AI trong localStorage, LG172_CFG",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Thư viện ghim phiên bản chính xác + SRI hoặc nhúng",
+    "Nâng SheetJS lên bản đã vá khi đọc file người dùng",
+    "Cảnh báo rõ khi lưu khoá trên máy",
+    "Báo cáo RLS bảng thua_dat (người dùng xác nhận)"
+   ],
+   "rui_ro": "Trung bình: đổi nguồn thư viện có thể hỏng nạp offline",
+   "kiem_chung_du_kien": "V3 + V1 (RLS)",
+   "nhan_xac_minh": "Nghi vấn cần xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-07a",
+   "ten": "Đăng ký và cắt bớt bộ đếm/observer chạy nền",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "pham_vi": "29 setInterval sống, 24 MutationObserver",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Có bảng thống kê bộ đếm theo nhóm",
+    "Giảm ≥50% số thay đổi DOM khi nhàn rỗi (đo trước/sau)",
+    "Không hồi quy luồng chính"
+   ],
+   "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (số đo)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-07b",
+   "ten": "Thanh điều hướng (rail lg62, dock lg113) dựng lại liên tục",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-07a"
+   ],
+   "pham_vi": "lg62-ui-script, lg113-dock-script",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Rail không dựng lại khi không đổi trạng thái",
+    "Dock không bật/tắt lớp lặp"
+   ],
+   "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (số đo); nguyên nhân là giả thuyết",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-08",
+   "ten": "Bố cục mobile 390px: toast che dock, nút nổi che nội dung",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-07b"
+   ],
+   "pham_vi": "CSS lg103/lg112/lg124 (chỉ trong <style>)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Ở 360/390px: nhãn dock không bị cắt/che",
+    "Toast không che nút hành động",
+    "Không tràn ngang"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (ảnh)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-09",
+   "ten": "Tự đổi lớp nền khi ô bản đồ lỗi (vòng lặp nghi vấn)",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-07a"
+   ],
+   "pham_vi": "bộ dò độ nét lớp nền",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Giả lập lỗi ô ảnh: đổi lớp tối đa N lần rồi dừng và báo",
+    "Không tải lại liên tục"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (giả lập)",
+   "nhan_xac_minh": "Giả thuyết",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-10",
+   "ten": "Danh mục model AI một chỗ, xử lý model ngừng hỗ trợ",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-06"
+   ],
+   "pham_vi": "claude-haiku-3-5, gemini-2.0-flash… rải nhiều nơi",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Một bảng cấu hình model",
+    "Model lỗi 404 → tự chuyển model kế và báo rõ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V2 + V1 (cần khoá thật)",
+   "nhan_xac_minh": "Đã xác minh (chuỗi model); hiệu lực cần khoá thật",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-11",
+   "ten": "Triển khai v237 lên repo + PWA cập nhật đúng phiên bản",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08"
+   ],
+   "pham_vi": "index.html (repo đang là v43), sw.js (cache landgis-shell-v1 không đổi), manifest.json",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Tên cache theo phiên bản",
+    "Có thông báo 'có bản mới'",
+    "Mở offline lần 2 được app shell"
+   ],
+   "rui_ro": "Trung bình: người dùng kẹt bản cũ nếu sai",
+   "kiem_chung_du_kien": "V3 (localhost)",
+   "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-12a",
+   "ten": "Dọn khối chẩn đoán/rollout chỉ dùng cho phát triển (LGCore 07–08)",
+   "dot": 3,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-11"
+   ],
+   "pham_vi": "L43044–L44970",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Không ai gọi ngoài chính nó (grep + chạy)",
+    "File nhỏ đi, không hồi quy"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (cấu trúc)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-12b",
+   "ten": "Gom CSS chồng lớp (734 !important) theo token",
+   "dot": 3,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-08"
+   ],
+   "pham_vi": "khối style v62–v124",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Giảm !important ở vùng đã gom",
+    "Ảnh so sánh 390/1366 không đổi ngoài chủ ý"
+   ],
+   "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (số đếm)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-13",
+   "ten": "Đề xuất: nhập trang IV 'Những thay đổi sau khi cấp GCN' vào lịch sử thửa",
+   "dot": 4,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-03"
+   ],
+   "pham_vi": "form bảng kê sổ đỏ, plot.meta",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Ghi được nhiều dòng biến động (ngày, nội dung, cơ quan xác nhận)",
+    "Hiện trên hồ sơ in"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-14",
+   "ten": "Đề xuất: in/xuất hồ sơ có tuỳ chọn che CMND/CCCD",
+   "dot": 4,
+   "uu_tien": "P3",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-05"
+   ],
+   "pham_vi": "printPlotA4, xuất PDF",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Bật che → số định danh chỉ hiện 3 số cuối",
+    "Mặc định giữ hành vi cũ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  }
+ ],
+ "quyet_dinh_da_chot": [],
+ "loi_nen_ngoai_pham_vi": [
+  "168–528 request ô bản đồ lỗi trong môi trường S0 do chặn mạng — không phải lỗi app"
+ ]
+}
