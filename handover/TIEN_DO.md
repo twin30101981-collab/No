@@ -55,3 +55,5 @@
 - 15/10 · P05 · HM-24 ĐẠT V3: Thêm → Quy đổi toạ độ hàng loạt VN-2000 ↔ WGS84, xuất CSV mở đúng tiếng Việt trong Excel.
 - 15/10 · P05 · HM-38 ĐẠT V3: hồ sơ có mục Tứ cận (Bắc/Đông/Nam/Tây giáp …) + cảnh báo khi trái hình học.
 - 15/10 · P05 · HM-21 ĐẠT V3: báo cáo đối chiếu 1 trang A4 gửi khách/ngân hàng (sơ đồ, diện tích, công thức, kết luận, QR).
+- 15/10 · P05 · HM-13 ĐẠT V3: lịch sử biến động sau khi cấp GCN (nhiều dòng) nhập được và in trong hồ sơ.
+- 15/10 · P05 · HM-23 ĐẠT V3: hàng đợi nhập sổ ngoại tuyến — chụp nhiều sổ khi mất mạng, có mạng tự đọc lần lượt (thử máy thật + AI thật: chờ bạn).

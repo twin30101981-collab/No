@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1', 'landgis_ai_proxy', 'landgis_expert', 'landgis_mask_id', 'landgis_gr_labels', 'landgis_vibrate_m'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1', 'landgis_ai_proxy', 'landgis_expert', 'landgis_mask_id', 'landgis_gr_labels', 'landgis_vibrate_m', 'landgis_queue_autodel'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -20987,6 +20987,12 @@ try {
     if (D.aExcl > 0 && !D.m.ghi_chu_trang_4) notes.push('Diện tích không cấp GCN ' + fmt(D.aExcl, 1) + ' m² (phần gạch chéo trên sơ đồ).');
     if (D.HS.giapRanh) notes.push('Giáp ranh: ' + D.HS.giapRanh + '.');
     if (notes.length) { s += '<ul class="lg60-log">'; notes.forEach(function (t) { s += '<li>' + h(t) + '</li>'; }); s += '</ul>'; }
+    var bd = (D.m && Array.isArray(D.m.bien_dong_ds)) ? D.m.bien_dong_ds : [];
+    if (bd.length) {   // HM-13: lịch sử biến động sau khi cấp GCN
+      s += '<h3 class="lg60-sub">NHỮNG THAY ĐỔI SAU KHI CẤP GIẤY CHỨNG NHẬN</h3><table class="lg60-t"><thead><tr><th style="width:26mm">Ngày</th><th class="lg60-l">Nội dung</th><th class="lg60-l" style="width:46mm">Cơ quan xác nhận</th></tr></thead><tbody>';
+      bd.forEach(function (e) { s += '<tr><td>' + h(e.ngay || '—') + '</td><td class="lg60-l">' + h(e.noi_dung) + '</td><td class="lg60-l">' + h(e.co_quan || '—') + '</td></tr>'; });
+      s += '</tbody></table>';
+    }
     s += '<div class="lg60-pageno">2</div></div>';
     return s;
   }
@@ -25839,6 +25845,8 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lg21-formula{ margin:8px 0 4px; } .lg21-concl{ border:2px solid #1f3a8a; padding:8px 10px; font-size:14px; margin:6px 0; } .lg21-note{ margin:4px 0; } .lg21-foot{ display:flex; gap:10px; align-items:center; margin-top:8px; border-top:1px solid #999; padding-top:6px; } .lg21-qr svg{ width:26mm; height:26mm; }
 @media (max-width:640px){ .lg21-row{ grid-template-columns:1fr; } }
 @media print{ body.lg21-printing>*:not(#lg21-host){ display:none !important; } #lg21-host{ position:static !important; background:#fff !important; padding:0 !important; overflow:visible !important; } .lg21-bar{ display:none !important; } .lg21-page{ box-shadow:none; margin:0; width:auto; padding:0; } }
+.lg13-row{ display:grid; grid-template-columns:76px 1fr auto; gap:6px 8px; padding:8px 2px; border-bottom:1px solid var(--lg103-line); align-items:start; } .lg13-btns{ display:flex; gap:4px; } .lg13-form label{ display:flex; flex-direction:column; margin:6px 0; font-size:var(--lg103-fs-small,12px); } .lg13-form input,.lg13-form textarea{ font-size:16px; min-height:44px; }
+.lg23-row{ display:grid; grid-template-columns:1fr auto; gap:2px 8px; padding:8px 2px; border-bottom:1px solid var(--lg103-line); } .lg23-row small{ grid-column:1; opacity:.8; } .lg23-st{ font-size:12px; font-weight:700; } .lg23-xong{ color:#145a32; } .lg23-loi{ color:#9a3412; } .lg23-cho{ color:#555; } .lg23-pick{ display:inline-flex; align-items:center; cursor:pointer; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26284,12 +26292,31 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<div id="lg103-plist" style="position:relative;overflow:auto;height:46vh;border:1px solid #e3e8e5;border-radius:10px"><div style="position:relative"></div></div>' +
       '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="legacy-plots">▤ Quản lý thửa đầy đủ (sửa, đối soát)</button></div>';
   }
+  /* HM-23 — hàng đợi nhập sổ ngoại tuyến */
+  function queueOpen() {
+    LGQueue.list().then(function (a) {
+      var ST = { cho: 'Chờ có mạng', dang: 'Đang đọc…', xong: 'Đã đọc', loi: 'Lỗi' };
+      var h = '<div class="lg23"><p class="lg8e-note">Chụp hoặc chọn nhiều ảnh sổ khi chưa có mạng; app tự đọc lần lượt khi có mạng. Kết quả cần bạn bấm “Dựng thửa” để kiểm tra từng sổ.</p>' +
+        '<div class="lg103-actions"><label class="lg103-abtn lg23-pick">📷 Chụp / chọn ảnh<input type="file" id="lg23-file" accept="image/*" capture="environment" multiple aria-label="Chụp hoặc chọn ảnh sổ" style="display:none"></label><button type="button" class="lg103-abtn" data-lg103-act="queue-run">▶ Đọc ngay</button></div>' +
+        mRow('🗑', 'Xoá ảnh sau khi đọc xong', 'data-lg103-act="queue-autodel"', { sw: LGQueue.autodel(), sub: 'Giữ kết quả, bỏ ảnh để đỡ tốn bộ nhớ' }) + (navigator.onLine === false ? '<div class="warn">Đang ngoại tuyến — ảnh được giữ trong máy.</div>' : '');
+      h += a.length ? a.map(function (j) {
+        var r = j.result || {}, info = j.status === 'xong' ? (r.so_thua ? 'Thửa ' + escA4(r.so_thua) : 'Không thấy số thửa') + ' · ' + ((r.diem_moc || []).length) + ' mốc' : (j.status === 'loi' ? escA4(j.error) : '');
+        return '<div class="lg23-row" data-id="' + escA4(j.id) + '"><b>' + escA4(j.name) + '</b><span class="lg23-st lg23-' + j.status + '">' + ST[j.status] + '</span><small>' + info + '</small><span class="lg13-btns">' +
+          (j.status === 'xong' ? '<button type="button" class="lg103-abtn" data-lg103-act="queue-build" data-id="' + escA4(j.id) + '">Dựng thửa</button>' : '') + (j.status === 'loi' ? '<button type="button" class="lg103-abtn" data-lg103-act="queue-retry" data-id="' + escA4(j.id) + '">Thử lại</button>' : '') +
+          '<button type="button" class="lg103-abtn" data-lg103-act="queue-del" data-id="' + escA4(j.id) + '" aria-label="Xoá ' + escA4(j.name) + '">Xoá</button></span></div>';
+      }).join('') : '<div class="lg103-empty">Hàng đợi trống.</div>';
+      openSheet('Hàng đợi sổ', h + '</div>');
+      var fi = document.getElementById('lg23-file');
+      if (fi) fi.addEventListener('change', function () { var fs = Array.prototype.slice.call(fi.files || []); fi.value = ''; Promise.all(fs.map(function (f) { return LGQueue.add(f, f.name); })).then(function () { queueOpen(); if (navigator.onLine !== false) LGQueue.process().then(queueOpen); }); });
+    });
+  }
   function tabImport() {
     return '<h5>Nhập sổ — chọn cách nhập</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="import-cam">📷 Chụp sổ đỏ</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-pick">🖼 Chọn ảnh</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-qr">🔳 Quét QR</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-book">📋 Nhập bảng kê</button>' +
+      '<button class="lg103-abtn" data-lg103-act="queue">🕓 Hàng đợi sổ (ngoại tuyến)</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-edges">📐 Cạnh + góc</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-cad">📥 CAD / CSV</button>' +
       '<button class="lg103-abtn" data-lg103-act="import-gps">📡 GPS thực địa</button>' +
@@ -26298,6 +26325,19 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '</div><div class="lg103-note small">Luồng 3 bước: Đọc → Kiểm tra bảng kê → Kết quả.</div>';
   }
   /* HM-36 — tab Giáp ranh: tính theo hình học, so với nhãn sổ; kết quả điền bất đồng bộ vào #lg36-box */
+  /* HM-13 — tab Biến động: nhiều dòng (ngày · nội dung · cơ quan xác nhận) */
+  function tabBienDong(p) {
+    var a = window.LG13 ? LG13.list(p) : [], m = p.meta || {}, note = m.ghi_chu_bien_dong || m.thay_doi_muc6 || m.ghi_chu_trang_4 || '';
+    var h = '<div class="lg13"><p class="lg8e-note">Những thay đổi ghi ở trang IV giấy chứng nhận (chuyển nhượng, thế chấp, đính chính…). Nhập từng dòng để in trong hồ sơ.</p>';
+    h += a.length ? a.map(function (e, i) { return '<div class="lg13-row"><b>' + escA4(e.ngay || 'không rõ ngày') + '</b><span>' + escA4(e.noi_dung) + (e.co_quan ? '<br><small>Xác nhận: ' + escA4(e.co_quan) + '</small>' : '') + '</span><span class="lg13-btns"><button type="button" class="lg103-abtn" data-lg103-act="bd-edit" data-i="' + i + '" aria-label="Sửa dòng ' + (i + 1) + '">Sửa</button><button type="button" class="lg103-abtn" data-lg103-act="bd-del" data-i="' + i + '" aria-label="Xoá dòng ' + (i + 1) + '">Xoá</button></span></div>'; }).join('') : '<div class="lg103-empty">Chưa có dòng biến động nào.</div>';
+    h += '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="bd-add">＋ Thêm dòng</button>' + (note ? '<button type="button" class="lg103-abtn" data-lg103-act="bd-import">Tách từ ghi chú đã đọc</button>' : '') + '</div>';
+    if (note) h += '<details><summary>Ghi chú gốc từ sổ</summary><p class="lg8e-note">' + escA4(note) + '</p></details>';
+    return h + '</div>';
+  }
+  function bdForm(p, i) {
+    var e = (i != null && LG13.list(p)[i]) || { ngay: '', noi_dung: '', co_quan: '' };
+    openSheet(i != null ? 'Sửa dòng biến động' : 'Thêm dòng biến động', '<div class="lg13-form" data-i="' + (i == null ? '' : i) + '"><label>Ngày (dd/mm/yyyy)<input data-f="ngay" inputmode="numeric" aria-label="Ngày biến động" value="' + escA4(e.ngay) + '" placeholder="vd 16/04/2019"></label><label>Nội dung biến động<textarea data-f="noi_dung" rows="4" aria-label="Nội dung biến động">' + escA4(e.noi_dung) + '</textarea></label><label>Cơ quan xác nhận<input data-f="co_quan" aria-label="Cơ quan xác nhận" value="' + escA4(e.co_quan) + '"></label><div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="bd-save">Lưu dòng</button></div></div>');
+  }
   var giapRes = null;
   function tabGiap(p) {
     var h = '<div id="lg36-box"><div class="lg103-empty">Đang tính giáp ranh theo hình học…</div></div>';
@@ -26325,7 +26365,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var hv = (isFinite(hg) && hg > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(harea, hg, parseFloat(hm.dien_tich_khong_cap_gcn) || 0) : null;
     var head = '<div class="lg8e-phead"><b>Thửa ' + escA4(hm.so_thua || p.id) + (hm.to_ban_do ? ' · Tờ ' + escA4(hm.to_ban_do) : '') + '</b><span>' +
       [hm.loai_dat || hm.muc_dich_su_dung, (hg > 0 ? hg : harea).toFixed(1).replace('.', ',') + ' m²', hv ? (hv.ok ? '✓ Đạt' : '⚠ Không đạt') : ''].filter(Boolean).map(escA4).join(' · ') + '</span></div>';
-    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['photos', 'Ảnh']];
+    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['bd', 'Biến động'], ['photos', 'Ảnh']];
     var bar = '<div class="lg103-actions">' + tabs.map(function (t) {
       return '<button class="lg103-abtn" data-lg103-act="prof-' + t[0] + '"' + (profTab === t[0] ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t[1] + '</button>';
     }).join('') + '</div>';
@@ -26333,6 +26373,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (profTab === 'coords') body = tabCoords();
     else if (profTab === 'edges') body = tabEdges();
     else if (profTab === 'giap') body = tabGiap(p);
+    else if (profTab === 'bd') body = tabBienDong(p);
     else if (profTab === 'photos') body = '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="photos">🛰 Ảnh thực tế &amp; 8 hướng</button><button class="lg103-abtn" data-lg103-act="imagery">🗺 Ảnh nền &amp; độ nét</button></div>';
     else {
       var pts = p.points || [], area = (typeof calcArea === 'function') ? calcArea(pts) : LG.cad.area(pts), m = p.meta || {};
@@ -26448,8 +26489,14 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         if (f) setTimeout(function () { f.click(); }, 150); return true;
       }
       case 'import-book': closeSheet(); openWizard(); return true;
+      case 'queue': queueOpen(); return true;
+      case 'queue-run': LGQueue.process().then(function (r) { if (r && r.skipped === 'ngoai-tuyen') { try { window.toast({ title: 'Đang ngoại tuyến', description: 'Sẽ tự đọc khi có mạng.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h23a'); } } queueOpen(); }); return true;
+      case 'queue-retry': LGQueue.get(t.getAttribute('data-id')).then(function (j) { if (!j) return; j.status = 'cho'; j.tries = 0; return LGQueue.put(j); }).then(function () { return LGQueue.process(); }).then(queueOpen); return true;
+      case 'queue-del': LGQueue.remove(t.getAttribute('data-id')).then(queueOpen); return true;
+      case 'queue-build': LGQueue.get(t.getAttribute('data-id')).then(function (j) { if (!j) return; closeSheet(); openWizard(LGQueue.seedFor(j)); }); return true;
+      case 'queue-autodel': try { if (LGQueue.autodel()) localStorage.removeItem('landgis_queue_autodel'); else localStorage.setItem('landgis_queue_autodel', '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h23b'); } queueOpen(); return true;
       case 'import-edges': closeSheet(); if (window.LG170 && LG170.open) LG170.open(); return true;
-      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos': case 'prof-giap':
+      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos': case 'prof-giap': case 'prof-bd':
         profTab = act.slice(5); body.innerHTML = tabProfile(); return true;
       case 'pdf': closeSheet(); { var pp = currentPlot(); if (window.LG60 && LG60.open && pp) LG60.open(pp); else if (window.LG146 && LG146.exportHSKT) LG146.exportHSKT(); } return true;
       case 'exports-more': { var ex = document.getElementById('lg103-exports-more'); if (ex) ex.style.display = ex.style.display === 'none' ? '' : 'none'; return true; }
@@ -26460,6 +26507,17 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
+      case 'bd-add': { var bp = currentPlot(); if (bp) bdForm(bp, null); return true; }
+      case 'bd-edit': { var bp2 = currentPlot(); if (bp2) bdForm(bp2, +t.getAttribute('data-i')); return true; }
+      case 'bd-del': { var bp3 = currentPlot(); if (bp3 && confirm('Xoá dòng biến động này?')) { LG13.remove(bp3, +t.getAttribute('data-i')); body.innerHTML = tabProfile(); } return true; }
+      case 'bd-import': { var bp4 = currentPlot(), m4 = (bp4 && bp4.meta) || {}; if (bp4) { var got = LG13.fromNote(m4.ghi_chu_bien_dong || m4.thay_doi_muc6 || m4.ghi_chu_trang_4 || ''); if (got.length) { LG13.save(bp4, LG13.list(bp4).concat(got)); try { window.toast({ title: 'Đã tách ' + got.length + ' dòng từ ghi chú', description: 'Kiểm tra lại ngày và nội dung.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h13a'); } } body.innerHTML = tabProfile(); } return true; }
+      case 'bd-save': {
+        var bx = body.querySelector('.lg13-form'), bp5 = currentPlot(); if (!bx || !bp5) return true; var g = function (f) { return bx.querySelector('[data-f="' + f + '"]').value; }, rec = { ngay: g('ngay'), noi_dung: g('noi_dung'), co_quan: g('co_quan') }, idx = bx.getAttribute('data-i');
+        if (!rec.noi_dung.trim() && !rec.ngay.trim()) return true;
+        if (rec.ngay.trim() && !LG13.parseDate(rec.ngay)) { try { window.toast({ title: 'Ngày chưa đúng', description: 'Nhập dạng dd/mm/yyyy hoặc để trống.', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h13b'); } return true; }
+        if (idx === '' || idx == null) LG13.add(bp5, rec); else LG13.update(bp5, +idx, rec);
+        profTab = 'bd'; currentTab = 'profile'; closeSheet(); selectTab('profile'); return true;
+      }
       case 'giap-labels': {
         var gp2 = currentPlot(), on2 = localStorage.getItem('landgis_gr_labels') === '1';
         if (on2) { localStorage.removeItem('landgis_gr_labels'); if (window.LG36) LG36.showLabels(gp2, null, false); } else { localStorage.setItem('landgis_gr_labels', '1'); if (window.LG36 && giapRes) LG36.showLabels(gp2, giapRes, true); }
@@ -42771,6 +42829,82 @@ body.lg175-stack-open #lg124-stack{
   }
   function close() { var e = document.getElementById('lg21-host'); if (e) e.remove(); document.body.classList.remove('lg21-printing'); }
   window.LG21 = { html: html, open: open, close: close, qr: function (plot) { return qr(plot, data(plot)); } };
+})();
+</script>
+<script>
+/* HM-13 — LỊCH SỬ BIẾN ĐỘNG (trang IV GCN “Những thay đổi sau khi cấp giấy chứng nhận”): nhiều dòng {ngày, nội dung, cơ quan xác nhận} trong meta.bien_dong_ds.
+   Không đụng ô chữ cũ ghi_chu_bien_dong / thay_doi_muc6 (vẫn do AI/nhập tay ghi); có nút “Tách từ ghi chú” để tạo dòng từ văn bản đó. */
+(function () {
+  'use strict';
+  function parseDate(t) { var m = /(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/.exec(String(t || '')); if (!m) return null; var d = +m[1], mo = +m[2], y = +m[3]; if (mo < 1 || mo > 12 || d < 1 || d > 31) return null; return { d: d, m: mo, y: y, iso: y + '-' + String(mo).padStart(2, '0') + '-' + String(d).padStart(2, '0'), text: String(d).padStart(2, '0') + '/' + String(mo).padStart(2, '0') + '/' + y }; }
+  function list(plot) { var a = plot && plot.meta && plot.meta.bien_dong_ds; return Array.isArray(a) ? a.slice() : []; }
+  function sortList(a) { return a.sort(function (x, y) { return String(x.iso || '9999').localeCompare(String(y.iso || '9999')); }); }
+  function norm(e) {
+    var d = parseDate(e.ngay); return { ngay: d ? d.text : String(e.ngay || '').trim(), iso: d ? d.iso : '', noi_dung: String(e.noi_dung || '').trim(), co_quan: String(e.co_quan || '').trim() };
+  }
+  function save(plot, a) { plot.meta = plot.meta || {}; plot.meta.bien_dong_ds = sortList(a.map(norm).filter(function (e) { return e.noi_dung || e.ngay; })); try { window.LG_V42_HOST && window.LG_V42_HOST.save(); } catch (er) { window.lgQuiet && window.lgQuiet(er, 'h13s'); } return plot.meta.bien_dong_ds; }
+  function add(plot, e) { var a = list(plot); a.push(e); return save(plot, a); }
+  function update(plot, i, e) { var a = list(plot); if (i < 0 || i >= a.length) return a; a[i] = e; return save(plot, a); }
+  function remove(plot, i) { var a = list(plot); if (i >= 0 && i < a.length) a.splice(i, 1); return save(plot, a); }
+  /* Tách văn bản ghi chú biến động thành các dòng: mỗi dòng/đoạn bắt đầu hoặc chứa ngày dd/mm/yyyy */
+  function fromNote(text) {
+    var out = []; String(text || '').split(/\r?\n|;\s+(?=\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4})/).forEach(function (line) {
+      var t = line.trim(); if (!t) return; var d = parseDate(t); var cq = ''; var m = /(?:xác nhận|cơ quan|do)\s*[:\-]?\s*((?:chi nhánh|văn phòng|ubnd|sở|phòng)[^.;,]*)/i.exec(t); if (m) cq = m[1].trim();
+      out.push({ ngay: d ? d.text : '', iso: d ? d.iso : '', noi_dung: t.replace(/\s+/g, ' '), co_quan: cq });
+    }); return out;
+  }
+  window.LG13 = { parseDate: parseDate, list: list, add: add, update: update, remove: remove, save: save, fromNote: fromNote };
+})();
+</script>
+<script>
+/* HM-23 — HÀNG ĐỢI NHẬP SỔ NGOẠI TUYẾN: chụp/chọn nhiều ảnh sổ khi mất mạng → lưu IndexedDB (landgis_queue) → có mạng tự gửi AI lần lượt, báo kết quả từng sổ.
+   Kết quả KHÔNG tự tạo thửa: bấm “Dựng thửa” để mở luồng Nhập sổ 3 bước đã điền sẵn (người dùng kiểm tra từng sổ). Tuỳ chọn: xoá ảnh sau khi đọc xong (landgis_queue_autodel). */
+(function () {
+  'use strict';
+  var DB = 'landgis_queue', ST = 'jobs', running = false;
+  function db() { return new Promise(function (ok, no) { var r = indexedDB.open(DB, 1); r.onupgradeneeded = function () { r.result.createObjectStore(ST, { keyPath: 'id' }); }; r.onsuccess = function () { ok(r.result); }; r.onerror = function () { no(r.error); }; }); }
+  function tx(mode, fn) { return db().then(function (d) { return new Promise(function (ok, no) { var t = d.transaction(ST, mode), q = fn(t.objectStore(ST)); t.oncomplete = function () { ok(q && q.result); d.close(); }; t.onerror = t.onabort = function () { no(t.error); d.close(); }; }); }); }
+  function list() { return tx('readonly', function (s) { return s.getAll(); }).then(function (a) { return (a || []).sort(function (x, y) { return x.at - y.at; }); }); }
+  function put(j) { return tx('readwrite', function (s) { return s.put(j); }); }
+  function get(id) { return tx('readonly', function (s) { return s.get(id); }); }
+  function remove(id) { return tx('readwrite', function (s) { return s.delete(id); }); }
+  function add(blob, name) { var j = { id: 'q' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), at: Date.now(), name: name || 'so-do.jpg', blob: blob, status: 'cho', tries: 0, error: '', result: null }; return put(j).then(function () { emit(); return j; }); }
+  function emit() { try { document.dispatchEvent(new CustomEvent('lgqueue:change')); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h23e'); } }
+  function toB64(blob) {
+    return (window.createImageBitmap ? createImageBitmap(blob) : Promise.reject(new Error('no bitmap'))).then(function (bm) {
+      var k = Math.min(1, 1600 / Math.max(bm.width, bm.height)), c = document.createElement('canvas'); c.width = Math.round(bm.width * k); c.height = Math.round(bm.height * k); c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height);
+      return c.toDataURL('image/jpeg', 0.85).split(',')[1];
+    }).catch(function () { return new Promise(function (ok, no) { var r = new FileReader(); r.onload = function () { ok(String(r.result).split(',')[1]); }; r.onerror = no; r.readAsDataURL(blob); }); });
+  }
+  function autodel() { try { return localStorage.getItem('landgis_queue_autodel') === '1'; } catch (e) { return false; } }
+  function online() { return navigator.onLine !== false; }
+  /* xử lý lần lượt các việc đang chờ (hoặc lỗi < 3 lần); dừng ngay khi mất mạng */
+  function process() {
+    if (running) return Promise.resolve({ skipped: 'dang-chay' }); if (!online()) return Promise.resolve({ skipped: 'ngoai-tuyen' }); running = true; var done = 0, fail = 0;
+    function next() {
+      if (!online()) return Promise.resolve();
+      return list().then(function (a) {
+        var j = a.filter(function (x) { return x.status === 'cho' || (x.status === 'loi' && x.tries < 3 && x.retry); })[0]; if (!j) return;
+        j.status = 'dang'; j.tries++; j.error = ''; j.retry = false;
+        return put(j).then(function () { emit(); return toB64(j.blob); }).then(function (b64) { return window.lgAiExtractRaw(b64); }).then(function (res) {
+          j.result = res; j.status = 'xong'; j.at_xong = Date.now(); if (autodel()) j.blob = null; done++;
+          return put(j).then(function () { emit(); try { window.toast && window.toast({ title: 'Đã đọc xong: ' + j.name, description: (res && res.so_thua ? 'Thửa ' + res.so_thua : 'Không thấy số thửa') + ((res && res.diem_moc && res.diem_moc.length) ? ' · ' + res.diem_moc.length + ' mốc' : ' · chưa có bảng toạ độ') }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h23t'); } });
+        }).catch(function (e) {
+          j.status = 'loi'; j.error = String(e && e.message || e).slice(0, 300); fail++; var net = !online() || /fetch|network|mạng/i.test(j.error);
+          if (net) { j.status = 'cho'; j.tries = Math.max(0, j.tries - 1); }   // lỗi mạng: không tính lượt thử, đợi có mạng lại
+          return put(j).then(function () { emit(); if (net) throw new Error('mat-mang'); });
+        }).then(next, function (er) { if (er && er.message === 'mat-mang') return; throw er; });
+      });
+    }
+    return next().then(function () { running = false; return { done: done, fail: fail }; }, function (er) { running = false; throw er; });
+  }
+  function seedFor(j) {   // dữ liệu điền sẵn cho luồng Nhập sổ 3 bước
+    var r = (j && j.result) || {}, pts = (r.diem_moc || []).filter(function (p) { return p && isFinite(p.x) && isFinite(p.y); });
+    var lines = pts.map(function (p, i) { return (p.ten || (i + 1)) + ' ' + p.x + ' ' + p.y + (p.s != null && isFinite(p.s) ? ' ' + p.s : ''); }); if (pts.length) lines.push((pts[0].ten || 1) + ' ' + pts[0].x + ' ' + pts[0].y);
+    return { text: lines.join('\n'), gcn: r.dien_tich_tong_m2 != null ? String(r.dien_tich_tong_m2) : (r.dien_tich_m2 != null ? String(r.dien_tich_m2) : ''), kc: r.dien_tich_khong_cap_gcn != null ? String(r.dien_tich_khong_cap_gcn) : '', so: r.so_thua || '', to: r.to_ban_do || '', dc: r.dia_chi || '' };
+  }
+  window.addEventListener('online', function () { setTimeout(function () { process().catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h23o'); }); }, 800); });
+  window.LGQueue = { add: add, list: list, get: get, remove: remove, put: put, process: process, seedFor: seedFor, autodel: autodel, isRunning: function () { return running; } };
 })();
 </script>
 </body>
