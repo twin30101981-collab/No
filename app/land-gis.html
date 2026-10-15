@@ -113,8 +113,14 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   var stats = { reads: 0, writes: 0, quotaHits: 0, pruned: 0, repaired: 0, blocked: 0, notes: [] };
   function note(m) { try { stats.notes.push(m); if (stats.notes.length > 50) stats.notes.shift(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q1'); } }
 
-  /* Khoá bộ nhớ đệm ô ảnh — được phép xoá đầu tiên khi hết dung lượng. */
-  var PRUNABLE = ['land_gis_v18_cache', 'lg_tile_bytes'];
+  /* HM-00 — SỬA GỐC RỄ MẤT DỮ LIỆU: trước đây danh sách này chứa
+     'land_gis_v18_cache' vì nhầm là bộ đệm ô ảnh — thực ra đó là KHO THỬA
+     (toàn bộ thửa đã vẽ). Hễ bộ nhớ đầy khi ghi BẤT KỲ khoá nào, kho thửa bị
+     xoá trước tiên. Nay chỉ dọn dữ liệu tái tạo được: bộ đếm ô ảnh, nhật ký. */
+  var PRUNABLE = ['lg_tile_bytes', 'landgis_v42_diag_log', 'lgv80_log'];
+  /* Khoá dữ liệu người dùng: không bao giờ bị dọn; ghi thất bại thì ném lỗi
+     để nơi gọi (saveToLocalStorage) báo người dùng và giữ bản sao IndexedDB. */
+  var PROTECTED = ['land_gis_v18_cache'];
   /* Khoá chứa JSON: đọc mà hỏng thì chuyển sang khoá sao lưu, không ném lỗi. */
   var JSON_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84'];
 
@@ -152,6 +158,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         stats.blocked++;
         note('Het dung luong — KHONG luu duoc "' + key + '"');
         try { window.dispatchEvent(new CustomEvent('lg-store-full', { detail: { key: key } })); } catch (e3) { window.lgQuiet && window.lgQuiet(e3, 'q4'); }
+        if (PROTECTED.indexOf(key) >= 0) throw e2;
       }
     }
   };
@@ -189,14 +196,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     note('CANH BAO: du lieu thuoc luoc do v' + stored + ' > ban dang chay v' + SCHEMA + ' — giu nguyen, khong ghi de');
   } else if (stored < SCHEMA) {
     /* Di trú tăng dần, mỗi bước độc lập và bọc lỗi riêng. */
-    if (stored < 119) {
-      try {
-        /* v119: bộ nhớ đệm ô ảnh trước đây không có dấu thời gian — xoá để
-           tránh trộn lẫn với định dạng mới; đây là dữ liệu tái tạo được. */
-        var c = raw.get('land_gis_v18_cache');
-        if (c && c.indexOf('"v"') < 0) { raw.del('land_gis_v18_cache'); migrated.push('xoa bo dem tile cu'); }
-      } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q9'); }
-    }
+    /* HM-00: bước di trú <119 cũ xoá 'land_gis_v18_cache' (nhầm là bộ đệm ô
+       ảnh) nếu thiếu chuỗi "v" — tức xoá kho thửa của người dùng. Đã gỡ. */
     try { raw.set(VKEY, String(SCHEMA)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q10'); }
     note('Di tru luoc do v' + stored + ' -> v' + SCHEMA + (migrated.length ? ' (' + migrated.join(', ') + ')' : ''));
   }
@@ -561,6 +562,10 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   var QUOTA_BYTES = 200 * 1024;         // ngưỡng an toàn 200KB
   var QUOTA_HIGH  = 0.8;                // dọn dẹp khi vượt 80%
   var ROTATABLE   = /(_log$|_logs$|_cache$|_diag_log$|^landgis_v87_log$|^landgis_v42_diag_log$)/;
+  /* HM-00 — SỬA GỐC RỄ: '_cache$' khớp nhầm KHO THỬA 'land_gis_v18_cache' →
+     mỗi lần bộ nhớ vượt 160 KB (≈ vài chục thửa, kể cả lúc khởi động) kho thửa
+     bị cắt mất nửa (> 20 thửa) hoặc xoá hẳn. Dữ liệu người dùng không bao giờ xoay vòng. */
+  var NEVER_ROTATE = /^land_gis_v18_cache/;
 
   function usedBytes() {
     var n = 0;
@@ -578,7 +583,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     try {
       for (var i = 0; i < localStorage.length; i++) {
         var k = localStorage.key(i);
-        if (k && ROTATABLE.test(k)) keys.push(k);
+        if (k && ROTATABLE.test(k) && !NEVER_ROTATE.test(k)) keys.push(k);
       }
     } catch (e) { return false; }
     // Cắt ngắn trước, chỉ xóa hẳn khi bất đắc dĩ
@@ -8722,7 +8727,16 @@ function saveToLocalStorage() {
       meta: { ...(p.meta || {}), towgs84Key: p.towgs84Key, coordOrderConfirmed: 'as-is' }
     }));
 
-    localStorage.setItem('land_gis_v18_cache', JSON.stringify(dataToSave));
+    const json = JSON.stringify(dataToSave);
+    try {
+      localStorage.setItem('land_gis_v18_cache', json);
+    } catch (eq) {
+      // HM-00: không lưu được vào localStorage → giữ bản sao trong IndexedDB
+      // (dung lượng lớn hơn nhiều) rồi vẫn báo người dùng ở nhánh catch ngoài.
+      lgRescueSave(json);
+      throw eq;
+    }
+    lgRescueClear();
     // v36.2: lưu thành công lần này thì xoá cờ "đã cảnh báo" — nếu sau đó lại lỗi
     // (ví dụ bộ nhớ đầy trở lại) thì người dùng vẫn được báo lại, không bị bỏ sót.
     window.LG_SAVE_WARNED = false;
@@ -8746,7 +8760,56 @@ function saveToLocalStorage() {
   }
 }
 
+// HM-00 — bản sao cứu hộ kho thửa trong IndexedDB khi localStorage đầy.
+const LG_RESCUE_DB = 'landgis_rescue';
+function lgRescueDB(cb) {
+  try {
+    const rq = indexedDB.open(LG_RESCUE_DB, 1);
+    rq.onupgradeneeded = () => { try { rq.result.createObjectStore('kv'); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'r1'); } };
+    rq.onsuccess = () => cb(rq.result);
+    rq.onerror = () => cb(null);
+  } catch (_) { cb(null); }
+}
+function lgRescueSave(json) {
+  window.LG_RESCUE_PENDING = true;
+  lgRescueDB(db => { if (!db) return; try { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put({ at: Date.now(), json }, 'plots'); tx.oncomplete = () => db.close(); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'r2'); } });
+}
+function lgRescueClear() {
+  if (!window.LG_RESCUE_PENDING) return;
+  window.LG_RESCUE_PENDING = false;
+  lgRescueDB(db => { if (!db) return; try { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').delete('plots'); tx.oncomplete = () => db.close(); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'r3'); } });
+}
+function lgRescueLoad(cb) {
+  lgRescueDB(db => {
+    if (!db) return cb(null);
+    try {
+      const rq = db.transaction('kv', 'readonly').objectStore('kv').get('plots');
+      rq.onsuccess = () => { db.close(); cb(rq.result || null); };
+      rq.onerror = () => { db.close(); cb(null); };
+    } catch (_) { cb(null); }
+  });
+}
+// Xin trình duyệt giữ bộ nhớ lâu dài (không tự dọn khi máy thiếu chỗ).
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'r4'); }
+
 function loadFromLocalStorage() {
+  // HM-00: lần lưu trước rơi vào IndexedDB (localStorage đầy) → nạp bản đó
+  // nếu mới hơn/đầy đủ hơn rồi thử ghi lại vào localStorage.
+  lgRescueLoad(rec => {
+    if (!rec || !rec.json) return;
+    try {
+      const arr = JSON.parse(rec.json);
+      if (!Array.isArray(arr) || !arr.length) return;
+      const have = new Set(plots.map(p => p.id));
+      const missing = arr.filter(it => it && Array.isArray(it.points) && it.points.length >= 3 && !have.has(it.id));
+      if (!missing.length) return;
+      missing.forEach(it => drawPlot(it.id || 'Thửa', it.points, it.lon0 || DEFAULT_LON0, { ...(it.meta || {}), __restoring: true }, false, it.zone || 3));
+      window.LG_RESCUE_PENDING = true;
+      saveToLocalStorage();
+      if (typeof renderPlots === 'function') renderPlots();
+      toast({ title: 'Đã khôi phục thửa từ bản sao dự phòng', description: `${missing.length} thửa chưa kịp lưu vào bộ nhớ tạm (bộ nhớ đầy) đã được nạp lại.` });
+    } catch (_) { window.lgQuiet && window.lgQuiet(_, 'r5'); }
+  });
   try {
     const raw = localStorage.getItem('land_gis_v18_cache');
     if (!raw) return;

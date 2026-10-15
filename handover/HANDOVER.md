@@ -40,3 +40,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 11. Nhật ký phiên tự động
 - S-OPEN phiên 2 (P02, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK. Mở HM-00.
+- HM-00 DAT_V3: 2 nguyên nhân gốc (PRUNABLE/di trú v119 + ROTATABLE `_cache$` ở LandGIS.storage L564 cắt nửa/xoá kho khi > 160 KB). Bản sao IndexedDB `landgis_rescue` khi lưu thất bại; test `tests/regress/hm00_quota.js` (baseline FAIL). Mở HM-00b.
