@@ -8,9 +8,9 @@ Playwright (V3) khả dụng: CÓ — playwright 1.56.1 tại /opt/node-tools, C
 Quy ước dự án: style chỉ trong <style>; không sửa chuỗi JS khi đổi font/style; sửa theo vùng, sao lưu .orig; không format cả file.
 
 ## 2. Đề án và trạng thái (khớp backlog.json)
-Đề án: v1.0 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.0.docx
-Điều chỉnh lộ trình so với đề án: không
-Ước tính: 3–4 phiên (Đợt 0–3), 4–5 phiên nếu làm Đợt 4
+Đề án: v1.1 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.1.docx
+Điều chỉnh lộ trình: v1.1 ghi 3 quyết định; Đợt 4 vào phạm vi
+Ước tính: 4–5 phiên
 | ID | Tên | Ưu tiên | Effort | Trạng thái |
 |----|-----|---------|--------|------------|
 | HM-01 | Hạ tầng kiểm thử (Playwright + 2 sổ mẫu ẩn danh) | P1 | S | CHUA_LAM |
@@ -39,6 +39,9 @@ Kỳ vọng trên v237: test F-01 và F-02 phải FAIL.
 Không.
 
 ## 6. Quyết định đã chốt
+- (15/10) Sai số cho phép DUY NHẤT 0,05√A + 0,0003A; ĐẠT khi |(đo − không cấp GCN) − GCN| ≤ mức này; gỡ ngưỡng nới khác (HM-03).
+- (15/10) Xoá hết dữ liệu cũ mất an toàn: gỡ LG_AUDIT + mã phụ thuộc; dọn nhật ký/khoá cũ-hỏng theo allowlist; KHÔNG xoá dữ liệu thửa/cấu hình người dùng (HM-05).
+- (15/10) Người dùng có quyền Supabase → kiểm RLS bằng kịch bản V1 (HM-06); làm cả Đợt 4.
 - Không viết lại app; sửa theo lớp, có kiểm thử — lý do: app chạy được, rủi ro viết lại cao.
 - Bản nguồn = Land-GIS-v237.html người dùng tải lên (repo index.html là v43).
 
@@ -47,7 +50,7 @@ Không.
 - hsv-react-phien16.zip trong repo là dự án khác — không động tới.
 
 ## 8. Việc người dùng cần làm
-Chốt 3 quyết định (đề án Mục 14): công thức sai số; xử lý LG_AUDIT; quyền kiểm RLS Supabase + có làm Đợt 4.
+Đã chốt 3 quyết định. Còn: duyệt đề án v1.1 (① Duyệt ② Điều chỉnh ③ Dừng).
 
 ## 9. Đường lui
 baseline/Land-GIS-v237.html (SHA-256 7ab2837e065712de459fea114022552ecb4a1aa6757f584019c6e0d824978b5a)
@@ -61,3 +64,4 @@ Không sửa file app. Thêm: de-an/, handover/, evidence/, tools/.
 - 03:05 chạy 2 sổ mẫu: F-01, F-02 xác minh
 - 03:08 đo chạy nền: 29 interval, 24 MO, 1561 mutation/10s
 - 03:20 dựng đề án v1.0 (15 trang), tự kiểm qua PDF
+- 03:30 nhận 3 quyết định; phát hành đề án v1.1, chờ duyệt
