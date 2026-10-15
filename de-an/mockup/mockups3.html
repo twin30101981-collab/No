@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Land GIS địa chính ngoại tuyến</title>
+<link rel="stylesheet" href="base.css">
+<style>
+.badge.bad{background:var(--badbg);color:var(--bad)}.badge.mut{background:#ECEFED;color:var(--mut)}
+.meter{height:10px;border-radius:5px;background:#E4EBE7;overflow:hidden;margin:6px 0}.meter i{display:block;height:100%;background:var(--g2)}
+.xrow{display:flex;align-items:center;gap:12px;min-height:64px;padding:0 16px;border-bottom:1px solid var(--line);background:#fff}
+.xrow .nm{flex:1;min-width:0}.xrow .nm b{display:block;font-size:15.5px}.xrow .nm span{font-size:12.5px;color:var(--mut)}
+.dl{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;font-size:18px;border:1.5px solid var(--line);color:var(--g)}
+.dl.ok{background:var(--okbg);border-color:#BFE3CC;color:var(--ok)}
+.field{margin:0 16px 12px}.field label{display:block;font-size:13px;font-weight:700;color:var(--mut);margin-bottom:5px}
+.inp{height:50px;border:1.5px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:16px}
+.two{display:flex;gap:10px;margin:0 16px 12px}.two .field{margin:0;flex:1}
+.cand{display:flex;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff}
+.pct{width:56px;height:56px;border-radius:28px;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none}
+.offl{position:absolute;top:44px;left:0;right:0;height:30px;background:#FFF1CC;color:#6B4A00;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:3}
+</style></head><body>
+
+<!-- 16. GÓI DỮ LIỆU -->
+<div class="phone" id="u16">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Bản đồ địa chính ngoại tuyến<br><small>Tỉnh Ninh Bình · dữ liệu đến 30/09/2026</small></h1></div>
+  <div class="card" style="margin-top:12px">
+    <div class="row" style="justify-content:space-between"><b>Bộ nhớ dùng cho địa chính</b><span class="m">38 MB / 1,2 GB trống</span></div>
+    <div class="meter"><i style="width:9%"></i></div>
+    <div class="m" style="font-size:12.5px">Đã tải 6/129 xã, phường · 🔒 lưu bền (không bị trình duyệt tự xoá)</div>
+  </div>
+  <div style="padding:0 16px 8px"><div class="search" style="position:static;box-shadow:none;border:1.5px solid var(--line);height:46px">🔍 Tên xã/phường mới hoặc cũ…</div></div>
+  <div class="grp" style="padding-top:4px">Khu vực Nam Định cũ</div>
+  <div class="xrow"><div class="nm"><b>Phường Nam Định</b><span>gồm P. Quang Trung, Trần Hưng Đạo… (cũ) · 41.200 thửa · 6,8 MB</span></div><div class="dl ok">✓</div></div>
+  <div class="xrow"><div class="nm"><b>Xã Mỹ Lộc</b><span>gồm xã Mỹ Xá… (cũ) · 18.900 thửa · 3,1 MB</span></div><div class="dl ok">✓</div></div>
+  <div class="xrow"><div class="nm"><b>Phường Trường Thi</b><span>22.600 thửa · 3,7 MB · có bản mới 12/10</span></div><div class="dl" style="color:var(--warn);border-color:#E9C46A">⟳</div></div>
+  <div class="xrow"><div class="nm"><b>Xã Hải Hậu</b><span>35.400 thửa · 5,4 MB</span></div><div class="dl">⬇</div></div>
+  <div class="xrow"><div class="nm"><b>Xã Giao Thủy</b><span>29.100 thửa · 4,6 MB</span></div><div class="dl">⬇</div></div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">Tải theo vùng bản đồ</div><div class="btn p" style="flex:1">⬇ Tải cả khu vực</div></div></div>
+</div>
+
+<!-- 17. TRA THỬA KHÔNG TOẠ ĐỘ -->
+<div class="phone" id="u17">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Tra thửa từ sổ không toạ độ<br><small>Tra trên dữ liệu đã tải · không cần mạng</small></h1></div>
+  <div class="seg"><div class="on">Tờ + thửa</div><div>Hình dạng</div><div>Vị trí</div></div>
+  <div class="field"><label>Xã/phường ghi trên sổ (tên cũ cũng được)</label><div class="inp">Phường Quang Trung, TP Nam Định<span style="margin-left:auto;color:var(--mut)">▾</span></div>
+  <div class="m" style="font-size:12.5px;margin-top:5px">→ nay thuộc <b>Phường Nam Định</b> · KTT 105°30′ (Nam Định cũ)</div></div>
+  <div class="two"><div class="field"><label>Tờ bản đồ số</label><div class="inp">10</div></div><div class="field"><label>Thửa đất số</label><div class="inp">501</div></div></div>
+  <div class="field"><label>Diện tích trên sổ (để đối chiếu)</label><div class="inp">29,7 m²</div></div>
+  <div class="field"><label>Năm cấp sổ</label><div class="inp">2007<span style="margin-left:auto" class="m">giúp chọn đúng bản đồ cũ/mới</span></div></div>
+  <div class="card" style="background:#F2F9F5;border-color:#CFE6D8;font-size:13.5px;line-height:1.45">💡 Số tờ/thửa trên sổ cũ có thể theo bản đồ đo trước đây. Nếu không khớp, app tự gợi ý thửa có <b>diện tích và hình dạng</b> gần nhất.</div>
+  <div class="bar"><div class="btn p">🔍 Tra cứu</div></div>
+</div>
+
+<!-- 18. KẾT QUẢ TRÊN BẢN ĐỒ ĐỊA CHÍNH -->
+<div class="phone" id="u18">
+  <div class="map" style="background:#F3F1EA"><svg width="390" height="844" id="cad"></svg></div>
+  <div class="status" style="position:absolute;top:0;left:0;right:0;background:var(--g);color:#fff;z-index:4">9:41<span>✈ ▮</span></div>
+  <div class="offl">📴 Ngoại tuyến · lớp địa chính Phường Nam Định (đã tải)</div>
+  <div class="search" style="top:84px">‹ &nbsp;Tờ 10 · Thửa 501<div class="av">◧</div></div>
+  <div class="sheet" style="top:470px;bottom:0;padding-bottom:34px">
+    <div class="handle"></div>
+    <div class="row" style="justify-content:space-between"><div><div class="t">Thửa 501 · Tờ 10</div><div class="m">ODT · 29,7 m² (CSDL) · Phường Nam Định</div></div><span class="badge ok">✓ Khớp sổ</span></div>
+    <div class="row m" style="margin:10px 0;gap:14px;font-size:13.5px"><span>Diện tích hình học <b style="color:var(--ink)">29,70 m²</b></span><span>Lệch 0,00 m²</span></div>
+    <div class="m" style="font-size:12.5px;margin-bottom:10px">Toạ độ 7 mốc lấy từ dữ liệu địa chính (VN-2000, KTT 105°30′) — dùng để lập hồ sơ như sổ có bảng kê.</div>
+    <div class="row" style="gap:8px"><div class="btn p" style="flex:1.3">📄 Tạo hồ sơ thửa</div><div class="btn s" style="flex:1">Bảng toạ độ</div><div class="btn s" style="width:52px;padding:0">➦</div></div>
+  </div>
+</div>
+
+<!-- 19. TÌM THEO HÌNH DẠNG -->
+<div class="phone" id="u19">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Tìm theo hình dạng<br><small>Sổ chỉ có sơ đồ + cạnh + diện tích</small></h1></div>
+  <div class="seg"><div>Tờ + thửa</div><div class="on">Hình dạng</div><div>Vị trí</div></div>
+  <div class="card" style="font-size:14px;line-height:1.5;margin-top:4px"><b>Đầu vào từ sổ:</b> Xã Mỹ Lộc (cũ: xã Mỹ Xá) · 89,9 m² (+1,4 m² không cấp) · 8 cạnh: 2,06 · 3,85 · 17,58 · 0,26 · 4,50 · 0,38 · 19,32 · 7,81 m · giáp đường Phạm Ngũ Lão</div>
+  <div class="grp">3 thửa gần nhất trong 18.900 thửa</div>
+  <div class="cand"><div class="pct" style="background:var(--okbg);color:var(--ok)">97%</div><div style="flex:1"><b>Tờ 10.1 · Thửa 131</b><div class="m" style="font-size:13px">91,29 m² · 8 cạnh khớp ±0,02 m · giáp đường</div></div><span class="ch" style="color:#9AA8A0;font-size:20px">›</span></div>
+  <div class="cand"><div class="pct" style="background:#FFF1CC;color:#7A5600">64%</div><div style="flex:1"><b>Tờ 10.1 · Thửa 132</b><div class="m" style="font-size:13px">92,4 m² · 6/8 cạnh gần đúng</div></div><span class="ch" style="color:#9AA8A0;font-size:20px">›</span></div>
+  <div class="cand"><div class="pct" style="background:#ECEFED;color:var(--mut)">41%</div><div style="flex:1"><b>Tờ 11 · Thửa 27</b><div class="m" style="font-size:13px">90,8 m² · hình dạng khác</div></div><span class="ch" style="color:#9AA8A0;font-size:20px">›</span></div>
+  <div class="card" style="background:#FFF6E0;border-color:#F1D9A0;font-size:13px;line-height:1.45">Kết quả để tham khảo. Hãy đối chiếu sơ đồ trên sổ trước khi dùng; không thay thế trích lục/trích đo của cơ quan đất đai.</div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn s" style="flex:1">So sơ đồ</div><div class="btn p" style="flex:1.3">Chọn thửa 131</div></div></div>
+</div>
+
+<!-- KIẾN TRÚC -->
+<div id="arch" style="width:1200px;height:520px;background:#fff;position:relative;font-size:14px">
+<svg width="1200" height="520" viewBox="0 0 1200 520" style="position:absolute;inset:0">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4B5F55"/></marker></defs>
+<g font-family="Noto Sans, DejaVu Sans, sans-serif">
+<text x="20" y="28" font-size="13" font-weight="800" fill="#0F4C34">KIẾN TRÚC DỮ LIỆU ĐỊA CHÍNH NGOẠI TUYẾN</text>
+<rect x="20" y="50" width="200" height="150" rx="12" fill="#FFF6E0" stroke="#B98500" stroke-width="2"/>
+<text x="120" y="80" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">① Nguồn chính thức</text>
+<text x="120" y="104" text-anchor="middle" font-size="12" fill="#5B6B63">Sở NN&amp;MT / VP Đăng ký</text><text x="120" y="122" text-anchor="middle" font-size="12" fill="#5B6B63">đất đai Ninh Bình</text>
+<text x="120" y="146" text-anchor="middle" font-size="12" fill="#5B6B63">DGN · SHP · GDB · VBDLIS</text><text x="120" y="164" text-anchor="middle" font-size="12" fill="#5B6B63">phiếu yêu cầu + phí</text><text x="120" y="182" text-anchor="middle" font-size="12" fill="#5B6B63">(việc của bạn)</text>
+<rect x="270" y="50" width="250" height="150" rx="12" fill="#fff" stroke="#0F4C34" stroke-width="2"/>
+<text x="395" y="80" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">② Chuyển đổi trên máy tính</text>
+<text x="395" y="104" text-anchor="middle" font-size="12" fill="#5B6B63">GDAL/ogr2ogr + script Python</text><text x="395" y="122" text-anchor="middle" font-size="12" fill="#5B6B63">giữ toạ độ VN-2000 gốc + KTT</text>
+<text x="395" y="140" text-anchor="middle" font-size="12" fill="#5B6B63">bỏ tên/CCCD chủ sử dụng</text><text x="395" y="158" text-anchor="middle" font-size="12" fill="#5B6B63">kiểm diện tích hình học ↔ thuộc tính</text>
+<text x="395" y="176" text-anchor="middle" font-size="12" fill="#5B6B63">→ 1 gói / xã (FlatGeobuf + chỉ mục)</text>
+<rect x="570" y="50" width="250" height="150" rx="12" fill="#fff" stroke="#0F4C34" stroke-width="2"/>
+<text x="695" y="80" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">③ Kho riêng tư</text>
+<text x="695" y="104" text-anchor="middle" font-size="12" fill="#5B6B63">Supabase Storage (bucket riêng)</text><text x="695" y="122" text-anchor="middle" font-size="12" fill="#5B6B63">hoặc Cloudflare R2</text>
+<text x="695" y="140" text-anchor="middle" font-size="12" fill="#5B6B63">chỉ người đăng nhập (HM-06c)</text><text x="695" y="158" text-anchor="middle" font-size="12" fill="#5B6B63">link tải ký số, hết hạn</text><text x="695" y="176" text-anchor="middle" font-size="12" fill="#5B6B63">manifest.json: phiên bản, sha256</text>
+<rect x="870" y="50" width="310" height="150" rx="12" fill="#0F4C34"/>
+<text x="1025" y="80" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">④ Điện thoại (ngoại tuyến)</text>
+<text x="1025" y="104" text-anchor="middle" font-size="12" fill="#CDE8D9">tải theo xã → OPFS / IndexedDB</text><text x="1025" y="122" text-anchor="middle" font-size="12" fill="#CDE8D9">navigator.storage.persist()</text>
+<text x="1025" y="140" text-anchor="middle" font-size="12" fill="#CDE8D9">chỉ mục tờ/thửa · R-tree không gian</text><text x="1025" y="158" text-anchor="middle" font-size="12" fill="#CDE8D9">vẽ bằng Leaflet canvas (đang dùng)</text><text x="1025" y="176" text-anchor="middle" font-size="12" fill="#CDE8D9">proj4 → WGS84 khi hiển thị</text>
+<path d="M220 125H268" stroke="#4B5F55" stroke-width="2" marker-end="url(#a)"/><path d="M520 125H568" stroke="#4B5F55" stroke-width="2" marker-end="url(#a)"/><path d="M820 125H868" stroke="#4B5F55" stroke-width="2" marker-end="url(#a)"/>
+<text x="20" y="250" font-size="13" font-weight="800" fill="#0F4C34">TRA CỨU TRÊN ĐIỆN THOẠI — 3 CÁCH, KHÔNG CẦN MẠNG</text>
+<rect x="20" y="270" width="370" height="120" rx="12" fill="#fff" stroke="#0F4C34" stroke-width="2"/>
+<text x="205" y="298" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">A · Tờ + thửa + xã</text>
+<text x="205" y="322" text-anchor="middle" font-size="12" fill="#5B6B63">tên xã cũ → xã mới + KTT (bảng ánh xạ)</text><text x="205" y="340" text-anchor="middle" font-size="12" fill="#5B6B63">khoá "tờ|thửa" → thửa, &lt; 50 ms</text><text x="205" y="358" text-anchor="middle" font-size="12" fill="#5B6B63">kiểm diện tích sổ ↔ CSDL</text>
+<rect x="415" y="270" width="370" height="120" rx="12" fill="#fff" stroke="#0F4C34" stroke-width="2"/>
+<text x="600" y="298" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">B · Hình dạng (sổ không toạ độ)</text>
+<text x="600" y="322" text-anchor="middle" font-size="12" fill="#5B6B63">lọc diện tích ± sai số cho phép</text><text x="600" y="340" text-anchor="middle" font-size="12" fill="#5B6B63">so dãy cạnh (xoay vòng, đảo chiều)</text><text x="600" y="358" text-anchor="middle" font-size="12" fill="#5B6B63">+ số cạnh, giáp đường → điểm %</text>
+<rect x="810" y="270" width="370" height="120" rx="12" fill="#fff" stroke="#0F4C34" stroke-width="2"/>
+<text x="995" y="298" text-anchor="middle" font-size="15" font-weight="800" fill="#14231C">C · Vị trí</text>
+<text x="995" y="322" text-anchor="middle" font-size="12" fill="#5B6B63">đứng tại thửa: GPS → thửa chứa điểm</text><text x="995" y="340" text-anchor="middle" font-size="12" fill="#5B6B63">hoặc chạm trên bản đồ địa chính</text><text x="995" y="358" text-anchor="middle" font-size="12" fill="#5B6B63">R-tree + kiểm điểm trong đa giác</text>
+<rect x="20" y="420" width="1160" height="80" rx="12" fill="#E3F5EA" stroke="#BFE3CC" stroke-width="1.5"/>
+<text x="600" y="452" text-anchor="middle" font-size="15" font-weight="800" fill="#127A3E">→ Kết quả: toạ độ mốc VN-2000 lấy từ dữ liệu địa chính → dựng thửa, đối chiếu GCN, in hồ sơ như sổ có bảng kê</text>
+<text x="600" y="478" text-anchor="middle" font-size="12.5" fill="#2F5E43">Chỉ để tham khảo nghiệp vụ; không thay thế trích lục / trích đo chính thức của cơ quan đất đai</text>
+</g></svg></div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';const s=document.getElementById('cad');
+function el(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);s.appendChild(e);return e}
+// lưới thửa giả lập dạng địa chính đô thị
+let seed=5;const r=()=>(seed=(seed*9301+49297)%233280)/233280;
+el('path',{d:'M-10 600 L400 420',stroke:'#E7DFC9','stroke-width':'34',fill:'none'});
+el('path',{d:'M130 -10 L250 900',stroke:'#E7DFC9','stroke-width':'22',fill:'none'});
+for(let row=0;row<16;row++){for(let col=0;col<9;col++){
+  const x=-20+col*48+row*6, y=110+row*46-col*4;const w=40+r()*10,h=38+r()*8;
+  const pts=[[x,y],[x+w,y-3],[x+w+2,y+h],[x-1,y+h+3]];
+  const sel=(row===6&&col===4);
+  el('polygon',{points:pts.map(p=>p.join(',')).join(' '),fill:sel?'rgba(229,57,53,.22)':'#FBFAF5',stroke:sel?'#E53935':'#B9A87C','stroke-width':sel?3:1});
+  const t=el('text',{x:x+w/2,y:y+h/2+4,'text-anchor':'middle','font-size':'10',fill:sel?'#B3261E':'#8C7A4E','font-weight':sel?'800':'500'});t.textContent=sel?'501':String(480+row*9+col);
+}}
+const lab=el('text',{x:300,y:150,'font-size':'12','font-weight':'800',fill:'#0F4C34'});lab.textContent='TỜ 10';
+const sc=el('text',{x:16,y:455,'font-size':'11',fill:'#5B6B63'});sc.textContent='▬▬ 10 m';
+</script>
+</body></html>
