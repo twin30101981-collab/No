@@ -25,7 +25,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       for (const [act, tab] of [['import-qr', 'tab-qr'], ['import-cad', 'tab-import'], ['import-gps', 'tab-gps-offline'], ['import-rtk', 'tab-stakeout'], ['legacy-plots', 'tab-plots'], ['import-pick', 'tab-scan-ai']]) {
         await clickAct(act === 'legacy-plots' ? 'plots' : 'import', act); out.reach[act] = active(tab);
       }
-      await clickAct('import', 'import-book'); out.reach.book = !!document.getElementById('lg145-mask'); const mk = document.getElementById('lg145-mask'); if (mk) mk.remove();
+      await clickAct('import', 'import-book'); out.reach.book = !!document.getElementById('lg8d'); const mk = document.getElementById('lg8d'); if (mk) mk.remove();
       await clickAct('import', 'import-edges'); out.reach.edges = !!(window.LG170 && LG170.state && (LG170.state.open || document.querySelector('#lg170-panel,.lg170-panel'))); try { LG170.close(); } catch (e) { }
       await clickAct('profile', 'pdf'); out.reach.pdf = !!document.querySelector('.lg60-host,.lg60-root,#lg60-host'); try { LG60.close(); } catch (e) { }
       const th0 = document.documentElement.getAttribute('data-lg-theme'); await clickAct('more', 'theme'); out.reach.theme = document.documentElement.getAttribute('data-lg-theme') !== th0;
