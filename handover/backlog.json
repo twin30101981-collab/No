@@ -1481,11 +1481,11 @@
    "effort": "S",
    "model_version": "unknown",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 5,
    "phu_thuoc": [
     "HM-39"
    ],
@@ -1498,17 +1498,19 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (F-41)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (42 test; hm39_layers FAIL một lần do tải CPU, PASS khi chạy riêng); node tests/regress/hm40_appendix.js",
+    "pass": 42,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm40_appendix.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "loadImg ưu tiên ô đã lưu (Cache API landgis-tiles-v1, CORS→blob) rồi mới mạng; Esri (CORS) có ảnh; mục phụ lục lỗi → PDF (buildPdfPages) bỏ trang, màn Hồ sơ (LG60) ẩn trang bằng lg60-omit, không in lỗi kỹ thuật; thông báo đường/ngõ bỏ chi tiết lỗi. Màn \"Tải mục này\" trong bảng chi tiết thửa vẫn hiện lý do cho người dùng (không phải hồ sơ in).",
    "zip": "",
    "can_nguoi_dung": null
   },
