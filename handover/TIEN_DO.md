@@ -32,3 +32,5 @@
 - 15/10 · P04 · HM-08e ĐẠT V3: Hồ sơ thửa + màn Thêm dạng danh sách + Chế độ chuyên gia (mặc định tắt).
 - 15/10 · P04 · HM-06e ĐẠT V3: bỏ nhập Excel, chỉ giữ xuất.
 - 15/10 · P04 · HM-39 ĐẠT V3: lớp nền — ngoại tuyến không đổi lớp, chặn Google đổi 1 lần sang Esri, ranh giới tắt mặc định (−42% ô ảnh).
+- 15/10 · P04 · HM-33 phần mã xong (CHỜ BẠN): cơ chế tra xã mới↔cũ↔KTT; cần danh sách 129 xã chính thức.
+- 15/10 · P04 đóng: HM-08e, HM-06e, HM-39 đạt V3; HM-33 chờ dữ liệu. Phiên P05 tiếp tục từ HM-27a.
