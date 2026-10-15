@@ -22796,12 +22796,39 @@ a.lg66-src:hover{ background:rgba(0,0,0,.04); }
      v69 — XOÁ CÁC LỚP CHỮ/LOGO MỜ Ở ĐÁY BẢN ĐỒ ĐANG CHE NÚT CHỨC NĂNG
      (badge nguồn ảnh #lg-source-status, dòng ghi công Leaflet, watermark mờ)
      ========================================================================== -->
+<style id="lg9b-attr">
+/* HM-09b — GHI NGUỒN BẢN ĐỒ: góc dưới trái, chữ 10 px; thu gọn thành nhãn “ⓘ Nguồn”, bấm để mở rộng (đúng tên nguồn theo lớp nền đang dùng) */
+html body.lg62 .leaflet-control-attribution { display:block !important; font-size:0 !important; line-height:0; background:rgba(255,255,255,.82); border-radius:8px; padding:4px 8px; margin:0 0 6px 8px !important; max-width:min(70vw, 360px); cursor:pointer; color:#33413a; }
+html body.lg62 .leaflet-control-attribution::before { content:"ⓘ Nguồn"; font-size:10px; line-height:14px; font-weight:700; }
+html body.lg62 .leaflet-control-attribution.lg9b-open { font-size:10px !important; line-height:14px; }
+html body.lg62 .leaflet-control-attribution.lg9b-open::before { content:"ⓘ "; }
+html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
+</style>
+<script id="lg9b-attr-js">
+(function () {
+  'use strict';
+  /* Tên nguồn mặc định cho lớp chưa khai báo attribution; đặt control ở góc dưới trái (không đè nút tròn bên phải) */
+  var DEFAULTS = { ggl: 'Dữ liệu bản đồ © Google', esri: 'Nguồn ảnh: Esri, Maxar, Earthstar Geographics', osm: '© OpenStreetMap contributors © CARTO' };
+  function setup() {
+    var map = window.map, defs = window.LG_LAYER_DEFS; if (!map || !defs || !map.attributionControl) return false;
+    try { map.attributionControl.setPosition('bottomleft'); map.attributionControl.setPrefix(false); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h9b0'); }
+    Object.keys(defs).forEach(function (k) {
+      var l = defs[k].layer; if (!l || !l.options || l.options.attribution) return;
+      var t = /^ggl/.test(k) ? DEFAULTS.ggl : /^esri/.test(k) ? DEFAULTS.esri : /^osm/.test(k) ? DEFAULTS.osm : '';
+      if (!t) return; l.options.attribution = t;
+      if (map.hasLayer(l)) map.attributionControl.addAttribution(t);
+    });
+    return true;
+  }
+  var n = 0, iv = setInterval(function () { if (setup() || ++n > 40) clearInterval(iv); }, 500);
+  document.addEventListener('click', function (e) { var c = e.target.closest && e.target.closest('.leaflet-control-attribution'); if (c && !e.target.closest('a')) c.classList.toggle('lg9b-open'); });
+})();
+</script>
 <style id="lg69-clean-bottom">
   /* Badge "z… · Google Hybrid (vệ tinh…)" nằm chồng lên hàng nút dưới cùng */
   #lg-source-status { display: none !important; }
   /* Dòng ghi công Leaflet / nguồn ảnh mờ ở góc phải dưới */
-  .leaflet-control-attribution,
-  .leaflet-bottom.leaflet-right .leaflet-control-attribution { display: none !important; }
+  /* HM-09b: ghi nguồn bản đồ được HIỆN LẠI (điều khoản nhà cung cấp) — gọn 10 px, bấm để mở rộng; xem khối lg9b-attr */
   /* Mọi lớp watermark mờ khác dán ở đáy bản đồ */
   #map .lg-watermark, #map .lg-brand-watermark,
   .lg-map-watermark, .lg60-map-watermark { display: none !important; }
@@ -22813,7 +22840,7 @@ a.lg66-src:hover{ background:rgba(0,0,0,.04); }
     try {
       var ids = ['lg-source-status'];
       ids.forEach(function (id) { var e = document.getElementById(id); if (e) e.style.display = 'none'; });
-      document.querySelectorAll('.leaflet-control-attribution,.lg-map-watermark,.lg-watermark').forEach(function (e) {
+      document.querySelectorAll('.lg-map-watermark,.lg-watermark').forEach(function (e) {
         e.style.display = 'none';
       });
     } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q242'); }
