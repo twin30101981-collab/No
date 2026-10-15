@@ -7,3 +7,4 @@
 - 15/10 · P02 · HM-03 ĐẠT V3: một công thức sai số diện tích cho mọi luồng; Mẫu B đạt sau khi trừ 1,44 m² không cấp GCN.
 - 15/10 · P02 · HM-41 ĐẠT V3: quét không còn tự ép diện tích/dịch mốc; bình sai chỉ khi người dùng chọn.
 - 15/10 · P02 · HM-45 ĐẠT V3: hồ sơ kỹ thuật không còn mã thửa ở ô tên chủ, toạ độ đầy đủ, KTT 105°30′, một công thức sai số, bỏ nhãn phiên bản.
+- 15/10 · P02 · HM-05 ĐẠT V3: gỡ dữ liệu sổ đỏ thật nhúng trong app, dọn nhật ký cũ một lần, nhật ký mới che CCCD/họ tên.

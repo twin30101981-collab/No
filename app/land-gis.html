@@ -100,7 +100,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
 (function () {
   'use strict';
   if (window.__lgStore119) return;
-  var SCHEMA = 119;
+  var SCHEMA = 120;
   var VKEY = 'landgis_schema_version';
   var ls;
   try { ls = window.localStorage; if (!ls) return; } catch (e) { return; }
@@ -187,8 +187,29 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   var stored = null;
   try { stored = parseInt(raw.get(VKEY) || '', 10); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q7'); }
   var migrated = [];
+  /* HM-05 — dọn một lần dữ liệu cũ không còn dùng/không an toàn (nhật ký có thể chứa họ tên,
+     CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
+  var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
+    'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version'];
+  var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
+  function cleanupLegacy() {
+    var removed = [], now = Date.now(), MONTH = 30 * 86400000;
+    STALE_KEYS.forEach(function (k) { try { if (raw.get(k) != null) { raw.del(k); removed.push(k); } } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q9a'); } });
+    try {
+      for (var i = ls.length - 1; i >= 0; i--) {
+        var key = ls.key(i);
+        if (!key || KEEP_KEYS.indexOf(key) >= 0) continue;
+        var m = /^land_gis_v18_cache(?:__|_)corrupt_(\d+)$/.exec(key);
+        if (m && now - parseInt(m[1], 10) > MONTH) { raw.del(key); removed.push(key); }
+      }
+    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q9b'); }
+    return removed;
+  }
+  window.lgLegacyCleanupInfo = { keep: KEEP_KEYS.slice(), stale: STALE_KEYS.slice(), removed: [] };
   if (!stored || isNaN(stored)) {
-    /* Lần đầu có đánh số: đóng dấu, KHÔNG xoá gì (dữ liệu cũ vẫn dùng được). */
+    /* Lần đầu có đánh số: đóng dấu; dọn nhật ký cũ (không động tới dữ liệu người dùng). */
+    window.lgLegacyCleanupInfo.removed = cleanupLegacy();
     try { raw.set(VKEY, String(SCHEMA)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q8'); }
     note('Danh dau lan dau luoc do v' + SCHEMA);
   } else if (stored > SCHEMA) {
@@ -196,6 +217,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     note('CANH BAO: du lieu thuoc luoc do v' + stored + ' > ban dang chay v' + SCHEMA + ' — giu nguyen, khong ghi de');
   } else if (stored < SCHEMA) {
     /* Di trú tăng dần, mỗi bước độc lập và bọc lỗi riêng. */
+    if (stored < 120) { window.lgLegacyCleanupInfo.removed = cleanupLegacy(); migrated.push('don ' + window.lgLegacyCleanupInfo.removed.length + ' khoa cu'); }
     /* HM-00: bước di trú <119 cũ xoá 'land_gis_v18_cache' (nhầm là bộ đệm ô
        ảnh) nếu thiếu chuỗi "v" — tức xoá kho thửa của người dùng. Đã gỡ. */
     try { raw.set(VKEY, String(SCHEMA)); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q10'); }
@@ -227,6 +249,21 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   var LOG_MAX = 400;              // xoay vòng: chỉ giữ 400 bản ghi gần nhất
   var LOG_MAX_CHARS = 180000;     // ~180KB, an toàn với giới hạn 5MB localStorage
 
+  /* HM-05 — nhật ký KHÔNG được chứa CCCD/CMND (9 hoặc 12 chữ số) hay họ tên chủ sử dụng. */
+  window.lgScrub = function (t) {
+    var x = String(t == null ? '' : t);
+    x = x.replace(/(?<![\d.,])(?:\d{12}|\d{9})(?!\d|[.,]\d)/g, '[số đã ẩn]');
+    try {
+      (window.plots || []).forEach(function (p) {
+        var m = (p && p.meta) || {};
+        [m.chu_su_dung, m.dong_su_dung, m.vo_chong, m.nguoi_dai_dien].forEach(function (nm) {
+          nm = nm && String(nm).trim();
+          if (nm && nm.length >= 4) x = x.split(nm).join('[tên đã ẩn]');
+        });
+      });
+    } catch (e) { /* bỏ qua */ }
+    return x;
+  };
   var V = window.LGV42 = window.LGV42 || {};
   V.version = '42';
   var LG_VERSION = window.LG_VERSION = 'v141';   // v106: NHÃN PHIÊN BẢN DUY NHẤT — mọi nơi hiển thị đều tham chiếu hằng số này
@@ -271,8 +308,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   V.record = function (level, module, message, extra) {
     var row = {
       at: new Date().toISOString(), level: level || 'info',
-      module: module || 'app', msg: String(message == null ? '' : message).slice(0, 500),
-      action: V.lastAction, extra: extra ? String(extra).slice(0, 400) : ''
+      module: module || 'app', msg: window.lgScrub(String(message == null ? '' : message).slice(0, 500)),
+      action: V.lastAction, extra: extra ? window.lgScrub(String(extra).slice(0, 400)) : ''
     };
     V.log.push(row);
     persistLog();
@@ -518,8 +555,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         at: new Date().toISOString(),
         level: level || 'info',
         module: module || 'LandGIS',
-        msg: String(msg == null ? '' : msg).slice(0, 500),
-        extra: extra ? String(extra).slice(0, 400) : ''
+        msg: window.lgScrub ? window.lgScrub(String(msg == null ? '' : msg).slice(0, 500)) : String(msg == null ? '' : msg).slice(0, 500),
+        extra: extra ? (window.lgScrub ? window.lgScrub(String(extra).slice(0, 400)) : String(extra).slice(0, 400)) : ''
       };
       LOGS.push(row);
       if (LOGS.length > LOG_MAX) LOGS = LOGS.slice(-LOG_MAX);
@@ -2956,19 +2993,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
 
         <hr class="sep" />
 
-        <!-- v150 — trước đây đây là panel nổi position:fixed đè lên bản đồ (kiểu toast),
-             nay gộp vào đúng tab Quản Lý Thửa vì bản chất đây là một danh sách thửa. -->
-        <section class="block" id="lg148-section">
-          <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" id="lg148-h">
-            <h3 style="margin:0">📋 Dữ liệu kiểm định — Hồ sơ đã đối soát sổ gốc (10)</h3>
-            <span id="lg148-arrow" style="font-size:var(--lg-fs-num);color:#c62828">▸</span>
-          </div>
-          <div class="small muted" style="margin:4px 0 8px">Bộ dữ liệu mẫu dùng để kiểm định độ chính xác đo vẽ (không phải hồ sơ khách hàng). Bấm một dòng để vẽ thửa lên bản đồ.</div>
-          <div id="lg148-b" style="display:none">
-            <div id="lg148-list" style="overflow:auto;max-height:50vh;border:1px solid #eee;border-radius:6px"></div>
-            <button class="btn sm secondary" id="lg148-all" style="width:100%;margin-top:6px">Vẽ tất cả lên bản đồ</button>
-          </div>
-        </section>
       </div>
 
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
@@ -10458,6 +10482,8 @@ function lgAuditAdd(entry){
     area: null,
     note: ''
   }, entry || {});
+  rec.note = window.lgScrub ? window.lgScrub(rec.note) : rec.note;   // HM-05: không ghi CCCD/họ tên
+  rec.plotId = window.lgScrub ? window.lgScrub(rec.plotId) : rec.plotId;
   list.push(rec);
   lgAuditSave(list);
   if (typeof lgAuditRender === 'function') lgAuditRender();
@@ -36338,94 +36364,7 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
 })();
 </script>
 
-<!-- ============ v148 — BỘ HỒ SƠ ĐÃ ĐỐI SOÁT VỚI SỔ GỐC (10 sổ đỏ Nam Định) ============ -->
-<script>
-(function(){
-  window.LG_AUDIT = [];
-  var LON0 = 105.5;
-  function q(id){ return document.getElementById(id); }
-  function ready(fn){ if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  function draw(d){
-    if (typeof drawPlot !== 'function') { alert('Bản đồ chưa sẵn sàng'); return; }
-    try {
-      var meta = { so_thua: d.thua, to_ban_do: d.to, dia_chi: d.addr, tinh_thanh: 'Nam Định',
-                   dien_tich: d.dt_so, ghi_chu: d.note, nguon: 'Đối soát sổ gốc v148' };
-      // v185b: escapeHtml() cho nhãn thửa — id này sau cùng có thể được gán làm nhãn/label
-      // trên bản đồ; bộ dữ liệu đối soát ở khối này hiện đang hard-code nên chưa có rủi ro
-      // thực tế, nhưng khuôn mẫu "nối chuỗi thẳng vào nhãn" rất dễ bị sao chép sang chỗ nhận
-      // dữ liệu OCR/nhập tay thật (đã thấy đúng rủi ro này ở đợt rà soát v150) — sửa trước khi
-      // bị tái dùng, đồng bộ với escapeHtml(d.owner)/escapeHtml(d.thua) đã dùng vài dòng dưới.
-      drawPlot('Thửa ' + escapeHtml(d.thua) + ' — ' + escapeHtml(d.owner), d.pts.map(function(p){ return { x: p[0], y: p[1] }; }), LON0, meta);
-    } catch (e) { console.error(e); alert('Không vẽ được: ' + e.message); }
-  }
-  function drawAll(){ window.LG_AUDIT.filter(function(d){ return d.pts.length; }).forEach(draw); }
-
-  // v150 — gốc rễ: panel này trước đây là một khối position:fixed tự dựng, độc lập
-  // với mọi tab của app — về mặt hình ảnh nó hành xử y hệt một toast/snackbar (góc
-  // dưới phải, tự tính lại vị trí để né thanh dock, đè lên bản đồ khi mở). Đây là
-  // một DANH SÁCH THỬA nên bản chất thuộc về tab "Quản Lý Thửa" (#tab-plots), không
-  // phải một thông báo thoáng qua. Sửa triệt để: bỏ hẳn box nổi, render trực tiếp
-  // vào section #lg148-section đã có sẵn trong tab đó — cuộn theo trang bình thường,
-  // không bao giờ che bản đồ hay nội dung khác.
-  ready(function(){
-    var list = q('lg148-list');
-    if (!list) return; // section chưa có trong DOM (bản build khác) — không chèn gì cả
-
-    var rows = '<table style="width:100%;border-collapse:collapse;font-size:var(--lg-fs-xs)">'
-      + window.LG_AUDIT.map(function(d, i){
-          var ok = d.pts.length ? '✔' : '—';
-          return '<tr data-i="' + i + '" style="cursor:pointer;border-top:1px solid #eee" class="lg148-row">'
-            + '<td style="padding:6px 8px;color:' + (d.pts.length ? '#2e7d32' : '#999') + '">' + ok + '</td>'
-            + '<td style="padding:6px 8px"><b>' + escapeHtml(d.id) + '</b> · thửa ' + escapeHtml(d.thua) + '</td>'
-            + '<td style="padding:6px 8px;text-align:right">' + escapeHtml(d.dt_so) + ' m²</td>'
-            + '<td style="padding:6px 8px;color:#666">' + escapeHtml(d.owner) + '</td>'
-            + '</tr>';
-        }).join('')
-      + '</table>';
-    list.innerHTML = rows;
-    list.querySelectorAll('tr[data-i]').forEach(function(tr){
-      tr.onclick = function(){ draw(window.LG_AUDIT[+tr.dataset.i]); };
-    });
-
-    var h = q('lg148-h'), b = q('lg148-b'), arrow = q('lg148-arrow');
-    if (h) h.onclick = function(){
-      var opening = b.style.display === 'none';
-      b.style.display = opening ? 'block' : 'none';
-      if (arrow) arrow.textContent = opening ? '▾' : '▸';
-    };
-    var allBtn = q('lg148-all');
-    if (allBtn) allBtn.onclick = drawAll;
-
-    // Lối vào nhanh trong thẻ "Thêm > Công cụ": chuyển sang tab Quản Lý Thửa rồi mở
-    // đúng mục này, thay vì cuộn tới một panel nổi như trước.
-    (function () {
-      function register() {
-        var actions = document.querySelector('#lg146-tools .lg103-actions');
-        if (!actions) return false;
-        if (actions.querySelector('[data-lg148]')) return true;
-        var btn = document.createElement('button');
-        btn.className = 'lg103-abtn';
-        btn.type = 'button';
-        btn.dataset.lg148 = '1';
-        btn.textContent = '📋 Hồ sơ đã đối soát sổ gốc (10)';
-        btn.onclick = function () {
-          var tabBtn = document.querySelector('.tab-btn[onclick*="tab-plots"]');
-          if (typeof window.switchTab === 'function') window.switchTab('tab-plots', tabBtn || null);
-          var section = q('lg148-section');
-          var body = q('lg148-b');
-          var arw = q('lg148-arrow');
-          if (body && body.style.display === 'none') { body.style.display = 'block'; if (arw) arw.textContent = '▾'; }
-          if (section) setTimeout(function () { section.scrollIntoView({ block: 'start' }); }, 160);
-        };
-        actions.appendChild(btn);
-        return true;
-      }
-      var tries = 0;
-      var t = setInterval(function () { if (register() || ++tries > 40) clearInterval(t); }, 500);
-    })();
-  });
-})();
-</script>
+<!-- HM-05: đã gỡ khối v148 (window.LG_AUDIT — bộ 10 sổ đỏ thật Nam Định, chứa họ tên/số liệu thật) và mã chỉ dùng cho nó. -->
 <script id="lg170-locate-no-coords">
 /* ============================================================
    LG170 — ĐỊNH VỊ THỬA KHI SỔ ĐỎ KHÔNG CÓ TOẠ ĐỘ
