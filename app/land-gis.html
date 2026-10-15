@@ -46075,6 +46075,45 @@ body.lg175-stack-open #lg124-stack{
   else scheduleKeyCache();
 })();
 </script>
+<script>
+/* HM-33 — BẢNG ĐƠN VỊ HÀNH CHÍNH: xã/phường MỚI ↔ xã/huyện CŨ ↔ KTT (theo địa bàn cũ).
+   Dữ liệu nạp từ admin-map.json (cạnh app) hoặc window.LG_ADMIN_MAP; mỗi dòng:
+   { "moi": "Phường Hoa Lư", "cu": [ { "ten": "Xã A", "huyen": "Huyện B", "tinh": "NINH_BINH" } ] }  (tinh = khoá trong VN2000_PROVINCES).
+   Không tự bịa dữ liệu: chưa có dòng nào thì tra cứu trả rỗng và luồng KTT hiện có (MERGED_PROVINCE_GROUPS) vẫn chạy như cũ. */
+(function () {
+  'use strict';
+  var rows = [];
+  function norm(t) { var x = String(t == null ? '' : t).toLowerCase(); try { x = x.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h33d'); } return x.replace(/đ/g, 'd').replace(/\s+/g, ' ').trim(); }
+  function strip(t) { return norm(t).replace(/^(xa|phuong|thi tran|huyen|quan|thi xa|thanh pho|tp\.?)\s+/, '').trim(); }
+  function kttList(r) {
+    var out = [];
+    (r.cu || []).forEach(function (c) {
+      var p = (typeof VN2000_PROVINCES !== 'undefined') && VN2000_PROVINCES[c.tinh];
+      if (p && out.indexOf(p.lon0) < 0) out.push(p.lon0);
+    });
+    return out;
+  }
+  function load(list) {
+    rows = (Array.isArray(list) ? list : []).filter(function (r) { return r && r.moi; }).map(function (r) {
+      var cu = Array.isArray(r.cu) ? r.cu : [];
+      return { moi: r.moi, loai: r.loai || '', cu: cu, ktt: kttList({ cu: cu }), _k: [strip(r.moi)].concat(cu.map(function (c) { return strip(c.ten); })), _kn: [norm(r.moi)].concat(cu.map(function (c) { return norm(c.ten); })) };
+    });
+    return rows.length;
+  }
+  /* Tra theo tên xã/phường mới HOẶC cũ (bỏ dấu, bỏ tiền tố Xã/Phường). Trả mảng dòng khớp; mỗi dòng có ktt[] (>1 = địa bàn cũ nhiều KTT → phải hỏi/đối chiếu). */
+  function lookup(q) {
+    var a = strip(q), n = norm(q); if (!a) return [];
+    return rows.filter(function (r) { return r._k.indexOf(a) >= 0 || r._kn.indexOf(n) >= 0; })
+      .map(function (r) { return { moi: r.moi, loai: r.loai, cu: r.cu, ktt: r.ktt, nhieuKtt: r.ktt.length > 1 }; });
+  }
+  window.LGAdmin = { load: load, lookup: lookup, size: function () { return rows.length; } };
+  try { if (Array.isArray(window.LG_ADMIN_MAP)) load(window.LG_ADMIN_MAP); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h33a'); }
+  try {
+    if (/^https?:/.test(location.protocol) && typeof fetch === 'function') fetch('admin-map.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && Array.isArray(j.rows)) load(j.rows); }).catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h33b'); });
+  } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h33c'); }
+})();
+</script>
 </body>
 
 </html>

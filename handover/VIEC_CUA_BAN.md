@@ -10,3 +10,5 @@
 7. **HM-06c — bật đăng nhập & phân quyền CSDL (khi bạn muốn dùng CSDL):** (a) Supabase → Authentication → Providers → Email: bật; sửa mẫu email để có mã `{{ .Token }}` (OTP 6 số). (b) SQL Editor: dán & chạy `handover/supabase/06c_auth_rls.sql` (đọc ghi chú đầu tệp; gán chủ cho dữ liệu cũ bằng UUID của bạn). (c) Mở app → 🗂 Quản lý thửa → đăng nhập email → nhập mã. (d) Chạy lại 3 lệnh trong `kiem_tra_RLS.md`: cả 3 phải bị từ chối. Cho tới khi làm xong, đừng nhập dữ liệu thật vào CSDL.
 
 8. **SheetJS — ĐÃ CHỐT (15/10):** bỏ nhập Excel, chỉ giữ xuất → bạn KHÔNG cần cung cấp file SheetJS (mục 6 huỷ). Phiên tự động làm ở HM-06e.
+
+9. **HM-33 — danh sách 129 xã/phường mới:** gửi file CSV (cột `xa_moi, loai, xa_cu, huyen_cu, tinh_cu_khoa`; mỗi xã mới có thể nhiều dòng; `tinh_cu_khoa` là NINH_BINH / HA_NAM / NAM_DINH…) lấy từ văn bản chính thức. Phiên sau chạy `python3 handover/tools/build_admin_map.py ds.csv > app/admin-map.json` và nối vào nhận diện KTT. Không tự điền từ trí nhớ để tránh sai địa bàn.
