@@ -25763,6 +25763,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lgpk-sub,.lgpk-msg{ font-size:var(--lg103-fs-small,12px); margin:6px 0 10px; } .lgpk-row{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; min-height:52px; padding:8px 4px; border-bottom:1px solid var(--lg103-line); }
 .lgpk-row b{ flex:1 1 60%; } .lgpk-row small{ flex:1 1 100%; opacity:.75; order:3; } .lgpk-row button{ min-height:44px; min-width:64px; border-radius:8px; border:1px solid var(--lg103-line); background:transparent; color:inherit; }
 .lg35 fieldset{ border:1px solid var(--lg103-line); border-radius:10px; margin:8px 0; padding:8px 10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; } .lg35 legend{ font-weight:700; padding:0 4px; } .lg35 label{ display:flex; flex-direction:column; font-size:var(--lg103-fs-small,12px); } .lg35 input,.lg35 select{ min-height:44px; font-size:16px; } .lg35 small{ grid-column:1/-1; opacity:.7; }
+.lg36-tag span{ background:rgba(255,255,255,.92); color:#8a1f1f; border:1px solid #8a1f1f; border-radius:6px; padding:1px 5px; font:600 11px/1.3 system-ui,sans-serif; white-space:nowrap; transform:translate(-50%,-50%); display:inline-block; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26221,6 +26222,27 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<button class="lg103-abtn" data-lg108-act="vision">🤖 Đọc GCN bằng AI</button>' +
       '</div><div class="lg103-note small">Luồng 3 bước: Đọc → Kiểm tra bảng kê → Kết quả.</div>';
   }
+  /* HM-36 — tab Giáp ranh: tính theo hình học, so với nhãn sổ; kết quả điền bất đồng bộ vào #lg36-box */
+  var giapRes = null;
+  function tabGiap(p) {
+    var h = '<div id="lg36-box"><div class="lg103-empty">Đang tính giáp ranh theo hình học…</div></div>';
+    setTimeout(function () {
+      if (!window.LG36) return;
+      Promise.resolve(window.LGCadastre && LGCadastre.warmPacks ? LGCadastre.warmPacks().catch(function () { return []; }) : []).then(function () { return LG36.packCandidates(p); }).catch(function () { return []; }).then(function (extra) {
+        giapRes = LG36.compute(p, extra); var box = document.getElementById('lg36-box'); if (!box) return;
+        var on = localStorage.getItem('landgis_gr_labels') === '1';
+        var t = '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="giap-labels" aria-pressed="' + (on ? 'true' : 'false') + '">' + (on ? '🏷 Ẩn nhãn trên bản đồ' : '🏷 Hiện nhãn trên bản đồ') + '</button></div>';
+        ['bac', 'dong', 'nam', 'tay'].forEach(function (d) {
+          var list = giapRes.huong[d], sd = ((p.meta && p.meta.giap_ranh_ds) || []).filter(function (g) { return g.huong === d; })[0];
+          t += '<div class="lg8e-kv"><span>' + LG36.hn(d) + '</span><span>' + (list.length ? list.map(function (x) { return 'Thửa ' + escA4(x.so_thua) + (x.to ? ' (tờ ' + escA4(x.to) + ')' : '') + ' · ' + x.shared.toFixed(1) + ' m'; }).join('<br>') : 'không có thửa sát cạnh') + (sd ? '<br><small>Sổ: ' + escA4(LG35.toText(sd) || 'chưa rõ') + '</small>' : '') + '</span></div>';
+        });
+        giapRes.canh_bao.forEach(function (w) { t += '<div class="warn">⚠ ' + escA4(w.text) + '</div>'; });
+        t += '<p class="lg8e-note">Chỉ để tham khảo: tính từ các thửa đã lưu và gói địa chính đã tải; cạnh không có thửa có thể là đường, ngõ, ao… hoặc thửa chưa có dữ liệu.</p>';
+        box.innerHTML = t; if (on) LG36.showLabels(p, giapRes, true);
+      });
+    }, 30);
+    return h;
+  }
   function tabProfile() {
     var p = currentPlot();
     if (!p) return '<div class="lg103-empty">Chưa có thửa đang chọn. Chọn ở ▤ Thửa hoặc ＋ Nhập sổ.</div>';
@@ -26228,13 +26250,14 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var hv = (isFinite(hg) && hg > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(harea, hg, parseFloat(hm.dien_tich_khong_cap_gcn) || 0) : null;
     var head = '<div class="lg8e-phead"><b>Thửa ' + escA4(hm.so_thua || p.id) + (hm.to_ban_do ? ' · Tờ ' + escA4(hm.to_ban_do) : '') + '</b><span>' +
       [hm.loai_dat || hm.muc_dich_su_dung, (hg > 0 ? hg : harea).toFixed(1).replace('.', ',') + ' m²', hv ? (hv.ok ? '✓ Đạt' : '⚠ Không đạt') : ''].filter(Boolean).map(escA4).join(' · ') + '</span></div>';
-    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['photos', 'Ảnh']];
+    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['photos', 'Ảnh']];
     var bar = '<div class="lg103-actions">' + tabs.map(function (t) {
       return '<button class="lg103-abtn" data-lg103-act="prof-' + t[0] + '"' + (profTab === t[0] ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t[1] + '</button>';
     }).join('') + '</div>';
     var body;
     if (profTab === 'coords') body = tabCoords();
     else if (profTab === 'edges') body = tabEdges();
+    else if (profTab === 'giap') body = tabGiap(p);
     else if (profTab === 'photos') body = '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="photos">🛰 Ảnh thực tế &amp; 8 hướng</button><button class="lg103-abtn" data-lg103-act="imagery">🗺 Ảnh nền &amp; độ nét</button></div>';
     else {
       var pts = p.points || [], area = (typeof calcArea === 'function') ? calcArea(pts) : LG.cad.area(pts), m = p.meta || {};
@@ -26347,7 +26370,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       }
       case 'import-book': closeSheet(); openWizard(); return true;
       case 'import-edges': closeSheet(); if (window.LG170 && LG170.open) LG170.open(); return true;
-      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos':
+      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos': case 'prof-giap':
         profTab = act.slice(5); body.innerHTML = tabProfile(); return true;
       case 'pdf': closeSheet(); { var pp = currentPlot(); if (window.LG60 && LG60.open && pp) LG60.open(pp); else if (window.LG146 && LG146.exportHSKT) LG146.exportHSKT(); } return true;
       case 'exports-more': { var ex = document.getElementById('lg103-exports-more'); if (ex) ex.style.display = ex.style.display === 'none' ? '' : 'none'; return true; }
@@ -26358,6 +26381,11 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
+      case 'giap-labels': {
+        var gp2 = currentPlot(), on2 = localStorage.getItem('landgis_gr_labels') === '1';
+        if (on2) { localStorage.removeItem('landgis_gr_labels'); if (window.LG36) LG36.showLabels(gp2, null, false); } else { localStorage.setItem('landgis_gr_labels', '1'); if (window.LG36 && giapRes) LG36.showLabels(gp2, giapRes, true); }
+        body.innerHTML = tabProfile(); return true;
+      }
       case 'giap-ranh': {
         var gp = currentPlot(); if (!gp || !window.LG35) return true;
         var ge = LG35.fromPlot(gp), LOAI = [['thua', 'Thửa đất'], ['duong', 'Đường'], ['ngo', 'Ngõ/ngách'], ['khac', 'Khác'], ['chua_ro', 'Chưa rõ']];
@@ -42378,7 +42406,11 @@ body.lg175-stack-open #lg124-stack{
     navigator.geolocation.getCurrentPosition(function (p) { locate(p.coords.latitude, p.coords.longitude, p.coords.accuracy).then(done); }, function (e) { done({ ok: false, msg: 'Không lấy được vị trí: ' + (e && e.message || 'bị từ chối') }); }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 });
   }
   document.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('[data-lgpk-act="goto"]'); if (!t) return; gotoParcel(t.getAttribute('data-pack'), +t.getAttribute('data-to'), +t.getAttribute('data-thua')).then(function () { var shx = document.getElementById('lg103-sheet'); if (shx) shx.classList.remove('on'); }, function (er) { window.lgQuiet && window.lgQuiet(er, 'h34g'); }); });
-  window.LGCadastre = { locate: locate, locateHTML: locateHTML, locateGPS: locateGPS, goto: gotoParcel, lookup: lookup, findByShape: findByShape, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
+  /* HM-36 — danh sách gói đã tải có kinh tuyến trục + tìm thửa trong khung (E,N) của gói; trả {to,thua,ring[[E,N]]} */
+  function packList() { return LGPacks.installed().then(function (a) { return a.filter(function (x) { return x.ktt > 0; }); }); }
+  function searchPack(it, minE, minN, maxE, maxN) { var pk = cache[it.id + '|' + it.sha256]; return pk ? pk.search(minE, minN, maxE, maxN, 500) : []; }
+  function warmPacks() { return packList().then(function (list) { return Promise.all(list.map(function (it) { var key = it.id + '|' + it.sha256; return cache[key] ? 1 : LGPacks.blob(it.id).then(function (bl) { return bl.arrayBuffer(); }).then(openBuffer).then(function (pk) { cache[key] = pk; }); })); }); }
+  window.LGCadastre = { packList: packList, searchPack: searchPack, warmPacks: warmPacks, locate: locate, locateHTML: locateHTML, locateGPS: locateGPS, goto: gotoParcel, lookup: lookup, findByShape: findByShape, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
 })();
 </script>
 <script>
@@ -42449,6 +42481,99 @@ body.lg175-stack-open #lg124-stack{
   }
   function confirmed(plot) { var m = (plot && plot.meta) || {}; return Array.isArray(m.giap_ranh_ds) && m.giap_ranh_ds.length === 4 && m.giap_ranh_ds.every(function (e) { return e.xac_nhan; }); }
   window.LG35 = { DIRS: DIRS, parseLabel: parseLabel, fromAI: fromAI, fromPlot: fromPlot, toText: toText, save: save, confirmed: confirmed };
+})();
+</script>
+<script>
+/* HM-36 — GIÁP RANH THEO TỪNG CẠNH (tính từ hình học): với mỗi cạnh của thửa, tìm các thửa sát cạnh trong (a) các thửa đã lưu trong app và
+   (b) gói dữ liệu địa chính đã tải (cùng kinh tuyến trục); gom theo 4 hướng (hướng pháp tuyến ra ngoài); so với nhãn sổ đã xác nhận (HM-35)
+   và cảnh báo khi mâu thuẫn. Cạnh không có thửa nào sát = "không có thửa" (có thể là đường/ngõ/ao — KHÔNG tự suy ra). Chỉ để tham khảo. */
+(function () {
+  'use strict';
+  var TOL = 0.5, MIN_SHARE = 1.0, MIN_FRAC = 0.35, STEP = 0.25;   // m
+  function area2(pts) { var s = 0; for (var i = 0; i < pts.length; i++) { var a = pts[i], b = pts[(i + 1) % pts.length]; s += a.y * b.x - b.y * a.x; } return s; }   // (E=y, N=x)
+  function dseg(px, py, ax, ay, bx, by) { var dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy, t = L ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L)) : 0, qx = ax + t * dx - px, qy = ay + t * dy - py; return Math.sqrt(qx * qx + qy * qy); }
+  function dpoly(x, y, ring) { var m = 1e18; for (var i = 0; i < ring.length; i++) { var a = ring[i], b = ring[(i + 1) % ring.length], d = dseg(x, y, a.x, a.y, b.x, b.y); if (d < m) m = d; } return m; }
+  function inside(x, y, ring) { var c = false; for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) { var a = ring[i], b = ring[j]; if ((a.y > y) !== (b.y > y) && x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x) c = !c; } return c; }
+  function dirOf(az) { az = ((az % 360) + 360) % 360; return (az >= 315 || az < 45) ? 'bac' : az < 135 ? 'dong' : az < 225 ? 'nam' : 'tay'; }
+  /* ring: [{x:Bắc,y:Đông}] (đã bỏ điểm lặp cuối) */
+  function edgesOf(pts) {
+    var ccw = area2(pts) > 0, out = [];
+    for (var i = 0; i < pts.length; i++) {
+      var a = pts[i], b = pts[(i + 1) % pts.length], eE = b.y - a.y, eN = b.x - a.x, L = Math.hypot(eE, eN), nE, nN;
+      if (ccw) { nE = eN; nN = -eE; } else { nE = -eN; nN = eE; }
+      out.push({ i: i, a: a, b: b, len: L, az: Math.atan2(nE, nN) * 180 / Math.PI, huong: dirOf(Math.atan2(nE, nN) * 180 / Math.PI) });
+    }
+    return out;
+  }
+  /* độ dài đoạn của cạnh nằm trong dung sai của đa giác ứng viên, cộng điều kiện không nằm bên trong ứng viên (chồng lấn) */
+  function shared(e, ring) {
+    if (e.len < 1e-6) return 0; var n = Math.max(2, Math.ceil(e.len / STEP)), hit = 0;
+    for (var k = 0; k < n; k++) { var t = (k + 0.5) / n, x = e.a.x + (e.b.x - e.a.x) * t, y = e.a.y + (e.b.y - e.a.y) * t; if (dpoly(x, y, ring) <= TOL) hit++; }
+    return e.len * hit / n;
+  }
+  function ringOf(pl) { return (pl.points || []).map(function (q) { return { x: q.x, y: q.y }; }); }
+  function candidates(plot) {
+    var c = [];
+    try { (window.plots || []).forEach(function (q) { if (q !== plot && q.id !== plot.id && q.points && q.points.length >= 3 && (q.lon0 == null || plot.lon0 == null || q.lon0 === plot.lon0)) c.push({ nguon: 'thua_da_luu', id: q.id, so_thua: (q.meta && q.meta.so_thua) || q.id, to: (q.meta && q.meta.to_ban_do) || '', ring: ringOf(q) }); }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h36a'); }
+    return c;
+  }
+  /* Thêm ứng viên từ các gói địa chính đã tải (bất đồng bộ) */
+  function packCandidates(plot) {
+    if (!(window.LGPacks && window.LGCadastre && window.LGCadastre.packList)) return Promise.resolve([]);
+    var xs = plot.points.map(function (q) { return q.x; }), ys = plot.points.map(function (q) { return q.y; }), pad = 3;
+    return LGCadastre.packList().then(function (list) {
+      var out = []; list.forEach(function (it) {
+        if (plot.lon0 != null && it.ktt != null && Math.abs(Number(it.ktt) - Number(plot.lon0)) > 1e-6) return;
+        // gói lưu (E=x gói, N=y gói) → thửa app dùng (x=Bắc, y=Đông)
+        LGCadastre.searchPack(it, Math.min.apply(null, ys) - pad, Math.min.apply(null, xs) - pad, Math.max.apply(null, ys) + pad, Math.max.apply(null, xs) + pad).forEach(function (pl) {
+          out.push({ nguon: 'dia_chinh', id: it.id + ':' + pl.to + '/' + pl.thua, so_thua: String(pl.thua), to: String(pl.to), ring: pl.ring.slice(0, -1).map(function (r) { return { x: r[1], y: r[0] }; }) });
+        });
+      }); return out;
+    });
+  }
+  function compute(plot, extra) {
+    var pts = (plot.points || []).map(function (q) { return { x: q.x, y: q.y }; }); if (pts.length >= 2 && pts[0].x === pts[pts.length - 1].x && pts[0].y === pts[pts.length - 1].y) pts.pop();
+    var edges = edgesOf(pts), cands = candidates(plot).concat(extra || []), res = { canh: [], huong: { bac: [], dong: [], nam: [], tay: [] }, canh_bao: [] };
+    edges.forEach(function (e) {
+      var nb = [];
+      cands.forEach(function (c) {
+        var sh = shared(e, c.ring); if (sh >= MIN_SHARE || (sh >= 0.3 && sh / e.len >= MIN_FRAC)) nb.push({ nguon: c.nguon, id: c.id, so_thua: c.so_thua, to: c.to, shared: Math.round(sh * 100) / 100 });
+      });
+      nb.sort(function (a, b) { return b.shared - a.shared; });
+      res.canh.push({ i: e.i, len: Math.round(e.len * 100) / 100, huong: e.huong, az: Math.round(e.az), thua: nb });
+    });
+    // mỗi thửa bên cạnh chỉ được tính ở các hướng có chiều dài sát cạnh ≥ 50% hướng chính của nó (tránh gán thửa phía Tây thành phía Nam chỉ vì một cạnh ngắn ở góc lõm)
+    var tot = {}; res.canh.forEach(function (c) { c.thua.forEach(function (t) { var k = t.so_thua + '|' + t.to + '|' + t.nguon; tot[k] = tot[k] || { max: 0, by: {} }; tot[k].by[c.huong] = (tot[k].by[c.huong] || 0) + t.shared; }); });
+    Object.keys(tot).forEach(function (k) { var m = 0; Object.keys(tot[k].by).forEach(function (h) { if (tot[k].by[h] > m) m = tot[k].by[h]; }); tot[k].max = m; });
+    ['bac', 'dong', 'nam', 'tay'].forEach(function (h) {
+      var seen = {}; res.canh.filter(function (c) { return c.huong === h; }).forEach(function (c) { c.thua.forEach(function (t) { var k0 = t.so_thua + '|' + t.to + '|' + t.nguon; if (tot[k0].by[h] < 0.5 * tot[k0].max) return; var k = t.so_thua + '|' + t.to; if (!seen[k]) { seen[k] = { so_thua: t.so_thua, to: t.to, nguon: t.nguon, shared: 0, canh: [] }; res.huong[h].push(seen[k]); } seen[k].shared = Math.round((seen[k].shared + t.shared) * 100) / 100; seen[k].canh.push(c.i + 1); }); });
+    });
+    // so với nhãn sổ đã xác nhận (HM-35)
+    var ds = (plot.meta && plot.meta.giap_ranh_ds) || [];
+    ds.forEach(function (g) {
+      var found = res.huong[g.huong] || [];
+      if (g.loai === 'thua' && g.so_thua) {
+        if (!found.some(function (t) { return String(t.so_thua) === String(g.so_thua); })) res.canh_bao.push({ huong: g.huong, text: found.length ? 'Sổ ghi phía ' + hn(g.huong) + ' giáp thửa ' + g.so_thua + ' nhưng hình học cho thấy thửa ' + found.map(function (t) { return t.so_thua; }).join(', ') + '.' : 'Sổ ghi phía ' + hn(g.huong) + ' giáp thửa ' + g.so_thua + ' nhưng không có thửa nào sát cạnh phía ' + hn(g.huong) + ' trong dữ liệu hiện có.' });
+      } else if ((g.loai === 'duong' || g.loai === 'ngo') && found.length) res.canh_bao.push({ huong: g.huong, text: 'Sổ ghi phía ' + hn(g.huong) + ' giáp ' + (g.ten || 'đường/ngõ') + ' nhưng có thửa ' + found.map(function (t) { return t.so_thua; }).join(', ') + ' sát cạnh phía này.' });
+    });
+    return res;
+  }
+  function hn(h) { return { bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' }[h]; }
+  /* nhãn trên bản đồ: mỗi hướng một nhãn ở giữa cạnh dài nhất của hướng đó */
+  var group = null;
+  function showLabels(plot, res, on) {
+    if (!window.map || !window.L) return 0; if (group) { window.map.removeLayer(group); group = null; } if (on === false) return 0;
+    group = L.layerGroup(); var n = 0;
+    ['bac', 'dong', 'nam', 'tay'].forEach(function (h) {
+      var es = res.canh.filter(function (c) { return c.huong === h; }).sort(function (a, b) { return b.len - a.len; })[0]; if (!es) return;
+      var p0 = plot.points[es.i], p1 = plot.points[(es.i + 1) % plot.points.length], mid = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 }, ll = null;
+      try { var def = LGCore.Geometry.vn2000.def({ ktt: plot.lon0, mui: 3 }), q = proj4(def, 'WGS84', [mid.y, mid.x]); ll = [q[1], q[0]]; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h36b'); }
+      if (!ll) return; var txt = res.huong[h].length ? 'Thửa ' + res.huong[h].map(function (t) { return t.so_thua; }).join(', ') : 'không có thửa';
+      L.marker(ll, { interactive: false, icon: L.divIcon({ className: 'lg36-tag', html: '<span>' + hn(h) + ': ' + txt.replace(/[<>&]/g, '') + '</span>', iconSize: null }) }).addTo(group); n++;
+    });
+    group.addTo(window.map); return n;
+  }
+  window.LG36 = { compute: compute, packCandidates: packCandidates, showLabels: showLabels, hn: hn, edgesOf: edgesOf, labelsOn: function () { return !!group; } };
 })();
 </script>
 </body>
