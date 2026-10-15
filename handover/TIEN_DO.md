@@ -18,3 +18,4 @@
 - 15/10 · P02 · HM-08a ĐẠT V3: toast/nút nổi không còn che 5 nút dock ở 360/390/430 px; tối đa 1 toast, gộp tin trùng.
 - 15/10 · P02 · HM-07a ĐẠT V3: sổ đăng ký bộ đếm nền, ẩn app thì dừng bộ đếm/GPS, thay đổi DOM lúc nhàn rỗi giảm 69%.
 - 15/10 · P02 · HM-07b ĐẠT V3: thanh rail và dock không còn dựng lại/bật tắt lớp lặp lúc nhàn rỗi.
+- 15/10 · P02 · HM-07c ĐẠT V3: 24 observer gom còn 2, app không còn xoá quy tắc CSS lúc chạy, kéo bản đồ 3 ms/khung.

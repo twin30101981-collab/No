@@ -801,13 +801,13 @@
    "dot": 2,
    "uu_tien": "P2",
    "effort": "M",
-   "model_version": "unknown",
+   "model_version": "claude-sonnet-5-5",
    "model_effort_recommended": "high",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 10,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 5,
    "phu_thuoc": [
     "HM-07a"
    ],
@@ -821,17 +821,21 @@
    "rui_ro": "Trung bình: hành vi lớp vá phụ thuộc observer",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (đếm + profile)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/regress/hm07c_observers.js app/land-gis.html",
+    "pass": 5,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "observer thật: 24 → 2; deleteRule lúc chạy: 2 → 0; nạp 50 thửa 1,9 s; kéo bản đồ trung vị 3 ms",
+     "ngữ nghĩa observer giống hệt bản gốc (so với baseline)",
+     "run.js 20/20 PASS"
+    ]
    },
-   "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "nguyen_nhan_goc": "21 MutationObserver rời rạc cùng theo dõi body/documentElement (mỗi thay đổi DOM chạy 21 callback); cssMerge/cssMerge2/cssPrune tự xoá quy tắc CSS khi khởi động; hudAutoHide quét toàn trang theo từng thay đổi.",
+   "ghi_chu_ban_giao": "MutationObserver được bọc trong lg-timers-registry: mọi observer của app dùng chung 1 observer thật/đích (HTML, BODY) và phân phát bản ghi theo tuỳ chọn riêng. cssMerge/cssMerge2/cssPrune chỉ chạy khi bật tường minh (?lgCssMerge, ?lgCssMerge2). hudAutoHide gộp 400 ms. Không sửa từng điểm gọi observer (21 chỗ) — giữ nguyên để giảm rủi ro; gọi LG_OBSERVER_HUBS() để xem.",
    "zip": "",
    "can_nguoi_dung": null
   },
