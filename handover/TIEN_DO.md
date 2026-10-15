@@ -39,3 +39,4 @@
 - 15/10 · P05 · HM-30 ĐẠT V3: lớp bản đồ địa chính vector (tờ/thửa, chạm chọn, ngoại tuyến) từ gói theo xã.
 - 15/10 · P05 · HM-31 ĐẠT V3: Nhập sổ có ô 'Tra địa chính' (xã + tờ + thửa → toạ độ VN-2000 từ gói đã tải, ghi nguồn trên hồ sơ).
 - 15/10 · P05 · HM-32 ĐẠT V3: sổ không toạ độ — tìm thửa theo dãy cạnh + diện tích, 3 ứng viên kèm % và lý do (chỉ tham khảo).
+- 15/10 · P05 · HM-34 ĐẠT V3: tìm thửa theo vị trí GPS đang đứng (kèm thửa lân cận khi sai số lớn).

@@ -26195,6 +26195,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
+      mRow('📍', 'Thửa tại vị trí của tôi', 'data-lg103-act="cad-gps"') +
       mRow('🗺', 'Gói dữ liệu địa chính', 'data-lg103-act="packs"') +
       mRow('🎚', 'Căn ảnh vệ tinh', 'data-lg103-act="align"') +
       mRow('📡', 'GPS trung bình', 'data-lg103-act="gps-avg"') +
@@ -26265,6 +26266,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'imagery': closeSheet(); clickIf('lg31-fab-img'); return true;
       case 'compare': closeSheet(); clickIf('lg185-cmp-fab'); return true;
       case 'theme': clickIf('lg185-theme-fab'); if (currentTab === 'more') setTimeout(function () { body.innerHTML = tabMore(); }, 60); return true;
+      case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
       case 'ai-key': closeSheet(); if (typeof window.openKeyModal === 'function') window.openKeyModal(); else clickIf('btn-open-key-modal'); return true;
@@ -46335,7 +46337,7 @@ body.lg175-stack-open #lg124-stack{
         sel = hit; this.redraw(); if (hit) { document.dispatchEvent(new CustomEvent('lgcadastre:select', { detail: hit })); try { window.toast && window.toast({ title: 'Tờ ' + hit.to + ' · Thửa ' + hit.thua, message: (hit.dtHH ? hit.dtHH.toFixed(1) : '?') + ' m² (hình học)' + (hit.dt ? ' · ' + hit.dt + ' m² (thuộc tính)' : '') + (hit.ld ? ' · ' + hit.ld : '') }); } catch (er) { window.lgQuiet && window.lgQuiet(er, 'h30t'); } }
       }
     });
-    var l = new Cls(); l.pack = pk; l.stats = function () { return last; }; l.selected = function () { return sel; };
+    var l = new Cls(); l.pack = pk; l.stats = function () { return last; }; l.selected = function () { return sel; }; l.select = function (h) { sel = h; this.redraw(); };
     l.fit = function () { var b = pk.bbox(), a = proj4(def, 'WGS84', [b[0], b[1]]), z = proj4(def, 'WGS84', [b[2], b[3]]); this._m && this._m.fitBounds([[a[1], a[0]], [z[1], z[0]]], { maxZoom: 19 }); };
     return l;
   }
@@ -46407,7 +46409,57 @@ body.lg175-stack-open #lg124-stack{
       return { ok: true, xet: all.length, ung_vien: out.slice(0, 3), msg: out.length ? 'Chỉ để tham khảo — hãy đối chiếu với sổ trước khi dùng.' : 'Không có thửa nào cùng số cạnh và diện tích gần đúng.' };
     });
   }
-  window.LGCadastre = { lookup: lookup, findByShape: findByShape, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
+  /* HM-34 — vị trí (GPS) → thửa chứa điểm + thửa lân cận trong bán kính sai số. Trả {ok,msg,pack,inside,gan:[{to,thua,kc,pack}],acc}. */
+  function dist2poly(x, y, ring) {
+    var best = 1e18;
+    for (var i = 1; i < ring.length; i++) {
+      var ax = ring[i - 1][0], ay = ring[i - 1][1], bx = ring[i][0], by = ring[i][1], dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy, t = L ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / L)) : 0;
+      var qx = ax + t * dx - x, qy = ay + t * dy - y, dd = qx * qx + qy * qy; if (dd < best) best = dd;
+    }
+    return Math.sqrt(best);
+  }
+  function locate(lat, lng, acc) {
+    var r = Math.min(200, Math.max(5, Number(acc) || 0));
+    return LGPacks.installed().then(function (inst) {
+      var chain = Promise.resolve(null);
+      inst.forEach(function (it) {
+        chain = chain.then(function (found) {
+          if (found || !(it.ktt > 0)) return found;
+          var key = it.id + '|' + it.sha256;
+          return (cache[key] ? Promise.resolve(cache[key]) : LGPacks.blob(it.id).then(function (bl) { return bl.arrayBuffer(); }).then(openBuffer).then(function (pk) { cache[key] = pk; return pk; })).then(function (pk) {
+            var xy = proj4('WGS84', defOf({ ktt: it.ktt, mui: it.mui }), [lng, lat]), bb = pk.bbox();
+            if (xy[0] < bb[0] - r || xy[0] > bb[2] + r || xy[1] < bb[1] - r || xy[1] > bb[3] + r) return null;
+            var inside = pk.at(xy[0], xy[1]), gan = pk.search(xy[0] - r, xy[1] - r, xy[0] + r, xy[1] + r).map(function (pl) { return { to: pl.to, thua: pl.thua, kc: dist2poly(xy[0], xy[1], pl.ring), dt: pl.dt || pl.dtHH }; })
+              .filter(function (g) { return g.kc <= r && !(inside && g.to === inside.to && g.thua === inside.thua); }).sort(function (a, b) { return a.kc - b.kc; }).slice(0, 8);
+            return { pack: it, inside: inside ? { to: inside.to, thua: inside.thua, dt: inside.dt || inside.dtHH } : null, gan: gan };
+          });
+        });
+      });
+      return chain.then(function (f) {
+        if (!f) return { ok: false, msg: inst.length ? 'Vị trí này nằm ngoài các gói địa chính đã tải.' : 'Chưa tải gói dữ liệu địa chính nào (Thêm → Gói dữ liệu địa chính).', acc: r };
+        f.ok = true; f.acc = r; f.msg = f.inside ? 'Điểm nằm trong tờ ' + f.inside.to + ' thửa ' + f.inside.thua + '.' : 'Điểm không nằm trong thửa nào' + (f.gan.length ? ' — gần nhất bên dưới.' : '.'); return f;
+      });
+    });
+  }
+  function gotoParcel(packId, to, thua) {
+    return show(packId).then(function (l) { var h = l.pack.get(to, thua); if (!h) throw new Error('Không thấy thửa'); l.select(h); var it = null; return LGPacks.installed().then(function (a) { it = a.filter(function (x) { return x.id === packId; })[0]; var def = defOf(it), ll = h.ring.map(function (r) { var q = proj4(def, 'WGS84', r); return [q[1], q[0]]; }); window.map.fitBounds(L.latLngBounds(ll), { maxZoom: 20 }); return h; }); });
+  }
+  function locateHTML(r) {
+    function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    var h = '<div class="lgpk"><p class="lgpk-msg" role="status">' + esc(r.msg) + (r.ok ? ' (bán kính tìm ' + r.acc.toFixed(0) + ' m)' : '') + '</p>';
+    if (!r.ok) return h + '</div>';
+    var row = function (t, th, note, strong) { return '<div class="lgpk-row"><b>Tờ ' + t + ' · Thửa ' + th + '</b><small>' + esc(note) + '</small><button type="button" data-lgpk-act="goto" data-pack="' + esc(r.pack.id) + '" data-to="' + t + '" data-thua="' + th + '">Xem</button></div>'; };
+    if (r.inside) h += row(r.inside.to, r.inside.thua, 'Chứa điểm của bạn' + (r.inside.dt ? ' · ' + Number(r.inside.dt).toFixed(1) + ' m²' : ''));
+    r.gan.forEach(function (g) { h += row(g.to, g.thua, 'Cách ' + g.kc.toFixed(1) + ' m' + (g.dt ? ' · ' + Number(g.dt).toFixed(1) + ' m²' : '')); });
+    if (r.acc >= 15) h += '<p class="lgpk-msg">GPS đang sai số lớn: thửa thật có thể là một trong các thửa gần bên trên — hãy đối chiếu hiện trường.</p>';
+    return h + '</div>';
+  }
+  function locateGPS(done) {
+    if (!navigator.geolocation) return done({ ok: false, msg: 'Thiết bị không hỗ trợ định vị.' });
+    navigator.geolocation.getCurrentPosition(function (p) { locate(p.coords.latitude, p.coords.longitude, p.coords.accuracy).then(done); }, function (e) { done({ ok: false, msg: 'Không lấy được vị trí: ' + (e && e.message || 'bị từ chối') }); }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 });
+  }
+  document.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('[data-lgpk-act="goto"]'); if (!t) return; gotoParcel(t.getAttribute('data-pack'), +t.getAttribute('data-to'), +t.getAttribute('data-thua')).then(function () { var shx = document.getElementById('lg103-sheet'); if (shx) shx.classList.remove('on'); }, function (er) { window.lgQuiet && window.lgQuiet(er, 'h34g'); }); });
+  window.LGCadastre = { locate: locate, locateHTML: locateHTML, locateGPS: locateGPS, goto: gotoParcel, lookup: lookup, findByShape: findByShape, openBuffer: openBuffer, mount: mount, show: show, hide: hide, layer: function () { return layer; }, setMaxDraw: function (n) { MAX_DRAW = n; } };
 })();
 </script>
 </body>
