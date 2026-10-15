@@ -8,11 +8,13 @@ Playwright (V3) khả dụng: CÓ — playwright 1.56.1 tại /opt/node-tools, C
 Quy ước dự án: style chỉ trong <style>; không sửa chuỗi JS khi đổi font/style; sửa theo vùng, sao lưu .orig; không format cả file.
 
 ## 2. Đề án và trạng thái (khớp backlog.json)
-Đề án: v1.2 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.2.docx
-Điều chỉnh lộ trình: v1.1 ghi 3 quyết định; v1.2 chuyển sang giao diện CHỈ-MOBILE (HM-08 → HM-08a..08f, bỏ HM-12b)
-Ước tính: 4–6 phiên (20 hạng mục, 172% ngữ cảnh)
+Đề án: v1.3 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.3.docx
+Điều chỉnh lộ trình: v1.1 quyết định; v1.2 chỉ-mobile; v1.3 rà soát sâu: P0 HM-00, HM-06c, HM-11b, Đợt 4–5 tính năng HM-15..21
+Ước tính: 4–5 phiên (Đợt 0–3, 178%) · 6–8 phiên cả Đợt 4–5 (262%) · 31 hạng mục
+**P0 ĐÃ XÁC MINH (F-17):** bộ nhớ đầy → lớp v119 xoá land_gis_v18_cache (kho thửa). Tái hiện: tools/quota.js → evidence/quota_dataloss.json. Sửa: gỡ khoá khỏi PRUNABLE (L117) và di trú <119 (L196).
 | ID | Tên | Ưu tiên | Effort | Trạng thái |
 |----|-----|---------|--------|------------|
+| HM-00 | CHẶN MẤT DỮ LIỆU khi bộ nhớ đầy | P0 | S | CHUA_LAM |
 | HM-01 | Hạ tầng kiểm thử (Playwright + 2 sổ mẫu ẩn danh) | P1 | S | CHUA_LAM |
 | HM-02 | parseBookText nhận nhiều khối | P1 | M | CHUA_LAM |
 | HM-03 | Một quy tắc đối chiếu diện tích | P1 | M | CHUA_LAM |
@@ -32,7 +34,7 @@ Quy ước dự án: style chỉ trong <style>; không sửa chuỗi JS khi đ�
 ## 3. Hạng mục vừa đóng
 Không (S0 chỉ đọc).
 
-## 4. Hạng mục kế tiếp (khi đề án được duyệt): HM-01
+## 4. Hạng mục kế tiếp (khi đề án được duyệt): HM-00 (P0), sau đó HM-01
 Mục tiêu: tests/ với Playwright; fixture Mẫu A (thửa 501 tờ 10, 7 mốc + khối phụ 8–11, GCN 29,7) và Mẫu B (thửa 131 tờ 10.1, 8 mốc, GCN 89,9, không cấp 1,4) — CHỈ toạ độ, không tên/CMND.
 Bước đầu: tái dùng scratchpad tools/samples.js, s1full.js, smoke.js (có trong evidence/ của ZIP dạng kết quả; script ở tools/).
 Kỳ vọng trên v237: test F-01 và F-02 phải FAIL.
@@ -53,7 +55,8 @@ Không.
 - hsv-react-phien16.zip trong repo là dự án khác — không động tới.
 
 ## 8. Việc người dùng cần làm
-Chốt 2 câu mobile (màn rộng: khung giữa hay chặn; khoá dọc PWA) và duyệt đề án v1.2.
+Chốt 5 câu (đề án Mục 14): màn rộng; khoá dọc; làm HM-00 trước; đăng nhập OTP Supabase; chọn tính năng Đợt 4/5. Duyệt v1.3.
+Khuyến cáo ngay: xuất sao lưu (.landgis/Excel) dữ liệu thửa đang có trên điện thoại cho tới khi HM-00 xong.
 
 ## 9. Đường lui
 baseline/Land-GIS-v237.html (SHA-256 7ab2837e065712de459fea114022552ecb4a1aa6757f584019c6e0d824978b5a)
@@ -69,3 +72,4 @@ Không sửa file app. Thêm: de-an/, handover/, evidence/, tools/.
 - 03:20 dựng đề án v1.0 (15 trang), tự kiểm qua PDF
 - 03:30 nhận 3 quyết định; phát hành đề án v1.1, chờ duyệt
 - 03:45 khảo sát điều hướng mobile: F-14 toast chặn chạm dock (xác minh), F-15, F-16; dựng 7 mockup; phát hành v1.2
+- 04:10 rà soát sâu v1.3: F-17 P0 mất dữ liệu (V3), F-18..F-23; kiểm âm tính XSS, DXF, font PDF; phát hành v1.3
