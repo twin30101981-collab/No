@@ -35605,26 +35605,82 @@ body.lg62:not(.lg62-map) #lg138-bar{
      Người dùng đã chốt: bảng kê in trên sổ (5 mốc X/Y + cột S) là chuẩn.
      OCR/AI chỉ để điền sẵn; mọi số liệu cuối cùng phải đối soát với bảng này.
      ------------------------------------------------------------------ */
+  /* HM-02 — bộ đọc bảng kê nhận NHIỀU KHỐI. Trước đây mọi dòng bị gộp thành một vòng
+     (Mẫu A: 11 mốc, 29,85 m² thay vì 7 mốc 29,70 m² + khối phụ quy hoạch 4 mốc), dòng không
+     đọc được bị bỏ im lặng, số kiểu '2.259.336,23' bị đọc sai. Nay:
+       • vòng khép khi một dòng lặp lại đúng mốc đầu của khối hiện tại → khối kế tiếp bắt đầu;
+       • points/sides = vòng ranh CHÍNH (khối đầu); blocks[] = các khối phụ (mỗi khối {points,sides});
+       • warnings[] = dòng không đọc được, nhảy STT, ký tự O/l thay 0/1 đã sửa. */
+  LG145.parseBookNumber = function (tok) {
+    var t = String(tok).replace(/\u00a0/g, ' ').trim();
+    var seps = t.match(/[.,\s]/g) || [];
+    if (!seps.length) return parseFloat(t);
+    var last = t.search(/[.,\s](?=\d+$)/), lastCh = t.charAt(last), tail = t.slice(last + 1);
+    var same = seps.every(function (c) { return c === lastCh; });
+    var decimal = seps.length === 1 ? lastCh !== ' ' : (!(same && tail.length === 3));
+    if (decimal) return parseFloat(t.slice(0, last).replace(/[.,\s]/g, '') + '.' + tail);
+    return parseFloat(t.replace(/[.,\s]/g, ''));
+  };
   LG145.parseBookText = function (txt) {
-    var pts = [], sides = [];
-    String(txt || '').split(/\r?\n/).forEach(function (line) {
-      var nums = (line.match(/-?\d+(?:[.,]\d+)?/g) || []).map(function (s) { return parseFloat(s.replace(',', '.')); });
-      if (nums.length < 2) return;
+    var NUM = /\d{1,3}(?:[.,\u00a0 ]\d{3})+(?:[.,]\d+)?(?!\d)|\d+(?:[.,]\d+)?/g;
+    var rows = [], warnings = [];
+    String(txt || '').split(/\r?\n/).forEach(function (line, li) {
+      if (!line.trim()) { rows.push({ blank: true }); return; }
+      var fixed = line.replace(/(?<=[\d.,])[Oo](?=[\d.,\s]|$)|(?<=^|\s)[Oo](?=\d)|(?<=[\d.,])[lI](?=[\d.,\s]|$)|(?<=^|\s)[lI](?=\d)/g, function (c) { return /[Oo]/.test(c) ? '0' : '1'; });
+      if (fixed !== line) warnings.push('Dòng ' + (li + 1) + ': đã đổi chữ O/l thành số 0/1 — hãy kiểm tra lại: ' + fixed.trim());
+      var nums = (fixed.match(NUM) || []).map(LG145.parseBookNumber).filter(function (v) { return isFinite(v); });
+      if (nums.length < 2) { if (nums.length && /\d/.test(fixed)) warnings.push('Dòng ' + (li + 1) + ' không đọc được (thiếu X/Y): ' + line.trim()); return; }
       var big = nums.filter(function (v) { return v >= 1e6; });
       var mid = nums.filter(function (v) { return v >= 1e5 && v < 1e6; });
       var sml = nums.filter(function (v) { return v > 0 && v < 1e4; });
-      if (!big.length || !mid.length) return;
-      pts.push({ x: big[0], y: mid[0] });
+      if (!big.length || !mid.length) { warnings.push('Dòng ' + (li + 1) + ' không đọc được (không thấy cặp X≥1.000.000 và Y 100.000–999.999): ' + line.trim()); return; }
+      var stt = (nums.length >= 3 && nums[0] < 1000 && nums[0] === Math.floor(nums[0])) ? nums[0] : null;
       // cột S(m) của sổ ghi CẠNH NỐI mốc này với mốc kế tiếp
-      sides.push(sml.length ? sml[sml.length - 1] : null);
+      rows.push({ x: big[0], y: mid[0], s: sml.length ? sml[sml.length - 1] : null, stt: stt, line: li + 1 });
     });
-    // dòng cuối lặp lại mốc 1 (sổ đỏ luôn khép vòng) -> bỏ
-    if (pts.length > 3) {
-      var a = pts[0], b = pts[pts.length - 1];
-      if (Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005) { pts.pop(); sides.pop(); }
-    }
-    if (sides.some(function (v) { return v == null; })) sides = null;
-    return { points: pts, sides: sides };
+    var blocks = [], cur = null;
+    function same(a, b) { return Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005; }
+    rows.forEach(function (r) {
+      if (r.blank) { if (cur && cur.closed) cur = null; return; }
+      if (!cur) { cur = { points: [], sides: [], stts: [], closed: false }; blocks.push(cur); }
+      if (cur.points.length >= 3 && same(r, cur.points[0])) { cur.closed = true; cur = null; return; }   // dòng lặp mốc đầu = điểm khép vòng
+      if (cur.closed) { cur = { points: [], sides: [], stts: [], closed: false }; blocks.push(cur); }
+      cur.points.push({ x: r.x, y: r.y }); cur.sides.push(r.s); cur.stts.push(r.stt);
+    });
+    blocks = blocks.filter(function (b) { return b.points.length >= 1; });
+    blocks.forEach(function (b, bi) {
+      // kiểm STT liên tục trong khối (khối phụ được phép bắt đầu ở STT bất kỳ)
+      for (var k = 1; k < b.stts.length; k++) {
+        if (b.stts[k] != null && b.stts[k - 1] != null && b.stts[k] !== b.stts[k - 1] + 1)
+          warnings.push((bi ? 'Khối phụ ' + bi : 'Vòng chính') + ': STT nhảy từ ' + b.stts[k - 1] + ' sang ' + b.stts[k] + ' — có thể thiếu hoặc đọc sai dòng.');
+      }
+      if (b.points.length < 3) warnings.push((bi ? 'Khối phụ ' + bi : 'Vòng chính') + ' chỉ có ' + b.points.length + ' mốc — cần ≥ 3.');
+      if (b.sides.some(function (v) { return v == null; })) b.sides = null;
+    });
+    var main = blocks[0] || { points: [], sides: null };
+    function shoe(P) { var a = 0; for (var i = 0; i < P.length; i++) { var q = P[(i + 1) % P.length]; a += P[i].x * q.y - q.x * P[i].y; } return Math.abs(a) / 2; }
+    function idxOn(P, q) { for (var i = 0; i < P.length; i++) if (same(P[i], q)) return i; return -1; }
+    // Khối phụ là chuỗi mốc nối 2 mốc của vòng chính (Mẫu A: mốc 5 → 9 → 10 → mốc 1): khép bằng
+    // đoạn biên vòng chính ngắn hơn → vùng (chỉ giới quy hoạch) có diện tích riêng.
+    var extra = blocks.slice(1).map(function (b) {
+      var o = { points: b.points, sides: b.sides, ring: null, area: null };
+      var n = b.points.length, m = main.points.length;
+      if (n >= 2 && m >= 3) {
+        var ia = idxOn(main.points, b.points[0]), ib = idxOn(main.points, b.points[n - 1]);
+        if (ia >= 0 && ib >= 0 && ia !== ib) {
+          function path(from, to) { var r = [], k = from; while (k !== to) { k = (k + 1) % m; r.push(main.points[k]); } return r; }
+          // đi từ mốc cuối chuỗi (ib) về mốc đầu (ia) theo 2 chiều vòng chính, lấy vùng nhỏ hơn
+          var r1 = b.points.concat(path(ib, ia).slice(0, -1));
+          var rev = main.points.slice().reverse(), ja = m - 1 - ia, jb = m - 1 - ib, r2p = [], kk = jb;
+          while (kk !== ja) { kk = (kk + 1) % m; r2p.push(rev[kk]); }
+          var r2 = b.points.concat(r2p.slice(0, -1));
+          var a1 = shoe(r1), a2 = shoe(r2);
+          o.ring = a1 <= a2 ? r1 : r2; o.area = Math.min(a1, a2);
+        }
+      } else if (n >= 3) { o.ring = b.points; o.area = shoe(b.points); }
+      return o;
+    });
+    return { points: main.points, sides: main.sides, blocks: extra, warnings: warnings };
   };
   LG145.checkBook = function (o) {
     var pts = o.points || [];
@@ -35724,7 +35780,7 @@ body.lg62:not(.lg62-map) #lg138-bar{
     function collect() {
       var t = LG145.parseBookText(ta.value);
       return {
-        points: t.points, sides: t.sides,
+        points: t.points, sides: t.sides, blocks: t.blocks, warnings: t.warnings,
         dien_tich_m2: parseFloat(box.querySelector('#lg145-area').value) || null,
         so_thua: box.querySelector('#lg145-thua').value || null,
         to_ban_do: box.querySelector('#lg145-to').value || null,
@@ -35732,8 +35788,10 @@ body.lg62:not(.lg62-map) #lg138-bar{
       };
     }
     box.querySelector('#lg145-check').onclick = function () {
-      var r = LG145.checkBook(collect());
-      box.querySelector('#lg145-chk').textContent = (r.ok ? '✔ KHỚP SỔ\n' : '⚠ CHƯA KHỚP — sẽ bình sai ràng buộc khi vẽ\n') + r.msg;
+      var d = collect(), r = LG145.checkBook(d);
+      var extra = (d.blocks && d.blocks.length ? '\nKhối phụ tách riêng: ' + d.blocks.map(function (b) { return b.points.length + ' mốc'; }).join(', ') + ' (không cộng vào vòng chính)' : '')
+        + (d.warnings && d.warnings.length ? '\n⚠ Cần rà soát:\n- ' + d.warnings.join('\n- ') : '');
+      box.querySelector('#lg145-chk').textContent = (r.ok ? '✔ KHỚP SỔ\n' : '⚠ CHƯA KHỚP — sẽ bình sai ràng buộc khi vẽ\n') + r.msg + extra;
     };
     box.querySelector('#lg145-cancel').onclick = function () { mask.remove(); };
     box.querySelector('#lg145-ok').onclick = async function () {
