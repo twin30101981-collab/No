@@ -1817,11 +1817,11 @@
    "effort": "S",
    "model_version": "unknown",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 4,
    "phu_thuoc": [
     "HM-03"
    ],
@@ -1835,17 +1835,19 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đề xuất",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 54 test); node tests/regress/hm21_baocao.js",
+    "pass": 54,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "tests/regress/hm21_baocao.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "Hồ sơ → 📋 Báo cáo đối chiếu: 1 trang A4 (kiểm bằng page.pdf = 1 trang): sơ đồ, bảng diện tích, công thức ±(0,05√A+0,0003A), kết luận Đạt/Không đạt, ngày giờ, QR tra lại, tứ cận nếu có. CCCD theo công tắc HM-14 (mặc định hiện đủ). QR đầy đủ (≈73 byte); nếu quá sức chứa (qrBuildMatrix=null, tối đa QR bản 6) → QR chỉ chứa “LANDGIS25|mã” kèm dòng giải thích; nếu vẫn không tạo được → cảnh báo, không mất QR âm thầm. QR chưa có trang web tra cứu phía máy chủ — “mã tra cứu” hiện chỉ để đối chiếu thủ công/hash.",
    "zip": "",
    "can_nguoi_dung": null
   },
