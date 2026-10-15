@@ -352,7 +352,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     h = document.createElement('div');
     h.id = HOST_ID;
     h.setAttribute('aria-live', 'polite');
-    h.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:99999;display:flex;flex-direction:column;gap:8px;max-width:min(92vw,380px);pointer-events:none;font-family:system-ui,Arial,sans-serif';
+    h.style.cssText = 'position:fixed;right:12px;bottom:var(--lg-dock-clear,84px);z-index:99999;display:flex;flex-direction:column;gap:8px;max-width:min(92vw,380px);pointer-events:none;font-family:system-ui,Arial,sans-serif';
     document.body.appendChild(h);
     return h;
   }
@@ -393,6 +393,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         b.onclick = function () { try { opts.onAction(); } finally { d.remove(); } };
         d.appendChild(b);
       }
+      // HM-08a: tối đa 1 thông báo — thay thông báo cũ; tin trùng đã được gộp ở trên (cùng level|title)
+      while (h.firstChild) h.removeChild(h.firstChild);
       h.appendChild(d);
       requestAnimationFrame(function () { d.style.opacity = '1'; d.style.transform = 'none'; });
       setTimeout(function () {
@@ -1670,7 +1672,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   html[data-lg-theme="dark"] .leaflet-container, html[data-lg-theme="dark"] .leaflet-tile,
   html[data-lg-theme="dark"] img, html[data-lg-theme="dark"] #report-sketch svg,
   html[data-lg-theme="dark"] canvas { filter: none; background: initial; }
-  #lg185-theme-fab{position:fixed;left:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;
+  #lg185-theme-fab{position:fixed;left:12px;bottom:var(--lg-dock-clear,84px);z-index:99998;border:0;border-radius:999px;
     width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:19px;
     background:var(--card);color:var(--fg);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer}
   @media print{ #lg185-theme-fab{ display:none !important; } }
@@ -2066,6 +2068,11 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   .lg-pop th { background: #eef3f0; text-align: center; font-family: inherit; }
   
   /* Toast */
+  /* HM-08a — KHUNG LAYOUT MOBILE: một token --lg-dock-clear (khoảng chừa phía dưới = chiều cao dock thật + 12px, JS đo)
+     cho MỌI lớp thông báo; thông báo nằm TRÊN dock nên không bao giờ che 5 nút dock. */
+  :root { --lg-dock-clear: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  #lgv42-toast-host, .toast-wrap { bottom: var(--lg-dock-clear) !important; right: 12px !important; max-width: min(92vw, 380px) !important; }
+  #lgv42-toast-host > div:not(:has(button)), .toast-wrap > .toast { pointer-events: none !important; }
   .toast-wrap { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom,0px) + var(--lg62-nav-reserve, 0px)); right: 16px; display: flex; flex-direction: column; gap: 6px; z-index: 3900; pointer-events: none; }
   .toast { background: #08100c; color: #fff; padding: 8px 12px; border-radius: 6px; font-size:var(--lg63-fs); box-shadow: 0 4px 12px rgba(0,0,0,.25); max-width: 320px; pointer-events: auto; }
   .toast.destructive { background: var(--accent); }
@@ -3881,7 +3888,9 @@ function toast({title, description, variant}){
   const wrap = document.getElementById('toast-wrap');
   // v24: giới hạn 4 thông báo cùng lúc — thao tác hàng loạt (vẽ lại toàn bộ thửa,
   // nhập file nhiều thửa) từng xếp chồng che kín bản đồ ở v23.
-  while (wrap.children.length >= 4) wrap.firstElementChild.remove();
+  // HM-08a: tối đa 1 thông báo; cùng tiêu đề+mô tả thì gộp (không xếp chồng)
+  const keyT = String(title || '') + '|' + String(description || '');
+  while (wrap.children.length >= 1) wrap.firstElementChild.remove();
   const el = document.createElement('div');
   el.className = 'toast' + (variant === 'destructive' ? ' destructive' : '');
   // Nội dung có thể đến từ dữ liệu quét sổ đỏ -> phải escape, không chèn HTML thô.
@@ -3889,6 +3898,22 @@ function toast({title, description, variant}){
   setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 400); }, 3500);
   wrap.appendChild(el);
 }
+// HM-08a — đo chiều cao dock thật → token --lg-dock-clear (khi nạp, xoay máy, đổi cỡ, dock xuất hiện muộn)
+function lgMeasureDock() {
+  try {
+    const d = document.querySelector('.lg103-dbtn');
+    const bar = d && d.parentElement;
+    if (!bar) return false;
+    const r = bar.getBoundingClientRect();
+    if (!(r.height > 0)) return false;
+    document.documentElement.style.setProperty('--lg-dock-clear', Math.max(0, Math.round(window.innerHeight - r.top) + 12) + 'px');
+    return true;
+  } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8a0'); return false; }
+}
+window.lgMeasureDock = lgMeasureDock;
+window.addEventListener('resize', lgMeasureDock);
+window.addEventListener('orientationchange', lgMeasureDock);
+{ let tries = 0; const iv = setInterval(() => { if (lgMeasureDock() || ++tries > 40) { clearInterval(iv); if (tries <= 40) setTimeout(lgMeasureDock, 1500); } }, 500); }
 
 
 function showCustomDialog(title, message) {

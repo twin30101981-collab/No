@@ -15,3 +15,4 @@
 - 15/10 · P02 · HM-04 ĐẠT V3: mọi luồng tính diện tích qua một lõi (sai lệch < 1e-7 m²), một định nghĩa VN-2000, API bắc/đông từ chối toạ độ ngoài VN.
 - 15/10 · P02 · HM-43 ĐẠT V3: kiểm tra hình học đầy đủ (đỉnh trùng/chạm/tự cắt); bảng kê gộp sai báo 'mốc 5 trùng mốc 8'.
 - 15/10 · P02 · HM-04b ĐẠT V3: KTT đúng theo địa bàn cũ (Vũng Tàu 107°45′, Hải Dương 105°30′), không tự đoán — hỏi khi nhiều KTT, ưu tiên dòng KTT in trên sổ.
+- 15/10 · P02 · HM-08a ĐẠT V3: toast/nút nổi không còn che 5 nút dock ở 360/390/430 px; tối đa 1 toast, gộp tin trùng.
