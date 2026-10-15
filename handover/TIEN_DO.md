@@ -37,3 +37,4 @@
 - 15/10 · P05 · HM-27a ĐẠT V2 / HM-27b ĐẠT V3: công cụ chuyển dữ liệu địa chính → gói theo xã (dữ liệu giả lập; chờ dữ liệu thật HM-26).
 - 15/10 · P05 · HM-29 ĐẠT V3: màn Gói dữ liệu địa chính — tải tiếp khi rớt mạng, kiểm sha256, báo bản mới, đồng hồ dung lượng.
 - 15/10 · P05 · HM-30 ĐẠT V3: lớp bản đồ địa chính vector (tờ/thửa, chạm chọn, ngoại tuyến) từ gói theo xã.
+- 15/10 · P05 · HM-31 ĐẠT V3: Nhập sổ có ô 'Tra địa chính' (xã + tờ + thửa → toạ độ VN-2000 từ gói đã tải, ghi nguồn trên hồ sơ).
