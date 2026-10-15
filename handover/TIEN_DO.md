@@ -9,3 +9,4 @@
 - 15/10 · P02 · HM-45 ĐẠT V3: hồ sơ kỹ thuật không còn mã thửa ở ô tên chủ, toạ độ đầy đủ, KTT 105°30′, một công thức sai số, bỏ nhãn phiên bản.
 - 15/10 · P02 · HM-05 ĐẠT V3: gỡ dữ liệu sổ đỏ thật nhúng trong app, dọn nhật ký cũ một lần, nhật ký mới che CCCD/họ tên.
 - 15/10 · P02 · HM-00c ĐẠT V3: nhập dự án không còn xoá dữ liệu khi file hỏng; thay thế có bản sao + hoàn tác.
+- 15/10 · P02 · HM-06d ĐẠT V3: chọn 'khoá chỉ trong phiên' được nhớ, bật là xoá mọi bản khoá lâu dài, tab mới không dùng lại khoá cũ.
