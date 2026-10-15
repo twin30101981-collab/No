@@ -25305,6 +25305,9 @@ header h1{ white-space:nowrap; }               /* tiêu đề vẫn rút gọn 1
      body.lg62 (lớp này chỉ được gắn khi lớp UI mobile v62 kích hoạt).
      ========================================================================== -->
 <style id="lg103-mobile-ui">
+/* HM-08b — gỡ hàng tab ngang và các nút nổi trùng (🌙 🕰 lg184): chức năng chuyển vào ＋ Nhập sổ / ⋯ Thêm (nút vẫn có trong DOM để mã gọi) */
+body.lg62.lg103 .nav-tabs,
+body.lg103 #lg185-theme-fab, body.lg103 #lg185-cmp-fab, body.lg103 #lg184-fab { display:none !important; }
 :root{
   --lg103-dock-h: 62px;
   --lg103-fab: 54px;
@@ -25873,44 +25876,152 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     setTimeout(function () { try { window.print(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q302'); } setTimeout(cleanup, 1500); }, 120);
   }
 
-  function tabMore() {
-    return '<h5>Trích xuất dữ liệu</h5>' +
-      '<div class="lg103-actions">' +
-      '<button class="lg103-abtn" data-lg103-export="geojson">GeoJSON</button>' +
-      '<button class="lg103-abtn" data-lg103-export="csv">CSV Tọa độ</button>' +
-      '<button class="lg103-abtn" data-lg103-export="kml">KML Earth</button>' +
-      '<button class="lg103-abtn" data-lg103-export="scr">SCR AutoCAD</button>' +
-      '<button class="lg103-abtn" data-lg103-export="dxf">DXF Địa chính</button>' +
-      '<button class="lg103-abtn" data-lg103-act="a4">🖨 Sơ đồ A4</button>' +
-      '<button class="lg103-abtn" data-lg108-act="qr-opts">🔳 Tuỳ chọn QR</button>' +
-      '<button class="lg103-abtn" data-lg108-act="info-form">📝 Thông tin thửa</button>' +
+  /* ============ HM-08b — ĐIỀU HƯỚNG MỚI (đề án v1.8, mục 6.4): dock 5 mục ============
+     🗺 Bản đồ · ▤ Thửa · ＋ Nhập sổ · 📄 Hồ sơ · ⋯ Thêm. Hàng tab ngang bị ẩn; mọi chức năng cũ vẫn có đường vào
+     (Nhập sổ → các tab nhập liệu cũ; Hồ sơ → xuất/ A4/ PDF/ DXF; Thêm → cài đặt, trợ giúp, chế độ chuyên gia). */
+  var profTab = 'overview';
+  function goLegacyTab(id) {
+    closeSheet();
+    var btn = document.querySelector('.tab-btn[onclick*="' + id + '"]');
+    if (typeof window.switchTab === 'function') window.switchTab(id, btn || null);
+    // lớp v62 đổi màn có độ trễ: lặp lại tối đa ~2 giây cho tới khi màn nhập liệu hiện ra (chỉ bấm Quay lại khi đang ở bản đồ)
+    (function ensure(n) {
+      var el = document.getElementById(id), r = el && el.getBoundingClientRect();
+      if (r && r.width > 0 && r.height > 0) return;
+      if (document.body.classList.contains('lg62-map')) { var bk = $('lg62-back'); if (bk && !bk.disabled) bk.click(); }
+      if (n < 8) setTimeout(function () { ensure(n + 1); }, 250);
+    })(0);
+  }
+  function clickIf(id) { var e = document.getElementById(id); if (e) { e.click(); return true; } return false; }
+  function plotsAll() { try { return window.plots || []; } catch (e) { return []; } }
+  function tabPlots() {
+    var ps = plotsAll();
+    var head = '<div class="lg103-kv"><span>Số thửa</span><span>' + ps.length + '</span></div>';
+    if (!ps.length) return head + '<div class="lg103-empty">Chưa có thửa nào. Bấm ＋ Nhập sổ để thêm thửa đầu tiên.</div>' +
+      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="goto-import">＋ Nhập sổ</button></div>';
+    var sel = (function () { try { return window.selectedPlotId; } catch (e) { return null; } })();
+    var rows = ps.map(function (p) {
+      var area = (typeof calcArea === 'function') ? calcArea(p.points) : LG.cad.area(p.points);
+      return '<button class="lg103-abtn" style="text-align:left;width:100%;margin:3px 0' + (p.id === sel ? ';border-color:#0f4c34;font-weight:700' : '') + '" data-lg103-act="plot-select" data-pid="' + escA4(p.id) + '">' +
+        escA4(p.id) + ' · ' + area.toFixed(1) + ' m² · ' + (p.points || []).length + ' mốc</button>';
+    }).join('');
+    return head + '<div class="lg103-actions" style="flex-direction:column">' + rows + '</div>' +
+      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="legacy-plots">▤ Quản lý thửa đầy đủ (tìm, sửa, đối soát)</button></div>';
+  }
+  function tabImport() {
+    return '<h5>Nhập sổ — chọn cách nhập</h5><div class="lg103-actions">' +
+      '<button class="lg103-abtn" data-lg103-act="import-cam">📷 Chụp sổ đỏ</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-pick">🖼 Chọn ảnh</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-qr">🔳 Quét QR</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-book">📋 Nhập bảng kê</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-edges">📐 Cạnh + góc</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-cad">📥 CAD / Excel</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-gps">📡 GPS thực địa</button>' +
+      '<button class="lg103-abtn" data-lg103-act="import-rtk">📍 Cắm mốc RTK</button>' +
       '<button class="lg103-abtn" data-lg108-act="vision">🤖 Đọc GCN bằng AI</button>' +
-      '<button class="lg103-abtn" data-lg109-act="cache">📶 Bản đồ ngoại tuyến</button>' +
-      '<button class="lg103-abtn" data-lg109-act="qa">✅ Tự kiểm QA/QC</button>' +
+      '</div><div class="lg103-note small">Luồng 3 bước: Đọc → Kiểm tra bảng kê → Kết quả.</div>';
+  }
+  function tabProfile() {
+    var p = currentPlot();
+    if (!p) return '<div class="lg103-empty">Chưa có thửa đang chọn. Chọn ở ▤ Thửa hoặc ＋ Nhập sổ.</div>';
+    var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['photos', 'Ảnh']];
+    var bar = '<div class="lg103-actions">' + tabs.map(function (t) {
+      return '<button class="lg103-abtn" data-lg103-act="prof-' + t[0] + '"' + (profTab === t[0] ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t[1] + '</button>';
+    }).join('') + '</div>';
+    var body;
+    if (profTab === 'coords') body = tabCoords();
+    else if (profTab === 'edges') body = tabEdges();
+    else if (profTab === 'photos') body = '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="photos">🛰 Ảnh thực tế &amp; 8 hướng</button><button class="lg103-abtn" data-lg103-act="imagery">🗺 Ảnh nền &amp; độ nét</button></div>';
+    else {
+      var pts = p.points || [], area = (typeof calcArea === 'function') ? calcArea(pts) : LG.cad.area(pts), m = p.meta || {};
+      var gcn = parseFloat(m.dien_tich_m2), V = (isFinite(gcn) && gcn > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(area, gcn, parseFloat(m.dien_tich_khong_cap_gcn) || 0) : null;
+      body = '<div class="lg103-kv"><span>Thửa</span><span>' + escA4(p.id) + '</span></div>' +
+        '<div class="lg103-kv"><span>Diện tích đo</span><span>' + area.toFixed(2) + ' m²</span></div>' +
+        (V ? '<div class="lg103-kv"><span>Đối chiếu GCN</span><span>' + (V.ok ? '✔ Đạt' : '⚠ Không đạt') + ' (lệch ' + V.diff.toFixed(2) + ' m², cho phép ±' + V.tol.toFixed(2) + ')</span></div>' : '') +
+        '<div class="lg103-kv"><span>Số mốc</span><span>' + pts.length + '</span></div>' +
+        '<div class="lg103-kv"><span>KTT</span><span>' + (p.lon0 != null ? p.lon0 + '°' : '—') + '</span></div>';
+    }
+    var exportBar = '<h5>Xuất</h5><div class="lg103-actions">' +
+      '<button class="lg103-abtn" data-lg103-act="a4">🖨 In A4</button>' +
+      '<button class="lg103-abtn" data-lg103-act="pdf">📄 PDF</button>' +
+      '<button class="lg103-abtn" data-lg103-export="dxf">DXF</button>' +
+      '<button class="lg103-abtn" data-lg103-act="exports-more">⋯</button></div>' +
+      '<div class="lg103-actions" id="lg103-exports-more" style="display:none">' +
+      '<button class="lg103-abtn" data-lg103-export="kml">KML</button>' +
+      '<button class="lg103-abtn" data-lg103-export="geojson">GeoJSON</button>' +
+      '<button class="lg103-abtn" data-lg103-export="csv">CSV</button>' +
+      '<button class="lg103-abtn" data-lg103-export="scr">SCR</button>' +
+      '<button class="lg103-abtn" data-lg108-act="qr-opts">🔳 QR</button>' +
+      '<button class="lg103-abtn" data-lg108-act="info-form">📝 Thông tin thửa</button></div>';
+    return bar + body + exportBar;
+  }
+  function tabMore() {
+    return '<h5>Bản đồ</h5><div class="lg103-actions">' +
+      '<button class="lg103-abtn" data-lg103-act="imagery">🛰 Lớp nền &amp; ảnh vệ tinh</button>' +
+      '<button class="lg103-abtn" data-lg103-act="compare">🕰 So sánh ảnh theo thời gian</button>' +
+      '<button class="lg103-abtn" data-lg109-act="cache">📶 Bản đồ ngoại tuyến</button></div>' +
+      '<h5>Cài đặt</h5><div class="lg103-actions">' +
+      '<button class="lg103-abtn" data-lg103-act="legacy-set">⚙ Tỉnh / KTT &amp; cài đặt</button>' +
+      '<button class="lg103-abtn" data-lg103-act="ai-key">🔑 Khoá AI</button>' +
+      '<button class="lg103-abtn" data-lg103-act="theme">🌙 Giao diện tối</button>' +
+      '<button class="lg103-abtn" data-lg103-act="backup">💾 Sao lưu / Dự án</button></div>' +
+      '<h5>Trợ giúp</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg109-act="guide">📘 Hướng dẫn vận hành</button>' +
-      '</div>' +
-      '<h5>Công cụ hệ thống</h5>' +
+      '<button class="lg103-abtn" data-lg109-act="qa">✅ Tự kiểm QA/QC</button></div>' +
+      '<details id="lg103-expert"><summary><b>Chế độ chuyên gia</b> (công cụ kỹ thuật V42 … V237)</summary>' +
       '<div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="legacy-tool">🧰 Công cụ đầy đủ</button>' +
-      '<button class="lg103-abtn" data-lg103-act="legacy-set">⚙ Cài đặt</button>' +
       '<button class="lg103-abtn" data-lg103-act="diag">Xuất nhật ký lỗi</button>' +
       '<button class="lg103-abtn" data-lg103-act="mem">Tình trạng bộ nhớ</button>' +
-      /* v123: mở thẳng bộ chẩn đoán v51. Trước đây nút .lg51-btn bị v62 gom vào
-         cuối bảng ⚙ Cài đặt (y ≈ 2280 px) nên gần như không ai bấm tới được -> bị
-         hiểu là "v51 không hoạt động". */
       '<button class="lg103-abtn" data-lg123-act="v51">🧪 Chẩn đoán v51</button>' +
-      '</div>';
+      '<button class="lg103-abtn" data-lg103-act="panel184">🛠 Bảng điều khiển nâng cấp</button>' +
+      '</div></details>';
   }
 
   // v104: nhãn Dock rút gọn tối đa 6 ký tự — 5 cột trên máy 330px chỉ rộng ~64px,
   //       nhãn dài hơn sẽ bị cắt thành "Bảng…" trông như lỗi hiển thị.
   var TABS = {
-    map:    { label: 'Bản Đồ',  icon: '🗺' },
-    coords: { label: 'Tọa Độ',  icon: '📐', render: tabCoords, title: 'Tọa độ & Diện tích' },
-    cam:    { label: 'CAM',     icon: '' },
-    edges:  { label: 'Cạnh S',  icon: '📊', render: tabEdges, title: 'Bảng cạnh ranh S' },
-    more:   { label: 'Thêm',    icon: '⋯',  render: tabMore, title: 'Xuất dữ liệu & Công cụ' }
+    map:     { label: 'Bản Đồ', icon: '🗺' },
+    plots:   { label: 'Thửa',   icon: '▤',  render: tabPlots,   title: 'Thửa đất' },
+    'import':{ label: 'Nhập sổ', icon: '＋', render: tabImport,  title: 'Nhập sổ' },
+    profile: { label: 'Hồ sơ',  icon: '📄', render: tabProfile, title: 'Hồ sơ thửa đang chọn' },
+    more:    { label: 'Thêm',   icon: '⋯',  render: tabMore,    title: 'Thêm' }
   };
+  // Hành động của các mục mới (gắn một lần vào khay nội dung)
+  function newNavAction(act, t) {
+    var legacyTabs = { 'import-qr': 'tab-qr', 'import-cad': 'tab-import', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout', 'legacy-plots': 'tab-plots' };
+    if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
+    switch (act) {
+      case 'goto-import': selectTab('import'); return true;
+      case 'plot-select': {
+        var id = t.getAttribute('data-pid');
+        try { if (typeof window.setSelectedPlotId === 'function') window.setSelectedPlotId(id); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8b1'); }
+        var pl = plotsAll().filter(function (x) { return x.id === id; })[0];
+        try { if (pl && pl.polygon && window.map) window.map.fitBounds(pl.polygon.getBounds(), { maxZoom: 20 }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8b2'); }
+        selectTab('map'); return true;
+      }
+      case 'import-cam': closeSheet(); triggerCameraScan(); return true;
+      case 'import-pick': {
+        goLegacyTab('tab-scan-ai');
+        var f = document.querySelector('#tab-scan-ai input[type=file]:not([capture])') || document.querySelector('#tab-scan-ai input[type=file]');
+        if (f) setTimeout(function () { f.click(); }, 150); return true;
+      }
+      case 'import-book': closeSheet(); if (window.LG145 && LG145.openBookTable) LG145.openBookTable(); return true;
+      case 'import-edges': closeSheet(); if (window.LG170 && LG170.open) LG170.open(); return true;
+      case 'prof-overview': case 'prof-coords': case 'prof-edges': case 'prof-photos':
+        profTab = act.slice(5); body.innerHTML = tabProfile(); return true;
+      case 'pdf': closeSheet(); { var pp = currentPlot(); if (window.LG60 && LG60.open && pp) LG60.open(pp); else if (window.LG146 && LG146.exportHSKT) LG146.exportHSKT(); } return true;
+      case 'exports-more': { var ex = document.getElementById('lg103-exports-more'); if (ex) ex.style.display = ex.style.display === 'none' ? '' : 'none'; return true; }
+      case 'photos': closeSheet(); clickIf('lg31-fab-sv'); return true;
+      case 'imagery': closeSheet(); clickIf('lg31-fab-img'); return true;
+      case 'compare': closeSheet(); clickIf('lg185-cmp-fab'); return true;
+      case 'theme': clickIf('lg185-theme-fab'); return true;
+      case 'ai-key': closeSheet(); if (typeof window.openKeyModal === 'function') window.openKeyModal(); else clickIf('btn-open-key-modal'); return true;
+      case 'backup': closeSheet(); clickIf('btn-backup-project'); return true;
+      case 'panel184': closeSheet(); clickIf('lg184-fab'); return true;
+    }
+    return false;
+  }
 
   function selectTab(key) {
     var t = TABS[key];
@@ -25932,7 +26043,6 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       if (mb) mb.setAttribute('aria-selected', 'true');
       return;
     }
-    if (key === 'cam') { triggerCameraScan(); return; }
     currentTab = key;
     openSheet(t.title || t.label, t.render ? t.render() : '', 'medium');
   }
@@ -25964,10 +26074,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     dock.setAttribute('aria-label', 'Thanh điều hướng chính');
     dock.innerHTML = Object.keys(TABS).map(function (k) {
       var t = TABS[k];
-      var fab = (k === 'cam');
+      var fab = (k === 'import');
       return '<button type="button" role="tab" aria-selected="false" class="lg103-dbtn' + (fab ? ' lg103-fabslot' : '') +
         '" data-lg103-tab="' + k + '">' +
-        (fab ? '<span id="lg103-fab" aria-hidden="true">📷</span>' : '<span class="lg103-ic" aria-hidden="true">' + t.icon + '</span>') +
+        (fab ? '<span id="lg103-fab" aria-hidden="true">＋</span>' : '<span class="lg103-ic" aria-hidden="true">' + t.icon + '</span>') +
         '<span class="lg103-lb">' + t.label + '</span></button>';
     }).join('');
     document.body.appendChild(dock);
@@ -25998,6 +26108,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         return;
       }
       var act = t.getAttribute('data-lg103-act');
+      if (act && newNavAction(act, t)) return;
       if (act === 'legacy-tool') { var bt = $('lg62-btn-tool'); if (bt) { closeSheet(); bt.click(); } }
       else if (act === 'legacy-set') { var bs = $('lg62-btn-set'); if (bs) { closeSheet(); bs.click(); } }
       else if (act === 'a4') { closeSheet(); printPlotA4(); }
