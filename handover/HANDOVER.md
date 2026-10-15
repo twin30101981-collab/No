@@ -96,3 +96,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-32 DAT_V3: Tìm theo hình (cạnh + diện tích) trong Nhập sổ: top-3 + % + lý do, chọn → tra toạ độ. Test hm32_shape; bộ đầy đủ PASS. Kế tiếp: HM-34 (S).
 - HM-34 DAT_V3: Thêm → Thửa tại vị trí của tôi (GPS + R-tree, lân cận theo sai số). Test hm34_gps; bộ đầy đủ PASS. Kế tiếp: HM-11 (index.html v43 → bản mới?), HM-11b, HM-40…
 - HM-11 DAT_V3: PWA — index.html = bản app v237 (deploy_pages.py), sw.js sinh theo phiên bản (cache shell + thông báo Có bản mới, giữ cache tile), manifest khoá dọc. Test hm11_pwa; bộ đầy đủ PASS. QUY TẮC MỚI (AUTORUN §2 bước 3): chạy deploy_pages.py sau mỗi lần sửa app. Kế tiếp: HM-11b.
+- HM-11b DAT_V3: vendor/ (xlsx, html2canvas, jsQR, jsPDF cùng byte với SRI) + SW cache; xuất PDF/Excel, quét QR chạy ngoại tuyến. Tesseract/pdfmake chưa đóng gói. Test hm11b_offline_libs; bộ đầy đủ PASS. Kế tiếp: HM-40.

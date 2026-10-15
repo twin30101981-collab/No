@@ -1622,7 +1622,19 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     'tesseract.js@5.1.1/dist/tesseract.min.js': 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F',
     'pdfmake@0.2.10/build/vfs_fonts.js': 'sha384-zmD5tDN2awbMigS/yVcxHObSsdXXKh/27Y/bSII38WfNl+D7O/aVCIteAXsLY3p3'
   };
+  /* HM-11b — bản chép cục bộ cùng byte (vendor/, SW cache sẵn) → xuất PDF/Excel, quét QR chạy được khi mất mạng sau lần mở đầu. */
+  window.LG_VENDOR = { 'xlsx.full.min.js': 'xlsx@0.18.5/dist/xlsx.full.min.js', 'html2canvas.min.js': 'html2canvas@1.4.1/dist/html2canvas.min.js', 'jsQR.js': 'jsqr@1.4.0/dist/jsQR.js', 'jspdf.umd.min.js': 'jspdf@2.5.1/dist/jspdf.umd.min.js' };
+  window.lgVendorFirst = function (list) {
+    if (!/^https?:$/.test(location.protocol)) return list;
+    for (var i = 0; i < list.length; i++) {
+      var m = /^https:\/\/(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/(.+)$/.exec(String(list[i])), f = m && Object.keys(window.LG_VENDOR).filter(function (k) { return window.LG_VENDOR[k] === m[1]; })[0];
+      if (f) return ['./vendor/' + f].concat(list);
+    }
+    return list;
+  };
   window.lgSriFor = function (url) {
+    var v = /^\.\/vendor\/([^/]+)$/.exec(String(url));
+    if (v) return (window.LG_VENDOR[v[1]] && window.LG_SRI[window.LG_VENDOR[v[1]]]) || null;
     var m = /^https:\/\/(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/(.+)$/.exec(String(url));
     return (m && window.LG_SRI[m[1]]) || null;
   };
@@ -1651,7 +1663,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     // đụng mạng thêm lần nào.
     var cd = window.__libFailedAt && window.__libFailedAt[name];
     if (cd && (Date.now() - cd.at) < 15000) return Promise.reject(cd.err);
-    var list = Array.isArray(urls) ? urls.slice() : [urls];
+    var list = window.lgVendorFirst(Array.isArray(urls) ? urls.slice() : [urls]);
     var verified = list.filter(function (u) { return window.lgSriFor(u); });
     if (verified.length) list = verified;   // HM-06: có SRI thì chỉ dùng địa chỉ có SRI
     window.__libCache[name] = new Promise(function(resolve, reject){

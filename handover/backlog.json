@@ -1439,11 +1439,11 @@
    "effort": "S",
    "model_version": "unknown",
    "model_effort_recommended": "medium",
-   "model_effort_actual": null,
+   "model_effort_actual": "medium",
    "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
    "effort_change_reason": "",
    "chi_phi_uoc_tinh_pct": 6,
-   "chi_phi_thuc_te_pct": null,
+   "chi_phi_thuc_te_pct": 3,
    "phu_thuoc": [
     "HM-11"
    ],
@@ -1456,17 +1456,20 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3 (localhost, setOffline)",
    "nhan_xac_minh": "Đã xác minh (mã)",
-   "trang_thai": "CHUA_LAM",
-   "bac_kiem_chung_dat": null,
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
    "bang_chung": {
-    "lenh": "",
-    "pass": 0,
+    "lenh": "node tests/run.js app/land-gis.html (PASS toàn bộ, 41 test); node tests/regress/hm11b_offline_libs.js",
+    "pass": 41,
     "fail": 0,
     "skip": 0,
-    "artifact": []
+    "artifact": [
+     "vendor/",
+     "tests/regress/hm11b_offline_libs.js"
+    ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "",
+   "ghi_chu_ban_giao": "vendor/ chứa xlsx 0.18.5, html2canvas 1.4.1, jsQR 1.4.0, jsPDF 2.5.1 (cùng byte với SRI đã ghim — test kiểm); loadLib ưu tiên ./vendor/ (SRI), SW cache sẵn; tên cache đổi khi vendor đổi. Tesseract (OCR dự phòng) và pdfmake vfs_fonts CHƯA đóng gói (wasm + dữ liệu ngôn ngữ lớn, nạp CDN lúc dùng) — cần mạng.",
    "zip": "",
    "can_nguoi_dung": null
   },
