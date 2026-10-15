@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1', 'landgis_ai_proxy', 'landgis_expert'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -3965,7 +3965,15 @@ function getEffectiveGeminiKey() {
 }
 
 // v39 — TÍCH HỢP CLAUDE LÀM DỰ PHÒNG: cùng cơ chế "tự mang Key cá nhân" như Gemini.
+/* HM-10b — chế độ "AI qua máy chủ": bật + đã đăng nhập ⇒ gọi Edge Function ai-proxy bằng JWT, KHÔNG cần/không gửi khoá Anthropic từ trình duyệt. */
+function lgAiProxyOn() {
+  try {
+    return localStorage.getItem('landgis_ai_proxy') === '1' && !!(window.LG172 && LG172.auth && LG172.auth.loggedIn && LG172.auth.loggedIn()) && !!(window.LG172_CFG && LG172_CFG.url);
+  } catch (e) { return false; }
+}
+window.lgAiProxyOn = lgAiProxyOn;
 function getEffectiveClaudeKey() {
+  if (lgAiProxyOn()) return '__server__';   // dấu hiệu "có quyền dùng Claude" — không phải khoá thật, không bao giờ gửi đi
   return lgKeyGet('claude_api_key');
 }
 
@@ -5484,14 +5492,22 @@ function friendlyClaudeError(err) {
 // JSON schema cứng như Gemini responseSchema) — các prompt tái dùng từ Gemini trong
 // app này đã sẵn mô tả JSON rõ ràng nên dùng lại nguyên văn được.
 async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image, schema) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
+  const viaServer = apiKey === '__server__' && lgAiProxyOn();
+  let endpoint = 'https://api.anthropic.com/v1/messages', hdr = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
-    },
+    };
+  if (viaServer) {
+    const tok = await LG172.auth.token();
+    if (!tok) { const er = new Error('Phiên đăng nhập đã hết hạn — đăng nhập lại để dùng AI qua máy chủ.'); er.kind = 'auth'; er.fatal = true; throw er; }
+    endpoint = String(LG172_CFG.url).replace(/\/+$/, '') + '/functions/v1/ai-proxy';
+    hdr = { 'Content-Type': 'application/json', 'apikey': LG172_CFG.key || '', 'Authorization': 'Bearer ' + tok };
+  }
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: hdr,
     body: JSON.stringify({
       model: modelName,
       max_tokens: LG_AI_MODELS.claudeMaxTokens,
@@ -5509,6 +5525,9 @@ async function callClaudeVisionOnce(modelName, apiKey, promptText, base64Image, 
 
   if (!response.ok) {
     const errJson = await response.json().catch(() => ({}));
+    if (viaServer && errJson && errJson.error && /^lg_/.test(errJson.error.type || '')) {   // lỗi do máy chủ trung gian của mình (đăng nhập/hạn mức/model)
+      const er = new Error(errJson.error.message || 'Máy chủ AI từ chối'); er.kind = errJson.error.type === 'lg_rate_limit' ? 'quota' : (errJson.error.type === 'lg_auth' ? 'auth' : 'server'); er.fatal = true; er.modelName = modelName; throw er;
+    }
     const info = classifyClaudeError(response.status, errJson);
     const err = new Error(info.message);
     err.kind = info.kind; err.modelName = modelName;
@@ -5534,7 +5553,7 @@ async function callClaudeVisionJSON(promptText, base64Image, schema) {
     lgAutoKeyModal('claude-nokey');
     throw new Error('Chưa có API Key Claude. Vui lòng dán Claude API Key vào mục Cấu Hình AI để dùng làm dự phòng.');
   }
-  if (window.lgIsOpaqueLocalOrigin && window.lgIsOpaqueLocalOrigin()) {
+  if (!lgAiProxyOn() && window.lgIsOpaqueLocalOrigin && window.lgIsOpaqueLocalOrigin()) {
     const e = new Error(
       'Không gọi được Claude trực tiếp khi mở file này theo kiểu "' + (location.protocol || '?') + '//…" ' +
       '— máy chủ Anthropic từ chối CORS khi trang không có địa chỉ https:// thật. ĐÂY KHÔNG PHẢI lỗi mạng, ' +
@@ -26270,6 +26289,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<h5>Cài đặt</h5>' +
       mRow('⚙', 'Tỉnh / kinh tuyến trục &amp; cài đặt', 'data-lg103-act="legacy-set"') +
       mRow('🔑', 'Khoá AI', 'data-lg103-act="ai-key"') +
+      mRow('☁', 'AI qua máy chủ', 'data-lg103-act="ai-proxy"', { sw: (localStorage.getItem('landgis_ai_proxy') === '1'), sub: 'Không giữ khoá AI trong trình duyệt · cần đăng nhập' }) +
       mRow('🌙', 'Giao diện tối', 'data-lg103-act="theme"', { sw: dark }) +
       mRow('💾', 'Sao lưu dự án (.landgis)', 'data-lg103-act="backup"') +
       mRow('🗑', 'Thùng rác thửa (30 ngày)', 'data-lg103-act="trash"') +
@@ -26336,6 +26356,15 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
+      case 'ai-proxy': {
+        var on0 = localStorage.getItem('landgis_ai_proxy') === '1';
+        if (!on0) {
+          if (!(window.LG172 && LG172.auth && LG172.auth.loggedIn())) { try { window.toast({ title: 'Cần đăng nhập trước', description: 'Mở Thêm → Quản lý thửa, đăng nhập bằng email + mã OTP rồi bật lại.', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h10b1'); } return true; }
+          localStorage.setItem('landgis_ai_proxy', '1');
+          try { if (window.lgKeyGet && lgKeyGet('claude_api_key') && confirm('Đã bật AI qua máy chủ. Xoá khoá Claude đang lưu trên máy này để không còn khoá nào trong trình duyệt?')) lgKeySet('claude_api_key', ''); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h10b2'); }
+        } else localStorage.removeItem('landgis_ai_proxy');
+        body.innerHTML = tabMore(); return true;
+      }
       case 'ai-key': closeSheet(); if (typeof window.openKeyModal === 'function') window.openKeyModal(); else clickIf('btn-open-key-modal'); return true;
       case 'backup': closeSheet(); clickIf('btn-backup-project'); return true;
       case 'panel184': closeSheet(); clickIf('lg184-fab'); return true;
