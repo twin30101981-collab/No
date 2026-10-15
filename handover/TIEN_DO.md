@@ -11,3 +11,4 @@
 - 15/10 · P02 · HM-00c ĐẠT V3: nhập dự án không còn xoá dữ liệu khi file hỏng; thay thế có bản sao + hoàn tác.
 - 15/10 · P02 · HM-06d ĐẠT V3: chọn 'khoá chỉ trong phiên' được nhớ, bật là xoá mọi bản khoá lâu dài, tab mới không dùng lại khoá cũ.
 - 15/10 · P02 · HM-06 (phần mã) ĐẠT V3: SRI cho 6 thư viện, ghim tesseract 5.1.1, cảnh báo khoá; chờ bạn: kiểm RLS + file SheetJS 0.20.3.
+- 15/10 · P02 · HM-06c (phần mã) ĐẠT V3: CSDL cần đăng nhập OTP, xoá mềm + thùng rác; chờ bạn chạy SQL trên Supabase (VIEC_CUA_BAN mục 7).
