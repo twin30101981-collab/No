@@ -1026,7 +1026,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   "CAN_THO": { name: "Cần Thơ", lon0: 105.00, lat: 10.03, lng: 105.78 },
   "CAO_BANG": { name: "Cao Bằng", lon0: 105.75, lat: 22.67, lng: 106.26 },
   "DA_NANG": { name: "Đà Nẵng", lon0: 107.75, lat: 16.07, lng: 108.22 },
-  "DAK_LAK": { name: "Đắc Lắk", lon0: 108.50, lat: 12.67, lng: 108.04 },
+  "DAK_LAK": { name: "Đắk Lắk", lon0: 108.50, lat: 12.67, lng: 108.04 },
   "DAK_NONG": { name: "Đắk Nông", lon0: 108.50, lat: 12.00, lng: 107.68 },
   "DIEN_BIEN": { name: "Điện Biên", lon0: 103.00, lat: 21.38, lng: 103.02 },
   "DONG_NAI": { name: "Đồng Nai", lon0: 107.75, lat: 11.05, lng: 107.18 },
@@ -3398,7 +3398,7 @@ const VN2000_PROVINCES = {
   "CAN_THO": { name: "Cần Thơ", lon0: 105.00, lat: 10.03, lng: 105.78 },
   "CAO_BANG": { name: "Cao Bằng", lon0: 105.75, lat: 22.67, lng: 106.26 },
   "DA_NANG": { name: "Đà Nẵng", lon0: 107.75, lat: 16.07, lng: 108.22 },
-  "DAK_LAK": { name: "Đắc Lắk", lon0: 108.50, lat: 12.67, lng: 108.04 },
+  "DAK_LAK": { name: "Đắk Lắk", lon0: 108.50, lat: 12.67, lng: 108.04 },
   "DAK_NONG": { name: "Đắk Nông", lon0: 108.50, lat: 12.00, lng: 107.68 },
   "DIEN_BIEN": { name: "Điện Biên", lon0: 103.00, lat: 21.38, lng: 103.02 },
   "DONG_NAI": { name: "Đồng Nai", lon0: 107.75, lat: 11.05, lng: 107.18 },
@@ -36091,10 +36091,66 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
   // Địa bàn cũ giữ nguyên KTT sau sáp nhập 1/7/2025 -> ưu tiên mã CŨ.
   var LEGACY_PREFER = { 'nam định': 'NAM_DINH', 'hà nam': 'HA_NAM', 'ninh bình': 'NINH_BINH' };
 
+  /* ---- HM-04b — KTT theo địa giới hành chính MỚI (sau 1/7/2025) ----
+     Quy tắc: (1) dòng “KTT …/Kinh tuyến trục …” in trên sổ được ƯU TIÊN tuyệt đối; (2) tỉnh/thành mới gồm nhiều địa bàn cũ
+     có KTT KHÁC NHAU → xác định theo tên phường/xã/huyện cũ (từ khoá); (3) không xác định được → HỎI người dùng chọn địa bàn
+     cũ, KHÔNG tự đoán; (4) các địa bàn cũ cùng KTT → chốt luôn. */
+  var KTT_RE = /(?:kinh\s*tuy[eế]n\s*tr[uụ]c|\bktt\b)\s*[:=\-]?\s*(\d{2,3}(?:[.,]\d+)?)\s*(?:°|º|độ|o)?\s*(?:(\d{1,2})\s*(?:'|′|’|phút|p\b)?)?/i;
+  LG146.kttFromText = function (txt) {
+    var m = KTT_RE.exec(String(txt || '')); if (!m) return null;
+    var v = parseFloat(m[1].replace(',', '.')) + (m[2] ? parseInt(m[2], 10) / 60 : 0);
+    return (v >= 102 && v <= 110) ? Math.round(v * 100) / 100 : null;
+  };
+  function fmtKtt(v) { var d = Math.floor(v + 1e-9), mi = Math.round((v - d) * 60); return d + '°' + (mi < 10 ? '0' : '') + mi + '′'; }
+  LG146.fmtKtt = fmtKtt;
+  LG146.resolveAddress = function (addr) {
+    var kt = LG146.kttFromText(addr);
+    if (kt != null) return { status: 'ok', key: null, prov: null, lon0: kt, source: 'in_tren_so' };
+    var txt = norm(addr).replace(/đắc/g, 'đắk').replace(/[.,;|]/g, ' ');
+    var re = /(?:t[ìiỉ]nh|th[àa]nh ph[ốo]|tp)\s+([a-zà-ỹđ\s]{2,25})/g, m, hits = [];
+    while ((m = re.exec(txt))) hits.push({ nm: norm(m[1]), span: m[0] });
+    var G = null; try { G = MERGED_PROVINCE_GROUPS; } catch (e) { G = null; }
+    for (var i = hits.length - 1; G && i >= 0; i--) {
+      var nm = hits[i].nm;
+      for (var gi = 0; gi < G.length; gi++) {
+        var gn = norm(G[gi].newName).replace(/^tp\.?\s+/, '');
+        if (nm === gn || nm.indexOf(gn) === 0 || nm.slice(-gn.length) === gn) {
+          var g = G[gi], rest = txt.replace(hits[i].span, ' ');     // bỏ cụm cấp tỉnh để từ khoá phường/xã quyết định
+          var r = (typeof lgResolveLegacyZoneByAddress === 'function') ? lgResolveLegacyZoneByAddress(rest, g) : null;
+          var tb = provTable();
+          if (r && r.prov) return { status: 'ok', key: r.key, name: r.matched, prov: r.prov, lon0: r.prov.lon0, source: 'dia_ban_cu', group: g };
+          var opts = g.members.filter(function (mm) { return tb[mm.key]; }).map(function (mm) { return { key: mm.key, name: tb[mm.key].name, lon0: tb[mm.key].lon0 }; });
+          var same = opts.every(function (o) { return Math.abs(o.lon0 - opts[0].lon0) < 1e-6; });
+          if (same && opts.length) return { status: 'ok', key: opts[0].key, name: gn, prov: tb[opts[0].key], lon0: opts[0].lon0, source: 'cung_ktt', group: g };
+          return { status: 'ask', key: null, prov: null, group: g, options: opts };
+        }
+      }
+    }
+    return { status: 'none' };
+  };
+  LG146.askLegacy = function (group, options) {
+    if (typeof window.LG146_ASK_OVERRIDE === 'function') return Promise.resolve(window.LG146_ASK_OVERRIDE(group, options));
+    return new Promise(function (resolve) {
+      var w = document.createElement('div'); w.id = 'lg146-ask';
+      w.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100050;display:flex;align-items:center;justify-content:center;padding:12px';
+      var html = '<div style="background:#fff;border-radius:12px;padding:14px;max-width:420px;width:100%"><b>Địa chỉ thuộc ' + (group.newName || 'tỉnh/thành mới') + ' (đã sáp nhập)</b>' +
+        '<p style="margin:6px 0 10px;font-size:13px">Các địa bàn cũ dùng kinh tuyến trục khác nhau. Sổ đỏ ghi địa bàn nào? (không tự đoán)</p>';
+      options.forEach(function (o, i) { html += '<button type="button" data-i="' + i + '" style="display:block;width:100%;margin:4px 0;padding:10px;border-radius:8px;border:1px solid #0f4c34;background:#fff;font-weight:600">' + o.name + ' — KTT ' + fmtKtt(o.lon0) + '</button>'; });
+      html += '<button type="button" data-i="-1" style="margin-top:6px;padding:8px 12px;border-radius:8px;border:0;background:#eee">Bỏ qua</button></div>';
+      w.innerHTML = html; document.body.appendChild(w);
+      w.addEventListener('click', function (e) { var b = e.target.closest('button[data-i]'); if (!b) return; var i = +b.dataset.i; w.remove(); resolve(i >= 0 ? options[i].key : null); });
+    });
+  };
   LG146.provinceFromAddress = function (addr) {
-    var t = norm(addr).replace(/[.,;|]/g, ' ');
+    var r = LG146.resolveAddress(addr);
+    if (r.status === 'ok') return { key: r.key, name: r.name, prov: r.prov, lon0: r.lon0, source: r.source };
+    if (r.status === 'ask') return { key: null, prov: null, ask: true, group: r.group, options: r.options, lon0: null };
+    return LG146.provinceByName(addr);
+  };
+  LG146.provinceByName = function (addr) {
+    var t = norm(addr).replace(/đắc/g, 'đắk').replace(/[.,;|]/g, ' ');
     if (!t) return null;
-    var re = /(?:t[ìi]nh|th[àa]nh ph[ốo]|tp)\s+([a-zà-ỹđ\s]{2,25})/g, m, names = [];
+    var re = /(?:t[ìiỉ]nh|th[àa]nh ph[ốo]|tp)\s+([a-zà-ỹđ\s]{2,25})/g, m, names = [];
     while ((m = re.exec(t))) names.push(norm(m[1]));
     if (!names.length) return null;
     var tbl = provTable(), best = null;
@@ -36136,6 +36192,14 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
   // Ghi đè bộ chọn tỉnh (thay LG145.fixProvince vốn tra window.VN2000_PROVINCES = rỗng).
   LG146.applyProvince = function (addr) {
     var hit = LG146.provinceFromAddress(addr);
+    if (hit && hit.ask) {      // HM-04b: nhiều KTT, không xác định được → hỏi người dùng, KHÔNG tự đoán
+      LG146.askLegacy(hit.group, hit.options).then(function (key) {
+        if (!key) { log('người dùng bỏ qua chọn địa bàn cũ — giữ nguyên KTT hiện tại'); return; }
+        var o = hit.options.filter(function (x) { return x.key === key; })[0];
+        LG146.applyHit({ key: key, prov: provTable()[key], lon0: o.lon0 });
+      });
+      return null;
+    }
     if (!hit) {
       var g = window.LG144 && window.LG144.lon0FromText ? window.LG144.lon0FromText(addr) : null;
       if (!g) return null;
@@ -36143,7 +36207,11 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
       hit = tb[g.prov] ? { key: g.prov, prov: tb[g.prov], lon0: g.lon0 } : null;
       if (!hit) return null;
     }
+    return LG146.applyHit(hit);
+  };
+  LG146.applyHit = function (hit) {
     ['province-select', 'manual-province-select'].forEach(function (id) {
+      if (!hit.key) return;      // KTT đọc thẳng từ sổ: không có mã tỉnh để chọn
       var sel = document.getElementById(id);
       if (!sel) return;
       var has = Array.prototype.some.call(sel.options, function (o) { return o.value === hit.key; });
@@ -36170,8 +36238,8 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
       if (q.meta) { q.meta.provCode = hit.key; q.meta.lon0 = hit.lon0; }
       if (typeof window.redrawPlotWith === 'function') window.redrawPlotWith(q.id, hit.lon0, q.zone || 3);
     }
-    log('chốt tỉnh theo sổ: ' + hit.key + ' (KTT ' + hit.lon0 + '°)');
-    return hit.key;
+    log('chốt tỉnh theo sổ: ' + (hit.key || 'KTT in trên sổ') + ' (KTT ' + hit.lon0 + '°)');
+    return hit.key || String(hit.lon0);
   };
   safe(function () {
     if (window.LG145) window.LG145.fixProvince = function (addr) { return LG146.applyProvince(addr); };
