@@ -63,3 +63,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08i DAT_V3: Màn Thửa mới (ảo hoá 500 thửa, tìm, lọc Đạt/Không đạt/Chưa GCN, đồng bộ). Kế tiếp: HM-08c.
 - HM-08c DAT_V3: màn Bản đồ mới (ô tìm, chip, 2 nút tròn, thẻ thửa sheet, không chồng lớp nửa dưới). Kế tiếp: HM-08d (luồng Nhập sổ 3 bước), HM-08e.
 - HM-08d DAT_V3: luồng Nhập bảng kê 3 bước (Mẫu A/B hết luồng 390 px, footer không bị che). Phần ảnh/camera chưa nối vào bước 2. Kế tiếp: HM-08e.
+- HM-08g DAT_V3: xoá có Hoàn tác 6 s + Thùng rác 30 ngày bền + xoá tất cả 2 bước. Kế tiếp theo thứ tự: HM-08e (M), HM-09, HM-09b, HM-10…
