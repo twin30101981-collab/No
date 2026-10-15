@@ -54,3 +54,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-06c CHO_NGUOI_DUNG (phần mã xong, test giả lập): OTP + token + xoá mềm/Thùng rác; SQL ở handover/supabase/06c_auth_rls.sql. Kế tiếp: HM-04.
 - HM-04 DAT_V3: một lõi hình học (lgCoreArea → LGCore.Geometry) + một định nghĩa proj4 + API bắc/đông có kiểm phạm vi. Kế tiếp: HM-43, HM-04b.
 - HM-43 DAT_V3: LGCore.Geometry.validate + hồ sơ chỉ ghi HỢP LỆ khi qua hết; gỡ nốt ngưỡng diện tích rời (LG.compare, checkAgainstBook). Kế tiếp: HM-04b.
+- HM-04b DAT_V3: KTT theo địa bàn cũ sau sáp nhập + hỏi người dùng khi không rõ + ưu tiên dòng KTT trên sổ. Kế tiếp: HM-08a.
