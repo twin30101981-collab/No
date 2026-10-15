@@ -56,3 +56,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-43 DAT_V3: LGCore.Geometry.validate + hồ sơ chỉ ghi HỢP LỆ khi qua hết; gỡ nốt ngưỡng diện tích rời (LG.compare, checkAgainstBook). Kế tiếp: HM-04b.
 - HM-04b DAT_V3: KTT theo địa bàn cũ sau sáp nhập + hỏi người dùng khi không rõ + ưu tiên dòng KTT trên sổ. Kế tiếp: HM-08a.
 - HM-08a DAT_V3: token --lg-dock-clear + 1 toast/lớp + theme FAB nằm trên dock; chạm 5 nút dock luôn trúng (360/390/430). Còn: thang z-index thống nhất, gộp 2 lớp toast. Kế tiếp: HM-07a.
+- HM-07a DAT_V3: LG_TIMERS (đăng ký bộ đếm/observer/GPS), ẩn app thì ngủ, DOM nhàn rỗi −69%. Kế tiếp: HM-07b (rail/dock).

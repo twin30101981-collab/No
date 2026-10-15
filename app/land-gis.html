@@ -242,6 +242,87 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   };
 })();
 </script>
+<script id="lg-timers-registry">
+/* HM-07a — ĐĂNG KÝ BỘ ĐẾM / OBSERVER / GPS CHẠY NỀN. Trước đây ~60 setInterval + 25 MutationObserver chạy mãi, kể cả khi
+   ẩn app, và không ai biết cái nào của khối nào. Nay: mọi setInterval/MutationObserver/watchPosition đi qua đây (ghi
+   nơi tạo + số lần chạy), có bảng thống kê LG_TIMERS.table(); khi ẩn app (visibilitychange) bộ đếm chu kỳ < 5 giây
+   NGỦ (không chạy callback) và GPS tạm dừng, trở lại thì chạy/đăng ký lại. Đặt LG_RUN_HIDDEN = true để tắt việc ngủ. */
+(function () {
+  'use strict';
+  if (window.LG_TIMERS) return;
+  var rawSI = window.setInterval.bind(window), rawCI = window.clearInterval.bind(window), RawMO = window.MutationObserver;
+  var timers = {}, observers = [], watches = {}, wseq = 0, HIDE_BELOW_MS = 5000;
+  function site() {
+    try {
+      var ls = (new Error()).stack.split('\n');
+      var m = /:(\d+):\d+\)?$/.exec(ls[3] || '');   // 0=Error, 1=site, 2=hàm bọc, 3=nơi gọi thật
+      if (m) return 'L' + m[1];
+    } catch (e) { /* bỏ qua */ }
+    return '?';
+  }
+  function bucket(ms) { return ms <= 500 ? '≤0,5 s' : ms <= 1000 ? '≤1 s' : ms <= 2000 ? '≤2 s' : ms <= 5000 ? '≤5 s' : '>5 s'; }
+  window.setInterval = function (fn, ms) {
+    var rest = Array.prototype.slice.call(arguments, 2), info = { site: site(), ms: +ms || 0, calls: 0, skipped: 0 };
+    var wrapped = fn;
+    if (typeof fn === 'function') {
+      wrapped = function () {
+        if (document.hidden && !window.LG_RUN_HIDDEN && info.ms < HIDE_BELOW_MS) { info.skipped++; return; }
+        info.calls++; return fn.apply(this, arguments);
+      };
+    }
+    var id = rawSI.apply(null, [wrapped, ms].concat(rest)); timers[id] = info; return id;
+  };
+  window.clearInterval = function (id) { delete timers[id]; return rawCI(id); };
+  if (RawMO) {
+    window.MutationObserver = function (cb) {
+      var info = { site: site(), runs: 0, records: 0, live: true };
+      observers.push(info);
+      var o = new RawMO(function (ms, self) { info.runs++; info.records += ms.length; return cb.call(this, ms, self); });
+      var dis = o.disconnect.bind(o); o.disconnect = function () { info.live = false; return dis(); };
+      return o;
+    };
+    window.MutationObserver.prototype = RawMO.prototype;
+  }
+  // GPS: mỗi watchPosition có clearWatch tương ứng; ẩn app thì tạm dừng, hiện lại thì đăng ký lại (id gọi hàm giữ nguyên)
+  try {
+    var g = navigator.geolocation;
+    if (g && g.watchPosition) {
+      var rawW = g.watchPosition.bind(g), rawC = g.clearWatch.bind(g);
+      g.watchPosition = function (ok, err, opt) { var id = ++wseq; var w = watches[id] = { ok: ok, err: err, opt: opt, real: rawW(ok, err, opt), site: site(), paused: false }; return id; };
+      g.clearWatch = function (id) { var w = watches[id]; if (w) { if (w.real != null) rawC(w.real); delete watches[id]; } else rawC(id); };
+      document.addEventListener('visibilitychange', function () {
+        Object.keys(watches).forEach(function (id) {
+          var w = watches[id];
+          if (document.hidden && !window.LG_RUN_HIDDEN && w.real != null) { rawC(w.real); w.real = null; w.paused = true; }
+          else if (!document.hidden && w.paused) { w.real = rawW(w.ok, w.err, w.opt); w.paused = false; }
+        });
+      });
+    }
+  } catch (e) { /* trình duyệt không có geolocation */ }
+  // classList.add/remove/toggle trên trạng thái sẵn có vẫn ghi “thay đổi” DOM và kích mọi observer (vòng tự kích): bỏ qua thao tác thừa
+  try {
+    var DTL = DOMTokenList.prototype, nAdd = DTL.add, nRem = DTL.remove, nTog = DTL.toggle;
+    DTL.add = function () { for (var i = 0; i < arguments.length; i++) if (!this.contains(arguments[i])) return nAdd.apply(this, arguments); };
+    DTL.remove = function () { for (var i = 0; i < arguments.length; i++) if (this.contains(arguments[i])) return nRem.apply(this, arguments); };
+    DTL.toggle = function (t, force) { var has = this.contains(t); if (force !== undefined && !!force === has) return has; return nTog.apply(this, arguments); };
+  } catch (e) { /* trình duyệt cũ: giữ nguyên */ }
+  // chỉ đổi class khi thật sự khác — classList.toggle/add trên trạng thái sẵn có vẫn ghi lại một “thay đổi” DOM và kích mọi observer
+  window.lgSetClass = function (el, cls, on) { on = !!on; if (el && el.classList.contains(cls) !== on) el.classList.toggle(cls, on); };
+  window.LG_TIMERS = {
+    stats: function () {
+      var groups = {}, ids = Object.keys(timers);
+      ids.forEach(function (id) { var b = bucket(timers[id].ms); groups[b] = (groups[b] || 0) + 1; });
+      return { intervals: ids.length, byPeriod: groups, observers: observers.filter(function (o) { return o.live; }).length, watches: Object.keys(watches).length, hidden: !!document.hidden };
+    },
+    table: function () {
+      var rows = Object.keys(timers).map(function (id) { var t = timers[id]; return { loai: 'interval', noi: t.site, chuKyMs: t.ms, chay: t.calls, ngu: t.skipped, nhom: bucket(t.ms) }; });
+      observers.forEach(function (o) { rows.push({ loai: 'observer', noi: o.site, chay: o.runs, banGhi: o.records, song: o.live }); });
+      Object.keys(watches).forEach(function (id) { rows.push({ loai: 'gps', noi: watches[id].site, tamDung: watches[id].paused }); });
+      return rows.sort(function (a, b) { return (b.chay || 0) - (a.chay || 0); });
+    }
+  };
+})();
+</script>
 <script>
 (function () {
   'use strict';
@@ -21805,8 +21886,11 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
         el.setAttribute('data-lg62-rail', '1');
       }, 'rail ' + id);
     });
-    safe(function () {                    // giữ đúng thứ tự yêu cầu
-      KEEP.forEach(function (id) { var e = $(id); if (e && e.parentNode === els.rail) els.rail.appendChild(e); });
+    safe(function () {                    // giữ đúng thứ tự yêu cầu — HM-07a: chỉ sắp lại khi thứ tự THẬT SỰ lệch (trước đây append lại mỗi 650 ms → hàng trăm thay đổi DOM/10 s)
+      var want = KEEP.map($).filter(function (e) { return e && e.parentNode === els.rail; });
+      var have = Array.prototype.filter.call(els.rail.children, function (c) { return want.indexOf(c) >= 0; });
+      var same = want.length === have.length && want.every(function (e, i) { return e === have[i]; });
+      if (!same) want.forEach(function (e) { els.rail.appendChild(e); });
     }, 'rail-order');
   }
 
@@ -28344,7 +28428,7 @@ body.lg62.lg103 .lg-zoomctrl{ z-index:1100 !important; }
     try {
       var pan = document.getElementById('plot-info-panel');
       var open = !!(pan && /\bopen\b/.test(pan.className || '') && pan.getBoundingClientRect().height > 40);
-      document.body.classList.toggle('lg112-pip-open', open);
+      lgSetClass(document.body, 'lg112-pip-open', open);
     } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q350'); }
   }
   try {
@@ -31776,7 +31860,7 @@ body.lg125-modal-open{ overflow:hidden; }
         document.querySelectorAll('.lg67-sheet').forEach(function (n) { if (n.parentNode) n.parentNode.removeChild(n); });
         var r = document.getElementById('lg67-real-modal'); if (r && r.parentNode) r.parentNode.removeChild(r);
         var m = document.getElementById('lg68-modal');
-        document.body.classList.toggle('lg125-modal-open', !!(m && m.offsetParent !== null));
+        lgSetClass(document.body, 'lg125-modal-open', !!(m && m.offsetParent !== null));
       });
     });
     mo.observe(document.body, { childList: true, subtree: false });
@@ -31799,7 +31883,7 @@ body.lg125-modal-open{ overflow:hidden; }
     function sync() {
       var p = document.getElementById('plot-info-panel');
       var open = !!(p && p.offsetParent !== null && p.getBoundingClientRect().width > 0);
-      document.body.classList.toggle('lg125-panel-open', open);
+      lgSetClass(document.body, 'lg125-panel-open', open);
       if (!open) document.body.classList.remove('lg125-stack-open');
     }
     setInterval(sync, 400); sync();
@@ -36063,9 +36147,9 @@ body.lg178-basemap-has-labels .lg116-poi.is-road{ display:none !important; }
     // Chỉ cho nhãn Overpass hiện khi TẤT CẢ lớp tile đang bật đều được xác định
     // chắc chắn là ảnh vệ tinh thuần. Trường hợp không rõ thì ưu tiên chống đè chữ.
     var hasLabels = active.length === 0 || hasKnownLabel || hasUnknown;
-    document.body.classList.toggle('lg178-basemap-has-labels', hasLabels);
+    lgSetClass(document.body, 'lg178-basemap-has-labels', hasLabels);
     // Giữ tương thích lớp v176 để các bản vá cũ không giành quyền hiển thị lại.
-    document.body.classList.toggle('lg176-labeled-basemap', hasLabels);
+    lgSetClass(document.body, 'lg176-labeled-basemap', hasLabels);
     LG178.basemap = { active: active.length, hasLabels: hasLabels };
     return true;
   }
@@ -37967,7 +38051,7 @@ html body .leaflet-tooltip.lg138-lbl{
     // Không xác định được lớp nền -> mặc định coi như ĐÃ có nhãn (an toàn
     // hơn, tránh vẽ trùng), chỉ tắt hẳn khi biết chắc là ảnh vệ tinh thuần.
     var labeled = key ? !UNLABELED_KEYS[key] : true;
-    document.body.classList.toggle('lg176-labeled-basemap', labeled);
+    lgSetClass(document.body, 'lg176-labeled-basemap', labeled);
   }
   function boot2(tries) {
     var m = getMap();
