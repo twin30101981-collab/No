@@ -191,7 +191,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
      CCCD; bản sao hỏng quá 30 ngày). KHÔNG BAO GIỜ đụng vào KEEP_KEYS = dữ liệu & cấu hình người dùng. */
   var KEEP_KEYS = ['land_gis_v18_cache', 'landgis_label_flags', 'lgv80_config', 'land_gis_towgs84', 'land_gis_base_layer_key',
     'land_gis_base_layer_name', 'landgis_surveyor_name', 'landgis_audit_log_v1', 'landgis_sv_key', 'landgis_gemini_working_model',
-    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1', 'landgis_ai_proxy', 'landgis_expert'];
+    'landgis_claude_model', 'landgis_bing_key', 'landgis_schema_version', 'landgis_undo_import', 'landgis_key_session_pref', 'landgis_trash_v1', 'landgis_ai_proxy', 'landgis_expert', 'landgis_mask_id', 'landgis_gr_labels', 'landgis_vibrate_m'];
   var STALE_KEYS = ['landgis_v42_diag_log', 'landgis_v87_log', 'lgv80_log'];
   function cleanupLegacy() {
     var removed = [], now = Date.now(), MONTH = 30 * 86400000;
@@ -3193,6 +3193,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
             <div style="font-size:var(--lg-fs-num);font-weight:700;color:var(--accent)" id="stakeout-dist">0.0 m</div>
             <div class="small muted" id="stakeout-bearing">Phương vị: 0°</div>
             <div id="stakeout-proximity-msg" class="small bold" style="margin-top:6px;color:#2e7d32"></div>
+            <label class="small" style="display:block;margin-top:8px">Rung báo khi cách mốc dưới (m, 0 = tắt)
+              <input type="number" id="stakeout-vib" min="0" step="0.5" value="1" inputmode="decimal" style="width:80px"></label>
           </div>
         </section>
       </div>
@@ -3972,6 +3974,44 @@ function lgAiProxyOn() {
   } catch (e) { return false; }
 }
 window.lgAiProxyOn = lgAiProxyOn;
+/* HM-14 — che số CCCD/CMND khi in/xuất (tuỳ chọn; mặc định TẮT = giữ hành vi cũ): chỉ hiện 3 ký tự cuối. */
+window.lgMaskOn = function () { try { return localStorage.getItem('landgis_mask_id') === '1'; } catch (e) { return false; } };
+window.lgMaskId = function (v) {
+  if (v == null || v === '' || !window.lgMaskOn()) return v;
+  return String(v).replace(/[0-9A-Za-z]{4,}/g, function (t) { return '•'.repeat(t.length - 3) + t.slice(-3); });
+};
+/* HM-15 — chia sẻ hồ sơ PDF qua bảng chia sẻ của điện thoại (Web Share API, gửi file); máy không hỗ trợ → tải file như cũ. */
+window.lgShareOrDownload = async function (blob, name) {
+  const file = new File([blob], name, { type: 'application/pdf' });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) { await navigator.share({ files: [file], title: 'Hồ sơ thửa đất', text: 'Hồ sơ kỹ thuật thửa đất' }); return 'shared'; }
+  } catch (e) { if (e && e.name === 'AbortError') return 'cancelled'; window.lgQuiet && window.lgQuiet(e, 'h15a'); }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  return 'downloaded';
+};
+/* HM-16 — giữ màn hình sáng khi dẫn đường/cắm mốc (Screen Wake Lock) + rung khi gần mốc; nhả khi tắt dẫn đường. */
+window.lgWake = (function () {
+  var lock = null, want = false, lastBuzz = 0;
+  function acquire() { if (!want || lock || !navigator.wakeLock || document.visibilityState !== 'visible') return Promise.resolve(false); return navigator.wakeLock.request('screen').then(function (l) { lock = l; l.addEventListener('release', function () { if (lock === l) lock = null; }); return true; }).catch(function (e) { window.lgQuiet && window.lgQuiet(e, 'h16a'); return false; }); }
+  document.addEventListener('visibilitychange', function () { if (want && document.visibilityState === 'visible') acquire(); });
+  return {
+    on: function () { want = true; return acquire(); },
+    off: function () { want = false; var l = lock; lock = null; try { if (l && l.release) return l.release(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16b'); } return Promise.resolve(); },
+    active: function () { return want; },
+    threshold: function () { var el = document.getElementById('stakeout-vib'), v = el ? parseFloat(el.value) : NaN; if (!isFinite(v)) { try { v = parseFloat(localStorage.getItem('landgis_vibrate_m')); } catch (e) { v = NaN; } } return isFinite(v) ? v : 1; },
+    buzz: function (dist) {
+      var th = this.threshold(); if (!(th > 0) || !(dist < th) || !navigator.vibrate) return false;
+      var now = Date.now(); if (now - lastBuzz < 1500) return false; lastBuzz = now; return navigator.vibrate(dist < 0.5 ? [200, 80, 200] : 120);
+    }
+  };
+})();
+window.lgSharePlotPdf = function () {
+  return new Promise(function (res) {
+    if (typeof window.lg32ExportPDF !== 'function') return res('unavailable');
+    window.__lgPdfSink = function (blob, name) { window.lgShareOrDownload(blob, name).then(res); };
+    Promise.resolve(window.lg32ExportPDF()).then(function () { setTimeout(function () { if (window.__lgPdfSink) { window.__lgPdfSink = null; res('failed'); } }, 200); });
+  });
+};
 function getEffectiveClaudeKey() {
   if (lgAiProxyOn()) return '__server__';   // dấu hiệu "có quyền dùng Claude" — không phải khoá thật, không bao giờ gửi đi
   return lgKeyGet('claude_api_key');
@@ -10063,6 +10103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // hao pin và giữ quyền GPS. Dọn dẹp khi trang bị gỡ.
   window.addEventListener('pagehide', () => {
     if (stakeoutWatchId) { navigator.geolocation.clearWatch(stakeoutWatchId); stakeoutWatchId = null; }
+    try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16h'); }
   });
 
   // v24: các nút mới (tìm kiếm, hoàn tác, xuất dữ liệu, tham số towgs84)
@@ -10534,7 +10575,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (stakeoutWatchId) {
       navigator.geolocation.clearWatch(stakeoutWatchId);
-      stakeoutWatchId = null;
+      stakeoutWatchId = null; try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16c'); }
       document.getElementById('stakeout-panel').style.display = 'none';
       btnStake.textContent = '🧭 Bật Dẫn Đường GPS RTK';
       btnStake.classList.remove('danger');
@@ -10565,6 +10606,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnStake.textContent = '⏹ Tắt Dẫn Đường GPS RTK';
     btnStake.classList.add('danger');
     toast({ title: 'Đã bật dẫn đường GPS RTK', description: `Mốc target: ${targetPt.ten}` });
+    try { window.lgWake && window.lgWake.on(); const vi = document.getElementById('stakeout-vib'); if (vi && !vi.__lg16) { vi.__lg16 = 1; try { const sv = localStorage.getItem('landgis_vibrate_m'); if (sv != null && sv !== '') vi.value = sv; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16d'); } vi.addEventListener('change', () => { try { localStorage.setItem('landgis_vibrate_m', vi.value); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16e'); } }); } } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16f'); }
 
     stakeoutWatchId = navigator.geolocation.watchPosition(
       pos => {
@@ -10591,6 +10633,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('stakeout-arrow').style.transform = `rotate(${arrowRot}deg)`;
 
         playStakeoutGeigerBeep(dist);
+        try { window.lgWake && window.lgWake.buzz(dist); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16g'); }
 
         const msgEl = document.getElementById('stakeout-proximity-msg');
         if (dist <= 0.5) {
@@ -13766,7 +13809,7 @@ async function lgOfflineRefreshUI(){
         <tr><td style="border:1px solid #999;padding:6px">Diện tích</td><td style="border:1px solid #999;padding:6px"><b>${areaDual}</b></td>
             <td style="border:1px solid #999;padding:6px">Chu vi</td><td style="border:1px solid #999;padding:6px">${p.perimeter.toFixed(2)} m</td></tr>
         <tr><td style="border:1px solid #999;padding:6px">Địa chỉ</td><td colspan="3" style="border:1px solid #999;padding:6px">${escapeHtml([m.dia_chi, m.phuong_xa, m.quan_huyen, m.tinh_thanh].filter(Boolean).join(', ') || (window.lgMetaValueText ? window.lgMetaValueText(p, '__dia_chi', null) : 'Chưa kiểm định'))}</td></tr>
-        <tr><td style="border:1px solid #999;padding:6px">Người sử dụng đất</td><td colspan="3" style="border:1px solid #999;padding:6px">${escapeHtml(m.chu_su_dung || (window.lgAiFallback ? window.lgAiFallback(p, 'chu_su_dung') : 'Chưa kiểm định'))}${m.cccd_cmnd ? ` (CCCD/CMND: ${escapeHtml(m.cccd_cmnd)})` : ''}</td></tr>
+        <tr><td style="border:1px solid #999;padding:6px">Người sử dụng đất</td><td colspan="3" style="border:1px solid #999;padding:6px">${escapeHtml(m.chu_su_dung || (window.lgAiFallback ? window.lgAiFallback(p, 'chu_su_dung') : 'Chưa kiểm định'))}${m.cccd_cmnd ? ` (CCCD/CMND: ${escapeHtml(window.lgMaskId ? window.lgMaskId(m.cccd_cmnd) : m.cccd_cmnd)})` : ''}</td></tr>
         ${(m.muc_dich_su_dung || m.thoi_han_su_dung || m.nguon_goc_su_dung) ? `<tr><td style="border:1px solid #999;padding:6px">Mục đích SD</td><td style="border:1px solid #999;padding:6px">${escapeHtml(m.muc_dich_su_dung || (window.lgAiFallback ? window.lgAiFallback(p, 'muc_dich_su_dung') : 'Chưa kiểm định'))}</td>
             <td style="border:1px solid #999;padding:6px">Thời hạn SD</td><td style="border:1px solid #999;padding:6px">${escapeHtml(m.thoi_han_su_dung || (window.lgAiFallback ? window.lgAiFallback(p, 'thoi_han_su_dung') : 'Chưa kiểm định'))}</td></tr>` : ''}
         ${m.nguon_goc_su_dung ? `<tr><td style="border:1px solid #999;padding:6px">Nguồn gốc SD</td><td colspan="3" style="border:1px solid #999;padding:6px">${escapeHtml(m.nguon_goc_su_dung)}</td></tr>` : ''}
@@ -14024,7 +14067,9 @@ async function lgOfflineRefreshUI(){
         const iw = c.width * ratio, ih = c.height * ratio;
         pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', (210 - iw) / 2, (297 - ih) / 2, iw, ih);
       }
-      pdf.save(`BaoCaoChiTiet_${(m.so_thua ? 'Thua' + m.so_thua : p.id).replace(/[^\w]+/g, '')}_${Date.now()}.pdf`);
+      const pdfName = `BaoCaoChiTiet_${(m.so_thua ? 'Thua' + m.so_thua : p.id).replace(/[^\w]+/g, '')}_${Date.now()}.pdf`;
+      if (typeof window.__lgPdfSink === 'function') { const sink = window.__lgPdfSink; window.__lgPdfSink = null; sink(pdf.output('blob'), pdfName); }   // HM-15: chia sẻ thay vì tải
+      else pdf.save(pdfName);
       say({ title: 'Đã xuất báo cáo chi tiết', description: `${pages.length} trang: bản vẽ · thông tin thửa đất · toạ độ mốc · đối chiếu GCN & tô-pô · ${shots.length} ảnh hiện trạng đa lớp và ký duyệt.` });
       if (skippedShots.length) {
         setTimeout(() => toast({ title: `Đã bỏ qua ${skippedShots.length} lớp ảnh`, description: skippedShots.map(x => x.name + ' — ' + x.skipped).join('; ') }), 600);
@@ -16856,7 +16901,7 @@ try {
     GCN_GROUPS.forEach(function (g) {
       html += '<tr><td colspan="2" style="border:1px solid #999;padding:5px;background:#dfeae3;font-weight:700">' + esc(g[0]) + '</td></tr>';
       g[1].forEach(function (f) {
-        var v = m[f[0]];
+        var v = (f[0] === 'cccd_cmnd' && window.lgMaskId) ? window.lgMaskId(m[f[0]]) : m[f[0]];
         var empty = (v == null || String(v).trim() === '');
         var inferred = null;
         if (empty && f[0] === 'loai_dat' && typeof lgInferLoaiDat === 'function') inferred = lgInferLoaiDat(m);
@@ -18813,7 +18858,7 @@ try {
 
     doc.h2('I - NGƯỜI SỬ DỤNG ĐẤT, CHỦ SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT');
     doc.kv('Người sử dụng đất', m.chu_su_dung);
-    doc.kv('Số CCCD/CMND', m.cccd_cmnd);
+    doc.kv('Số CCCD/CMND', window.lgMaskId ? window.lgMaskId(m.cccd_cmnd) : m.cccd_cmnd);
     doc.kv('Đồng sử dụng', m.dong_su_dung || m.vo_chong || '');
     doc.kv('Địa chỉ thường trú', m.dia_chi_thuong_tru || m.dia_chi);
     doc.y += 2;
@@ -20073,7 +20118,7 @@ try {
 
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="lg57-grid">' +
       '<div><h4 style="margin:0 0 6px">I - NGƯỜI SỬ DỤNG ĐẤT</h4><table style="width:100%;border-collapse:collapse;font-size:var(--lg-fs-sm)">' +
-      kv('Người sử dụng đất', m.chu_su_dung) + kv('Số CCCD/CMND', m.cccd_cmnd) +
+      kv('Người sử dụng đất', m.chu_su_dung) + kv('Số CCCD/CMND', window.lgMaskId ? window.lgMaskId(m.cccd_cmnd) : m.cccd_cmnd) +
       kv('Đồng sử dụng', m.dong_su_dung || m.vo_chong) + kv('Địa chỉ thường trú', m.dia_chi_thuong_tru || m.dia_chi) +
       '</table>' +
       '<h4 style="margin:12px 0 6px">II - THÔNG TIN THỬA ĐẤT</h4><table style="width:100%;border-collapse:collapse;font-size:var(--lg-fs-sm)">' +
@@ -20611,6 +20656,9 @@ try {
 .lg60-root .lg60-note.lg60-suspect-note{background:#fff3cd;border-left:3px solid #cc8a00;padding:6px 8px}
 .lg60-root .lg60-drawbox{border:1px solid #333;margin:8px 0 4px;padding:3mm;text-align:center;background:#fff}
 .lg60-root .lg60-drawbox svg{max-width:100%;height:auto}
+.lg60-root .lg60-tucan{ display:grid; grid-template-columns:22mm 1fr 22mm; grid-template-rows:auto 1fr auto; gap:2mm; align-items:center; text-align:center; font-size:var(--lg-fs-print); }
+.lg60-root .lg60-tucan .lg60-tc-b{ grid-column:1/4; grid-row:1; font-weight:700; } .lg60-root .lg60-tucan .lg60-tc-t{ grid-column:1; grid-row:2; } .lg60-root .lg60-tucan .lg60-tc-c{ grid-column:2; grid-row:2; } .lg60-root .lg60-tucan .lg60-tc-d{ grid-column:3; grid-row:2; } .lg60-root .lg60-tucan .lg60-tc-n{ grid-column:1/4; grid-row:3; font-weight:700; }
+
 .lg60-root .lg60-note{font-size:var(--lg-fs-print);color:#333;margin:6px 0}
 .lg60-root ul.lg60-log{margin:6px 0 0 5mm;padding:0;list-style:none;font-size:var(--lg-fs-print)}
 .lg60-root ul.lg60-log li{margin:3px 0;padding-left:5mm;position:relative}
@@ -20852,7 +20900,7 @@ try {
 
     var HS = {
       chu: m.chu_su_dung || '',   // HM-45: không điền mã thửa vào ô tên chủ; để trống + ghi chú
-      cccd: m.cccd_cmnd || m.cccd || '—',
+      cccd: window.lgMaskId ? window.lgMaskId(m.cccd_cmnd || m.cccd || '—') : (m.cccd_cmnd || m.cccd || '—'),
       dong: m.dong_su_dung || m.vo_chong || '—',
       thuongTru: m.dia_chi_thuong_tru || '—',
       thua: m.so_thua || plot.id || '—',
@@ -20924,7 +20972,9 @@ try {
     s += '<div class="lg60-page">';
   s += '<div class="lg60-runhead"><span>HỒ SƠ KỸ THUẬT THỬA ĐẤT — Thửa ' + h(HS.thua) + ', Tờ bản đồ ' + h(HS.tobd) + '</span><span>Trang 2</span></div>';
     s += '<h2 class="lg60-sec">III. SƠ ĐỒ THỬA ĐẤT</h2>';
-    s += '<div class="lg60-drawbox">' + svg + '</div>';
+    var TC = tuCan(D);
+    s += TC.any ? '<div class="lg60-drawbox lg60-tucan"><div class="lg60-tc lg60-tc-b">' + h(TC.lab.bac) + '</div><div class="lg60-tc lg60-tc-t">' + h(TC.lab.tay) + '</div><div class="lg60-tc-c">' + svg + '</div><div class="lg60-tc lg60-tc-d">' + h(TC.lab.dong) + '</div><div class="lg60-tc lg60-tc-n">' + h(TC.lab.nam) + '</div></div>' : '<div class="lg60-drawbox">' + svg + '</div>';
+    s += TC.table;
     s += '<h3 class="lg60-sub">BẢNG KÊ TOẠ ĐỘ GÓC RANH</h3>';
     s += '<table class="lg60-t"><thead><tr><th style="width:12mm">STT</th><th style="width:16mm">SH mốc</th><th>X (m)</th><th>Y (m)</th><th style="width:20mm">S (m)</th></tr></thead><tbody>';
     for (var i = 0; i < D.n; i++) {
@@ -20939,6 +20989,24 @@ try {
     if (notes.length) { s += '<ul class="lg60-log">'; notes.forEach(function (t) { s += '<li>' + h(t) + '</li>'; }); s += '</ul>'; }
     s += '<div class="lg60-pageno">2</div></div>';
     return s;
+  }
+
+  /* HM-38 — Tứ cận: nhãn Bắc/Đông/Nam/Tây quanh sơ đồ + bảng giáp ranh (theo sổ đã xác nhận ↔ theo hình học) */
+  function tuCan(D) {
+    var out = { any: false, lab: { bac: '', dong: '', nam: '', tay: '' }, table: '' };
+    try {
+      var m = D.m || (D.plot && D.plot.meta) || {}, ds = Array.isArray(m.giap_ranh_ds) ? m.giap_ranh_ds : [], geo = null, names = { bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' };
+      try { geo = window.LG36 && D.plot ? window.LG36.compute(D.plot) : null; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h38a'); }
+      var rows = '';
+      ['bac', 'dong', 'nam', 'tay'].forEach(function (d) {
+        var sd = ds.filter(function (g) { return g.huong === d; })[0], so = sd ? ((window.LG35 && window.LG35.toText(sd)) || '') : (m['giap_ranh_' + d] || ''), hh = geo && geo.huong[d].length ? 'Thửa ' + geo.huong[d].map(function (t) { return t.so_thua; }).join(', ') : '';
+        var warn = geo ? geo.canh_bao.filter(function (w) { return w.huong === d; }).map(function (w) { return w.text; }).join(' ') : '';
+        out.lab[d] = names[d] + (so || hh ? ': ' + (so || hh) : ''); if (so || hh) out.any = true;
+        rows += '<tr><td class="lg60-l">' + names[d] + ' giáp</td><td class="lg60-l">' + h(so || '—') + (sd && sd.xac_nhan ? '' : (so ? ' <small>(chưa xác nhận)</small>' : '')) + '</td><td class="lg60-l">' + h(hh || '—') + '</td><td class="lg60-l">' + h(warn) + '</td></tr>';
+      });
+      if (out.any) out.table = '<h3 class="lg60-sub">TỨ CẬN (GIÁP RANH)</h3><table class="lg60-t"><thead><tr><th class="lg60-l" style="width:24mm">Hướng</th><th class="lg60-l">Theo sổ</th><th class="lg60-l">Theo hình học (thửa bên cạnh đã có dữ liệu)</th><th class="lg60-l">Ghi chú</th></tr></thead><tbody>' + rows + '</tbody></table><p class="lg60-note">Chỉ để tham khảo; đối chiếu hiện trường trước khi dùng.</p>';
+    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h38b'); }
+    return out;
   }
 
   /* ---------- Trang 3: mục IV, V, VI ---------- */
@@ -25764,6 +25832,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lgpk-row b{ flex:1 1 60%; } .lgpk-row small{ flex:1 1 100%; opacity:.75; order:3; } .lgpk-row button{ min-height:44px; min-width:64px; border-radius:8px; border:1px solid var(--lg103-line); background:transparent; color:inherit; }
 .lg35 fieldset{ border:1px solid var(--lg103-line); border-radius:10px; margin:8px 0; padding:8px 10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; } .lg35 legend{ font-weight:700; padding:0 4px; } .lg35 label{ display:flex; flex-direction:column; font-size:var(--lg103-fs-small,12px); } .lg35 input,.lg35 select{ min-height:44px; font-size:16px; } .lg35 small{ grid-column:1/-1; opacity:.7; }
 .lg36-tag span{ background:rgba(255,255,255,.92); color:#8a1f1f; border:1px solid #8a1f1f; border-radius:6px; padding:1px 5px; font:600 11px/1.3 system-ui,sans-serif; white-space:nowrap; transform:translate(-50%,-50%); display:inline-block; }
+.lg24 label{ display:flex; flex-direction:column; margin:6px 0; font-size:var(--lg103-fs-small,12px); } .lg24 textarea,.lg24 select{ font-size:16px; min-height:44px; } .lg24-t{ width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; } .lg24-t th,.lg24-t td{ border:1px solid var(--lg103-line); padding:3px 5px; text-align:right; } .lg24-t tr.bad td{ text-align:left; color:#8a1f1f; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26278,6 +26347,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var exportBar = '<h5>Xuất</h5><div class="lg103-actions">' +
       '<button class="lg103-abtn" data-lg103-act="a4">🖨 In A4</button>' +
       '<button class="lg103-abtn" data-lg103-act="pdf">📄 PDF</button>' +
+      '<button class="lg103-abtn" data-lg103-act="share-pdf">📤 Chia sẻ</button>' +
       '<button class="lg103-abtn" data-lg103-export="dxf">DXF</button>' +
       '<button class="lg103-abtn" data-lg103-act="exports-more">⋯</button></div>' +
       '<div class="lg103-actions" id="lg103-exports-more" style="display:none">' +
@@ -26305,6 +26375,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     return '<div class="lg8e-list"><h5>Bản đồ</h5>' +
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
+      mRow('🧮', 'Quy đổi toạ độ hàng loạt', 'data-lg103-act="conv-batch"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
       mRow('📍', 'Thửa tại vị trí của tôi', 'data-lg103-act="cad-gps"') +
       mRow('🗺', 'Gói dữ liệu địa chính', 'data-lg103-act="packs"') +
@@ -26316,6 +26387,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🔑', 'Khoá AI', 'data-lg103-act="ai-key"') +
       mRow('☁', 'AI qua máy chủ', 'data-lg103-act="ai-proxy"', { sw: (localStorage.getItem('landgis_ai_proxy') === '1'), sub: 'Không giữ khoá AI trong trình duyệt · cần đăng nhập' }) +
       mRow('🌙', 'Giao diện tối', 'data-lg103-act="theme"', { sw: dark }) +
+      mRow('🙈', 'Che số CCCD/CMND khi in / xuất', 'data-lg103-act="mask-id"', { sw: !!(window.lgMaskOn && lgMaskOn()), sub: 'Chỉ hiện 3 số cuối trên PDF, bản in A4, hồ sơ' }) +
       mRow('💾', 'Sao lưu dự án (.landgis)', 'data-lg103-act="backup"') +
       mRow('🗑', 'Thùng rác thửa (30 ngày)', 'data-lg103-act="trash"') +
       '<h5>Trợ giúp</h5>' +
@@ -26411,6 +26483,26 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         });
         LG35.save(sp, list); closeSheet(); try { window.toast({ title: 'Đã lưu giáp ranh' }); } catch (e2) { window.lgQuiet && window.lgQuiet(e2, 'h35t'); } return true;
       }
+      case 'share-pdf': try { window.toast({ title: 'Đang chuẩn bị file PDF để chia sẻ…' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15b'); } window.lgSharePlotPdf().then(function (r) { try { if (r === 'downloaded') window.toast({ title: 'Máy không hỗ trợ chia sẻ file — đã tải về', description: 'Gửi file từ thư mục Tải xuống.' }); else if (r === 'failed') window.toast({ title: 'Không tạo được PDF để chia sẻ', variant: 'destructive' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h15c'); } }); return true;
+      case 'conv-batch': {
+        var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
+        var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
+          '<label>Chiều quy đổi <select id="lg24-dir" aria-label="Chiều quy đổi"><option value="vn2wgs">VN-2000 → WGS84</option><option value="wgs2vn">WGS84 → VN-2000</option></select></label>' +
+          '<label>Tỉnh / kinh tuyến trục <select id="lg24-prov" aria-label="Tỉnh/kinh tuyến trục">' + Object.keys(provs).map(function (k) { return '<option value="' + escA4(k) + '"' + (k === cur ? ' selected' : '') + '>' + escA4(provs[k].name) + ' (' + provs[k].lon0 + '°)</option>'; }).join('') + '</select></label>' +
+          '<label>Danh sách toạ độ <textarea id="lg24-in" rows="6" aria-label="Danh sách toạ độ" placeholder="2259336.23 568027.14&#10;2259334.17 568027.23"></textarea></label>' +
+          '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="conv-run">Quy đổi</button><button type="button" class="lg103-abtn" data-lg103-act="conv-csv">Tải CSV</button></div><div id="lg24-out"></div></div>';
+        openSheet('Quy đổi toạ độ hàng loạt', ch); return true;
+      }
+      case 'conv-run': {
+        var dir = document.getElementById('lg24-dir').value, pv = (window.VN2000_PROVINCES || {})[document.getElementById('lg24-prov').value] || {}, op = { ktt: pv.lon0, mui: 3 };
+        var rows = LG24.convert(document.getElementById('lg24-in').value, dir, op); LG24.last = { rows: rows, opt: op };
+        var th = '<table class="lg24-t"><thead><tr><th>#</th><th>X Bắc</th><th>Y Đông</th><th>Vĩ độ</th><th>Kinh độ</th></tr></thead><tbody>' + rows.map(function (r) {
+          return r.loi ? '<tr class="bad"><td>' + r.stt + '</td><td colspan="4">⚠ ' + escA4(r.loi) + ' (' + escA4(r.vao1 + ' ' + r.vao2) + ')</td></tr>' : '<tr><td>' + r.stt + '</td><td>' + r.bac.toFixed(3) + '</td><td>' + r.dong.toFixed(3) + '</td><td>' + r.lat.toFixed(8) + '</td><td>' + r.lng.toFixed(8) + '</td></tr>' + (r.ghi_chu ? '<tr><td></td><td colspan="4"><small>' + escA4(r.ghi_chu) + '</small></td></tr>' : '');
+        }).join('') + '</tbody></table>';
+        document.getElementById('lg24-out').innerHTML = rows.length ? th : '<p class="lg8e-note">Chưa có dòng nào.</p>'; return true;
+      }
+      case 'conv-csv': if (LG24.last && LG24.last.rows.length) LG24.download(LG24.last.rows, LG24.last.opt); else try { window.toast({ title: 'Hãy bấm Quy đổi trước' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h24a'); } return true;
+      case 'mask-id': try { if (lgMaskOn()) localStorage.removeItem('landgis_mask_id'); else localStorage.setItem('landgis_mask_id', '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h14a'); } body.innerHTML = tabMore(); return true;
       case 'ai-proxy': {
         var on0 = localStorage.getItem('landgis_ai_proxy') === '1';
         if (!on0) {
@@ -42574,6 +42666,56 @@ body.lg175-stack-open #lg124-stack{
     group.addTo(window.map); return n;
   }
   window.LG36 = { compute: compute, packCandidates: packCandidates, showLabels: showLabels, hn: hn, edgesOf: edgesOf, labelsOn: function () { return !!group; } };
+})();
+</script>
+<script>
+/* HM-24 — QUY ĐỔI TOẠ ĐỘ HÀNG LOẠT VN-2000 ↔ WGS84: dán danh sách (Bắc X, Đông Y) hoặc (vĩ độ, kinh độ); kinh tuyến trục chọn theo tỉnh;
+   xuất CSV có BOM (Excel đọc đúng tiếng Việt). Dùng lõi LGCore.Geometry.vn2000 (kiểm phạm vi, bắc/đông). */
+(function () {
+  'use strict';
+  function num(t) { var n = parseFloat(String(t).replace(',', '.')); return isFinite(n) ? n : NaN; }
+  function split(line) {
+    var t = String(line).trim(); if (!t) return null;
+    var a = t.split(/[;\t]+|\s+/).filter(Boolean);
+    if (a.length < 2 && t.indexOf(',') >= 0) a = t.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    return a;
+  }
+  function convert(text, dir, opt) {
+    opt = opt || {}; var G = window.LGCore && window.LGCore.Geometry && window.LGCore.Geometry.vn2000, rows = [], n = 0;
+    String(text || '').split(/\r?\n/).forEach(function (line) {
+      var a = split(line); if (!a) return; n++;
+      var r = { stt: n, vao1: a[0] || '', vao2: a[1] || '', ghi_chu: '' };
+      // bỏ cột số thứ tự/tên mốc nếu có 3 cột và cột đầu không phải số lớn
+      if (a.length >= 3 && !(Math.abs(num(a[0])) > 1000)) { r.ten = a[0]; a = a.slice(1); r.vao1 = a[0]; r.vao2 = a[1]; }
+      var u = num(a[0]), v = num(a[1]);
+      if (!isFinite(u) || !isFinite(v)) { r.loi = 'Không đọc được hai số'; rows.push(r); return; }
+      try {
+        if (dir === 'vn2wgs') {
+          var bac = u, dong = v;
+          if (!G.validBacDong(bac, dong) && G.validBacDong(v, u)) { bac = v; dong = u; r.ghi_chu = 'đã đổi thứ tự cột (Y,X → X,Y)'; }
+          var w = G.bacDongToWGS84(bac, dong, { ktt: opt.ktt, mui: opt.mui || 3 });
+          if (!w) { r.loi = 'Toạ độ ngoài phạm vi Việt Nam (X Bắc 1,0–2,7 triệu m; Y Đông 0,2–0,8 triệu m)'; } else { r.bac = bac; r.dong = dong; r.lat = w.lat; r.lng = w.lng; }
+        } else {
+          var lat = u, lng = v;
+          if (!(lat > 7.5 && lat < 24.5) && (v > 7.5 && v < 24.5)) { lat = v; lng = u; r.ghi_chu = 'đã đổi thứ tự (kinh,vĩ → vĩ,kinh)'; }
+          if (!(lat > 7.5 && lat < 24.5 && lng > 101.5 && lng < 110.5)) { r.loi = 'Vĩ/kinh độ ngoài phạm vi Việt Nam'; } else { var b = G.wgs84ToBacDong(lat, lng, { ktt: opt.ktt, mui: opt.mui || 3 }); if (!b) r.loi = 'Không quy đổi được'; else { r.lat = lat; r.lng = lng; r.bac = b.bac; r.dong = b.dong; } }
+        }
+      } catch (e) { r.loi = 'Lỗi: ' + (e && e.message || e); }
+      rows.push(r);
+    });
+    return rows;
+  }
+  function q(v) { v = v == null ? '' : String(v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function toCSV(rows, opt) {
+    var h = ['STT', 'Tên', 'X Bắc (m)', 'Y Đông (m)', 'Vĩ độ (°)', 'Kinh độ (°)', 'Kinh tuyến trục', 'Ghi chú'], out = [h.map(q).join(',')];
+    rows.forEach(function (r) { out.push([r.stt, r.ten || '', r.bac != null ? r.bac.toFixed(3) : '', r.dong != null ? r.dong.toFixed(3) : '', r.lat != null ? r.lat.toFixed(8) : '', r.lng != null ? r.lng.toFixed(8) : '', (opt && opt.ktt) || '', r.loi || r.ghi_chu || ''].map(q).join(',')); });
+    return '﻿' + out.join('\r\n') + '\r\n';
+  }
+  function download(rows, opt) {
+    var blob = new Blob([toCSV(rows, opt)], { type: 'text/csv;charset=utf-8' }), a = document.createElement('a'), d = new Date(), pad = function (x) { return String(x).padStart(2, '0'); };
+    a.href = URL.createObjectURL(blob); a.download = 'quy-doi-toa-do-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 3000); return a.download;
+  }
+  window.LG24 = { convert: convert, toCSV: toCSV, download: download, last: null };
 })();
 </script>
 </body>

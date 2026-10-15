@@ -49,3 +49,8 @@
 - 15/10 · P05 · HM-12a ĐẠT V3: gỡ mã chẩn đoán/rollout song song không dùng (file nhỏ đi 192 KB), không hồi quy.
 - 15/10 · P05 · HM-35 ĐẠT V3: giáp ranh đọc từ sơ đồ sổ thành dữ liệu có cấu trúc (thửa/đường/ngõ/chưa rõ), bạn xác nhận hoặc sửa trước khi lưu.
 - 15/10 · P05 · HM-36 ĐẠT V3: Hồ sơ có tab Giáp ranh tính theo hình học từng cạnh (thửa bên cạnh từ thửa đã lưu/gói địa chính), cảnh báo khi trái nhãn sổ, bật/tắt nhãn trên bản đồ.
+- 15/10 · P05 · HM-14 ĐẠT V3: tuỳ chọn che CCCD/CMND khi in/xuất (mặc định tắt).
+- 15/10 · P05 · HM-15 ĐẠT V3: nút Chia sẻ hồ sơ PDF qua bảng chia sẻ của điện thoại (không có thì tải file).
+- 15/10 · P05 · HM-16 ĐẠT V3: dẫn đường cắm mốc giữ màn sáng + rung khi gần mốc (thử máy thật: chờ bạn).
+- 15/10 · P05 · HM-24 ĐẠT V3: Thêm → Quy đổi toạ độ hàng loạt VN-2000 ↔ WGS84, xuất CSV mở đúng tiếng Việt trong Excel.
+- 15/10 · P05 · HM-38 ĐẠT V3: hồ sơ có mục Tứ cận (Bắc/Đông/Nam/Tây giáp …) + cảnh báo khi trái hình học.
