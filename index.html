@@ -26437,6 +26437,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🛰', 'Lớp nền ảnh vệ tinh', 'data-lg103-act="imagery"') +
       mRow('🕰', 'So sánh ảnh theo thời gian', 'data-lg103-act="compare"') +
       mRow('🧮', 'Quy đổi toạ độ hàng loạt', 'data-lg103-act="conv-batch"') +
+      mRow('✂', 'Mô phỏng tách thửa', 'data-lg103-act="split-open"', { sub: 'Chia thửa đang chọn thành 2 phần' }) +
       mRow('🧩', 'Kiểm tra chồng lấn / khe hở thửa', 'data-lg103-act="topo"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
       mRow('📍', 'Thửa tại vị trí của tôi', 'data-lg103-act="cad-gps"') +
@@ -26580,6 +26581,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         if (kk === 'o') { var bx = it.box; b = L.latLngBounds([ll(bx.x0, bx.y0), ll(bx.x1, bx.y1)]); } else { var a1 = it.A.points[it.ua], b1 = it.B.points[it.vb]; b = L.latLngBounds([ll(a1.x, a1.y), ll(b1.x, b1.y)]); }
         closeSheet(); selectTab('map'); setTimeout(function () { window.map.fitBounds(b.pad(2), { maxZoom: 21 }); }, 150); return true;
       }
+      case 'split-open': { var sp = currentPlot(); if (!sp) { try { window.toast({ title: 'Chưa chọn thửa', description: 'Chọn một thửa ở ▤ Thửa trước.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h18a'); } return true; } openSheet('Mô phỏng tách thửa', LGSplit.formHTML(sp)); var sm = document.getElementById('lg-split-mode'); if (sm) sm.addEventListener('change', function () { LGSplit.showMode(sm); }); return true; }
+      case 'split-run': { var sp2 = currentPlot(); if (!sp2) return true; var sr = LGSplit.runFromForm(sp2); document.getElementById('lg-split-out').innerHTML = LGSplit.resultHTML(sr, sp2); return true; }
+      case 'split-pdf': { if (LGSplit.last && LGSplit.last.ok) { closeSheet(); LGSplit.openDossier(LGSplit.last, LGSplit.last.plot); } return true; }
+      case 'split-dxf': { if (LGSplit.last && LGSplit.last.ok) { try { LGSplit.downloadDXF(LGSplit.last, LGSplit.last.plot); window.toast({ title: 'Đã xuất DXF', description: '2 file, mỗi thửa mới một file' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h18b'); } } return true; }
       case 'conv-batch': {
         var provs = window.VN2000_PROVINCES || {}, cur = (document.getElementById('province-select') || {}).value || '';
         var ch = '<div class="lg24"><p class="lg8e-note">Dán mỗi dòng một điểm: “X(Bắc) Y(Đông)” hoặc “vĩ độ kinh độ”. Có thể có cột tên ở đầu.</p>' +
@@ -42981,6 +42986,180 @@ body.lg175-stack-open #lg124-stack{
   }
   function open(A, B) { return window.LG21 ? window.LG21.openHTML(html(A, B)) : null; }
   window.LG37 = { compare: compare, html: html, open: open };
+})();
+</script>
+<script>
+/* HM-18a/18b — MÔ PHỎNG TÁCH THỬA: cắt thửa đang chọn thành 2 phần (a) theo đường thẳng qua 2 điểm/mốc, hoặc (b) theo diện tích mục tiêu
+   (đường cắt song song một cạnh hoặc một phương vị, tìm bằng chia đôi). Chỉ MÔ PHỎNG — không sửa/xoá thửa gốc.
+   Toạ độ VN-2000: x = Bắc, y = Đông. Mốc mới đặt tên N1, N2 …; HM-18b: bảng toạ độ + sơ đồ + DXF cho từng thửa mới. */
+(function () {
+  'use strict';
+  var EPS = 1e-9;
+  var h = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var f2 = function (n) { return (n == null || !isFinite(n)) ? '—' : Number(n).toFixed(2).replace('.', ','); }, f3 = function (n) { return Number(n).toFixed(3).replace('.', ','); };
+  function area(r) { return typeof window.lgCoreArea === 'function' ? window.lgCoreArea(r) : Math.abs(r.reduce(function (s, p, i) { var q = r[(i + 1) % r.length]; return s + (p.y * q.x - q.y * p.x); }, 0)) / 2; }
+  function ringOf(plot) { var a = (plot.points || []).map(function (q) { return { x: +q.x, y: +q.y, ten: q.ten }; }); if (a.length > 1 && a[0].x === a[a.length - 1].x && a[0].y === a[a.length - 1].y) a.pop(); return a; }
+  function perim(r) { var s = 0; for (var i = 0; i < r.length; i++) { var a = r[i], b = r[(i + 1) % r.length]; s += Math.hypot(b.x - a.x, b.y - a.y); } return s; }
+  /* Cắt vòng r bằng nửa mặt phẳng f(p) = nx·x + ny·y − c ≥ 0 (side=+1) hoặc ≤ 0 (side=−1); điểm cắt mới gắn cờ moi. */
+  function clip(r, nx, ny, c, side) {
+    var out = [], n = r.length, f = function (p) { return side * (nx * p.x + ny * p.y - c); };
+    for (var i = 0; i < n; i++) {
+      var a = r[i], b = r[(i + 1) % n], fa = f(a), fb = f(b);
+      if (fa >= -EPS) out.push(a);
+      if ((fa > EPS && fb < -EPS) || (fa < -EPS && fb > EPS)) { var t = fa / (fa - fb); out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, moi: true }); }
+    }
+    return out;
+  }
+  function dedupe(r) {   // bỏ điểm trùng liên tiếp và điểm thẳng hàng do cắt đúng qua mốc
+    var o = r.filter(function (p, i) { var q = r[(i + r.length - 1) % r.length]; return Math.hypot(p.x - q.x, p.y - q.y) > 1e-7; });
+    return o.length >= 3 ? o : [];
+  }
+  function crossings(r, nx, ny, c) {
+    var k = 0; for (var i = 0; i < r.length; i++) { var a = r[i], b = r[(i + 1) % r.length], fa = nx * a.x + ny * a.y - c, fb = nx * b.x + ny * b.y - c; if ((fa > EPS && fb < -EPS) || (fa < -EPS && fb > EPS)) k++; else if (Math.abs(fa) <= EPS && fb !== 0 && Math.abs(fb) > EPS) k += 0.5; } return k;
+  }
+  /* Đặt tên mốc mới N1, N2… theo thứ tự xuất hiện trong hai thửa; mốc mới dùng chung có cùng một tên (so toạ độ). */
+  function nameNew(pieces) {
+    var reg = [], key = function (p) { return p.x.toFixed(4) + '|' + p.y.toFixed(4); };
+    pieces.forEach(function (pc) { pc.points.forEach(function (p) { if (!p.moi) return; var k = key(p), e = reg.filter(function (z) { return z.k === k; })[0]; if (!e) { e = { k: k, ten: 'N' + (reg.length + 1) }; reg.push(e); } p.ten = e.ten; }); });
+    return reg.map(function (e) { var p = null; pieces.forEach(function (pc) { pc.points.forEach(function (q) { if (!p && q.ten === e.ten) p = q; }); }); return { ten: e.ten, x: p.x, y: p.y }; });
+  }
+  function finish(ring, A, B, nx, ny, c, meta) {
+    var ra = dedupe(clip(ring, nx, ny, c, +1)), rb = dedupe(clip(ring, nx, ny, c, -1)), total = area(ring);
+    if (!ra.length || !rb.length) return { ok: false, loi: 'Đường cắt không chia thửa thành 2 phần (nằm ngoài hoặc trùng cạnh thửa).' };
+    // hướng: phần A = phía f ≥ 0
+    var pcs = [{ ten: 1, points: ra, dien_tich: area(ra), chu_vi: perim(ra) }, { ten: 2, points: rb, dien_tich: area(rb), chu_vi: perim(rb) }];
+    var moi = nameNew(pcs), warn = [];
+    if (crossings(ring, nx, ny, c) > 2.01) warn.push('Đường cắt đi qua ranh thửa nhiều hơn 2 lần: mỗi phần có thể gồm nhiều mảnh rời — kiểm tra sơ đồ.');
+    var sum = pcs[0].dien_tich + pcs[1].dien_tich;
+    return { ok: true, tong: total, tong_hai_phan: sum, lech: Math.abs(sum - total), phan: pcs, moc_moi: moi, duong_cat: { n: [nx, ny], c: c, A: A, B: B }, canh_bao: warn, meta: meta || {} };
+  }
+  /* (a) cắt theo đường thẳng qua hai điểm A, B ({x,y}) */
+  function splitByLine(ringOrPlot, A, B) {
+    var ring = Array.isArray(ringOrPlot) ? ringOrPlot : ringOf(ringOrPlot);
+    if (ring.length < 3) return { ok: false, loi: 'Thửa cần ít nhất 3 mốc.' };
+    var dx = B.x - A.x, dy = B.y - A.y, L = Math.hypot(dx, dy); if (!(L > 1e-6)) return { ok: false, loi: 'Hai điểm của đường cắt trùng nhau.' };
+    var nx = -dy / L, ny = dx / L, c = nx * A.x + ny * A.y;
+    return finish(ring, A, B, nx, ny, c, { che_do: 'duong-thang' });
+  }
+  /* (b) cắt theo diện tích: đường song song phương (ux,uy) — hoặc cạnh thứ edgeIdx (0-based, cạnh i → i+1); phần A (phía chứa cạnh/tham chiếu) = target m² */
+  function splitByArea(ringOrPlot, target, opt) {
+    opt = opt || {}; var ring = Array.isArray(ringOrPlot) ? ringOrPlot : ringOf(ringOrPlot), total = area(ring);
+    if (ring.length < 3) return { ok: false, loi: 'Thửa cần ít nhất 3 mốc.' };
+    target = +target; if (!(target > 0) || !(target < total)) return { ok: false, loi: 'Diện tích mục tiêu phải lớn hơn 0 và nhỏ hơn diện tích thửa (' + f2(total) + ' m²).' };
+    var ux, uy, ref = null;
+    if (opt.edge != null) { var a = ring[opt.edge % ring.length], b = ring[(opt.edge + 1) % ring.length]; ux = b.x - a.x; uy = b.y - a.y; ref = { canh: opt.edge + 1, tu: a.ten, den: b.ten }; }
+    else if (opt.azimuth != null) { var az = opt.azimuth * Math.PI / 180; ux = Math.cos(az); uy = Math.sin(az); }   // phương vị từ Bắc (x) theo chiều kim đồng hồ về Đông (y)
+    else return { ok: false, loi: 'Chọn một cạnh hoặc nhập phương vị cho đường cắt.' };
+    var L = Math.hypot(ux, uy); if (!(L > 1e-9)) return { ok: false, loi: 'Cạnh tham chiếu có độ dài 0.' }; ux /= L; uy /= L;
+    var nx = -uy, ny = ux, lo = Infinity, hi = -Infinity;
+    ring.forEach(function (p) { var s = nx * p.x + ny * p.y; if (s < lo) lo = s; if (s > hi) hi = s; });
+    // phần "A" = phía f ≤ c (phía gần cạnh tham chiếu nếu có). Nếu cạnh tham chiếu nằm ở phía f lớn → đảo
+    var sgn = -1;
+    if (ref) { var ea = ring[opt.edge % ring.length], mid = nx * ea.x + ny * ea.y; sgn = (mid - lo) <= (hi - mid) ? -1 : +1; }
+    var areaA = function (c) { var pc = clip(ring, nx, ny, c, sgn); return pc.length >= 3 ? area(pc) : 0; };
+    var a0 = lo, a1 = hi, i;   // areaA tăng theo c nếu sgn=-1, giảm nếu sgn=+1
+    for (i = 0; i < 200; i++) { var m = (a0 + a1) / 2, v = areaA(m); if ((sgn < 0) === (v < target)) a0 = m; else a1 = m; if (a1 - a0 < 1e-12) break; }
+    var c = (a0 + a1) / 2, r = finish(ring, null, null, nx, ny, c, { che_do: 'dien-tich', muc_tieu: target, canh_tham_chieu: ref, phuong_vi: opt.azimuth != null ? opt.azimuth : null });
+    if (!r.ok) return r;
+    // phần A (diện tích mục tiêu) đặt là phần 1
+    var ia = r.phan[0].dien_tich, ib = r.phan[1].dien_tich;
+    if (Math.abs(ib - target) < Math.abs(ia - target)) { r.phan.reverse(); r.phan[0].ten = 1; r.phan[1].ten = 2; }
+    r.sai_so_muc_tieu = r.phan[0].dien_tich - target; return r;
+  }
+  /* ---- giao diện/hồ sơ ---- */
+  function sketchSVG(res, W, H) {
+    var all = []; res.phan.forEach(function (pc) { pc.points.forEach(function (p) { all.push(p); }); });
+    var minx = Math.min.apply(null, all.map(function (p) { return p.x; })), maxx = Math.max.apply(null, all.map(function (p) { return p.x; })), miny = Math.min.apply(null, all.map(function (p) { return p.y; })), maxy = Math.max.apply(null, all.map(function (p) { return p.y; }));
+    var pad = 14, k = Math.min((W - 2 * pad) / Math.max(maxy - miny, 1e-6), (H - 2 * pad) / Math.max(maxx - minx, 1e-6));
+    var X = function (p) { return (pad + (p.y - miny) * k).toFixed(1); }, Y = function (p) { return (H - pad - (p.x - minx) * k).toFixed(1); };
+    var cols = ['rgba(20,120,60,.18)', 'rgba(37,99,235,.18)'], st = ['#145a28', '#1d4ed8'], s = ['<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Sơ đồ tách thửa" style="background:#fff;border:1px solid #cfd8d2;border-radius:8px" xmlns="http://www.w3.org/2000/svg">'];
+    res.phan.forEach(function (pc, i) {
+      s.push('<polygon points="' + pc.points.map(function (p) { return X(p) + ',' + Y(p); }).join(' ') + '" fill="' + cols[i] + '" stroke="' + st[i] + '" stroke-width="1.4"/>');
+      var cx = pc.points.reduce(function (a, p) { return a + p.x; }, 0) / pc.points.length, cy = pc.points.reduce(function (a, p) { return a + p.y; }, 0) / pc.points.length;
+      s.push('<text x="' + X({ y: cy }) + '" y="' + Y({ x: cx }) + '" font-size="11" font-weight="700" text-anchor="middle" fill="' + st[i] + '">Thửa ' + pc.ten + '</text><text x="' + X({ y: cy }) + '" y="' + (+Y({ x: cx }) + 12) + '" font-size="10" text-anchor="middle" fill="#333">' + f2(pc.dien_tich) + ' m²</text>');
+    });
+    res.phan.forEach(function (pc) { pc.points.forEach(function (p) { if (p.ten != null) s.push('<circle cx="' + X(p) + '" cy="' + Y(p) + '" r="' + (p.moi ? 3.5 : 2.2) + '" fill="' + (p.moi ? '#dc2626' : '#145a28') + '"/><text x="' + (+X(p) + 4) + '" y="' + (+Y(p) - 4) + '" font-size="9" fill="' + (p.moi ? '#b91c1c' : '#444') + '">' + h(p.ten) + '</text>'); }); });
+    s.push('</svg>'); return s.join('');
+  }
+  function edgesOf(pts) { var r = []; for (var i = 0; i < pts.length; i++) { var a = pts[i], b = pts[(i + 1) % pts.length]; r.push({ tu: a.ten, den: b.ten, dai: Math.hypot(b.x - a.x, b.y - a.y) }); } return r; }
+  function nameOf(plot, pc) { var so = (plot && plot.meta && plot.meta.so_thua) || (plot && plot.id) || 'T'; return so + '-' + pc.ten; }
+  function coordTable(pc) {
+    var E = edgesOf(pc.points);
+    return '<table class="lg21-t lg37-t"><thead><tr><th>Mốc</th><th>X Bắc (m)</th><th>Y Đông (m)</th><th>Cạnh</th><th>Dài (m)</th></tr></thead><tbody>' + pc.points.map(function (p, i) {
+      return '<tr' + (p.moi ? ' style="background:#fff3cd"' : '') + '><td>' + h(p.ten) + (p.moi ? ' (mới)' : '') + '</td><td>' + f3(p.x) + '</td><td>' + f3(p.y) + '</td><td>' + h(E[i].tu) + '–' + h(E[i].den) + '</td><td>' + f2(E[i].dai) + '</td></tr>'; }).join('') + '</tbody></table>';
+  }
+  function newPointsTable(res) {
+    return '<table class="lg21-t lg37-t"><thead><tr><th>Mốc mới</th><th>X Bắc (m)</th><th>Y Đông (m)</th></tr></thead><tbody>' + res.moc_moi.map(function (m) { return '<tr><td>' + h(m.ten) + '</td><td>' + f3(m.x) + '</td><td>' + f3(m.y) + '</td></tr>'; }).join('') + '</tbody></table>';
+  }
+  function resultHTML(res, plot) {
+    if (!res.ok) return '<p class="lg8e-note" style="color:#b91c1c">⚠ ' + h(res.loi) + '</p>';
+    var m = res.meta, info = m.che_do === 'dien-tich' ? '<p class="lg8e-note">Mục tiêu ' + f2(m.muc_tieu) + ' m² · sai lệch ' + f3(res.sai_so_muc_tieu) + ' m²</p>' : '';
+    return '<div class="lg-split-res">' + sketchSVG(res, 340, 240) + info +
+      '<p class="lg8e-note">Thửa gốc ' + f2(res.tong) + ' m² = ' + res.phan.map(function (p) { return f2(p.dien_tich); }).join(' + ') + ' = ' + f2(res.tong_hai_phan) + ' m² (lệch ' + f3(res.lech) + ' m²)</p>' +
+      res.canh_bao.map(function (w) { return '<p class="lg8e-note" style="color:#b45309">⚠ ' + h(w) + '</p>'; }).join('') +
+      '<h5>Mốc mới</h5>' + newPointsTable(res) + res.phan.map(function (pc) { return '<h5>' + h(plot ? nameOf(plot, pc) : 'Thửa ' + pc.ten) + ' — ' + f2(pc.dien_tich) + ' m² · chu vi ' + f2(pc.chu_vi) + ' m</h5>' + coordTable(pc); }).join('') +
+      '<p class="lg8e-note">Mô phỏng từ toạ độ đã lưu — thửa gốc không bị thay đổi. Chỉ để tham khảo; thủ tục tách thửa theo quy định của cơ quan có thẩm quyền.</p>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="split-pdf">🖨 Hồ sơ tách thửa (PDF)</button><button type="button" class="lg103-abtn" data-lg103-act="split-dxf">📐 Xuất DXF</button></div></div>';
+  }
+  function formHTML(plot) {
+    var r = ringOf(plot), opt = r.map(function (p, i) { return '<option value="' + i + '">' + h(p.ten != null ? p.ten : i + 1) + '</option>'; }).join('');
+    var eopt = r.map(function (p, i) { var q = r[(i + 1) % r.length]; return '<option value="' + i + '">' + h(p.ten != null ? p.ten : i + 1) + '–' + h(q.ten != null ? q.ten : (i + 2) % r.length || r.length) + '</option>'; }).join('');
+    return '<div class="lg-split"><p class="lg8e-note">Thửa ' + h((plot.meta && plot.meta.so_thua) || plot.id) + ' · ' + f2(area(r)) + ' m² · ' + r.length + ' mốc. Chỉ mô phỏng, không sửa thửa gốc.</p>' +
+      '<label>Cách tách <select id="lg-split-mode" aria-label="Cách tách"><option value="dt">Theo diện tích mục tiêu (đường cắt song song một cạnh)</option><option value="line">Theo đường thẳng nối hai mốc</option><option value="xy">Theo đường thẳng qua hai toạ độ</option></select></label>' +
+      '<div data-m="dt"><label>Diện tích phần 1 (m²) <input id="lg-split-target" type="number" step="0.01" inputmode="decimal" aria-label="Diện tích mục tiêu"></label><label>Song song cạnh <select id="lg-split-edge" aria-label="Cạnh tham chiếu">' + eopt + '</select></label></div>' +
+      '<div data-m="line" style="display:none"><label>Từ mốc <select id="lg-split-a" aria-label="Từ mốc">' + opt + '</select></label><label>Đến mốc <select id="lg-split-b" aria-label="Đến mốc">' + opt.replace('value="1"', 'value="1" selected') + '</select></label></div>' +
+      '<div data-m="xy" style="display:none"><label>Điểm 1: X Bắc <input id="lg-split-x1" type="number" step="0.001" aria-label="X1"></label><label>Y Đông <input id="lg-split-y1" type="number" step="0.001" aria-label="Y1"></label><label>Điểm 2: X Bắc <input id="lg-split-x2" type="number" step="0.001" aria-label="X2"></label><label>Y Đông <input id="lg-split-y2" type="number" step="0.001" aria-label="Y2"></label></div>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="split-run">Tính</button></div><div id="lg-split-out"></div></div>';
+  }
+  function runFromForm(plot) {
+    var g = function (id) { return document.getElementById(id); }, mode = g('lg-split-mode').value, r = ringOf(plot), res;
+    if (mode === 'dt') res = splitByArea(r, parseFloat(g('lg-split-target').value), { edge: +g('lg-split-edge').value });
+    else if (mode === 'line') { var a = r[+g('lg-split-a').value], b = r[+g('lg-split-b').value]; res = splitByLine(r, a, b); }
+    else res = splitByLine(r, { x: parseFloat(g('lg-split-x1').value), y: parseFloat(g('lg-split-y1').value) }, { x: parseFloat(g('lg-split-x2').value), y: parseFloat(g('lg-split-y2').value) });
+    res.plot = plot; api.last = res; return res;
+  }
+  function showMode(sel) { var v = sel.value; Array.prototype.forEach.call(sel.closest('.lg-split').querySelectorAll('[data-m]'), function (d) { d.style.display = d.getAttribute('data-m') === v ? '' : 'none'; }); }
+  /* ---- HM-18b: hồ sơ tách thửa ---- */
+  function dossierHTML(res, plot) {
+    var m = (plot && plot.meta) || {}, d = new Date(), ts = d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    var head = function (t) { return '<div class="lg21-head"><div><b>' + t + '</b><br><span>Thửa gốc ' + h(m.so_thua || plot.id) + (m.to_ban_do ? ' · Tờ bản đồ ' + h(m.to_ban_do) : '') + (m.dia_chi ? ' · ' + h(m.dia_chi) : '') + '</span></div><div class="lg21-ts">' + h(ts) + '</div></div>'; };
+    var foot = '<div class="lg21-foot"><small>Mô phỏng từ toạ độ VN-2000 (KTT ' + (plot.lon0 != null ? plot.lon0 + '°' : '—') + ') đã lưu trong Land GIS — <b>chỉ để tham khảo</b>, không thay thế hồ sơ kỹ thuật thửa đất do đơn vị có thẩm quyền lập.</small></div>';
+    var p1 = '<div class="lg21-page">' + head('PHƯƠNG ÁN TÁCH THỬA') + sketchSVG(res, 340, 240) +
+      '<p class="lg21-formula">Diện tích thửa gốc <b>' + f2(res.tong) + ' m²</b> = ' + res.phan.map(function (p) { return '<b>' + f2(p.dien_tich) + '</b>'; }).join(' + ') + ' = ' + f2(res.tong_hai_phan) + ' m² (lệch ' + f3(res.lech) + ' m²).' +
+      (res.meta.che_do === 'dien-tich' ? ' Tách theo diện tích mục tiêu ' + f2(res.meta.muc_tieu) + ' m².' : ' Tách theo đường thẳng.') + '</p>' + res.canh_bao.map(function (w) { return '<p class="lg21-note">⚠ ' + h(w) + '</p>'; }).join('') +
+      '<h4>Toạ độ mốc mới (VN-2000)</h4>' + newPointsTable(res) + foot + '</div>';
+    var pages = res.phan.map(function (pc) {
+      return '<div class="lg21-page">' + head('THỬA MỚI ' + h(nameOf(plot, pc))) + '<div class="lg21-row"><div class="lg21-sketch">' + sketchSVG({ phan: [pc].concat([]) }, 300, 220).replace(/Thửa \d/, 'Thửa ' + h(nameOf(plot, pc))) + '</div></div>' +
+        '<p class="lg21-formula">Diện tích <b>' + f2(pc.dien_tich) + ' m²</b> · chu vi <b>' + f2(pc.chu_vi) + ' m</b> · ' + pc.points.length + ' mốc.</p><h4>Bảng toạ độ và cạnh</h4>' + coordTable(pc) + foot + '</div>';
+    });
+    return [p1].concat(pages).join('');
+  }
+  function dxfOf(res, plot, idx) {
+    var pc = res.phan[idx], pts = pc.points, n = pts.length, A = (typeof dxfAscii === 'function') ? dxfAscii : function (s) { return String(s); };
+    var T = (typeof dxfText === 'function') ? dxfText : null; if (!T || typeof dxfLayerTable !== 'function') throw new Error('Thiếu bộ xuất DXF');
+    var xs = pts.map(function (p) { return p.y; }), ys = pts.map(function (p) { return p.x; }), hh = Math.max(0.2, Math.min(2.5, Math.max(Math.max.apply(null, xs) - Math.min.apply(null, xs), Math.max.apply(null, ys) - Math.min.apply(null, ys), 1) / 40));
+    var ents = '0\nLWPOLYLINE\n100\nAcDbEntity\n8\nRANH_THUA\n100\nAcDbPolyline\n90\n' + n + '\n70\n1\n43\n0.0\n';
+    pts.forEach(function (p) { ents += '10\n' + p.y.toFixed(3) + '\n20\n' + p.x.toFixed(3) + '\n'; });
+    pts.forEach(function (p) { ents += '0\nPOINT\n100\nAcDbEntity\n8\nDIEM_MOC\n100\nAcDbPoint\n10\n' + p.y.toFixed(3) + '\n20\n' + p.x.toFixed(3) + '\n30\n0.0\n'; ents += T('DIEM_MOC', p.y + hh * 0.4, p.x + hh * 0.4, hh, A(p.ten), 0); });
+    var E = edgesOf(pts); pts.forEach(function (p, i) { var q = pts[(i + 1) % n]; ents += T('KICH_THUOC_CANH', (p.y + q.y) / 2, (p.x + q.x) / 2, hh, E[i].dai.toFixed(2), 0, 1); });
+    var cx = pts.reduce(function (a, p) { return a + p.y; }, 0) / n, cy = pts.reduce(function (a, p) { return a + p.x; }, 0) / n;
+    ents += T('NHAN_THUA', cx, cy, hh * 1.2, A(nameOf(plot, pc)), 0, 1) + T('NHAN_THUA', cx, cy - hh * 1.6, hh, pc.dien_tich.toFixed(2) + ' m2', 0, 1);
+    var tx = Math.max.apply(null, xs) + hh * 3, ty = Math.max.apply(null, ys);
+    ents += T('KHUNG_TEN', tx, ty, hh, A('BANG TOA DO - ' + nameOf(plot, pc) + ' (tach tu ' + (plot.id) + ')'), 0); ty -= hh * 1.8; ents += T('KHUNG_TEN', tx, ty, hh, 'Moc | X(Bac) | Y(Dong) | Canh | Dai(m)', 0);
+    pts.forEach(function (p, i) { ty -= hh * 1.6; ents += T('KHUNG_TEN', tx, ty, hh, A(p.ten) + (p.moi ? ' (moi)' : '') + ' | ' + p.x.toFixed(3) + ' | ' + p.y.toFixed(3) + ' | ' + A(E[i].tu) + '-' + A(E[i].den) + ' | ' + E[i].dai.toFixed(2), 0); });
+    var pad = Math.max(1, (Math.max.apply(null, xs) - Math.min.apply(null, xs)) * 0.05);
+    return '0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1015\n9\n$INSUNITS\n70\n6\n9\n$MEASUREMENT\n70\n1\n9\n$EXTMIN\n10\n' + (Math.min.apply(null, xs) - pad).toFixed(3) + '\n20\n' + (Math.min.apply(null, ys) - pad).toFixed(3) + '\n30\n0.0\n9\n$EXTMAX\n10\n' + (Math.max.apply(null, xs) + hh * 45 + pad).toFixed(3) + '\n20\n' + (Math.max.apply(null, ys) + pad).toFixed(3) + '\n30\n0.0\n0\nENDSEC\n' + dxfLayerTable() + '0\nSECTION\n2\nENTITIES\n' + ents + '0\nENDSEC\n0\nEOF\n';
+  }
+  function downloadDXF(res, plot) {
+    res.phan.forEach(function (pc, i) {
+      var txt = dxfOf(res, plot, i), blob = new Blob([txt], { type: 'application/dxf' }), a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'tach-thua-' + String(nameOf(plot, pc)).replace(/[^\w\-]+/g, '_') + '.dxf'; document.body.appendChild(a);
+      setTimeout(function () { a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); }, i * 400);
+    });
+  }
+  var api = { splitByLine: splitByLine, splitByArea: splitByArea, ringOf: ringOf, formHTML: formHTML, resultHTML: resultHTML, runFromForm: runFromForm, showMode: showMode, dossierHTML: dossierHTML, dxfOf: dxfOf, downloadDXF: downloadDXF, nameOf: nameOf, last: null,
+    openDossier: function (res, plot) { return window.LG21 ? window.LG21.openHTML(dossierHTML(res, plot)) : null; } };
+  window.LGSplit = api;
 })();
 </script>
 </body>

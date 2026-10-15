@@ -117,3 +117,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 18. Phiên P06
 - S-OPEN phiên 6 (P06, 15/10/2026). Môi trường: Playwright /opt/node-tools OK; `cd tests && npm install` OK; pip pyshp shapely OK. Mở HM-18a.
+- HM-18a, HM-18b DAT_V3: LGSplit (Thêm → Mô phỏng tách thửa): cắt theo đường thẳng (2 mốc/2 toạ độ) hoặc diện tích mục tiêu song song cạnh/phương vị; mốc mới N1…; bảng toạ độ + sơ đồ; hồ sơ PDF (phương án + mỗi thửa mới) và DXF từng thửa. Test hm18_split; bộ đầy đủ PASS. Kế tiếp: HM-19.
