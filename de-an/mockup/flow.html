@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff;font-family:"Noto Sans","DejaVu Sans",sans-serif}</style></head><body>
+<svg id="f" width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans, DejaVu Sans, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4B5F55"/></marker></defs>
+<style>.b{fill:#fff;stroke:#0F4C34;stroke-width:2;rx:12}.h{fill:#0F4C34}.t{font-size:15px;font-weight:700;fill:#14231C}.s{font-size:12px;fill:#5B6B63}.w{fill:#fff;font-size:15px;font-weight:700}.l{stroke:#4B5F55;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:6 5}.g{font-size:13px;font-weight:800;fill:#0F4C34;letter-spacing:.5px}</style>
+<text x="20" y="30" class="g">LUỒNG CHÍNH — NHẬP SỔ ĐỎ (3 bước)</text>
+<rect x="20" y="45" width="150" height="70" rx="12" class="h"/><text x="95" y="77" text-anchor="middle" class="w">＋ Nhập sổ</text><text x="95" y="98" text-anchor="middle" fill="#CDE8D9" font-size="12">nút giữa dock</text>
+<rect x="220" y="45" width="170" height="70" rx="12" class="b"/><text x="305" y="73" text-anchor="middle" class="t">① Đọc sổ</text><text x="305" y="94" text-anchor="middle" class="s">Chụp 1–4 trang · QR · dán</text>
+<rect x="440" y="45" width="190" height="70" rx="12" class="b"/><text x="535" y="73" text-anchor="middle" class="t">② Kiểm tra bảng kê</text><text x="535" y="94" text-anchor="middle" class="s">dòng lỗi · khối phụ · STT</text>
+<rect x="680" y="45" width="190" height="70" rx="12" class="b"/><text x="775" y="73" text-anchor="middle" class="t">③ Kết quả đối chiếu</text><text x="775" y="94" text-anchor="middle" class="s">Đạt / Không đạt + công thức</text>
+<rect x="920" y="45" width="150" height="70" rx="12" class="b"/><text x="995" y="73" text-anchor="middle" class="t">💾 Lưu thửa</text><text x="995" y="94" text-anchor="middle" class="s">máy + CSDL</text>
+<path d="M170 80H218" class="l"/><path d="M390 80H438" class="l"/><path d="M630 80H678" class="l"/><path d="M870 80H918" class="l"/>
+<path d="M535 115 C535 150 305 150 305 117" class="l d"/><text x="420" y="160" text-anchor="middle" class="s">đọc lại trang lỗi</text>
+<text x="20" y="215" class="g">DOCK — 5 MỤC</text>
+<g id="dock"></g>
+<text x="1180" y="404" text-anchor="end" class="g">TỪ HỒ SƠ THỬA ↓</text>
+<g id="sub"></g>
+</svg>
+<script>
+const NS='http://www.w3.org/2000/svg',g=document.getElementById('dock'),s=document.getElementById('sub');
+function box(p,x,y,w,h,t,sub,hl){const r=document.createElementNS(NS,'rect');r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx',12);r.setAttribute('class',hl?'h':'b');p.appendChild(r);
+ const a=document.createElementNS(NS,'text');a.setAttribute('x',x+w/2);a.setAttribute('y',y+(sub?28:h/2+5));a.setAttribute('text-anchor','middle');a.setAttribute('class',hl?'w':'t');a.textContent=t;p.appendChild(a);
+ if(sub){sub.split('|').forEach((l,i)=>{const b=document.createElementNS(NS,'text');b.setAttribute('x',x+w/2);b.setAttribute('y',y+48+i*16);b.setAttribute('text-anchor','middle');b.setAttribute('class','s');if(hl)b.setAttribute('style','fill:#CDE8D9');b.textContent=l;p.appendChild(b)})}}
+function arr(p,d,dash){const e=document.createElementNS(NS,'path');e.setAttribute('d',d);e.setAttribute('class','l'+(dash?' d':''));p.appendChild(e)}
+const D=[['🗺 Bản đồ','màn chính|tìm · chip · sheet thửa'],['▤ Thửa','danh sách · lọc|đồng bộ · hoàn tác'],['＋ Nhập sổ','luồng 3 bước|ở trên'],['📄 Hồ sơ','Tổng quan · Toạ độ|Cạnh · Ảnh · Xuất'],['⋯ Thêm','bản đồ · cài đặt|trợ giúp · chuyên gia']];
+D.forEach((d,i)=>box(g,20+i*235,230,205,90,d[0],d[1],i===2));
+arr(g,'M122 320 C122 380 827 380 827 322',true);arr(g,'M357 320 C357 360 800 360 815 324',true);
+const t=document.createElementNS(NS,'text');t.setAttribute('x',440);t.setAttribute('y',404);t.setAttribute('text-anchor','middle');t.setAttribute('class','s');t.textContent='chọn thửa ở Bản đồ hoặc Thửa → mở Hồ sơ (sheet kéo lên toàn màn)';g.appendChild(t);
+const S=[['🖨 In A4 / PDF / DXF','+ báo cáo 1 trang'],['↗ Chia sẻ','Zalo · Email (PDF)'],['📍 Cắm mốc','dẫn đường · rung · màn sáng'],['▧ Kiểm tra ranh','chồng lấn · hở ranh'],['✂ Tách thửa','theo diện tích / đường cắt']];
+S.forEach((d,i)=>box(s,20+i*235,445,205,80,d[0],d[1],false));
+(function(){const e=document.createElementNS(NS,'path');e.setAttribute('d','M827 330 V420 M122 420 H1062');e.setAttribute('stroke','#4B5F55');e.setAttribute('stroke-width','2');e.setAttribute('fill','none');s.appendChild(e);[122,357,592,827,1062].forEach(x=>arr(s,'M'+x+' 420 V443',false));})();
+const n=document.createElementNS(NS,'text');n.setAttribute('x',20);n.setAttribute('y',560);n.setAttribute('class','s');n.textContent='Nét liền: điều hướng chính · nét đứt: quay lại/chuyển ngữ cảnh. Mọi màn con có nút ‹ và nút Back Android đóng từng mức.';s.appendChild(n);
+</script></body></html>
