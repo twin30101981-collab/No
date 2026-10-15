@@ -2139,8 +2139,8 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   }
   .lg-info { pointer-events: auto !important; }
   /* v32: che do chup anh — html2canvas khong ho tro backdrop-filter/SVG pane */
-  .lg32-capturing .lg-info > div { backdrop-filter: none !important; background: rgba(255,255,255,.92) !important; }
-  .lg32-capturing .leaflet-overlay-pane { visibility: hidden !important; }
+  
+  
   .lg-info > div { cursor: move; }
   .lg-leader { pointer-events: none; }
   /* v32: lam net anh ve tinh */
@@ -2180,8 +2180,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   .lg32-menu button { display:block; width:100%; text-align:left; border:0; background:none;
     padding:9px 10px; font-size:var(--lg63-fs); border-radius:7px; cursor:pointer; }
   .lg32-menu button:hover { background:var(--muted); }
-  .lg32-shot-frame { position:absolute; right:10px; top:10px; z-index:400; background:rgba(255,255,255,.95);
-    border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:var(--lg63-fs); line-height:1.5; max-width:280px; }
+  
   .lg-edge > span {
     color: #ffe600; font-size:var(--lg63-fs); font-weight: 700; line-height: 1.2;
     text-shadow: 0 0 3px #000, 0 0 3px #000, 1px 1px 2px #000;
@@ -2201,7 +2200,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .lg-info .lg-sub { display: block; font-size:var(--lg63-fs-map); font-weight: 600; color: #d32f2f; }
-  .lg-info .lg-addr { display: none; }
+  
   /* Ẩn nhãn phụ khi zoom nhỏ để bản đồ không bị rối. */
   .lg-zoom-far .lg-info > div { background: none; border: 0; font-size:var(--lg63-fs-map); }
   .lg-zoom-far .lg-info .lg-sub, .lg-zoom-far .lg-angle, .lg-zoom-far .lg-edge { display: none !important; }
@@ -21830,8 +21829,7 @@ body.lg62.lg62-map #sidebar{ display:none !important; }
 #lg62-scrim.open{ display:block; }
 
 /* Nút gốc khi đã nằm trong sheet -> hàng dọc, chữ to, cao 56px */
-.lg62-sheet-body > *,
-.lg62-sheet-body .lg62-row > *{ font-size:var(--lg62-fs); }
+.lg62-sheet-body > *{ font-size:var(--lg62-fs); }
 .lg62-sheet-body [data-lg62-moved],
 .lg62-sheet-body button,
 .lg62-sheet-body .lg31-fab,
@@ -21908,7 +21906,7 @@ body.lg62 #sidebar .stat .value{ font-size:var(--lg62-fs-num) !important; }
 body.lg62 #sidebar .plot-row{ min-height:56px; font-size:var(--lg62-fs-sm) !important; }
 
 /* ---------- Nhãn trên bản đồ to hơn ---------- */
-body.lg62 .lg-vertex-label, body.lg62 .lg-edge-label,
+
 body.lg62 .leaflet-tooltip{ font-size:var(--lg63-fs) !important; font-weight:800 !important; }
 body.lg62 .leaflet-tooltip{ padding:4px 7px !important; }
 body.lg62 .lg-compass span{ font-size:var(--lg63-fs-map) !important; }
@@ -23028,8 +23026,8 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
   /* Dòng ghi công Leaflet / nguồn ảnh mờ ở góc phải dưới */
   /* HM-09b: ghi nguồn bản đồ được HIỆN LẠI (điều khoản nhà cung cấp) — gọn 10 px, bấm để mở rộng; xem khối lg9b-attr */
   /* Mọi lớp watermark mờ khác dán ở đáy bản đồ */
-  #map .lg-watermark, #map .lg-brand-watermark,
-  .lg-map-watermark, .lg60-map-watermark { display: none !important; }
+  #map .lg-watermark,
+  .lg-map-watermark{ display: none !important; }
 </style>
 <script>
 (function () {
@@ -23449,9 +23447,9 @@ html body.lg62 .leaflet-control-attribution a { color:#0b5d3b; }
      ========================================================================== -->
 <style id="lg73-style">
 /* ---- 1. XOÁ BADGE REPLIT ---- */
-#replit-pill-host, [id*="replit"], [class*="replit"], #replit-badge, .replit-badge, [class*="replit-badge"], [id*="replit-badge"],
+ [id*="replit"], [class*="replit"], [class*="replit-badge"], [id*="replit-badge"],
 a[href*="replit.com"][target="_blank"], iframe[src*="replit.com"],
-div[style*="Made with Replit"], .lg73-killed { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+div[style*="Made with Replit"]{ display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
 
 /* ---- 2. CHỮ TỐI THIỂU 16px (đọc được không cần zoom) ---- */
 #lg73-hud, #lg73-hud * { font-size:var(--lg-fs) !important; line-height: 1.45 !important; }
@@ -23491,10 +23489,9 @@ div[style*="Made with Replit"], .lg73-killed { display: none !important; visibil
   border: 1px solid #cfd8dc; border-radius: 8px; }
 #lg73-hud button { padding: 9px 14px; font-size:var(--lg-fs) !important; border-radius: 10px; border: 1px solid #0b5d3b; background: #0b5d3b; color: #fff; }
 #lg73-hud button.sec { background: #fff; color: #0b5d3b; }
-#lg73-warn { position: fixed; left: 8px; right: 8px; top: 8px; z-index: 100001; background: #fff8e1; border: 1px solid #ffb300;
-  color: #4e342e; border-radius: 12px; padding: 10px 12px; font-size:var(--lg-fs); line-height: 1.5; display: none; }
-#lg73-warn.on { display: block; }
-#lg73-warn button { margin-top: 8px; font-size:var(--lg-fs); padding: 8px 12px; border-radius: 10px; border: 1px solid #ffb300; background: #ffb300; color: #3e2723; }
+
+
+
 .lg73-adv { margin: 10px 0; }
 .lg73-adv > summary { cursor: pointer; font-weight: 700; font-size:var(--lg-fs); padding: 6px 0; }
 .lg73-chk { font-size:var(--lg-fs-sm); margin-left: 6px; }
@@ -25099,7 +25096,7 @@ div[style*="Made with Replit"], .lg73-killed { display: none !important; visibil
 }
 #sidebar table, .panel table{ width:100%; border-collapse:collapse; }
 /* bảng rộng vẫn cuộn ngang trong khung, không đẩy vỡ layout */
-#sidebar .table-wrap, .panel .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
 /* các "bảng" dạng danh sách */
 .lg63-check li, .lg63-check > b, #sidebar .plot-row, .lg-pinfo, .lg-pinfo-grid{
   font-size: var(--lg83-tbl-fs) !important; line-height: 1.55 !important;
@@ -25322,7 +25319,7 @@ body{ font-size:var(--lg-fs); line-height:var(--lg-lh); }
 h1, .modal-header, .lg62-sheet-head, .lg-v30-head, .pip-title{ font-size:var(--lg-fs-title); }
 h3, h4{ font-size:var(--lg-fs); }
 /* biểu tượng thuần (emoji/mũi tên) không bị ép cỡ chữ */
-.lg62-tbtn, .lg31-fab, .stakeout-arrow, .lg-compass-needle,
+.lg62-tbtn, .lg31-fab, .stakeout-arrow,
 .lg68-x, .lg-v30-x, .pip-x, .gw-x{ font-size:revert; }
 
 /* 2) KHÓA CHỐNG VỠ / TRÀN LAYOUT */
@@ -25342,7 +25339,7 @@ header h1{ font-size:var(--lg-fs-title); min-width:0; overflow:hidden; text-over
 input, select, textarea{ max-width:100%; }
 .coord-box, .mono, [class*="mono"]{ overflow-wrap:anywhere; }
 table{ max-width:100%; }
-#sidebar .table-wrap, .panel .table-wrap, .modal-body{ overflow-x:auto; }
+ .modal-body{ overflow-x:auto; }
 
 /* 3) NHÃN TRÊN BẢN ĐỒ — 15px, KHÔNG ĐÈ NHAU */
 .lg-vertex > span, .lg-edge > span, .lg-angle > span, .lg-info > div{
@@ -25360,7 +25357,7 @@ table{ max-width:100%; }
 
 /* 4) MỞ FULL BẢNG: Chi tiết thửa đất & Ảnh thực tế (không cắt, không cuộn lồng) */
 #plot-info-panel, #report-printable-area, .lg60-host, .lg67-sheet, .lg68-box,
-.lg31-sheet, .lg51-box, .lg52-box, .lg54-box{
+.lg31-sheet, .lg51-box, .lg52-box{
   max-height:none !important;
 }
 #report-printable-area table, #plot-info-panel table, .lg60-root table{
@@ -25369,7 +25366,7 @@ table{ max-width:100%; }
 #report-printable-area [style*="max-height"], #plot-info-panel [style*="max-height"]{
   max-height:none !important; overflow:visible !important;
 }
-.lg54-box img, .lg67-sheet img, .lg68-box img:not(.lg68-tile){ max-width:100%; height:auto; }
+ .lg67-sheet img, .lg68-box img:not(.lg68-tile){ max-width:100%; height:auto; }
 
 /* 5) HỒ SƠ IN / PDF / A4 — 16px, vừa khổ giấy */
 @media print{
@@ -25503,7 +25500,7 @@ html, body{ overscroll-behavior-y:none; }
 .lg62-sheet-body::-webkit-scrollbar-thumb{ background:rgba(15,61,36,.28); border-radius:8px; }
 
 /* Vùng cuộn ngang (thanh tab, bảng rộng): chỉ cuộn ngang, không nuốt cử chỉ dọc */
-.nav-tabs, .header-actions, .table-wrap{
+.nav-tabs, .header-actions{
   overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
 }
 
@@ -25514,7 +25511,7 @@ html, body{ overscroll-behavior-y:none; }
 /* --- 5) Chống cắt/đè khi zoom lớn (bề rộng CSS rất hẹp) --------------- */
 .btn, .tab-btn, button{ height:auto !important; min-height:var(--lg-tap); }
 .leaflet-control a, .leaflet-control button{ min-height:0 !important; }
-.header-actions, .modal-footer, .lg62-actions, .row, .btn-row,
+.header-actions, .row,
 [class*="actions"], [class*="footer"]{ flex-wrap:wrap; }
 .header-actions{ flex-wrap:nowrap; }
 h1,h2,h3,h4,legend,label,.sel-head,.pip-title,.modal-header{
@@ -25737,7 +25734,7 @@ body.lg62.lg103 #lg62-rail{
   body.lg104-a4-printing #lg104-a4 thead th{ background:#eef3f0; }
   body.lg104-a4-printing #lg104-a4 tr{ break-inside:avoid; }
   body.lg104-a4-printing #lg104-a4 .lg104-a4-note{ font-size:8pt; margin-top:8px; }
-  body.lg104-a4-printing #lg104-a4 .lg104-a4-sign{ display:flex; justify-content:flex-end; margin-top:14mm; font-size:9pt; text-align:center; }
+  
   /* v107 (Đợt 4): khối QR + khung tên + mục "3. Thông tin thửa" */
   body.lg104-a4-printing #lg104-a4 .lg107-head{ display:flex; align-items:flex-start; gap:8mm; }
   body.lg104-a4-printing #lg104-a4 .lg107-head > .lg107-head-main{ flex:1 1 auto; min-width:0; }
@@ -28610,7 +28607,7 @@ body.lg62 #sidebar input[type=checkbox], body.lg62 #sidebar input[type=radio]{
 .lg-layer-ctrl label{ min-height:40px; display:flex; align-items:center; gap:8px; }
 .lg-layer-ctrl input[type=checkbox], .leaflet-control-layers input{ width:24px; height:24px; }
 .lg-gps-badge{ font-size:17px !important; padding:10px 16px !important; cursor:pointer; }
-body.lg62 .lg-vertex-label, body.lg62 .lg-edge-label, body.lg62 .leaflet-tooltip,
+ body.lg62 .leaflet-tooltip,
 body.lg62 .lg-label span{ font-size:17px !important; }
 
 /* ---------- 1) Nút quay lại menu chính ---------- */
@@ -29288,7 +29285,7 @@ body.lg62.lg103 .lg-zoomctrl{ z-index:1100 !important; }
   body:not(.lg104-a4-printing) .lg-layer-ctrl,
   body:not(.lg104-a4-printing) .lg-gps-badge,
   body:not(.lg104-a4-printing) .leaflet-control-container,
-  #lg73-pill, #lg73-panel,
+  #lg73-pill,
   body.lg104-a4-printing #lg63-progress{ display:none !important; }
   body.lg104-a4-printing #lg73-pill{ display:none !important; }
 }
@@ -30041,10 +30038,10 @@ html body #plot-info-panel{
 /* ---- 5) DOCK & NÚT TÁC VỤ TO, ĐỌC ĐƯỢC TRÊN ĐIỆN THOẠI ---- */
 @media (max-width:640px){
   body.lg103{ --lg103-dock-h: var(--lg116-dock-h); }
-  html body #lg103-dock .lg103-item, html body #lg103-dock button, html body #lg103-dock a{
+   html body #lg103-dock button, html body #lg103-dock a{
     font-size:15px !important; line-height:1.15 !important;
   }
-  html body #lg103-dock .lg103-item small, html body #lg103-dock small, html body #lg62-nav small{
+   html body #lg103-dock small, html body #lg62-nav small{
     font-size:14px !important; font-weight:700 !important;
   }
   #lg103-dock svg, #lg103-dock .lg103-ic{ width:26px !important; height:26px !important; }
@@ -30058,7 +30055,7 @@ html body #plot-info-panel{
 }
 
 /* ---- 6) ẢNH THỰC TẾ: hiện trọn khung ảnh gốc, không cắt góc ---- */
-html body .lg67-sheet img, html body .lg68-box img:not(.lg68-tile), html body .lg31-grid8 img, html body .lg67r-cell img, html body .lg54-box img{
+html body .lg67-sheet img, html body .lg68-box img:not(.lg68-tile), html body .lg31-grid8 img, html body .lg67r-cell img{
   object-fit:contain !important;
   background:#0b1f16 !important;
   height:auto !important;
@@ -30826,7 +30823,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
   /* Thửa nhiều đỉnh: bảng toạ độ được phép sang trang, nhưng không để lại
      mồ côi 1 dòng ở cuối/đầu trang. */
   #report-printable-area table{ orphans:3; widows:3; }
-  .lg119-noprint{ display:none !important; }
+  
 }
 </style>
 <script>

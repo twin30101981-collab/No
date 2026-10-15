@@ -65,3 +65,4 @@
 - 15/10 · P06 · HM-20 ĐẠT V3: phiên bản thửa + sao lưu tự động + đồng bộ CSDL (tuỳ chọn, có xung đột).
 - 15/10 · P06 · HM-22 (phần mã) và HM-28 (phần mã) xong → CHỜ BẠN: máy thu GNSS thật; triển khai Supabase sign-pack + gói địa chính thật.
 - 15/10 · P06 · HM-25 (phần mã) xong → CHỜ BẠN: gửi biểu mẫu thật (HTML/JSON hoặc file Word/Excel đã xoá dữ liệu cá nhân).
+- 15/10 · P06 · HM-08f ĐẠT V3 (một phần: dọn CSS chết, ảnh 360/390/430 khớp). **Đề án hoàn tất phần việc của phiên tự động — xem handover/TONG_KET.md. Chuỗi dừng: không sinh P07.** Việc của bạn: handover/VIEC_CUA_BAN.md.

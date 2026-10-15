@@ -1,7 +1,7 @@
 // Service Worker — Land GIS VN-2000 (PWA). Tệp SINH RA bởi handover/tools/deploy_pages.py từ sw.template.js — đừng sửa tay sw.js.
-// Tên cache theo phiên bản: landgis-shell-v237-9fb71726 (đổi mỗi lần triển khai ⇒ máy cũ thấy "có bản mới").
+// Tên cache theo phiên bản: landgis-shell-v237-c413db55 (đổi mỗi lần triển khai ⇒ máy cũ thấy "có bản mới").
 // Chỉ cache app shell cùng gốc; tile bản đồ (landgis-tiles-*) và gói địa chính (IndexedDB) KHÔNG bị đụng tới khi nâng cấp.
-const CACHE = 'landgis-shell-v237-9fb71726';
+const CACHE = 'landgis-shell-v237-c413db55';
 const SHELL = ['./', './index.html', './manifest.json', './admin-map.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './vendor/xlsx.full.min.js', './vendor/html2canvas.min.js', './vendor/jsQR.js', './vendor/jspdf.umd.min.js'];
 
 self.addEventListener('install', (e) => {
