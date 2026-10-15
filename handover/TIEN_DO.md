@@ -2,3 +2,4 @@
 - 15/10 · Phiên 1 (S0): phân tích + đề án v1.0→v1.8 (66 hạng mục) · chuẩn bị chạy tự động · ẩn danh bản gốc · gỡ PDF chứa số GCN khỏi repo.
 - 15/10 · P02 · HM-00 ĐẠT V3: kho thửa không còn bị xoá/cắt nửa khi bộ nhớ đầy hoặc > 160 KB; lưu lỗi → báo + bản sao IndexedDB, mở lại tự khôi phục.
 - 15/10 · P02 · HM-00b ĐẠT V3: mở app 50 thửa từ 59 s còn 1,9 s (gỡ bộ quét DOM Replit).
+- 15/10 · P02 · HM-01 ĐẠT V3: bộ hồi quy 1 lệnh (tests/run.js), 2 lỗi Mẫu A/B tái hiện được.
