@@ -11037,6 +11037,23 @@ function lgSwAllowed(){
   return true;
 }
 
+/* HM-11 — "Có bản mới": SW mới cài xong và đang chờ → hiện thanh nhỏ; bấm Cập nhật mới kích hoạt + tải lại (không đổi mã giữa lúc nhập liệu). */
+function lgWatchSwUpdate(reg){
+  function offer(w){
+    if (!w || document.getElementById('lg11-upd')) return;
+    var bar = document.createElement('div'); bar.id = 'lg11-upd'; bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(var(--lg-dock-clear,70px) + 8px);z-index:99999;background:#0f3d24;color:#fff;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center;font:14px/1.3 system-ui';
+    bar.innerHTML = '<span style="flex:1">Có bản mới của ứng dụng.</span><button type="button" data-u="go" style="min-height:44px;padding:0 14px;border-radius:8px;border:0;background:#fff;color:#0f3d24;font-weight:600">Cập nhật</button><button type="button" data-u="later" aria-label="Để sau" style="min-height:44px;min-width:44px;border:0;background:transparent;color:#fff;font-size:18px">✕</button>';
+    bar.addEventListener('click', function (e) { var t = e.target.closest('button'); if (!t) return; if (t.getAttribute('data-u') === 'later') { bar.remove(); return; } t.disabled = true; w.postMessage('SKIP_WAITING'); });
+    document.body.appendChild(bar);
+  }
+  var reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function () { if (reloaded || !window.__lgSwHadController) return; reloaded = true; location.reload(); });
+  window.__lgSwHadController = !!navigator.serviceWorker.controller;
+  if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+  reg.addEventListener('updatefound', function () { var n = reg.installing; if (!n) return; n.addEventListener('statechange', function () { if (n.state === 'installed' && navigator.serviceWorker.controller) offer(n); }); });
+  window.lgSwCheckUpdate = function () { return reg.update(); };
+}
 async function lgRegisterSW(){
   if (!lgSwAllowed()) {
     if ('serviceWorker' in navigator) {
@@ -11058,6 +11075,7 @@ async function lgRegisterSW(){
     if (!probe || !probe.ok) return null;
     const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
     window.LG_SW_REG = reg;
+    try { lgWatchSwUpdate(reg); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h11a'); }
     return reg;
   } catch(e){
     console.warn('Không đăng ký được Service Worker:', e);

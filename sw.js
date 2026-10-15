@@ -1,42 +1,34 @@
-// Service Worker — Land GIS VN-2000 Hybrid (PWA)
-// v1: cache "app shell" (trang chính + icon) để mở lại nhanh và có thể chạy được
-// khi mất mạng tạm thời. Không cache các API bản đồ/AI trực tuyến (Google/Esri/
-// Gemini...) — các phần đó vẫn cần mạng như bản thân ứng dụng đã thiết kế.
-const CACHE = 'landgis-shell-v1';
-const SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png'
-];
+// Service Worker — Land GIS VN-2000 (PWA). Tệp SINH RA bởi handover/tools/deploy_pages.py từ sw.template.js — đừng sửa tay sw.js.
+// Tên cache theo phiên bản: landgis-shell-v237-3addf8a0 (đổi mỗi lần triển khai ⇒ máy cũ thấy "có bản mới").
+// Chỉ cache app shell cùng gốc; tile bản đồ (landgis-tiles-*) và gói địa chính (IndexedDB) KHÔNG bị đụng tới khi nâng cấp.
+const CACHE = 'landgis-shell-v237-3addf8a0';
+const SHELL = ['./', './index.html', './manifest.json', './admin-map.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // Không skipWaiting tự động: bản mới chờ tới khi người dùng bấm "Cập nhật" (tránh đổi mã giữa lúc đang nhập liệu).
+  e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => null)))));
 });
+
+self.addEventListener('message', (e) => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => /^landgis-shell-/.test(k) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-// Chỉ can thiệp GET cùng gốc (app shell). Mọi request khác (tile bản đồ, AI, CDN
-// thư viện) để trình duyệt tự xử lý bình thường — tránh cache nhầm ảnh vệ tinh
-// hay phản hồi AI, vốn cần luôn mới.
+// Chỉ GET cùng gốc. Điều hướng: ưu tiên bản cache (mở ngoại tuyến được), cập nhật nền; tài nguyên khác: cache-first + làm mới nền.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
+  if (url.pathname.endsWith('/sw.js')) return;
+  const nav = e.request.mode === 'navigate';
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const fetchPromise = fetch(e.request).then((res) => {
-        if (res && res.ok) caches.open(CACHE).then((c) => c.put(e.request, res.clone()));
-        return res;
-      }).catch(() => cached);
-      return cached || fetchPromise;
-    })
+    caches.open(CACHE).then((c) => c.match(nav ? './index.html' : e.request, { ignoreSearch: true }).then((cached) => {
+      const net = fetch(e.request).then((res) => { if (res && res.ok) c.put(nav ? './index.html' : e.request, res.clone()); return res; }).catch(() => cached);
+      return cached || net;
+    }))
   );
 });

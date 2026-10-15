@@ -40,3 +40,4 @@
 - 15/10 · P05 · HM-31 ĐẠT V3: Nhập sổ có ô 'Tra địa chính' (xã + tờ + thửa → toạ độ VN-2000 từ gói đã tải, ghi nguồn trên hồ sơ).
 - 15/10 · P05 · HM-32 ĐẠT V3: sổ không toạ độ — tìm thửa theo dãy cạnh + diện tích, 3 ứng viên kèm % và lý do (chỉ tham khảo).
 - 15/10 · P05 · HM-34 ĐẠT V3: tìm thửa theo vị trí GPS đang đứng (kèm thửa lân cận khi sai số lớn).
+- 15/10 · P05 · HM-11 ĐẠT V3: triển khai v237 lên gốc repo + PWA báo 'Có bản mới', mở ngoại tuyến lần 2, manifest khoá dọc.
