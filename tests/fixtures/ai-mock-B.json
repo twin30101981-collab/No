@@ -1,0 +1,76 @@
+{
+ "so_thua": "131",
+ "to_ban_do": "10.1",
+ "dia_chi": "Địa chỉ ẩn danh — Mẫu B",
+ "phuong_xa": "Xã/phường ẩn danh",
+ "quan_huyen": "Thành phố Nam Định",
+ "tinh_thanh": "Nam Định",
+ "dien_tich_m2": 89.9,
+ "dien_tich_tong_m2": 89.9,
+ "nguon_dien_tich": "muc_c",
+ "muc_dich_su_dung": "Đất ở tại đô thị",
+ "loai_dat": "ODT",
+ "thoi_han_su_dung": "Lâu dài",
+ "nguon_goc_su_dung": "Nhận quyền sử dụng đất do chuyển nhượng quyền sử dụng đất",
+ "hinh_thuc_su_dung": "Sử dụng riêng: 89,9 m²; Sử dụng chung: 0 m²",
+ "dien_tich_khong_cap_gcn": 1.4,
+ "vung_khong_cap_gcn": "4,5,6,7",
+ "chi_gioi_quy_hoach": "4,7",
+ "giap_ranh_tay": "T.130",
+ "giap_ranh_dong": "T.132",
+ "giap_ranh_nam": "Đường Phạm Ngũ Lão",
+ "giap_ranh_bac": null,
+ "co_bang_toa_do": true,
+ "kinh_tuyen_truc": null,
+ "canh_gcn": "2.06; 3.85; 17.58; 0.26; 4.50; 0.38; 19.32; 7.81",
+ "diem_moc": [
+  {
+   "ten": "1",
+   "x": 2259336.23,
+   "y": 568027.14,
+   "s": 2.06
+  },
+  {
+   "ten": "2",
+   "x": 2259334.17,
+   "y": 568027.23,
+   "s": 3.85
+  },
+  {
+   "ten": "3",
+   "x": 2259334.42,
+   "y": 568031.07,
+   "s": 17.58
+  },
+  {
+   "ten": "4",
+   "x": 2259316.85,
+   "y": 568031.69,
+   "s": 0.26
+  },
+  {
+   "ten": "5",
+   "x": 2259316.59,
+   "y": 568031.7,
+   "s": 4.5
+  },
+  {
+   "ten": "6",
+   "x": 2259316.99,
+   "y": 568036.18,
+   "s": 0.38
+  },
+  {
+   "ten": "7",
+   "x": 2259317.37,
+   "y": 568036.15,
+   "s": 19.32
+  },
+  {
+   "ten": "8",
+   "x": 2259336.65,
+   "y": 568034.94,
+   "s": 7.81
+  }
+ ]
+}

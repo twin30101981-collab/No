@@ -1,8 +1,8 @@
-Áp dụng skill web-app-repair-upgrade (đính kèm file skill) cho phiên tiếp theo của đề án LANDGIS.
-Tôi đính kèm ZIP bàn giao: LANDGIS_P01_KHOITAO_V18_20261015.zip (và quyết định duyệt đề án: ...).
-Hãy: (1) giải nén, đọc handover/HANDOVER.md và backlog.json, xác minh MANIFEST.sha256;
-(2) kiểm tra môi trường một lần (Playwright có chạy được không);
-(3) xác nhận với tôi hạng mục kế tiếp HM-00 + HM-00b (P0) bằng một câu hỏi ngắn;
-(4) thực hiện đúng quy trình: kiểm chứng theo thang V3/V2/V1, bàn giao ZIP sau mỗi hạng mục và hỏi tôi trước khi sang hạng mục kế tiếp;
-(5) theo dõi ngưỡng ngữ cảnh, giữ dự trữ đóng gói, đóng phiên bằng ZIP khi chạm vùng Đỏ.
-Chỉ trả lời bằng tiếng Việt, ngắn gọn.
+Tiếp tục dự án LANDGIS ở chế độ CHẠY TỰ ĐỘNG NHIỀU PHIÊN (người dùng đã yêu cầu ngày 15/10/2026; đề án v1.8 đã duyệt).
+Repo đã checkout ở nhánh ccr-9dbbe50d-dw0kll. Làm ngay, không hỏi người dùng:
+1. Đọc handover/AUTORUN.md (quy tắc bắt buộc), rồi handover/HANDOVER.md và handover/backlog.json (thu_tu_thuc_thi). Skill: handover/skill/web-app-repair-upgrade-v3.2.0.md (Mục 1–13).
+2. Kiểm tra môi trường 1 lần: Playwright tại /opt/node-tools/node_modules/playwright; cd tests && npm install. Ghi vào HANDOVER.
+3. Ghi "S-OPEN phiên N" vào HANDOVER, commit+push.
+4. Thực hiện tuần tự các hạng mục theo AUTORUN.md §2–4: sửa tận gốc, kiểm thử V3, commit+push sau mỗi hạng mục, cập nhật backlog/HANDOVER/TIEN_DO.
+5. Theo dõi ngữ cảnh bằng get_session sau mỗi hạng mục; ≥ 70% → đóng phiên và sinh phiên kế bằng create_session theo AUTORUN.md §5 (prompt = file này).
+Trả lời người dùng bằng tiếng Việt, ngắn gọn. Repo công khai: không commit dữ liệu cá nhân hay khoá API.

@@ -1,12 +1,12 @@
 {
  "du_an": "LANDGIS",
  "skill_version": "3.2.0",
- "phien_hien_tai": 1,
- "che_do": 1,
+ "phien_hien_tai": 2,
+ "che_do": "3-tu-dong",
  "de_an": {
   "phien_ban": "1.8",
-  "trang_thai": "CHO_DUYET",
-  "ngay_duyet": null,
+  "trang_thai": "DA_DUYET",
+  "ngay_duyet": "2026-10-15",
   "tep": "de-an/DE_AN_LANDGIS_v1.8.docx",
   "so_phien_uoc_tinh": "11-14",
   "dieu_chinh": [
@@ -18,12 +18,15 @@
    "v1.6: thêm Đợt 6 — bản đồ địa chính ngoại tuyến toàn tỉnh Ninh Bình mới (HM-26..34)",
    "v1.7: thêm giáp ranh/tứ cận theo cạnh + đối chiếu sổ thửa xung quanh (HM-35..38)",
    "v1.8: phân tích sâu lớp bản đồ + chạy thử đầu–cuối đọc sổ→PDF; F-38..F-50; HM-39..45"
-  ]
+  ],
+  "ghi_chu_duyet": "Người dùng yêu cầu 'chuyển phiên và thực thi chạy tự động toàn bộ đề án theo phiên, có chuyển tiếp khi đạt giới hạn phiên' (15/10/2026) — coi là duyệt v1.8 + chế độ tự động không hỏi giữa hạng mục."
  },
  "moi_truong": {
   "node": "v22.22.0",
+  "playwright": "/opt/node-tools/node_modules/playwright (1.56.1), Chromium /opt/pw-browsers",
   "v3_kha_dung": true,
-  "ghi_chu": "Playwright 1.56.1 + Chromium headless; mạng ra ngoài bị chặn (ô bản đồ, AI, Supabase không kiểm được)"
+  "mang_ra_ngoai": "bị chặn trừ npm; tiles/AI/Supabase phải giả lập (route)",
+  "thu_vien_cuc_bo": "cd tests && npm install (jspdf 2.5.1, html2canvas 1.4.1, jsqr 1.4.0, xlsx 0.18.5)"
  },
  "baseline": {
   "tep": "baseline/Land-GIS-v237.html",
@@ -66,7 +69,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-00b",
@@ -103,7 +107,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-01",
@@ -143,7 +148,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-02",
@@ -184,7 +190,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-42",
@@ -225,7 +232,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-03",
@@ -264,7 +272,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-41",
@@ -303,7 +312,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-45",
@@ -343,7 +353,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-04",
@@ -383,7 +394,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-43",
@@ -421,7 +433,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-04b",
@@ -461,7 +474,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-05",
@@ -501,7 +515,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-00c",
@@ -540,7 +555,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-06",
@@ -580,7 +596,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Người dùng kiểm RLS bảng thua_dat trên Supabase theo kịch bản do phiên soạn"
   },
   {
    "id": "HM-06c",
@@ -619,7 +636,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Bật Auth email OTP + RLS trên Supabase (phiên soạn SQL/hướng dẫn)"
   },
   {
    "id": "HM-06d",
@@ -658,7 +676,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-07a",
@@ -698,7 +717,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-07b",
@@ -736,7 +756,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-07c",
@@ -775,7 +796,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-39",
@@ -816,7 +838,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08a",
@@ -855,7 +878,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08b",
@@ -894,7 +918,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08i",
@@ -932,7 +957,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08c",
@@ -972,7 +998,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08d",
@@ -1012,7 +1039,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08e",
@@ -1050,7 +1078,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08g",
@@ -1089,7 +1118,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08f",
@@ -1129,7 +1159,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-08h",
@@ -1168,7 +1199,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-09",
@@ -1206,7 +1238,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-09b",
@@ -1244,7 +1277,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-10",
@@ -1285,7 +1319,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-11",
@@ -1325,7 +1360,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-11b",
@@ -1363,7 +1399,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-40",
@@ -1401,7 +1438,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-44",
@@ -1440,7 +1478,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-10b",
@@ -1480,7 +1519,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Triển khai Edge Function trên Supabase của người dùng"
   },
   {
    "id": "HM-12a",
@@ -1519,7 +1559,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-13",
@@ -1557,7 +1598,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-14",
@@ -1595,7 +1637,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-15",
@@ -1633,7 +1676,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-16",
@@ -1672,7 +1716,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-21",
@@ -1711,7 +1756,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-17",
@@ -1749,7 +1795,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-18a",
@@ -1787,7 +1834,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-18b",
@@ -1824,7 +1872,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-19",
@@ -1862,7 +1911,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-20",
@@ -1901,7 +1951,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-23",
@@ -1941,7 +1992,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-24",
@@ -1979,7 +2031,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-22",
@@ -2018,7 +2071,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Kiểm trên điện thoại Android + máy thu GNSS thật"
   },
   {
    "id": "HM-25",
@@ -2056,7 +2110,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Cung cấp biểu mẫu muốn xuất"
   },
   {
    "id": "HM-26",
@@ -2081,7 +2136,7 @@
    "rui_ro": "Cao: phụ thuộc cơ quan cấp",
    "kiem_chung_du_kien": "—",
    "nhan_xac_minh": "Điều kiện tiên quyết",
-   "trang_thai": "CHUA_LAM",
+   "trang_thai": "CHO_NGUOI_DUNG",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
     "lenh": "",
@@ -2092,7 +2147,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Xin dữ liệu địa chính từ Sở NN&MT / VP Đăng ký đất đai"
   },
   {
    "id": "HM-33",
@@ -2130,7 +2186,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-27a",
@@ -2170,7 +2227,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-27b",
@@ -2208,7 +2266,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-28",
@@ -2248,7 +2307,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": "Tạo bucket riêng trên Supabase Storage"
   },
   {
    "id": "HM-29",
@@ -2288,7 +2348,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-30",
@@ -2328,7 +2389,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-31",
@@ -2368,7 +2430,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-32",
@@ -2407,7 +2470,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-34",
@@ -2444,7 +2508,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-35",
@@ -2484,7 +2549,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-36",
@@ -2524,7 +2590,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-37",
@@ -2564,7 +2631,8 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   },
   {
    "id": "HM-38",
@@ -2602,15 +2670,118 @@
    },
    "nguyen_nhan_goc": "",
    "ghi_chu_ban_giao": "",
-   "zip": ""
+   "zip": "",
+   "can_nguoi_dung": null
   }
  ],
  "quyet_dinh_da_chot": [
   "Sai số cho phép duy nhất = 0,05·√A + 0,0003·A (công thức luồng chính); ĐẠT chỉ khi |(diện tích đo − không cấp GCN) − diện tích GCN| ≤ mức này; bỏ các ngưỡng nới khác (max(0,05; 0,5%·A), 0,005·A+0,05√A) — người dùng chốt 15/10/2026",
   "Xoá hết dữ liệu cũ gây mất an toàn: gỡ hẳn LG_AUDIT (10 hồ sơ thật) và mã chỉ phục vụ nó; dọn khoá localStorage cũ/hỏng và nhật ký chẩn đoán; KHÔNG xoá dữ liệu thửa người dùng đang lưu — người dùng chốt 15/10/2026",
-  "Người dùng có quyền vào Supabase: kiểm RLS bảng thua_dat theo kịch bản V1 do Claude soạn; Đợt 4 nằm trong phạm vi — người dùng chốt 15/10/2026"
+  "Người dùng có quyền vào Supabase: kiểm RLS bảng thua_dat theo kịch bản V1 do Claude soạn; Đợt 4 nằm trong phạm vi — người dùng chốt 15/10/2026",
+  "(15/10, mặc định theo đề xuất vì người dùng yêu cầu chạy tự động) Màn rộng: hiện khung mobile 430 px ở giữa",
+  "(mặc định) PWA khoá màn dọc (manifest orientation portrait)",
+  "(mặc định) Làm HM-00 + HM-00b trước tiên",
+  "(mặc định) Claude: model mặc định claude-opus-5-5, tuỳ chọn claude-sonnet-5-5 / claude-haiku-5-5; giữ đa nhà cung cấp; máy chủ trung gian HM-10b làm phần mã, triển khai chờ người dùng",
+  "(mặc định) Địa bàn ưu tiên: Nam Định cũ trong tỉnh Ninh Bình mới; bảng KTT phủ toàn tỉnh",
+  "(mặc định) Supabase: đăng nhập email OTP, mỗi người chỉ thấy thửa của mình; cấu hình RLS do người dùng thực hiện theo hướng dẫn",
+  "(mặc định) Làm cả tính năng nhóm A (Đợt 4) và B (Đợt 5)",
+  "(mặc định) Đợt 6 chạy sau Đợt 2; dữ liệu địa chính thật chờ người dùng (HM-26) — dựng công cụ/giao diện với dữ liệu giả lập",
+  "(mặc định) Gói địa chính lưu Supabase Storage (riêng tư)",
+  "(mặc định) Sổ thửa bên cạnh: che tên/CCCD mặc định",
+  "(mặc định) Lớp nền mặc định Esri World Imagery có ghi nguồn; Google chỉ khi có khoá Map Tiles API",
+  "(mặc định) Bỏ bình sai tự động; chỉ chạy khi người dùng bấm",
+  "(15/10) Không đưa ảnh sổ đỏ thật, số vào sổ, số phát hành, họ tên, CCCD lên repo (repo công khai)"
  ],
  "loi_nen_ngoai_pham_vi": [
   "168–528 request ô bản đồ lỗi trong môi trường S0 do chặn mạng — không phải lỗi app"
- ]
+ ],
+ "nguon_ma": {
+  "app": "app/land-gis.html",
+  "baseline": "baseline/land-gis-v237-da-an.html",
+  "sha256_ban_goc_nguoi_dung": "7ab2837e065712de459fea114022552ecb4a1aa6757f584019c6e0d824978b5a",
+  "sha256_ban_da_an": "ed10f1a7002bd2b38c2df22bacf03a9339d340cdf16abcfb0c545d07dce20842",
+  "ghi_chu": "Repo CÔNG KHAI: bản gốc của người dùng chứa họ tên/CCCD thật nên chỉ đưa bản đã ẩn danh (baseline/redact_baseline.py). LG_AUDIT đã là mảng rỗng."
+ },
+ "thu_tu_thuc_thi": [
+  "HM-00",
+  "HM-00b",
+  "HM-01",
+  "HM-02",
+  "HM-42",
+  "HM-03",
+  "HM-41",
+  "HM-45",
+  "HM-05",
+  "HM-00c",
+  "HM-06",
+  "HM-06c",
+  "HM-06d",
+  "HM-04",
+  "HM-43",
+  "HM-04b",
+  "HM-08a",
+  "HM-07a",
+  "HM-07b",
+  "HM-07c",
+  "HM-08b",
+  "HM-08i",
+  "HM-08c",
+  "HM-08d",
+  "HM-08e",
+  "HM-08g",
+  "HM-09",
+  "HM-09b",
+  "HM-10",
+  "HM-39",
+  "HM-26",
+  "HM-33",
+  "HM-27a",
+  "HM-27b",
+  "HM-28",
+  "HM-29",
+  "HM-30",
+  "HM-31",
+  "HM-32",
+  "HM-34",
+  "HM-11",
+  "HM-11b",
+  "HM-40",
+  "HM-44",
+  "HM-10b",
+  "HM-08f",
+  "HM-08h",
+  "HM-12a",
+  "HM-35",
+  "HM-36",
+  "HM-37",
+  "HM-13",
+  "HM-14",
+  "HM-15",
+  "HM-16",
+  "HM-21",
+  "HM-23",
+  "HM-24",
+  "HM-38",
+  "HM-17",
+  "HM-18a",
+  "HM-18b",
+  "HM-19",
+  "HM-20",
+  "HM-22",
+  "HM-25"
+ ],
+ "chuoi_phien": {
+  "phien_toi_da": 8,
+  "ghi_chu": "Giới hạn chuỗi phiên tự sinh của nền tảng = 8 cấp (lineage). Phiên cuối không sinh được phiên mới phải để lại PROMPT_PHIEN_SAU.md cho người dùng.",
+  "nguong_dong_phien": 0.7,
+  "nguong_khong_mo_M": 0.6,
+  "so_phien_lien_tiep_khong_tien_trien_toi_da": 2,
+  "nhat_ky": [
+   {
+    "phien": 1,
+    "session": "session_019C1PXFKUHAJJMo1HwKVFwe",
+    "viec": "S0 phân tích + đề án v1.0→v1.8; chuẩn bị chạy tự động"
+   }
+  ]
+ }
 }

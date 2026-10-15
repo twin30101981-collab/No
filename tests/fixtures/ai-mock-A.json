@@ -1,0 +1,89 @@
+{
+ "so_thua": "501",
+ "to_ban_do": "10",
+ "dia_chi": "Địa chỉ ẩn danh — Mẫu A",
+ "phuong_xa": "Xã/phường ẩn danh",
+ "quan_huyen": "Thành phố Nam Định",
+ "tinh_thanh": "Nam Định",
+ "dien_tich_m2": 29.7,
+ "dien_tich_tong_m2": 29.7,
+ "nguon_dien_tich": "muc_c",
+ "muc_dich_su_dung": "Đất ở tại đô thị",
+ "thoi_han_su_dung": "Lâu dài",
+ "nguon_goc_su_dung": "Nhà nước công nhận quyền sử dụng đất như nhà nước giao đất không thu tiền sử dụng đất",
+ "dien_tich_khong_cap_gcn": null,
+ "chi_gioi_quy_hoach": "7,6",
+ "co_bang_toa_do": true,
+ "giap_ranh_bac": "T460/68,5",
+ "giap_ranh_dong": "T500/25,5",
+ "giap_ranh_tay": "Ngõ Quang Trung",
+ "canh_gcn": "0.50; 3.02; 5.59; 4.54; 1.38; 5.64; 1.19",
+ "diem_moc": [
+  {
+   "ten": "1",
+   "x": 2260081.59,
+   "y": 570346.55,
+   "s": 0.5
+  },
+  {
+   "ten": "2",
+   "x": 2260081.96,
+   "y": 570346.89,
+   "s": 3.02
+  },
+  {
+   "ten": "3",
+   "x": 2260083.99,
+   "y": 570349.13,
+   "s": 5.59
+  },
+  {
+   "ten": "4",
+   "x": 2260080.98,
+   "y": 570353.84,
+   "s": 4.54
+  },
+  {
+   "ten": "5",
+   "x": 2260077.72,
+   "y": 570350.68,
+   "s": 1.38
+  },
+  {
+   "ten": "6",
+   "x": 2260076.73,
+   "y": 570349.72,
+   "s": 5.64
+  },
+  {
+   "ten": "7",
+   "x": 2260080.72,
+   "y": 570345.74,
+   "s": 1.19
+  },
+  {
+   "ten": "8",
+   "x": 2260077.72,
+   "y": 570350.68,
+   "s": 2.69
+  },
+  {
+   "ten": "9",
+   "x": 2260079.53,
+   "y": 570348.69,
+   "s": 1.06
+  },
+  {
+   "ten": "10",
+   "x": 2260080.25,
+   "y": 570347.91,
+   "s": 1.91
+  },
+  {
+   "ten": "11",
+   "x": 2260081.59,
+   "y": 570346.55,
+   "s": null
+  }
+ ]
+}
