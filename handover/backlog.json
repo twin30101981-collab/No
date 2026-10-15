@@ -622,7 +622,7 @@
     ]
    },
    "nguyen_nhan_goc": "Thư viện nạp từ CDN theo phiên bản trôi (tesseract.js@5) và không có SRI; cdnjs đứng đầu danh sách gương; khoá lưu không mã hoá chỉ có cảnh báo tĩnh.",
-   "ghi_chu_ban_giao": "ĐÃ LÀM: SRI SHA-384 (tính từ gói npm) cho xlsx 0.18.5, html2canvas 1.4.1, jsQR 1.4.0, jsPDF 2.5.1, tesseract.js 5.1.1, pdfmake vfs 0.2.10 qua jsDelivr/unpkg (loadLib/loadScript/ensureTesseract/fetch font); tesseract ghim 5.1.1; toast cảnh báo khoá lưu không mã hoá. CHƯA LÀM (cần người dùng/mạng ngoài): nâng SheetJS ≥0.20.3 (cdn.sheetjs.com bị chặn), báo cáo RLS thua_dat → handover/VIEC_CUA_BAN.md mục 5–6 + handover/supabase/kiem_tra_RLS.md. Chưa SRI: worker/wasm nội bộ của tesseract (tải động từ jsDelivr), leaflet/proj4 (đã nhúng sẵn).",
+   "ghi_chu_ban_giao": "ĐÃ LÀM: SRI SHA-384 (tính từ gói npm) cho xlsx 0.18.5, html2canvas 1.4.1, jsQR 1.4.0, jsPDF 2.5.1, tesseract.js 5.1.1, pdfmake vfs 0.2.10 qua jsDelivr/unpkg (loadLib/loadScript/ensureTesseract/fetch font); tesseract ghim 5.1.1; toast cảnh báo khoá lưu không mã hoá. CHƯA LÀM (cần người dùng/mạng ngoài): nâng SheetJS ≥0.20.3 (cdn.sheetjs.com bị chặn), báo cáo RLS thua_dat → handover/VIEC_CUA_BAN.md mục 5–6 + handover/supabase/kiem_tra_RLS.md. Chưa SRI: worker/wasm nội bộ của tesseract (tải động từ jsDelivr), leaflet/proj4 (đã nhúng sẵn). | QUYẾT ĐỊNH 15/10: bỏ nhập Excel (xem HM-06e), chỉ giữ xuất; không cần file SheetJS nữa.",
    "zip": "",
    "can_nguoi_dung": "Người dùng kiểm RLS bảng thua_dat trên Supabase theo kịch bản do phiên soạn"
   },
@@ -2728,6 +2728,47 @@
    "ghi_chu_ban_giao": "",
    "zip": "",
    "can_nguoi_dung": null
+  },
+  {
+   "id": "HM-06e",
+   "ten": "Bỏ nhập/đọc Excel (.xlsx); chỉ giữ xuất Excel",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-06"
+   ],
+   "pham_vi": "mọi luồng XLSX.read/readFile/sheet_to_json/đọc .xlsx/.xls trong app (nhập CAD/Excel, tab-import)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Không còn đường nào đọc file .xlsx/.xls (ô chọn file, kéo thả, XLSX.read*)",
+    "Vẫn xuất Excel được (XLSX.write/writeFile) — Mẫu A/B",
+    "Nhập CAD/DXF/CSV/GeoJSON (nếu có) không hồi quy; chỉ báo rõ 'không hỗ trợ nhập Excel'",
+    "Test chống tái diễn trong tests/regress"
+   ],
+   "rui_ro": "Trung bình: đổi nguồn thư viện có thể hỏng nạp offline",
+   "kiem_chung_du_kien": "V3 + V1 (người dùng kiểm RLS theo kịch bản)",
+   "nhan_xac_minh": "Nghi vấn cần xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": "",
+   "can_nguoi_dung": null
   }
  ],
  "quyet_dinh_da_chot": [
@@ -2746,7 +2787,11 @@
   "(mặc định) Sổ thửa bên cạnh: che tên/CCCD mặc định",
   "(mặc định) Lớp nền mặc định Esri World Imagery có ghi nguồn; Google chỉ khi có khoá Map Tiles API",
   "(mặc định) Bỏ bình sai tự động; chỉ chạy khi người dùng bấm",
-  "(15/10) Không đưa ảnh sổ đỏ thật, số vào sổ, số phát hành, họ tên, CCCD lên repo (repo công khai)"
+  "(15/10) Không đưa ảnh sổ đỏ thật, số vào sổ, số phát hành, họ tên, CCCD lên repo (repo công khai)",
+  {
+   "ngay": "15/10/2026",
+   "noi_dung": "Người dùng chốt: BỎ chức năng NHẬP/đọc file Excel (.xlsx) trong app, chỉ giữ XUẤT Excel. Lý do: không có SheetJS ≥0.20.3 để vá lỗ hổng khi đọc file lạ."
+  }
  ],
  "loi_nen_ngoai_pham_vi": [
   "168–528 request ô bản đồ lỗi trong môi trường S0 do chặn mạng — không phải lỗi app"
@@ -2787,6 +2832,7 @@
   "HM-08g",
   "HM-09",
   "HM-09b",
+  "HM-06e",
   "HM-10",
   "HM-39",
   "HM-26",
