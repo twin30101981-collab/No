@@ -8,9 +8,10 @@ Playwright (V3) khả dụng: CÓ — playwright 1.56.1 tại /opt/node-tools, C
 Quy ước dự án: style chỉ trong <style>; không sửa chuỗi JS khi đổi font/style; sửa theo vùng, sao lưu .orig; không format cả file.
 
 ## 2. Đề án và trạng thái (khớp backlog.json)
-Đề án: v1.7 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.7.docx
+Đề án: v1.8 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.8.docx
 Điều chỉnh lộ trình: v1.1 quyết định; v1.2 chỉ-mobile; v1.3 rà soát sâu: P0 HM-00, HM-06c, HM-11b, Đợt 4–5 tính năng HM-15..21
-Ước tính: 5–7 phiên (Đợt 0–3, 248%) · 10–13 phiên cả Đợt 4–6 (482%) · 59 hạng mục
+Ước tính: 6–8 phiên (Đợt 0–3, 302%) · 11–14 phiên cả Đợt 4–6 (536%) · 66 hạng mục
+v1.8 P1: F-43 autoAdjust (L35464) dịch toạ độ sổ; F-44 AI gộp khối phụ; F-45 tên chủ = mã thửa; F-38 tự đổi lớp khi mất mạng. Tái hiện: tools/e2e3.js (+ libs/ jspdf, html2canvas cục bộ; giả lập Gemini tools/e2e_mock*.json), tools/layers.js
 v1.7: giáp ranh/tứ cận theo cạnh + đối chiếu mốc chung (HM-35..38); thử nghiệm tools/adjacency_proto.js (Mẫu B: Tây 130, Đông 132, Nam đường; mốc 8 lệch 0,12 m phát hiện đúng)
 Đợt 6 (v1.6): bản đồ địa chính ngoại tuyến tỉnh Ninh Bình mới — gói vector theo xã giữ VN-2000 gốc + chỉ mục tờ/thửa + tìm theo hình dạng (thử nghiệm tools/shape_proto.js: top-1 đúng, 8,8 ms/20k thửa). Phụ thuộc HM-26 (người dùng xin dữ liệu từ Sở).
 P1 mới v1.5: F-31 KTT sau sáp nhập (tools/ktt.js), F-32 nhập dự án Thay thế xoá dữ liệu, F-33 model AI (claude-haiku-3-5 không hợp lệ), F-34 khoá 'chỉ trong phiên' (tools/keytest.js)
@@ -60,7 +61,7 @@ Không.
 - hsv-react-phien16.zip trong repo là dự án khác — không động tới.
 
 ## 8. Việc người dùng cần làm
-Chốt 11 câu (đề án Mục 14, thêm câu 11 về sổ thửa bên cạnh/che tên; thêm 3 câu Đợt 6: nguồn dữ liệu/thí điểm, nơi lưu gói, thứ tự): màn rộng; khoá dọc; làm HM-00/00b trước; model AI mặc định + máy chủ trung gian; địa bàn làm việc; đăng nhập OTP Supabase; chọn tính năng. Duyệt v1.5.
+Chốt 13 câu (đề án Mục 14, thêm 12 lớp nền mặc định, 13 bỏ bình sai tự động; thêm câu 11 về sổ thửa bên cạnh/che tên; thêm 3 câu Đợt 6: nguồn dữ liệu/thí điểm, nơi lưu gói, thứ tự): màn rộng; khoá dọc; làm HM-00/00b trước; model AI mặc định + máy chủ trung gian; địa bàn làm việc; đăng nhập OTP Supabase; chọn tính năng. Duyệt v1.5.
 Khuyến cáo ngay: xuất sao lưu (.landgis/Excel) dữ liệu thửa đang có trên điện thoại cho tới khi HM-00 xong.
 
 ## 9. Đường lui
@@ -82,3 +83,4 @@ Không sửa file app. Thêm: de-an/, handover/, evidence/, tools/.
 - 05:10 rà soát phần còn lại v1.5: F-31..F-37; đạt: bảng KTT 63 tỉnh, QR 5/5, GeoJSON/KML; phát hành v1.5
 - 05:40 v1.6: Đợt 6 địa chính ngoại tuyến; 4 mockup ⑯–⑲ + sơ đồ kiến trúc; thử nghiệm tìm theo hình dạng
 - 06:05 v1.7: giáp ranh/tứ cận; 3 mockup ⑳–㉒; thử nghiệm thuật toán cạnh chung/mốc chung
+- 06:50 v1.8: phân tích lớp bản đồ (3 kịch bản) + chạy thử đầu–cuối đọc sổ→PDF (Mẫu A, B); F-38..F-50; HM-39..45; mockup ㉓–㉕

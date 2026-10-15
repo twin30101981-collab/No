@@ -4,11 +4,11 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.7",
+  "phien_ban": "1.8",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.7.docx",
-  "so_phien_uoc_tinh": "10-13",
+  "tep": "de-an/DE_AN_LANDGIS_v1.8.docx",
+  "so_phien_uoc_tinh": "11-14",
   "dieu_chinh": [
    "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi",
    "v1.2: chuyển sang giao diện chỉ-mobile; thay HM-08, HM-12b bằng HM-08a..08f",
@@ -16,7 +16,8 @@
    "v1.4: thêm P0 HM-00b (treo app do killReplit), HM-07c, HM-08g/h/i, HM-09b; mockup bộ 2 + sơ đồ luồng + cây dữ liệu/thành phần",
    "v1.5: rà soát phần còn lại — HM-00c, HM-04b, HM-06d (P1), HM-10b; tính năng HM-22..25; HM-10 cập nhật model theo tài liệu Claude API hiện hành",
    "v1.6: thêm Đợt 6 — bản đồ địa chính ngoại tuyến toàn tỉnh Ninh Bình mới (HM-26..34)",
-   "v1.7: thêm giáp ranh/tứ cận theo cạnh + đối chiếu sổ thửa xung quanh (HM-35..38)"
+   "v1.7: thêm giáp ranh/tứ cận theo cạnh + đối chiếu sổ thửa xung quanh (HM-35..38)",
+   "v1.8: phân tích sâu lớp bản đồ + chạy thử đầu–cuối đọc sổ→PDF; F-38..F-50; HM-39..45"
   ]
  },
  "moi_truong": {
@@ -186,6 +187,47 @@
    "zip": ""
   },
   {
+   "id": "HM-42",
+   "ten": "Lời nhắc AI theo loại trang + structured outputs + bảng kê nhiều khối + độ tin cậy từng số (mockup ㉓)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-10",
+    "HM-02"
+   ],
+   "pham_vi": "callGemini25FlashAPI, callGeminiSupplementAPI, callClaudeVisionOnce",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "1 lần gọi AI/ảnh (hiện 2)",
+    "Mẫu A: trả khối chính 7 mốc + khối phụ 4 mốc riêng",
+    "Mỗi số có độ tin cậy + vùng ảnh; số < 90% tô vàng để rà soát",
+    "Giáp ranh trả về có cấu trúc (dùng cho HM-35)"
+   ],
+   "rui_ro": "Trung bình: cần ảnh thật để hiệu chỉnh",
+   "kiem_chung_du_kien": "V3 (giả lập) + V1 (khoá thật)",
+   "nhan_xac_minh": "Đã xác minh (F-44, F-49)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-03",
    "ten": "Một quy tắc đối chiếu diện tích cho mọi luồng (trừ phần không cấp GCN, một công thức sai số)",
    "dot": 1,
@@ -211,6 +253,85 @@
    "rui_ro": "Trung bình: đổi kết luận đạt/không đạt — cần người dùng chốt công thức",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-41",
+   "ten": "Bỏ bình sai tự động ép diện tích; bình sai chỉ khi người dùng chọn, không ghi đè toạ độ gốc",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-03"
+   ],
+   "pham_vi": "LG145.autoAdjust (L35464), bọc nút Scan (L35515)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mẫu B: toạ độ sau quét = sổ (dịch 0,000 m), cạnh 8/8 khớp",
+    "Mẫu A: không dịch mốc; cảnh báo khối phụ thay vì ép diện tích",
+    "Bình sai (nếu chọn) lưu bản riêng, in mức dịch trên hồ sơ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (e2e)",
+   "nhan_xac_minh": "Đã xác minh (F-43)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-45",
+   "ten": "Nội dung hồ sơ đúng và sạch (tên chủ, định dạng số, KTT, ngưỡng, nhãn nội bộ, Tứ cận, nguồn)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-03"
+   ],
+   "pham_vi": "LG60 nội dung mục I–VII",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Không có tên chủ → để trống + ghi chú, không điền mã thửa",
+    "Số dạng 2259336,23 thống nhất; KTT 105°30′",
+    "Kết luận dùng 0,05√A + 0,0003A",
+    "Không còn 'v125'/nhãn phiên bản trong hồ sơ"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (pdftotext)",
+   "nhan_xac_minh": "Đã xác minh (F-45, F-46)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -251,6 +372,44 @@
    "rui_ro": "Trung bình",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (trùng lặp); giả thuyết (rủi ro lệch)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-43",
+   "ten": "Kiểm tra hình học đầy đủ (đỉnh trùng, tự chạm, tự cắt, khối phụ trong vòng chính)",
+   "dot": 1,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-04"
+   ],
+   "pham_vi": "lõi hình học, mục nhật ký hồ sơ",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mẫu A gộp sai → báo 'mốc 5 trùng mốc 8'",
+    "Hồ sơ chỉ ghi 'hợp lệ' khi qua hết kiểm tra"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (F-47)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -605,6 +764,47 @@
    "rui_ro": "Trung bình: hành vi lớp vá phụ thuộc observer",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh (đếm + profile)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-39",
+   "ten": "Một bộ quản lý lớp nền: biết ngoại tuyến, không tự đổi lặp, 1 thông báo, nguồn hợp lệ, tắt lớp ranh giới mặc định (mockup ㉔)",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-07c",
+    "HM-08a"
+   ],
+   "pham_vi": "L6160–6500 (failover v39), L15197 (toast đổi lớp), lớp phủ L6524–6525, dò độ nét",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mất mạng: 0 lần tự đổi lớp, ≤ 1 thông báo, dùng ô đã lưu",
+    "Mạng tốt: giảm ≥ 35% lượt tải ô (bỏ lớp ranh giới mặc định)",
+    "Chặn Google: tự đổi 1 lần sang Esri, 1 thông báo",
+    "Lớp mặc định có ghi nguồn hợp lệ"
+   ],
+   "rui_ro": "Trung bình: đổi lớp mặc định khác thói quen",
+   "kiem_chung_du_kien": "V3 (3 kịch bản)",
+   "nhan_xac_minh": "Đã xác minh (F-38, F-39, F-40)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -1152,6 +1352,83 @@
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3 (localhost, setOffline)",
    "nhan_xac_minh": "Đã xác minh (mã)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-40",
+   "ten": "Ảnh bản đồ cho hồ sơ từ nguồn có CORS/ô đã lưu; không có ảnh thì bỏ phụ lục",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-39"
+   ],
+   "pham_vi": "LG52/LG59 phụ lục ảnh",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Không in thông báo lỗi kỹ thuật vào hồ sơ",
+    "Có ảnh khi đang dùng Esri hoặc ô đã lưu"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (F-41)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-44",
+   "ten": "Bố cục hồ sơ PDF theo dòng chảy: tự ngắt trang, không cắt mép, không trang trống (mockup ㉕)",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-45"
+   ],
+   "pham_vi": "LG60 (khung A4 cố định), LG114 in A4",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Mẫu B: ≤ 4 trang chính + phụ lục tuỳ chọn",
+    "Không dòng/bảng nào rơi sang trang riêng; không cắt mép phải",
+    "Kiểm bằng Chromium in PDF + pdftotext"
+   ],
+   "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (F-48)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
