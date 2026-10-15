@@ -1,7 +1,7 @@
 {
   "du_an": "LANDGIS",
   "skill_version": "3.2.0",
-  "phien_hien_tai": 3,
+  "phien_hien_tai": 4,
   "che_do": "3-tu-dong",
   "de_an": {
     "phien_ban": "1.8",
@@ -2920,6 +2920,15 @@
           "HM-09b"
         ],
         "ly_do_dong": "ngữ cảnh ≈ 70%"
+      },
+      {
+        "phien": 3,
+        "session_id": "session_01RHnj7LqNDoco4okmMQuKGK",
+        "hang_muc_xong": [
+          "HM-10",
+          "HM-42"
+        ],
+        "ly_do_dong": "ngữ cảnh ≈ 70% (nhiều đầu ra chờ bộ test dài)"
       }
     ]
   }
