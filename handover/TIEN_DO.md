@@ -43,3 +43,4 @@
 - 15/10 · P05 · HM-11 ĐẠT V3: triển khai v237 lên gốc repo + PWA báo 'Có bản mới', mở ngoại tuyến lần 2, manifest khoá dọc.
 - 15/10 · P05 · HM-11b ĐẠT V3: xuất PDF/Excel và quét QR chạy được khi mất mạng sau lần mở đầu (OCR Tesseract vẫn cần mạng).
 - 15/10 · P05 · HM-40 ĐẠT V3: hồ sơ PDF: phụ lục ảnh bản đồ lấy từ ô đã lưu/Esri; thiếu ảnh thì bỏ phụ lục thay vì in lỗi.
+- 15/10 · P05 · HM-44 ĐẠT V3: hồ sơ PDF bố cục theo dòng chảy: Mẫu B còn 4 trang chính, không trang trống, không cắt mép.
