@@ -4827,9 +4827,10 @@ function renderSodoList(){
   // v27: mốc AI không đọc chắc chắn được tô đỏ để buộc kiểm tra tay.
   el.innerHTML = sodoCoords.map(p => {
     const doubt = p.aiDoubt || (p.aiConf !== null && p.aiConf !== undefined && p.aiConf < 0.8);
-    return `<div${doubt ? ' style="color:var(--accent);font-weight:700"' : ''}><strong>${escapeHtml(p.ten)}</strong>: ` +
+    const review = !doubt && p.aiConf !== null && p.aiConf !== undefined && p.aiConf < LG_CONF_REVIEW; // 80–90%: tô vàng rà soát
+    return `<div${doubt ? ' style="color:var(--accent);font-weight:700"' : (review ? ' class="lg-review" style="background:#fff3b0;color:#5c4400;border-radius:4px;padding:0 4px"' : '')}><strong>${escapeHtml(p.ten)}</strong>: ` +
       `<span class="mono">${Number.isFinite(p.x) ? p.x.toFixed(2) : '?'}, ${Number.isFinite(p.y) ? p.y.toFixed(2) : '?'}</span>` +
-      `${doubt ? ' ⚠️ cần kiểm tra tay' : ''}</div>`;
+      `${doubt ? ' ⚠️ cần kiểm tra tay' : (review ? ' · rà soát (' + Math.round(p.aiConf * 100) + '%)' : '')}</div>`;
   }).join('');
 }
 
@@ -5962,15 +5963,73 @@ function getCroppedBase64() {
 // ---------------------------------------------------------------
 // GEMINI 2.5 FLASH VISION API
 // ---------------------------------------------------------------
-async function callGemini25FlashAPI(base64Image) {
+// ---------------------------------------------------------------
+// HM-42 — LỜI NHẮC THEO LOẠI TRANG + STRUCTURED OUTPUTS + KHỐI PHỤ + ĐỘ TIN CẬY TỪNG SỐ
+// ---------------------------------------------------------------
+const LG_CONF_REVIEW = 0.9; // số có độ tin cậy < 90% được tô vàng để rà soát
+const LG_AI_PAGE_PROMPT = `Trước hết XÁC ĐỊNH LOẠI TRANG và điền "loai_trang", rồi chỉ tập trung vào phần liên quan:
+- "bia": trang bìa/trang 1 — số hiệu, số vào sổ, số phát hành, cơ quan cấp, ngày cấp, chủ sử dụng, địa chỉ.
+- "so_do" (trang 2): thông tin thửa (số thửa, tờ, diện tích mục 1.c, loại đất, thời hạn), sơ đồ (cạnh, giáp ranh, đường chỉ giới), và BẢNG TOẠ ĐỘ nếu có.
+- "bang_toa_do": ảnh chỉ gồm bảng X/Y/S.
+- "bien_dong" (trang 3-4): mục 5, mục 6, ghi chú biến động/thế chấp.
+Nếu ảnh có NHIỀU KHỐI (bảng toạ độ riêng cho thửa chính và thửa/khối phụ, thường kèm cột "Khối"/"Thửa phụ"): khối LỚN NHẤT/được ghi là chính vào "diem_moc"; từng khối còn lại vào "khoi_phu" với bảng mốc RIÊNG của nó — không trộn mốc giữa các khối.
+Mỗi số toạ độ phải có "do_tin_cay_x"/"do_tin_cay_y" (0..1) phản ánh mức chắc chắn khi đọc; số nhoè/che/khó đọc phải < 0.9. Giáp ranh trả cả dạng "giap_ranh" (có cấu trúc) lẫn giap_ranh_bac/dong/nam/tay.`;
+const LG_AI_STR = { type: ['string', 'null'] }, LG_AI_NUM = { type: ['number', 'null'] };
+const LG_AI_PTS = { type: 'array', items: { type: 'object', additionalProperties: false, required: ['ten', 'x', 'y'], properties: {
+  ten: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, s: LG_AI_NUM, khong_doc_ro: { type: 'boolean' },
+  do_tin_cay: { type: 'number' }, do_tin_cay_x: { type: 'number' }, do_tin_cay_y: { type: 'number' },
+  vung: { type: 'array', items: { type: 'number' } } } } };
+const LG_AI_SCHEMA = (function () {
+  const strs = ['so_thua', 'to_ban_do', 'dia_chi', 'phuong_xa', 'quan_huyen', 'tinh_thanh', 'o_thua', 'chu_su_dung', 'cccd_cmnd', 'dia_chi_chu_su_dung',
+    'muc_dich_su_dung', 'thoi_han_su_dung', 'nguon_goc_su_dung', 'so_hieu_gcn', 'so_vao_so', 'ngay_cap_gcn', 'co_quan_cap', 'hinh_thuc_su_dung',
+    'tai_san_gan_lien_dat', 'hinh_thuc_so_huu_nha', 'dien_tich_ghi_gcn', 'han_che_quyen', 'giap_ranh_bac', 'giap_ranh_dong', 'giap_ranh_nam', 'giap_ranh_tay',
+    'ghi_chu_trang_4', 'ghi_chu_bien_dong', 'chi_gioi_quy_hoach', 'vung_khong_cap_gcn', 'cong_trinh_tren_dat', 'loai_dat', 'canh_gcn', 'nguon_toa_do',
+    'nguon_dien_tich', 'so_phat_hanh', 'noi_cap', 'nguoi_ky', 'chuc_vu_nguoi_ky', 'ghi_chu_muc5', 'thay_doi_muc6', 'ghi_chu_canh_bao', 'chat_luong_anh'];
+  const nums = ['dien_tich_m2', 'dien_tich_khong_cap_gcn', 'dien_tich_tong_m2', 'dien_tich_o_m2', 'dien_tich_nong_nghiep_m2', 'kinh_tuyen_truc'];
+  const props = {
+    loai_trang: { type: 'string', enum: ['bia', 'so_do', 'bang_toa_do', 'bien_dong', 'khac'] },
+    co_bang_toa_do: { type: 'boolean' }, anh_khong_doc_duoc: { type: 'boolean' },
+    tin_cay: { type: 'object', additionalProperties: { type: 'number' } },
+    diem_moc: LG_AI_PTS,
+    khoi_phu: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['ten', 'diem_moc'],
+      properties: { ten: { type: 'string' }, dien_tich_m2: LG_AI_NUM, diem_moc: LG_AI_PTS } } },
+    giap_ranh: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['huong', 'doi_tuong'],
+      properties: { huong: { type: 'string', enum: ['bac', 'dong', 'nam', 'tay'] }, doi_tuong: { type: 'string' }, do_tin_cay: { type: 'number' } } } }
+  };
+  strs.forEach(k => { props[k] = LG_AI_STR; }); nums.forEach(k => { props[k] = LG_AI_NUM; });
+  return { type: 'object', additionalProperties: false, required: ['loai_trang', 'co_bang_toa_do', 'diem_moc'], properties: props };
+})();
+function lgNormalizeAI(parsed) {
+  if (!parsed || typeof parsed !== 'object') return parsed;
+  const cl = v => { const n = Number(v); return Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : null; };
+  const fixPts = arr => (Array.isArray(arr) ? arr : []).map(p => {
+    const cx = cl(p.do_tin_cay_x), cy = cl(p.do_tin_cay_y), c0 = cl(p.do_tin_cay);
+    const cs = [cx, cy, c0].filter(v => v !== null);
+    if (cs.length) p.do_tin_cay = Math.min.apply(null, cs); // điểm tin cậy = số kém chắc nhất của mốc
+    if (Array.isArray(p.vung) && p.vung.length !== 4) delete p.vung;
+    return p;
+  });
+  parsed.diem_moc = fixPts(parsed.diem_moc);
+  parsed.khoi_phu = (Array.isArray(parsed.khoi_phu) ? parsed.khoi_phu : []).map(k => ({ ten: String(k.ten || ''), dien_tich_m2: Number.isFinite(Number(k.dien_tich_m2)) ? Number(k.dien_tich_m2) : null, diem_moc: fixPts(k.diem_moc) })).filter(k => k.diem_moc.length);
+  if (!['bia', 'so_do', 'bang_toa_do', 'bien_dong'].includes(parsed.loai_trang)) parsed.loai_trang = parsed.diem_moc.length ? 'bang_toa_do' : 'khac';
+  // giáp ranh có cấu trúc <-> 4 trường phẳng (một chiều: nếu chỉ có một dạng thì sinh dạng kia)
+  const dirs = ['bac', 'dong', 'nam', 'tay'];
+  if (Array.isArray(parsed.giap_ranh)) {
+    parsed.giap_ranh.forEach(g => { if (g && dirs.includes(g.huong) && g.doi_tuong && !parsed['giap_ranh_' + g.huong]) parsed['giap_ranh_' + g.huong] = g.doi_tuong; });
+  } else parsed.giap_ranh = [];
+  dirs.forEach(d => { const v = parsed['giap_ranh_' + d]; if (v && !parsed.giap_ranh.some(g => g.huong === d)) parsed.giap_ranh.push({ huong: d, doi_tuong: String(v), do_tin_cay: null }); });
+  if (!parsed.tin_cay || typeof parsed.tin_cay !== 'object') parsed.tin_cay = {};
+  parsed.so_phai_ra_soat = []; // các số < LG_CONF_REVIEW cần người dùng rà soát
+  Object.keys(parsed.tin_cay).forEach(k => { const c = cl(parsed.tin_cay[k]); parsed.tin_cay[k] = c; if (c !== null && c < LG_CONF_REVIEW) parsed.so_phai_ra_soat.push(k); });
+  parsed.diem_moc.forEach(p => { if (p.do_tin_cay !== undefined && p.do_tin_cay < LG_CONF_REVIEW) parsed.so_phai_ra_soat.push('mốc ' + p.ten); });
+  return parsed;
+}
+async function lgAiExtractRaw(base64Image) {
   // v36.1: dùng chung GEMINI_MODELS + orderGeminiModelsToTry() thay vì mảng riêng
   // GEMINI_MODEL_FALLBACKS trùng lặp trước đây. Model đã bị 429 (hết quota) trong
   // phiên hiện tại sẽ được orderGeminiModelsToTry() tự đẩy xuống cuối danh sách.
 
-  const promptText = `Bạn là hệ thống AI địa chính Việt Nam. Hãy đọc ảnh bảng tọa độ cắt nhỏ từ Sổ Đỏ và bóc tách dữ liệu.
-Trả về DUY NHẤT một chuỗi JSON chuẩn có dạng:
-{
-  "so_thua": "string hoặc null",
+  const promptText = `Bạn là hệ thống AI địa chính Việt Nam. Ảnh là MỘT TRANG của Giấy chứng nhận (bìa, trang 2 có sơ đồ/bảng toạ độ, trang 3-4 biến động) hoặc ảnh bảng toạ độ cắt nhỏ. Hãy bóc tách dữ liệu.\n${LG_AI_PAGE_PROMPT}\nTrả về DUY NHẤT một chuỗi JSON chuẩn có dạng:\n{\n  "loai_trang": "bia | so_do | bang_toa_do | bien_dong | khac",\n  "tin_cay": { "<tên trường>": number 0..1 } (độ tin cậy của các trường SỐ quan trọng: dien_tich_tong_m2, dien_tich_m2, so_thua, to_ban_do),\n  "khoi_phu": [ { "ten": "string", "dien_tich_m2": number hoặc null, "diem_moc": [ { "ten": "string", "x": number, "y": number, "do_tin_cay_x": "number 0..1", "do_tin_cay_y": "number 0..1", "vung": "[x0,y0,x1,y1] vùng ảnh chuẩn hoá 0..1 chứa dòng số này", "s": number hoặc null, "do_tin_cay_x": number, "do_tin_cay_y": number } ] } ] (các KHỐI/thửa phụ có bảng toạ độ riêng — [] nếu chỉ có một khối),\n  "giap_ranh": [ { "huong": "bac|dong|nam|tay", "doi_tuong": "string", "do_tin_cay": number } ],\n  "so_thua": "string hoặc null",
   "to_ban_do": "string hoặc null",
   "dia_chi": "string hoặc null",
   "phuong_xa": "string hoặc null",
@@ -6032,7 +6091,7 @@ QUY TẮC TUYỆT ĐỐI VỀ TOẠ ĐỘ (chống bịa số):
 - Mọi con số nêu trong bản mô tả JSON này chỉ là chú thích định dạng, KHÔNG PHẢI dữ liệu — không được sao chép chúng vào kết quả.
 Với "loai_dat": nếu mục 2c không ghi rõ nhưng ký hiệu loại đất (ODT/ONT/LUC/CLN...) xuất hiện ở nơi khác trên CHÍNH ảnh này (ví dụ trong ô diện tích hoặc ghi chú), được phép suy ra và điền, nhưng phải giữ nguyên ký hiệu gốc — TUYỆT ĐỐI KHÔNG bịa ký hiệu không xuất hiện trên ảnh.`;
 
-  return callVisionAI(promptText, base64Image);
+  return lgNormalizeAI(await callVisionAI(promptText, base64Image, undefined, LG_AI_SCHEMA));
 }
 
 // ---------------------------------------------------------------
@@ -6043,61 +6102,11 @@ Với "loai_dat": nếu mục 2c không ghi rõ nhưng ký hiệu loại đất 
 // để GHÉP BỔ SUNG vào thửa đã có sẵn (khớp theo so_thua + to_ban_do).
 // ---------------------------------------------------------------
 async function callGeminiSupplementAPI(base64Image) {
-  const promptText = `Bạn là hệ thống AI địa chính Việt Nam. Ảnh này là MỘT TRANG BẤT KỲ của Giấy chứng nhận quyền sử dụng đất (sổ đỏ/sổ hồng) — có thể là trang bìa, trang 2 (sơ đồ), hoặc trang 3-4 (ghi chú biến động/thế chấp). Đây KHÔNG bắt buộc là bảng tọa độ.
-Hãy đọc kỹ và bóc tách CÁC TRƯỜNG SAU NẾU CÓ XUẤT HIỆN trong ảnh. Trả về DUY NHẤT một chuỗi JSON chuẩn có dạng:
-{
-  "so_thua": "string hoặc null",
-  "to_ban_do": "string hoặc null",
-  "chu_su_dung": "string hoặc null (liệt kê ĐẦY ĐỦ tên tất cả các đồng sở hữu/người sử dụng đất nếu có nhiều người, phân cách bằng dấu ';')",
-  "cccd_cmnd": "string hoặc null (số CCCD/CMND của chủ sử dụng đất nếu có)",
-  "dia_chi": "string hoặc null",
-  "phuong_xa": "string hoặc null",
-  "quan_huyen": "string hoặc null",
-  "tinh_thanh": "string hoặc null",
-  "muc_dich_su_dung": "string hoặc null",
-  "thoi_han_su_dung": "string hoặc null",
-  "nguon_goc_su_dung": "string hoặc null",
-  "ghi_chu_bien_dong": "string hoặc null (tổng hợp ngắn gọn các ghi chú biến động/thế chấp ở trang 3-4 nếu có)",
-  "o_thua": "string hoặc null (số ô/khoảnh nếu sổ có ghi)",
-  "dia_chi_chu_su_dung": "string hoặc null (địa chỉ thường trú của chủ sử dụng đất)",
-  "so_hieu_gcn": "string hoặc null (số hiệu/mã GCN in trên bìa)",
-  "so_vao_so": "string hoặc null (số vào sổ cấp GCN)",
-  "ngay_cap_gcn": "string hoặc null (ngày cấp GCN, dạng dd/mm/yyyy)",
-  "dien_tich_m2": number hoặc null (diện tích ghi trên GCN, chỉ số, đơn vị m2),
-  "co_quan_cap": "string hoặc null (tên cơ quan cấp GCN, ghi NGUYÊN VĂN, ví dụ 'Sở Tài nguyên và Môi trường tỉnh Nam Định')",
-  "hinh_thuc_su_dung": "string hoặc null (sử dụng riêng / sử dụng chung, ghi nguyên văn)",
-  "tai_san_gan_lien_dat": "string hoặc null (nhà ở, công trình, diện tích sàn, số tầng, cấp nhà — ghi nguyên văn)",
-  "hinh_thuc_so_huu_nha": "string hoặc null (hình thức sở hữu nhà ở trang tài sản)",
-  "dien_tich_ghi_gcn": "string hoặc null (diện tích IN TRÊN SỔ, ghi nguyên văn cả chữ trong ngoặc nếu có)",
-  "han_che_quyen": "string hoặc null (hành lang an toàn, lối đi chung, hạn chế quyền — ghi nguyên văn)",
-  "dien_tich_khong_cap_gcn": "number hoặc null (m² đất KHÔNG được cấp GCN nêu ở mục 5, ví dụ đất quy hoạch giao thông)",
-  "giap_ranh_bac": "string hoặc null (giáp ranh phía Bắc theo sơ đồ trang 2)",
-  "giap_ranh_dong": "string hoặc null (giáp ranh phía Đông)",
-  "giap_ranh_nam": "string hoặc null (giáp ranh phía Nam)",
-  "giap_ranh_tay": "string hoặc null (giáp ranh phía Tây)",
-  "ghi_chu_trang_4": "string hoặc null (biến động bổ sung ghi ở trang 4, ghi nguyên văn)",
-  "chi_gioi_quy_hoach": "string hoặc null (v57 — nếu sơ đồ trang 2 có ĐƯỜNG CHỈ GIỚI QUY HOẠCH vẽ nét đứt: ghi số hiệu 2 mốc mà đường đó đi qua theo dạng '8-4', hoặc danh sách toạ độ 'X Y; X Y')",
-  "vung_khong_cap_gcn": "string hoặc null (v57 — nếu có phần diện tích KHÔNG được cấp GCN: liệt kê số hiệu các mốc bao quanh phần đó theo dạng '4,5,6,7,8', hoặc toạ độ 'X Y; X Y; ...')",
-  "cong_trinh_tren_dat": "string hoặc null (v57 — ký hiệu công trình vẽ trên sơ đồ và mô tả, mỗi công trình một dòng dạng 'b3|Nhà bê tông 3 tầng')",
-  "loai_dat": "string hoặc null (loại đất mục 2c, ví dụ ODT/ONT/LUC/CLN/BHK/DGT — ghi đúng ký hiệu và tên đầy đủ nếu sổ có ghi)",
-  "canh_gcn": "string hoặc null (chiều dài TỪNG cạnh IN TRÊN SƠ ĐỒ trang 2 của sổ, theo đúng thứ tự các mốc vòng quanh thửa, cách nhau bằng dấu phẩy — CHỈ lấy số THỰC SỰ in trên sơ đồ; sơ đồ không in số nào thì để null, TUYỆT ĐỐI KHÔNG tự tính và KHÔNG lấy số từ mô tả này)",
-  "nguon_toa_do": "string hoặc null (ghi nguyên văn nếu sổ có bảng liệt kê toạ độ riêng, ví dụ 'Bảng liệt kê toạ độ trên GCN')",
-  "co_bang_toa_do": "true nếu ảnh CÓ bảng liệt kê toạ độ dạng số (cột X và Y); false nếu chỉ có sơ đồ/hình vẽ mà không có bảng số",
-  "dien_tich_tong_m2": "number hoặc null — TỔNG diện tích thửa ghi ở mục 1.c phần II ('Diện tích: ... m²'), ĐÂY LÀ SỐ CHUẨN. Lấy đúng số này, KHÔNG lấy nhãn nhỏ trên sơ đồ",
-  "dien_tich_o_m2": "number hoặc null — phần diện tích đất ở (ONT/ODT) nếu mục c tách riêng",
-  "dien_tich_nong_nghiep_m2": "number hoặc null — phần diện tích đất nông nghiệp (CLN/LUC/BHK...) nếu mục c tách riêng",
-  "nguon_dien_tich": "string hoặc null — ghi rõ đọc số diện tích ở đâu: 'muc_c' (mục 1.c phần II) hoặc 'nhan_so_do' (nhãn trên sơ đồ)",
-  "so_phat_hanh": "string hoặc null (số phát hành/serial in trên bìa, dạng 2 chữ cái + 6 số, ví dụ 'AA 123456')",
-  "noi_cap": "string hoặc null (địa danh nơi ký cấp GCN, thường ở gần chữ ký cuối trang bìa)",
-  "nguoi_ky": "string hoặc null (họ tên người ký GCN)",
-  "chuc_vu_nguoi_ky": "string hoặc null (chức vụ người ký, ví dụ 'Chủ tịch UBND huyện')",
-  "ghi_chu_muc5": "string hoặc null (nội dung ghi ở mục 5 của sổ, nếu có)",
-  "thay_doi_muc6": "string hoặc null (nội dung ghi ở mục 6 — thay đổi sau khi cấp GCN, nếu có)"
+  // HM-42: một lời nhắc + một lần gọi cho MỌI loại trang (bìa / sơ đồ / bảng toạ độ / biến động) —
+  // AI tự khai loai_trang; không còn lần gọi thứ hai cho trang bổ sung.
+  return lgAiExtractRaw(base64Image);
 }
-Nếu trong ảnh KHÔNG chứa thông tin của một trường nào đó thì để giá trị null cho trường đó — TUYỆT ĐỐI KHÔNG bịa hoặc suy đoán thông tin không thấy trong ảnh (riêng "loai_dat" được phép suy ra từ ký hiệu xuất hiện ở nơi khác TRONG CHÍNH ảnh này, không lấy từ ảnh khác).`;
-
-  return callVisionAI(promptText, base64Image);
-}
+async function callGemini25FlashAPI(base64Image) { return lgAiExtractRaw(base64Image); }
 
 // Hàm dùng chung: gửi payload (đã có prompt + ảnh) tới Gemini, tự thử lần lượt các
 // model khả dụng + retry nhanh cho lỗi tạm thời, rồi parse JSON trả về.
@@ -6196,7 +6205,7 @@ function providerHasKey(providerId) {
   if (providerId === 'mistral') return !!getEffectiveMistralKey();
   return false;
 }
-async function callVisionAI(promptText, base64Image, geminiExtra) {
+async function callVisionAI(promptText, base64Image, geminiExtra, schema) {
   const mode = getAiProviderMode();
   const buildGeminiPayload = () => ({
     contents: [{ role: 'user', parts: [{ text: promptText }, { inlineData: { mimeType: 'image/jpeg', data: base64Image } }] }],
@@ -6204,7 +6213,7 @@ async function callVisionAI(promptText, base64Image, geminiExtra) {
   });
   const callProvider = (providerId) => {
     if (providerId === 'gemini') return callGeminiVisionJSON(buildGeminiPayload());
-    if (providerId === 'claude') return callClaudeVisionJSON(promptText, base64Image);
+    if (providerId === 'claude') return callClaudeVisionJSON(promptText, base64Image, schema);
     if (providerId === 'openrouter') return callOpenRouterVisionJSON(promptText, base64Image);
     return callMistralVisionJSON(promptText, base64Image);
   };
@@ -9433,6 +9442,7 @@ async function handleScanAndLocateLand() {
       <strong>Thửa:</strong> ${escapeHtml(parsed.so_thua || 'N/A')} | <strong>Tờ:</strong> ${escapeHtml(parsed.to_ban_do || 'N/A')}<br/>
       <strong>Địa chỉ:</strong> ${escapeHtml(parsed.dia_chi || parsed.phuong_xa || 'Chưa rõ')}
       ${lowConf.length ? `<br/><span style="color:var(--accent);font-weight:700">⚠️ Cần kiểm tra tay mốc: ${escapeHtml(lowConf.join(', '))}</span>` : ''}
+      ${(parsed.khoi_phu && parsed.khoi_phu.length) ? `<br/><span class="muted">Ảnh còn ${parsed.khoi_phu.length} khối phụ (${escapeHtml(parsed.khoi_phu.map(k => (k.ten || 'khối') + ': ' + k.diem_moc.length + ' mốc').join('; '))}) — chưa nhập vào vòng chính.</span>` : ''}
     `;
 
     // TỰ ĐỘNG KHỞI TẠO TỈNH THÀNH & KINH TUYẾN TRỤC
@@ -17496,13 +17506,13 @@ try {
      ============================================================ */
   var origCallVisionAI = window.callVisionAI;
   LG.origCallVisionAI = origCallVisionAI;
-  window.callVisionAI = async function (promptText, base64Image, geminiExtra) {
+  window.callVisionAI = async function (promptText, base64Image, geminiExtra, schema) {
     var mode = 'auto';
     try { mode = window.getAiProviderMode(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q178'); }
-    if (mode !== 'auto' || !LG.opts().parallelAI) return origCallVisionAI(promptText, base64Image, geminiExtra);
+    if (mode !== 'auto' || !LG.opts().parallelAI) return origCallVisionAI(promptText, base64Image, geminiExtra, schema);
 
     var withKey = CHAIN.filter(function (id) { try { return window.providerHasKey(id); } catch (e) { return false; } });
-    if (!withKey.length) return origCallVisionAI(promptText, base64Image, geminiExtra);
+    if (!withKey.length) return origCallVisionAI(promptText, base64Image, geminiExtra, schema);
     var ready = withKey.filter(LG.available);
     var use = ready.length ? ready : withKey;   // tất cả đang chờ hồi phục -> vẫn thử lại
 
@@ -17511,7 +17521,7 @@ try {
         contents: [{ role: 'user', parts: [{ text: promptText }, { inlineData: { mimeType: 'image/jpeg', data: base64Image } }] }],
         generationConfig: Object.assign({ responseMimeType: 'application/json' }, geminiExtra || {})
       });
-      if (id === 'claude') return window.callClaudeVisionJSON(promptText, base64Image);
+      if (id === 'claude') return window.callClaudeVisionJSON(promptText, base64Image, schema);
       if (id === 'openrouter') return window.callOpenRouterVisionJSON(promptText, base64Image);
       return window.callMistralVisionJSON(promptText, base64Image);
     };
@@ -30022,8 +30032,9 @@ svg text, svg tspan{ text-rendering:geometricPrecision; }
   function wrap2Pass() {
     var orig = window.callVisionAI;
     if (typeof orig !== 'function' || orig.__lg116) return false;
-    var wrapped = async function (promptText, b64, extra) {
-      var first = await orig.call(this, promptText, b64, extra);
+    var wrapped = async function (promptText, b64, extra, schema) {
+      var first = await orig.call(this, promptText, b64, extra, schema);
+      if (schema) return first; // HM-42: lời gọi có schema (structured outputs) = đúng MỘT lần gọi/ảnh, không quét lượt 2
       var obj = first;
       if (typeof first === 'string') { try { obj = JSON.parse(first); } catch (e) { return first; } }
       if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return first;
@@ -32285,8 +32296,8 @@ body.lg125-modal-open{ overflow:hidden; }
     // không định nghĩa lại — và do đó không phá — logic chọn nhà cung cấp.
     if (typeof window.callVisionAI === 'function' && !window.callVisionAI.__lg125Hooked) {
       var __origVisionAI = window.callVisionAI;
-      var lgCoreVision = function (promptText, base64Image, geminiExtra) {
-        return __origVisionAI(promptText, base64Image, geminiExtra);
+      var lgCoreVision = function (promptText, base64Image, geminiExtra, schema) {
+        return __origVisionAI(promptText, base64Image, geminiExtra, schema);
       };
       lgCoreVision.__lg125Hooked = true;
       window.callVisionAI = lgCoreVision;
