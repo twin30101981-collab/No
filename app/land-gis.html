@@ -25762,6 +25762,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 .lgpk-gauge{ height:8px; border-radius:4px; background:var(--lg103-line); overflow:hidden; } .lgpk-gauge i{ display:block; height:100%; background:var(--lg103-accent,#1b6ef3); }
 .lgpk-sub,.lgpk-msg{ font-size:var(--lg103-fs-small,12px); margin:6px 0 10px; } .lgpk-row{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; min-height:52px; padding:8px 4px; border-bottom:1px solid var(--lg103-line); }
 .lgpk-row b{ flex:1 1 60%; } .lgpk-row small{ flex:1 1 100%; opacity:.75; order:3; } .lgpk-row button{ min-height:44px; min-width:64px; border-radius:8px; border:1px solid var(--lg103-line); background:transparent; color:inherit; }
+.lg35 fieldset{ border:1px solid var(--lg103-line); border-radius:10px; margin:8px 0; padding:8px 10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; } .lg35 legend{ font-weight:700; padding:0 4px; } .lg35 label{ display:flex; flex-direction:column; font-size:var(--lg103-fs-small,12px); } .lg35 input,.lg35 select{ min-height:44px; font-size:16px; } .lg35 small{ grid-column:1/-1; opacity:.7; }
 .lg8e-row{ display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:6px 4px; background:transparent; border:0; border-bottom:1px solid var(--lg103-line); text-align:left; font-size:var(--lg103-fs-body); color:inherit; cursor:pointer; }
 .lg8e-ic{ flex:0 0 36px; height:36px; display:grid; place-items:center; border-radius:10px; background:rgba(15,76,52,.09); }
 .lg8e-t{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -26244,6 +26245,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       body = '<div class="lg8e-sketch">' + plotSketchSVG(pts) + '</div>' +
         rowKv('Địa chỉ', addr) + rowKv('Mục đích', [m.loai_dat || m.muc_dich_su_dung, m.thoi_han_su_dung].filter(Boolean).join(' · ')) +
         rowKv('Nguồn gốc', m.nguon_goc_su_dung) + rowKv('Biến động', vc) +
+        ((m.giap_ranh_bac || m.giap_ranh_dong || m.giap_ranh_nam || m.giap_ranh_tay || window.LG35) ? '<div class="lg8e-kv"><span>Giáp ranh</span><span>' + (window.LG35 && LG35.confirmed(p) ? '✔ Đã xác nhận' : 'Chưa xác nhận') + '</span></div><div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="giap-ranh">🧭 Xác nhận giáp ranh</button></div>' : '') +
         '<div class="lg103-kv"><span>Diện tích đo</span><span>' + area.toFixed(2) + ' m²</span></div>' +
         (V ? '<div class="lg103-kv"><span>Đối chiếu GCN</span><span>' + (V.ok ? '✔ Đạt' : '⚠ Không đạt') + ' (lệch ' + V.diff.toFixed(2) + ' m², cho phép ±' + V.tol.toFixed(2) + ')</span></div>' : '') +
         '<div class="lg103-kv"><span>Số mốc</span><span>' + pts.length + '</span></div>' +
@@ -26356,6 +26358,31 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'cad-gps': if (window.LGCadastre) { openSheet('Thửa tại vị trí của tôi', '<div class="lg103-empty">Đang lấy vị trí GPS…</div>'); LGCadastre.locateGPS(function (r) { openSheet('Thửa tại vị trí của tôi', LGCadastre.locateHTML(r)); }); } return true;
       case 'packs': if (window.LGPacksUI) LGPacksUI.render().then(function (h) { openSheet('Gói dữ liệu địa chính', h); }); return true;
       case 'expert-toggle': try { localStorage.setItem('landgis_expert', lgExpertOn() ? '0' : '1'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8e1'); } applyExpertClass(); body.innerHTML = tabMore(); return true;
+      case 'giap-ranh': {
+        var gp = currentPlot(); if (!gp || !window.LG35) return true;
+        var ge = LG35.fromPlot(gp), LOAI = [['thua', 'Thửa đất'], ['duong', 'Đường'], ['ngo', 'Ngõ/ngách'], ['khac', 'Khác'], ['chua_ro', 'Chưa rõ']];
+        var gh = '<div class="lg35" data-pid="' + escA4(gp.id) + '"><p class="lg8e-note">Nhãn đọc từ sơ đồ sổ. Hãy đối chiếu với sổ rồi sửa nếu cần — nhãn không nhận ra được để “Chưa rõ”, không tự đoán.</p>';
+        ge.forEach(function (e, i) {
+          gh += '<fieldset class="lg35-row" data-i="' + i + '"><legend>' + ({ bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' })[e.huong] + (e.loai === 'chua_ro' ? ' — chưa rõ' : '') + '</legend>' +
+            '<label>Loại <select data-f="loai" aria-label="Loại giáp ranh phía ' + e.huong + '">' + LOAI.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === e.loai ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
+            '<label>Số thửa <input data-f="so_thua" inputmode="numeric" value="' + escA4(e.so_thua || '') + '"></label>' +
+            '<label>Diện tích (m²) <input data-f="dien_tich" inputmode="decimal" value="' + (e.dien_tich == null ? '' : escA4(String(e.dien_tich).replace('.', ','))) + '"></label>' +
+            '<label>Tên đường/ngõ <input data-f="ten" value="' + escA4(e.ten || '') + '"></label>' +
+            '<small>Nhãn trên sổ: ' + escA4(e.van_ban || '—') + '</small></fieldset>';
+        });
+        gh += '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="giap-save">Lưu giáp ranh đã xác nhận</button></div></div>';
+        openSheet('Xác nhận giáp ranh', gh); return true;
+      }
+      case 'giap-save': {
+        var box = body.querySelector('.lg35'), sp = box && currentPlot(); if (!sp) return true;
+        var list = LG35.fromPlot(sp);
+        Array.prototype.forEach.call(box.querySelectorAll('.lg35-row'), function (row) {
+          var i = +row.getAttribute('data-i'), e = list[i], g = function (f) { return row.querySelector('[data-f="' + f + '"]').value.trim(); };
+          e.loai = g('loai'); e.so_thua = e.loai === 'thua' ? g('so_thua') : ''; var dv = parseFloat(g('dien_tich').replace(',', '.')); e.dien_tich = (e.loai === 'thua' && isFinite(dv)) ? dv : null; e.ten = e.loai === 'thua' ? '' : (e.loai === 'chua_ro' ? e.ten : g('ten'));
+          if (e.loai === 'thua' && !e.so_thua) e.loai = 'chua_ro';
+        });
+        LG35.save(sp, list); closeSheet(); try { window.toast({ title: 'Đã lưu giáp ranh' }); } catch (e2) { window.lgQuiet && window.lgQuiet(e2, 'h35t'); } return true;
+      }
       case 'ai-proxy': {
         var on0 = localStorage.getItem('landgis_ai_proxy') === '1';
         if (!on0) {
@@ -42376,6 +42403,52 @@ body.lg175-stack-open #lg124-stack{
       r.f.apply(r.ctx, args);
     } catch (er) { window.lgQuiet && window.lgQuiet(er, 'h8h1'); }
   }, true);
+})();
+</script>
+<script>
+/* HM-35 — GIÁP RANH CÓ CẤU TRÚC: nhãn trên sơ đồ sổ ("T460/68,5", "T.130", "Ngõ Quang Trung", "Đường Phạm Ngũ Lão") → {loại, số thửa, diện tích, tên}.
+   Nhãn không nhận ra → "chưa rõ" (KHÔNG đoán). Người dùng xác nhận/sửa ở form (Hồ sơ → Xác nhận giáp ranh) trước khi lưu vào meta.giap_ranh_ds;
+   4 ô chữ cũ giap_ranh_bac/dong/nam/tay vẫn được giữ và cập nhật theo bản đã xác nhận. */
+(function () {
+  'use strict';
+  var DIRS = [['bac', 'Bắc'], ['dong', 'Đông'], ['nam', 'Nam'], ['tay', 'Tây']];
+  function fold(t) { var x = String(t == null ? '' : t).trim(); try { x = x.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h35n'); } return x.replace(/đ/g, 'd').replace(/Đ/g, 'D'); }
+  function num(v) { if (v == null || v === '') return null; var n = parseFloat(String(v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) ? n : null; }
+  function parseLabel(text) {
+    var raw = String(text == null ? '' : text).trim(), f = fold(raw), m;
+    if (!raw) return { loai: 'chua_ro', ten: '', so_thua: '', dien_tich: null, van_ban: '' };
+    if ((m = /^t(?:hua)?\.?\s*(?:so\s*)?(\d+[a-z]?)\s*(?:[\/(\-]\s*([\d.,]+)\s*(?:m2|m²)?\)?)?$/i.exec(f)) || (m = /^(\d{1,5}[a-z]?)\s*(?:[\/(]\s*([\d.,]+)\s*(?:m2|m²)?\)?)?$/i.exec(f)))
+      return { loai: 'thua', so_thua: m[1], dien_tich: num(m[2]), ten: '', van_ban: raw };
+    if (/^(ngo|ngach|hem|kiet)\b/i.test(f)) return { loai: 'ngo', ten: raw, so_thua: '', dien_tich: null, van_ban: raw };
+    if (/^(duong|pho|quoc lo|ql\b|tinh lo|tl\b|dai lo|truc)/i.test(f)) return { loai: 'duong', ten: raw, so_thua: '', dien_tich: null, van_ban: raw };
+    if (/^(muong|ao\b|song|kenh|ho\b|ngoi|dong ruong|ruong|dat |cong trinh|nha )/i.test(f)) return { loai: 'khac', ten: raw, so_thua: '', dien_tich: null, van_ban: raw };
+    return { loai: 'chua_ro', ten: raw, so_thua: '', dien_tich: null, van_ban: raw };
+  }
+  function entry(huong, text, conf) { var e = parseLabel(text); e.huong = huong; e.do_tin_cay = conf == null ? null : conf; e.xac_nhan = false; return e; }
+  /* Từ kết quả AI đã chuẩn hoá (giap_ranh[] + giap_ranh_*): luôn đủ 4 hướng */
+  function fromAI(ai) {
+    ai = ai || {}; var by = {}; (ai.giap_ranh || []).forEach(function (g) { if (g && g.huong) by[g.huong] = g; });
+    return DIRS.map(function (d) { var g = by[d[0]]; return entry(d[0], g ? g.doi_tuong : ai['giap_ranh_' + d[0]], g ? g.do_tin_cay : null); });
+  }
+  function fromPlot(plot) {
+    var m = (plot && plot.meta) || {}; if (Array.isArray(m.giap_ranh_ds) && m.giap_ranh_ds.length === 4) return m.giap_ranh_ds.map(function (e) { return Object.assign({}, e); });
+    return DIRS.map(function (d) { return entry(d[0], m['giap_ranh_' + d[0]]); });
+  }
+  function toText(e) {
+    if (e.loai === 'thua') return 'Thửa ' + e.so_thua + (e.dien_tich != null ? ' (' + String(e.dien_tich).replace('.', ',') + ' m²)' : '');
+    if (e.loai === 'chua_ro') return e.ten || '';
+    return e.ten || '';
+  }
+  function save(plot, entries) {
+    plot.meta = plot.meta || {}; var m = plot.meta;
+    m.giap_ranh_ds = entries.map(function (e) { return { huong: e.huong, loai: e.loai, so_thua: e.so_thua || '', dien_tich: e.dien_tich == null ? null : e.dien_tich, ten: e.ten || '', van_ban: e.van_ban || '', do_tin_cay: e.do_tin_cay == null ? null : e.do_tin_cay, xac_nhan: true }; });
+    entries.forEach(function (e) { m['giap_ranh_' + e.huong] = toText(e); });
+    var parts = []; DIRS.forEach(function (d) { var t = m['giap_ranh_' + d[0]]; if (t) parts.push(d[1] + ' giáp ' + t); }); m.giap_ranh = parts.join('; ');
+    try { window.LG_V42_HOST && window.LG_V42_HOST.save(); } catch (er) { window.lgQuiet && window.lgQuiet(er, 'h35s'); }
+    return m.giap_ranh_ds;
+  }
+  function confirmed(plot) { var m = (plot && plot.meta) || {}; return Array.isArray(m.giap_ranh_ds) && m.giap_ranh_ds.length === 4 && m.giap_ranh_ds.every(function (e) { return e.xac_nhan; }); }
+  window.LG35 = { DIRS: DIRS, parseLabel: parseLabel, fromAI: fromAI, fromPlot: fromPlot, toText: toText, save: save, confirmed: confirmed };
 })();
 </script>
 </body>
