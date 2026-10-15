@@ -4,16 +4,17 @@
  "phien_hien_tai": 1,
  "che_do": 1,
  "de_an": {
-  "phien_ban": "1.4",
+  "phien_ban": "1.5",
   "trang_thai": "CHO_DUYET",
   "ngay_duyet": null,
-  "tep": "de-an/DE_AN_LANDGIS_v1.4.docx",
-  "so_phien_uoc_tinh": "6-8",
+  "tep": "de-an/DE_AN_LANDGIS_v1.5.docx",
+  "so_phien_uoc_tinh": "7-9",
   "dieu_chinh": [
    "v1.1: ghi 3 quyết định người dùng chốt ngày 15/10/2026; Đợt 4 được đưa vào phạm vi",
    "v1.2: chuyển sang giao diện chỉ-mobile; thay HM-08, HM-12b bằng HM-08a..08f",
    "v1.3: rà soát sâu — thêm P0 HM-00 (mất dữ liệu khi bộ nhớ đầy), HM-06c, HM-11b, Đợt 4–5 tính năng (HM-15..21)",
-   "v1.4: thêm P0 HM-00b (treo app do killReplit), HM-07c, HM-08g/h/i, HM-09b; mockup bộ 2 + sơ đồ luồng + cây dữ liệu/thành phần"
+   "v1.4: thêm P0 HM-00b (treo app do killReplit), HM-07c, HM-08g/h/i, HM-09b; mockup bộ 2 + sơ đồ luồng + cây dữ liệu/thành phần",
+   "v1.5: rà soát phần còn lại — HM-00c, HM-04b, HM-06d (P1), HM-10b; tính năng HM-22..25; HM-10 cập nhật model theo tài liệu Claude API hiện hành"
   ]
  },
  "moi_truong": {
@@ -262,6 +263,46 @@
    "zip": ""
   },
   {
+   "id": "HM-04b",
+   "ten": "Kinh tuyến trục theo địa giới hành chính mới (sau 1/7/2025)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-04"
+   ],
+   "pham_vi": "LG146.provinceFromAddress (L35867), bảng tỉnh L960–1045",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "'phường Vũng Tàu, TP Hồ Chí Minh' → KTT 107°45′; 'phường Hải Dương, TP Hải Phòng' → 105°30′",
+    "Tỉnh mới nhiều KTT (Ninh Bình, Lâm Đồng, Đắk Lắk…) → hỏi người dùng chọn địa bàn cũ, không tự đoán",
+    "Đọc dòng 'KTT …' in trên sổ (nếu có) và ưu tiên nó",
+    "Sửa chính tả 'Đắc Lắk'"
+   ],
+   "rui_ro": "Trung bình: cần bảng xã/phường mới → tỉnh cũ",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (F-31)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-05",
    "ten": "Xoá dữ liệu cũ gây mất an toàn (LG_AUDIT, khoá lưu trữ cũ/hỏng, nhật ký)",
    "dot": 1,
@@ -288,6 +329,45 @@
    "rui_ro": "Trung bình: xoá nhầm dữ liệu người dùng — dùng danh sách khoá được phép xoá (allowlist), không xoá theo mẫu rộng",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đã xác minh",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-00c",
+   "ten": "Nhập dự án an toàn: kiểm tra trước, tự sao lưu trước khi 'Thay thế toàn bộ'",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-00"
+   ],
+   "pham_vi": "backupProjectImport (L11968), doImport (L11997)",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "File có 0 thửa hợp lệ → từ chối, KHÔNG xoá dữ liệu đang có",
+    "Trước khi thay thế: tự lưu bản sao, có nút Hoàn tác",
+    "Báo số thửa hợp lệ/không hợp lệ trước khi xác nhận"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (mã)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -367,6 +447,45 @@
    "rui_ro": "Trung bình: đổi cấu hình Supabase — làm cùng bạn",
    "kiem_chung_du_kien": "V3 + V1",
    "nhan_xac_minh": "Nghi vấn có căn cứ (thiết kế)",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-06d",
+   "ten": "Sửa chế độ khoá AI 'chỉ trong phiên' (không để lại khoá cũ)",
+   "dot": 1,
+   "uu_tien": "P1",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-06"
+   ],
+   "pham_vi": "lgKeySet/lgKeyGet (L3690–3715), cờ landgis_key_session_only trong sessionStorage",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Bật chế độ phiên → xoá mọi bản lâu dài (IndexedDB + localStorage)",
+    "Lựa chọn chế độ được nhớ bền; tab mới không dùng lại khoá cũ",
+    "Test evidence/apikey_session.json chuyển sang ĐẠT"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đã xác minh (F-34)",
    "trang_thai": "CHUA_LAM",
    "bac_kiem_chung_dat": null,
    "bang_chung": {
@@ -944,10 +1063,11 @@
    "pham_vi": "claude-haiku-3-5, gemini-2.0-flash… rải nhiều nơi",
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
-    "Một bảng cấu hình model",
-    "Model lỗi 404 → tự chuyển model kế và báo rõ",
-    "Đọc GCN không cắt cụt JSON với bảng kê dài (nâng max_tokens, kiểm tra JSON, thử lại 1 lần) — F-21",
-    "Khoá Gemini gửi qua header x-goog-api-key thay vì URL — F-23"
+    "Danh mục model một chỗ: mặc định claude-opus-5-5, tuỳ chọn claude-sonnet-5-5 / claude-haiku-5-5; bỏ 'claude-haiku-3-5' (ID không hợp lệ; Haiku 3.5 đã ngừng 19/02/2026)",
+    "Dùng structured outputs (output_config.format, JSON schema) thay vì dặn 'trả JSON' trong prompt",
+    "max_tokens ≥ 16000; kiểm stop_reason (max_tokens, refusal) trước khi đọc kết quả; không gửi temperature",
+    "Model lỗi 404 → chuyển model kế và báo rõ",
+    "Khoá Gemini qua header x-goog-api-key (F-23)"
    ],
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V2 + V1 (cần khoá thật)",
@@ -1044,6 +1164,46 @@
    "zip": ""
   },
   {
+   "id": "HM-10b",
+   "ten": "Gọi AI qua máy chủ trung gian (Supabase Edge Function) — không để khoá trong trình duyệt",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-06c",
+    "HM-10"
+   ],
+   "pham_vi": "callClaudeVisionOnce và các hàm gọi AI",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Trình duyệt không còn giữ khoá AI khi bật chế độ máy chủ",
+    "Giới hạn lượt gọi theo người dùng đăng nhập",
+    "Giữ chế độ khoá cá nhân như cũ (tuỳ chọn)"
+   ],
+   "rui_ro": "Trung bình: cần cấu hình Supabase cùng bạn",
+   "kiem_chung_du_kien": "V3 + V1",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
    "id": "HM-12a",
    "ten": "Dọn khối chẩn đoán/rollout chỉ dùng cho phát triển (LGCore 07–08)",
    "dot": 3,
@@ -1063,7 +1223,8 @@
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
     "Không ai gọi ngoài chính nó (grep + chạy)",
-    "File nhỏ đi, không hồi quy"
+    "File nhỏ đi, không hồi quy",
+    "Gỡ cả các lớp LGCore chạy song song không được luồng chính dùng (DataStore/StorageAdapter/Migration/Export 02–08), trừ phần HM-00/HM-06d tái dùng"
    ],
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
@@ -1254,7 +1415,8 @@
    "hanh_vi_mong_doi": "",
    "tieu_chi_nghiem_thu": [
     "1 trang A4: sơ đồ, bảng diện tích, công thức, kết luận Đạt/Không đạt, ngày giờ, QR tra lại",
-    "Che CMND theo tuỳ chọn HM-14"
+    "Che CMND theo tuỳ chọn HM-14",
+    "Nội dung QR dài > 213 byte → rút gọn thành mã tra cứu, không mất QR âm thầm (F-35)"
    ],
    "rui_ro": "Thấp",
    "kiem_chung_du_kien": "V3",
@@ -1447,6 +1609,161 @@
     "Mất mạng vẫn lưu; có mạng tự đồng bộ, báo xung đột"
    ],
    "rui_ro": "Trung bình",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-23",
+   "ten": "Hàng đợi nhập sổ ngoại tuyến: chụp nhiều sổ khi mất mạng, tự gửi AI khi có mạng",
+   "dot": 4,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-00",
+    "HM-08d"
+   ],
+   "pham_vi": "luồng Nhập sổ",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Chụp được khi ngoại tuyến, ảnh lưu IndexedDB",
+    "Có mạng → tự đọc lần lượt, báo kết quả từng sổ",
+    "Xoá ảnh sau khi lưu thửa (tuỳ chọn)"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3 (setOffline)",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-24",
+   "ten": "Công cụ quy đổi toạ độ hàng loạt VN-2000 ↔ WGS84 (dán/CSV)",
+   "dot": 4,
+   "uu_tien": "P3",
+   "effort": "S",
+   "model_version": "unknown",
+   "model_effort_recommended": "medium",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 6,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-04b"
+   ],
+   "pham_vi": "lõi VN-2000",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Dán danh sách X,Y → ra kinh độ/vĩ độ và ngược lại",
+    "Xuất CSV có BOM (mở đúng tiếng Việt trong Excel)"
+   ],
+   "rui_ro": "Thấp",
+   "kiem_chung_du_kien": "V3",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-22",
+   "ten": "Kết nối máy thu GNSS RTK qua Bluetooth (NMEA) — toạ độ cm",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-16"
+   ],
+   "pham_vi": "Cắm mốc RTK, GPS",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Đọc NMEA GGA từ máy thu qua Web Bluetooth (Android Chrome)",
+    "Hiện trạng thái FIX/FLOAT, sai số; dùng cho cắm mốc và đối soát",
+    "Máy không hỗ trợ → báo rõ, dùng GPS điện thoại"
+   ],
+   "rui_ro": "Trung bình: chỉ Android Chrome hỗ trợ Web Bluetooth",
+   "kiem_chung_du_kien": "V1 (máy thật)",
+   "nhan_xac_minh": "Đề xuất",
+   "trang_thai": "CHUA_LAM",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "",
+   "zip": ""
+  },
+  {
+   "id": "HM-25",
+   "ten": "Xuất theo biểu mẫu của bạn (bảng kê toạ độ, sơ đồ thửa, Excel mẫu)",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "M",
+   "model_version": "unknown",
+   "model_effort_recommended": "high",
+   "model_effort_actual": null,
+   "model_effort_reason": "Mức khởi đầu theo Phụ lục E.2; xác nhận model đang dùng ở đầu phiên.",
+   "effort_change_reason": "",
+   "chi_phi_uoc_tinh_pct": 10,
+   "chi_phi_thuc_te_pct": null,
+   "phu_thuoc": [
+    "HM-21"
+   ],
+   "pham_vi": "xuất PDF/Excel",
+   "hanh_vi_mong_doi": "",
+   "tieu_chi_nghiem_thu": [
+    "Nạp mẫu bạn cung cấp; điền tự động các trường",
+    "Xem trước trước khi xuất"
+   ],
+   "rui_ro": "Trung bình: cần mẫu thật từ bạn",
    "kiem_chung_du_kien": "V3",
    "nhan_xac_minh": "Đề xuất",
    "trang_thai": "CHUA_LAM",

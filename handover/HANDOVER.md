@@ -8,9 +8,10 @@ Playwright (V3) khả dụng: CÓ — playwright 1.56.1 tại /opt/node-tools, C
 Quy ước dự án: style chỉ trong <style>; không sửa chuỗi JS khi đổi font/style; sửa theo vùng, sao lưu .orig; không format cả file.
 
 ## 2. Đề án và trạng thái (khớp backlog.json)
-Đề án: v1.4 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.4.docx
+Đề án: v1.5 — CHO_DUYET — de-an/DE_AN_LANDGIS_v1.5.docx
 Điều chỉnh lộ trình: v1.1 quyết định; v1.2 chỉ-mobile; v1.3 rà soát sâu: P0 HM-00, HM-06c, HM-11b, Đợt 4–5 tính năng HM-15..21
-Ước tính: 5–6 phiên (Đợt 0–3, 216%) · 6–8 phiên cả Đợt 4–5 (300%) · 37 hạng mục
+Ước tính: 5–7 phiên (Đợt 0–3, 248%) · 7–9 phiên cả Đợt 4–5 (368%) · 45 hạng mục
+P1 mới v1.5: F-31 KTT sau sáp nhập (tools/ktt.js), F-32 nhập dự án Thay thế xoá dữ liệu, F-33 model AI (claude-haiku-3-5 không hợp lệ), F-34 khoá 'chỉ trong phiên' (tools/keytest.js)
 **P0 #2 ĐÃ XÁC MINH (F-24):** killReplit (L22868, observer L22886–22892) quét toàn trang mỗi nút DOM thêm → 50 thửa mở app 70,5 s; bản thử experiment/no_killreplit.html: 2,1 s. Tái hiện: tools/prof.js <html> 50.
 **P0 ĐÃ XÁC MINH (F-17):** bộ nhớ đầy → lớp v119 xoá land_gis_v18_cache (kho thửa). Tái hiện: tools/quota.js → evidence/quota_dataloss.json. Sửa: gỡ khoá khỏi PRUNABLE (L117) và di trú <119 (L196).
 | ID | Tên | Ưu tiên | Effort | Trạng thái |
@@ -57,7 +58,7 @@ Không.
 - hsv-react-phien16.zip trong repo là dự án khác — không động tới.
 
 ## 8. Việc người dùng cần làm
-Chốt 5 câu (đề án Mục 14): màn rộng; khoá dọc; làm HM-00 trước; đăng nhập OTP Supabase; chọn tính năng Đợt 4/5. Duyệt v1.3.
+Chốt 7 câu (đề án Mục 14): màn rộng; khoá dọc; làm HM-00/00b trước; model AI mặc định + máy chủ trung gian; địa bàn làm việc; đăng nhập OTP Supabase; chọn tính năng. Duyệt v1.5.
 Khuyến cáo ngay: xuất sao lưu (.landgis/Excel) dữ liệu thửa đang có trên điện thoại cho tới khi HM-00 xong.
 
 ## 9. Đường lui
@@ -76,3 +77,4 @@ Không sửa file app. Thêm: de-an/, handover/, evidence/, tools/.
 - 03:45 khảo sát điều hướng mobile: F-14 toast chặn chạm dock (xác minh), F-15, F-16; dựng 7 mockup; phát hành v1.2
 - 04:10 rà soát sâu v1.3: F-17 P0 mất dữ liệu (V3), F-18..F-23; kiểm âm tính XSS, DXF, font PDF; phát hành v1.3
 - 04:40 rà soát v1.4: F-24 P0 treo app (profile 5/20/50 thửa), F-25 OCR bỏ dòng âm thầm, F-26..F-30; 9 mockup bộ 2 + sơ đồ luồng; phát hành v1.4
+- 05:10 rà soát phần còn lại v1.5: F-31..F-37; đạt: bảng KTT 63 tỉnh, QR 5/5, GeoJSON/KML; phát hành v1.5
