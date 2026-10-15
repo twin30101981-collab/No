@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Land GIS mobile mockups</title>
+<style>
+:root{--g:#0F4C34;--g2:#16704C;--g0:#E7F2EC;--ink:#14231C;--mut:#5B6B63;--line:#D9E3DD;--bg:#F5F8F6;--ok:#127A3E;--okbg:#E3F5EA;--bad:#B3261E;--badbg:#FDECEA;--warn:#8A5A00;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#cfd8d3;font-family:"Noto Sans","DejaVu Sans",Arial,sans-serif;color:var(--ink);padding:20px;display:flex;flex-wrap:wrap;gap:24px}
+.phone{width:390px;height:844px;background:var(--bg);position:relative;overflow:hidden;border-radius:0}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:15px;font-weight:700}
+.status.dark{background:var(--g);color:#fff}
+.top{height:56px;display:flex;align-items:center;gap:8px;padding:0 8px;background:var(--g);color:#fff}
+.top .ib{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:22px}
+.top h1{font-size:18px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top small{font-size:13px;opacity:.85;font-weight:500}
+.dock{position:absolute;left:0;right:0;bottom:0;height:98px;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 4px 34px}
+.dock div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:var(--mut);gap:3px;font-weight:600}
+.dock div b{font-size:22px;font-weight:400;line-height:1}
+.dock div.on{color:var(--g)}
+.dock div.on b{background:var(--g0);border-radius:16px;padding:2px 16px}
+.dock .plus b{width:56px;height:56px;border-radius:28px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:30px;margin-top:-26px;box-shadow:0 4px 12px rgba(15,76,52,.35);padding:0!important}
+.dock .plus{color:var(--g)}
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:9}
+.map{position:absolute;inset:0;background:#6d7f5a}
+.search{position:absolute;top:52px;left:12px;right:12px;height:52px;background:#fff;border-radius:26px;display:flex;align-items:center;padding:0 8px 0 18px;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:16px;color:var(--mut)}
+.search .av{margin-left:auto;width:40px;height:40px;border-radius:20px;background:var(--g0);display:grid;place-items:center;color:var(--g);font-size:18px}
+.chips{position:absolute;top:114px;left:12px;right:12px;display:flex;gap:8px;overflow:hidden}
+.chip{height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.95);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.fabs{position:absolute;right:12px;display:flex;flex-direction:column;gap:10px}
+.fab{width:52px;height:52px;border-radius:26px;background:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 2px 8px rgba(0,0,0,.2);color:var(--g)}
+.sheet{position:absolute;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.15);padding:8px 16px 0}
+.handle{width:40px;height:5px;border-radius:3px;background:#C9D3CD;margin:0 auto 10px}
+.badge{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:14px;font-size:13px;font-weight:700}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.row{display:flex;align-items:center;gap:8px}
+.btn{height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:15px;font-weight:700;padding:0 14px}
+.btn.p{background:var(--g);color:#fff}.btn.s{background:var(--g0);color:var(--g)}.btn.o{border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.t{font-size:17px;font-weight:700}.m{font-size:14px;color:var(--mut)}
+.scrim{position:absolute;inset:0;background:rgba(10,25,18,.45)}
+.tile{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;min-height:104px}
+.tile b{font-size:26px;font-weight:400}.tile span{font-size:15px;font-weight:700}.tile i{font-style:normal;font-size:12.5px;color:var(--mut);line-height:1.3}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.steps{display:flex;gap:6px;padding:12px 16px 4px}
+.steps div{flex:1;height:6px;border-radius:3px;background:var(--line)}.steps div.on{background:var(--g2)}
+.seg{display:flex;background:#E4EBE7;border-radius:12px;padding:4px;margin:10px 16px}
+.seg div{flex:1;height:40px;border-radius:9px;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--mut)}
+.seg div.on{background:#fff;color:var(--g);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:12px;color:var(--mut);text-align:left;font-weight:700;padding:6px 4px;border-bottom:1px solid var(--line)}
+td{font-size:14px;padding:0 4px;height:44px;border-bottom:1px solid var(--line);font-family:"DejaVu Sans Mono",monospace;letter-spacing:-.3px}
+td.n{font-family:inherit;font-weight:700;color:var(--g);width:26px}
+td.ck{color:var(--ok);font-family:inherit;text-align:center;width:24px}
+tr.sub td{background:#FFF6E0}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:10px 16px}
+.eq{display:flex;justify-content:space-between;font-size:15px;padding:5px 0;font-variant-numeric:tabular-nums}
+.eq.tot{border-top:1.5px solid var(--line);margin-top:4px;padding-top:9px;font-weight:700}
+.bar{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px 34px}
+.li{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px;border-bottom:1px solid var(--line);font-size:16px;background:#fff}
+.li .ic{width:36px;height:36px;border-radius:10px;background:var(--g0);display:grid;place-items:center;font-size:18px}
+.li .ch{margin-left:auto;color:#9AA8A0;font-size:20px}
+.grp{font-size:12.5px;font-weight:800;color:var(--mut);letter-spacing:.6px;padding:16px 16px 6px;text-transform:uppercase}
+.sw{margin-left:auto;width:52px;height:32px;border-radius:16px;background:#C9D3CD;position:relative}.sw:after{content:"";position:absolute;left:3px;top:3px;width:26px;height:26px;border-radius:13px;background:#fff}
+.kv{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}.kv span{width:104px;color:var(--mut);flex:none}
+/* wireframe */
+.wf .z{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#24392F;border:2px dashed #4B7A63;text-align:center;line-height:1.35}
+.dim{position:absolute;right:6px;font-size:12px;font-weight:800;color:#B3261E;background:#fff;padding:1px 6px;border-radius:6px}
+</style></head><body>
+
+<!-- 0. KHUNG LAYOUT -->
+<div class="phone wf" id="s0" style="background:#F0F5F2;display:flex;flex-direction:column">
+  <div class="z" style="position:relative;height:44px;background:#DCE8E1">An toàn trên · 44 px</div>
+  <div class="z" style="position:relative;height:56px;background:#C7DDD1;flex-direction:column">Thanh trên · 56 px<br><small>‹ quay lại · tiêu đề · 1 nút</small></div>
+  <div class="z" style="position:relative;flex:1;background:#fff;flex-direction:column;gap:6px">NỘI DUNG<small style="font-weight:500">cuộn dọc duy nhất, không cuộn ngang<br>chữ nền 16 px · số 15 px thẳng cột<br>vùng chạm ≥ 48 × 48 px</small></div>
+  <div class="z" style="position:relative;height:64px;background:#FFF1CC;border-color:#B98500;flex-direction:column">KHE THÔNG BÁO DUY NHẤT<small style="font-weight:500">1 toast · không chặn chạm · tự ẩn 4 s</small></div>
+  <div class="z" style="position:relative;height:150px;background:#E3EEE8;flex-direction:column">BOTTOM SHEET<small style="font-weight:500">Thu gọn 148 px · Nửa 50% · Toàn màn</small></div>
+  <div class="z" style="position:relative;height:64px;background:#C7DDD1;flex-direction:column">DOCK · 64 px<small style="font-weight:500">Bản đồ · Thửa · ＋Nhập sổ · Hồ sơ · Thêm</small></div>
+  <div class="z" style="position:relative;height:34px;background:#DCE8E1">An toàn dưới · 34 px</div>
+</div>
+
+<!-- 1. BẢN ĐỒ -->
+<div class="phone" id="s1">
+  <div class="map"><svg width="390" height="844" id="mapsvg"></svg></div>
+  <div class="status" style="position:absolute;top:0;left:0;right:0;color:#fff">9:41<span>●●● 5G ▮</span></div>
+  <div class="search">🔍 Tìm thửa, tờ bản đồ, địa chỉ…<div class="av">≡</div></div>
+  <div class="chips"><div class="chip">🧭 KTT 105°30′ · Nam Định</div><div class="chip">🛰 Esri</div><div class="chip">◧ Chú giải</div></div>
+  <div class="fabs" style="top:432px"><div class="fab">◫</div><div class="fab">◎</div></div>
+  <div class="sheet" style="top:548px;bottom:98px">
+    <div class="handle"></div>
+    <div class="row" style="justify-content:space-between"><div><div class="t">Thửa 131 · Tờ 10.1</div><div class="m">Phạm Ngũ Lão · Xóm B · Mỹ Xá</div></div><span class="badge ok">✓ ĐẠT</span></div>
+    <div class="row m" style="margin:10px 0 12px;gap:14px"><span><b style="color:var(--ink)">89,9 m²</b> GCN</span><span>đo 91,29</span><span>KCGCN 1,44</span></div>
+    <div class="row" style="gap:8px"><div class="btn p" style="flex:1.2">📄 Hồ sơ</div><div class="btn s" style="flex:1">➦ Chỉ đường</div><div class="btn s" style="width:56px;padding:0">📷</div></div>
+  </div>
+  <div class="dock"><div class="on"><b>🗺</b>Bản đồ</div><div><b>▤</b>Thửa</div><div class="plus"><b>＋</b>Nhập sổ</div><div><b>📄</b>Hồ sơ</div><div><b>⋯</b>Thêm</div></div><div class="homebar"></div>
+</div>
+
+<!-- 2. NHẬP SỔ -->
+<div class="phone" id="s2">
+  <div class="map"><svg width="390" height="844" class="mapclone"></svg></div>
+  <div class="scrim"></div>
+  <div class="status" style="position:absolute;top:0;left:0;right:0;color:#fff">9:41<span>●●● 5G ▮</span></div>
+  <div class="sheet" style="top:150px;bottom:0;padding-bottom:34px">
+    <div class="handle"></div>
+    <div class="row" style="justify-content:space-between;margin-bottom:4px"><div class="t" style="font-size:20px">Nhập sổ đỏ</div><div class="btn o" style="width:48px;padding:0">✕</div></div>
+    <div class="m" style="margin-bottom:12px">Chọn cách đưa dữ liệu thửa vào app</div>
+    <div class="grid2">
+      <div class="tile" style="border-color:var(--g2);background:#F2F9F5"><b>📷</b><span>Chụp sổ đỏ</span><i>AI đọc bảng kê toạ độ, chủ, diện tích</i></div>
+      <div class="tile"><b>🖼</b><span>Chọn ảnh sổ</span><i>Từ thư viện; nhiều trang</i></div>
+      <div class="tile"><b>🔳</b><span>Quét mã QR</span><i>GCN mẫu mới có QR</i></div>
+      <div class="tile"><b>⌨</b><span>Nhập bảng kê</span><i>Dán / gõ X, Y, S; có khối phụ</i></div>
+      <div class="tile"><b>📐</b><span>Cạnh + góc</span><i>Sổ không có bảng toạ độ</i></div>
+      <div class="tile"><b>📥</b><span>CAD / Excel</span><i>DXF, XLSX, CSV</i></div>
+    </div>
+    <div class="li" style="margin:12px -16px 0;border-top:1px solid var(--line)"><div class="ic">📡</div>GPS thực địa · cắm mốc RTK<span class="ch">›</span></div>
+  </div>
+</div>
+
+<!-- 3. XÁC NHẬN BẢNG KÊ -->
+<div class="phone" id="s3">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Bảng kê toạ độ<br><small>Bước 2/3 · Kiểm tra số đọc được</small></h1><div class="ib">✎</div></div>
+  <div class="steps"><div class="on"></div><div class="on"></div><div></div></div>
+  <div class="seg"><div class="on">Vòng ranh chính · 8</div><div>Khối phụ · 4</div></div>
+  <div style="padding:0 12px">
+  <table><tr><th>#</th><th>X (m)</th><th>Y (m)</th><th>S (m)</th><th></th></tr>
+  <tbody id="tb"></tbody></table>
+  </div>
+  <div class="bar">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><div><div class="m">Diện tích vòng ranh</div><div class="t">91,29 m²</div></div><div style="text-align:right"><div class="m">Cạnh so với sổ</div><div class="t" style="color:var(--ok)">8/8 khớp</div></div></div>
+    <div class="btn p">Đối chiếu với GCN →</div>
+  </div>
+</div>
+
+<!-- 4. KẾT QUẢ -->
+<div class="phone" id="s4">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Kết quả đối chiếu<br><small>Bước 3/3 · Thửa 131 · Tờ 10.1</small></h1></div>
+  <div class="steps"><div class="on"></div><div class="on"></div><div class="on"></div></div>
+  <div class="card" style="background:var(--okbg);border-color:#BFE3CC;display:flex;gap:14px;align-items:center">
+    <div style="width:56px;height:56px;border-radius:28px;background:var(--ok);color:#fff;display:grid;place-items:center;font-size:30px">✓</div>
+    <div><div class="t" style="color:var(--ok);font-size:22px">ĐẠT</div><div class="m" style="color:#2F5E43">Lệch 0,05 m² ≤ cho phép 0,50 m²</div></div>
+  </div>
+  <div class="card">
+    <div class="m" style="font-weight:700;margin-bottom:4px">DIỆN TÍCH</div>
+    <div class="eq"><span>Đo từ toạ độ</span><b>91,29 m²</b></div>
+    <div class="eq"><span>− Không cấp GCN (mốc 4-5-6-7)</span><b>1,44 m²</b></div>
+    <div class="eq tot"><span>= Diện tích đối chiếu</span><span>89,85 m²</span></div>
+    <div class="eq"><span>Ghi trên GCN</span><b>89,90 m²</b></div>
+    <div class="m" style="margin-top:6px;font-size:12.5px">Mức cho phép: 0,05·√A + 0,0003·A (quyết định 15/10/2026)</div>
+  </div>
+  <div class="card"><div class="row" style="justify-content:space-between"><span style="font-size:15px">Cạnh so với số in trên sổ</span><span class="badge ok">8/8</span></div></div>
+  <div class="card"><div class="row" style="justify-content:space-between"><span style="font-size:15px">Vị trí</span><span class="m">20,4241°N · 106,1538°E</span></div></div>
+  <div class="bar"><div class="row" style="gap:10px"><div class="btn s" style="flex:1">Xem hồ sơ</div><div class="btn p" style="flex:1.3">💾 Lưu thửa</div></div></div>
+</div>
+
+<!-- 5. HỒ SƠ THỬA -->
+<div class="phone" id="s5">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top"><div class="ib">‹</div><h1>Thửa 131 · Tờ 10.1<br><small>Đất ở đô thị · 89,9 m² · ✓ Đạt</small></h1><div class="ib">⇪</div></div>
+  <div class="seg"><div class="on">Tổng quan</div><div>Toạ độ</div><div>Cạnh</div><div>Ảnh</div></div>
+  <div class="card" style="padding:8px;display:flex;justify-content:center"><svg width="330" height="190" id="plan"></svg></div>
+  <div style="padding:0 16px">
+    <div class="kv"><span>Địa chỉ</span>Đường Phạm Ngũ Lão, xóm B, Phúc Trọng, Mỹ Xá</div>
+    <div class="kv"><span>Mục đích</span>Đất ở tại đô thị · Lâu dài</div>
+    <div class="kv"><span>Nguồn gốc</span>Nhận chuyển nhượng QSDĐ</div>
+    <div class="kv"><span>Biến động</span>09/10/2014 · Tặng cho (trang IV)</div>
+  </div>
+  <div class="bar"><div class="row" style="gap:8px"><div class="btn p" style="flex:1">🖨 In A4</div><div class="btn s" style="flex:.8">PDF</div><div class="btn s" style="flex:.8">DXF</div><div class="btn o" style="width:52px;padding:0">⋯</div></div></div>
+</div>
+
+<!-- 6. THÊM -->
+<div class="phone" id="s6">
+  <div class="status dark">9:41<span>●●● 5G ▮</span></div>
+  <div class="top" style="padding-left:16px"><h1>Thêm</h1></div>
+  <div style="position:absolute;top:100px;bottom:98px;left:0;right:0;overflow:hidden">
+  <div class="grp">Bản đồ</div>
+  <div class="li"><div class="ic">🛰</div>Lớp nền ảnh vệ tinh<span class="ch">›</span></div>
+  <div class="li"><div class="ic">🕰</div>So sánh ảnh theo thời gian<span class="ch">›</span></div>
+  <div class="li"><div class="ic">📶</div>Bản đồ ngoại tuyến<span class="ch">›</span></div>
+  <div class="grp">Cài đặt</div>
+  <div class="li"><div class="ic">🧭</div>Tỉnh / kinh tuyến trục<span class="m" style="margin-left:auto">Nam Định</span></div>
+  <div class="li"><div class="ic">🔑</div>Khoá AI<span class="ch">›</span></div>
+  <div class="li"><div class="ic">🌙</div>Giao diện tối<div class="sw"></div></div>
+  <div class="li"><div class="ic">💾</div>Sao lưu dự án (.landgis)<span class="ch">›</span></div>
+  <div class="grp">Trợ giúp</div>
+  <div class="li"><div class="ic">📘</div>Hướng dẫn · Tự kiểm QA/QC<span class="ch">›</span></div>
+  <div class="li" style="border-bottom:0"><div class="ic">🛠</div><div>Chế độ chuyên gia<div class="m" style="font-size:12.5px">Công cụ chẩn đoán V42–V237</div></div><div class="sw"></div></div>
+  </div>
+  <div class="dock"><div><b>🗺</b>Bản đồ</div><div><b>▤</b>Thửa</div><div class="plus"><b>＋</b>Nhập sổ</div><div><b>📄</b>Hồ sơ</div><div class="on"><b>⋯</b>Thêm</div></div><div class="homebar"></div>
+</div>
+
+<script>
+// Mẫu B — thửa 131 (toạ độ VN-2000 trên GCN)
+const P=[[2259336.23,568027.14,2.06],[2259334.17,568027.23,3.85],[2259334.42,568031.07,17.58],[2259316.85,568031.69,0.26],[2259316.59,568031.70,4.50],[2259316.99,568036.18,0.38],[2259317.37,568036.15,19.32],[2259336.65,568034.94,7.81]];
+const fmt=v=>v.toFixed(2).replace('.',',');
+document.getElementById('tb').innerHTML=P.map((p,i)=>`<tr${i===3?' class="sub"':''}><td class="n">${i+1}</td><td>${fmt(p[0])}</td><td>${fmt(p[1])}</td><td>${fmt(p[2])}</td><td class="ck">✓</td></tr>`).join('');
+const NS='http://www.w3.org/2000/svg';
+function poly(svg,pts,attrs){const e=document.createElementNS(NS,'polygon');e.setAttribute('points',pts.map(p=>p.join(',')).join(' '));for(const k in attrs)e.setAttribute(k,attrs[k]);svg.appendChild(e);return e}
+function txt(svg,x,y,s,attrs){const e=document.createElementNS(NS,'text');e.setAttribute('x',x);e.setAttribute('y',y);e.textContent=s;for(const k in attrs)e.setAttribute(k,attrs[k]);svg.appendChild(e)}
+// nền "ảnh vệ tinh" giả lập
+function sat(svg){const cols=['#71835c','#7d8d63','#66784f','#8a9470','#5f7149','#9aa07e','#748463'];let s=7;const r=()=>(s=(s*9301+49297)%233280)/233280;
+ for(let i=0;i<70;i++){const x=r()*390,y=r()*844,w=40+r()*110,h=30+r()*90;const e=document.createElementNS(NS,'rect');e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('width',w);e.setAttribute('height',h);e.setAttribute('fill',cols[i%7]);e.setAttribute('transform',`rotate(${(r()-.5)*14} ${x} ${y})`);svg.appendChild(e)}
+ for(let i=0;i<26;i++){const x=10+r()*360,y=150+r()*560;const e=document.createElementNS(NS,'rect');e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('width',22+r()*30);e.setAttribute('height',18+r()*26);e.setAttribute('fill',['#b9a58a','#c9c2b4','#a8604e','#d8d2c6'][i%4]);svg.appendChild(e)}
+ const road=document.createElementNS(NS,'path');road.setAttribute('d','M0 640 C120 628 260 655 390 646');road.setAttribute('stroke','#d9d4c7');road.setAttribute('stroke-width','22');road.setAttribute('fill','none');svg.appendChild(road);
+ txt(svg,250,670,'Phạm Ngũ Lão',{fill:'#fff','font-size':'12','font-weight':'700',style:'paint-order:stroke;stroke:#0006;stroke-width:3px'});}
+function local(scale,ox,oy){const x0=2259326,y0=568031.5;return P.map(p=>[ox+(p[1]-y0)*scale, oy-(p[0]-x0)*scale])}
+const m=document.getElementById('mapsvg'); sat(m);
+const L=local(8.5,195,330);
+poly(m,L,{fill:'rgba(229,57,53,.18)',stroke:'#FF3B30','stroke-width':'3'});
+poly(m,[L[3],L[4],L[5],L[6]],{fill:'rgba(255,193,7,.6)',stroke:'#FFC107','stroke-width':'2'});
+txt(m,L[0][0]+8,(L[0][1]+L[3][1])/2,'131',{fill:'#fff','font-size':'15','font-weight':'800',style:'paint-order:stroke;stroke:#000a;stroke-width:3px'});
+document.querySelectorAll('.mapclone').forEach(s=>{s.innerHTML=m.innerHTML});
+// sơ đồ thửa (xoay ngang cho vừa khung)
+const pl=document.getElementById('plan');const sc=13;const Xm=2259337,Ym=568026.6;const Q=P.map(p=>[22+(Xm-p[0])*sc, 30+(p[1]-Ym)*sc]);
+poly(pl,Q,{fill:'#EEF5F1',stroke:'#B3261E','stroke-width':'2'});
+poly(pl,[Q[3],Q[4],Q[5],Q[6]],{fill:'#FFE7A3',stroke:'#B98500','stroke-width':'1.5','stroke-dasharray':'4 3'});
+const off=[[-6,-8],[-12,4],[-12,14],[6,-6],[6,4],[6,16],[-14,16],[-14,-6]];
+Q.forEach((q,i)=>{const c=document.createElementNS(NS,'circle');c.setAttribute('cx',q[0]);c.setAttribute('cy',q[1]);c.setAttribute('r',3);c.setAttribute('fill','#B3261E');pl.appendChild(c);txt(pl,q[0]+off[i][0],q[1]+off[i][1],String(i+1),{'font-size':'12','font-weight':'700',fill:'#14231C'})});
+txt(pl,110,88,'131 · 91,3 m²',{'font-size':'13','font-weight':'700',fill:'#0F4C34'});
+txt(pl,20,182,'Bắc ↑ trái · Đường Phạm Ngũ Lão phía phải',{'font-size':'11',fill:'#5B6B63'});
+</script>
+</body></html>
