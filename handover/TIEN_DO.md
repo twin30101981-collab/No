@@ -69,3 +69,4 @@
 - 16/10 · P06+ · HM-08f: gỡ 217 !important thừa, giao diện không đổi (so ảnh + kiểu dáng tính toán); sidebar còn giữ.
 - 16/10 · HM-08f đợt 3: gỡ vỏ sidebar không hiện; #sidebar giữ lại (chứa 6 màn cũ còn dùng).
 - 16/10 · HM-08f đợt 4: dựng lại màn Quản lý thửa (Dữ liệu thửa); sidebar còn 5 màn cũ.
+- 16/10 · HM-08f đợt 5: dựng lại màn Nhập CAD/CSV; sidebar còn 4 màn cũ (scan, QR, GPS, RTK).

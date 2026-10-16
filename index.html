@@ -2087,9 +2087,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   .bold { font-weight: 600; }
   
   .coord-box { flex: 1; padding: 6px 8px; background: var(--muted); border-radius: 6px; font-size:var(--lg63-fs); word-break: break-all; }
-  .dropzone { border: 2px dashed var(--border); border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: background 0.2s; }
-  .dropzone:hover { background: var(--muted); }
-  .dropzone.ai { border-color: rgba(211,47,47,.4); background: #fffbfb; }
+  
+  
+  
   
   
   .stat { background: var(--muted); border-radius: 6px; padding: 8px; }
@@ -3105,24 +3105,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       </div>
 
       <!-- TAB 3: NHẬP FILE CAD / EXCEL -->
-      <div id="tab-import" class="tab-content">
-        <section class="block">
-          <h3 aria-level="2">Nhập File AutoCAD (.DXF) / CSV / GeoJSON</h3>
-          <label for="file-upload">
-            <div class="dropzone">
-              <div style="font-size:var(--lg-fs-num)">📐</div>
-              <p class="small muted" style="margin:4px 0 0">Chọn file .dxf (AutoCAD), .csv, .geojson, .kml</p>
-            </div>
-          </label>
-          <input type="file" id="file-upload" accept=".dxf,.csv,.geojson,.json,.kml,.txt,.asc,.mif,.mid,.tab,.vn2000" style="display:none" />
-          <div style="margin-top:10px">
-            <label class="small bold" style="display:block;margin-bottom:4px">Hoặc dán trực tiếp bảng toạ độ VN-2000 (Tên mốc, X, Y — mỗi mốc một dòng):</label>
-            <textarea id="paste-coords" aria-label="Dán bảng toạ độ" rows="5" placeholder="1&#9;2245000.12&#9;552000.35&#10;2&#9;2245010.40&#9;552004.11&#10;3&#9;2245008.90&#9;552018.77" style="width:100%;font-family:var(--mono);font-size:var(--lg-fs-xs);padding:6px;border:1px solid var(--border);border-radius:6px"></textarea>
-            <button class="btn sm primary" style="width:100%;margin-top:6px" id="btn-import-paste">📋 Nạp bảng toạ độ đã dán</button>
-          </div>
-        </section>
-      </div>
-
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
       <div id="tab-stakeout" class="tab-content">
@@ -10146,13 +10128,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-undo-adjust').onclick = undoAdjustment;
   document.getElementById('btn-accept-adjust').onclick = acceptAdjustment;
 
-  document.getElementById('btn-import-paste').onclick = () => {
-    const txt = document.getElementById('paste-coords').value;
-    const pts = parseCoordText(txt);
-    if (importPointsAsPlot(pts, 'Thua_Dan', 'bảng toạ độ đã dán')) {
-      document.getElementById('paste-coords').value = '';
-    }
-  };
+  window.lgImportPasteText = (txt) => importPointsAsPlot(parseCoordText(txt), 'Thua_Dan', 'bảng toạ độ đã dán');
 
   document.getElementById('btn-draw-sodo').onclick = () => {
     if (sodoCoords.length < 3) return;
@@ -10290,8 +10266,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return lines.map(splitLine);
   }
 
-  document.getElementById('file-upload').addEventListener('change', (e) => {
-    const file = e.target.files?.[0];
+  /* HM-08f: nhập file CAD/CSV/GeoJSON/KML/MapInfo — dùng cho sheet "Nhập CAD / CSV" của giao diện mới (trước đây là ô #file-upload trong sidebar) */
+  window.lgImportCadFile = function (file) {
     if (!file) return;
     const ext = file.name.split('.').pop().toLowerCase();
     const reader = new FileReader();
@@ -10424,8 +10400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       toast({ title: 'Định dạng file chưa hỗ trợ', description: `Không nhận diện được ".${ext}". Hỗ trợ: .dxf, .csv, .geojson, .json, .kml, .txt, .asc, .mif, .mid, .tab`, variant: 'destructive' });
     }
-    e.target.value = '';
-  });
+  };
 
   document.getElementById('btn-export-dxf').onclick = exportPlotsToDXF;
 
@@ -17610,11 +17585,8 @@ try {
     var rows = LG.parseOcrText(text);
     LG.lastOcr = { text: text, rows: rows, at: Date.now() };
     if (!rows.length) throw new Error('OCR không đọc được cặp toạ độ nào. Hãy chụp lại rõ hơn hoặc nhập tay bảng toạ độ.');
-    var ta = document.getElementById('paste-coords');
-    if (ta) {
-      ta.value = rows.map(function (p) { return p.ten + '\t' + p.x.toFixed(3) + '\t' + p.y.toFixed(3); }).join('\n');
-      try { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q180'); }
-    }
+    var otext = rows.map(function (p) { return p.ten + '\t' + p.x.toFixed(3) + '\t' + p.y.toFixed(3); }).join('\n');
+    try { if (window.lgOpenImportCad) window.lgOpenImportCad({ text: otext }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q180'); }
     say({ title: '✅ OCR ngoại tuyến xong: ' + rows.length + ' mốc', description: 'Kết quả đã điền vào ô dán toạ độ — KIỂM TRA LẠI từng số rồi bấm vẽ thửa.' });
     return rows;
   };
@@ -26339,9 +26311,26 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<h5>Dọn dẹp</h5><div class="lg103-actions">' + b('topo', '🔀 Kiểm tra chồng lấn') + b('pt-dup', '🧹 Dọn thửa trùng lặp', 'Xoá các thửa trùng khít toạ độ do các bản cũ nhân bản') + b('pt-clear', '🗑 Xoá tất cả (có Thùng rác)') + '</div>' +
       '<h5>Chuyển đổi toạ độ</h5><div class="lg8e-kv"><span>Tham số đang dùng</span><span id="lg8f-tow" class="mono">' + escA4(tw) + '</span></div><div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="pt-towgs">Đổi tham số chuyển đổi</button></div></div>';
   }
+  /* HM-08f — màn "Nhập CAD / CSV" dựng lại trong sheet của giao diện mới (thay tab-import trong sidebar) */
+  function cadImportHTML(pre) {
+    var ps = document.getElementById('province-select'), opts = '';
+    if (ps) for (var i = 0; i < ps.options.length; i++) opts += '<option value="' + escA4(ps.options[i].value) + '"' + (ps.options[i].value === ps.value ? ' selected' : '') + '>' + escA4(ps.options[i].textContent) + '</option>';
+    return '<div class="lg8g"><p class="lg8e-note">File CAD/CSV không ghi tỉnh nên thửa được vẽ theo <b>kinh tuyến trục của tỉnh chọn dưới đây</b> — chọn đúng trước khi nhập.</p>' +
+      '<label>Tỉnh / kinh tuyến trục <select id="lg8g-prov" aria-label="Tỉnh / kinh tuyến trục">' + opts + '</select></label>' +
+      '<label class="lg103-abtn lg8g-pick" style="display:block;text-align:center;margin:8px 0">📐 Chọn file (.dxf · .csv · .geojson · .kml · .txt · .mif)<input id="cad-file" type="file" accept=".dxf,.csv,.geojson,.json,.kml,.txt,.asc,.mif,.mid,.tab,.vn2000" aria-label="Chọn file CAD hoặc CSV" style="display:none"></label>' +
+      '<label>Hoặc dán bảng toạ độ VN-2000 (Tên mốc, X, Y — mỗi mốc một dòng) <textarea id="paste-coords" aria-label="Dán bảng toạ độ" rows="6" placeholder="1&#9;2245000.12&#9;552000.35&#10;2&#9;2245010.40&#9;552004.11&#10;3&#9;2245008.90&#9;552018.77" style="width:100%;font-family:var(--lg-mono,monospace)">' + escA4((pre && pre.text) || '') + '</textarea></label>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="cad-paste">📋 Nạp bảng toạ độ đã dán</button></div>' +
+      '<p class="lg8e-note">Excel (.xlsx) không còn được nhập — lưu bảng ra CSV rồi chọn lại.</p></div>';
+  }
+  window.lgOpenImportCad = function (pre) {
+    openSheet('Nhập CAD / CSV', cadImportHTML(pre));
+    var f = document.getElementById('cad-file'), sel = document.getElementById('lg8g-prov');
+    if (f) f.addEventListener('change', function () { var file = f.files && f.files[0]; f.value = ''; if (file) { closeSheet(); window.lgImportCadFile(file); } });
+    if (sel) sel.addEventListener('change', function () { var ps = document.getElementById('province-select'); if (ps) { ps.value = sel.value; ps.dispatchEvent(new Event('change', { bubbles: true })); } });
+  };
   // Hành động của các mục mới (gắn một lần vào khay nội dung)
   function newNavAction(act, t) {
-    var legacyTabs = { 'import-qr': 'tab-qr', 'import-cad': 'tab-import', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout' };
+    var legacyTabs = { 'import-qr': 'tab-qr', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout' };
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
       case 'plots-tools': openSheet('Dữ liệu thửa', plotsToolsHTML()); return true;
@@ -26354,6 +26343,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'pt-dup': lgCleanDuplicatePlots(); body.innerHTML = plotsToolsHTML(); return true;
       case 'pt-clear': clearAllPlots(); body.innerHTML = plotsToolsHTML(); return true;
       case 'pt-towgs': closeSheet(); openTowgs84Modal(); return true;
+      case 'import-cad': window.lgOpenImportCad(); return true;
+      case 'cad-paste': { var ta8 = document.getElementById('paste-coords'); if (ta8 && window.lgImportPasteText(ta8.value)) { ta8.value = ''; closeSheet(); } return true; }
       case 'goto-import': selectTab('import'); return true;
       case 'card-profile': cardShown = false; sheet.classList.remove('lg8c-card-on'); selectTab('profile'); return true;
       case 'card-route': clickIf('lg52-fab-route'); return true;
