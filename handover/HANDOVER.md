@@ -152,3 +152,5 @@ Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camer
 ## 22. ĐÓNG PHIÊN P07 → P08 (ngữ cảnh ≈ 37%, theo yêu cầu người dùng chuyển phiên tự động)
 Đã xong ở P07: HM-08f hướng B, sửa rò nút ▣, HM-46a/b/c. Việc dở dang: không. Kế tiếp: HM-46d (gom z-index/thang chữ/!important, màn chào vào tấm trượt, ảnh trước–sau) — xem handover/PROMPT_PHIEN_SAU.md.
 - Phiên kế: P08 = session_01CbedJka1VDEMyXGXEcyohq (sinh 16/10 lúc đóng P07).
+## 23. Phiên P08
+- S-OPEN phiên 8 (P08, 16/10/2026). Mở HM-46d: gom z-index, thang chữ/khoảng cách, gỡ !important, màn chào vào tấm trượt, ảnh trước–sau.
