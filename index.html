@@ -3975,15 +3975,6 @@ function showCustomDialog(title, message) {
 }
 function closeDialog() { document.getElementById('dialog-modal').style.display = 'none'; }
 
-function switchTab(tabId, btnElement) {
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  const target = document.getElementById(tabId);
-  if (target) target.classList.add('active');
-  if (map) setTimeout(() => map.invalidateSize(), 150);
-
-  // Rời khỏi tab "Cắm Mốc RTK" mà quên bấm tắt sẽ để GPS chạy nền vô thời hạn -> tự tắt giúp.
-  if (tabId !== 'tab-stakeout' && stakeoutWatchId && window.lgStakeoutStop) window.lgStakeoutStop();
-}
 
 // ---------------------------------------------------------------
 // GEODESY FORMULAS
@@ -25970,9 +25961,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
      🗺 Bản đồ · ▤ Thửa · ＋ Nhập sổ · 📄 Hồ sơ · ⋯ Thêm. Hàng tab ngang bị ẩn; mọi chức năng cũ vẫn có đường vào
      (Nhập sổ → các tab nhập liệu cũ; Hồ sơ → xuất/ A4/ PDF/ DXF; Thêm → cài đặt, trợ giúp, chế độ chuyên gia). */
   var profTab = 'overview';
+  /* HM-08f: sidebar chỉ còn MỘT màn — "Scan sổ đỏ" (#tab-scan-ai, luôn ở trạng thái active); không còn hệ tab */
   function goLegacyTab(id) {
     closeSheet();
-    if (typeof window.switchTab === 'function') window.switchTab(id, null);
+    if (map) setTimeout(function () { map.invalidateSize(); }, 150);
     // lớp v62 đổi màn có độ trễ: lặp lại tối đa ~2 giây cho tới khi màn nhập liệu hiện ra (chỉ bấm Quay lại khi đang ở bản đồ)
     (function ensure(n) {
       var el = document.getElementById(id), r = el && el.getBoundingClientRect();
