@@ -127,3 +127,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 19. ĐÓNG PHIÊN P06 — KẾT THÚC CHUỖI (ngữ cảnh ≈ 35%)
 Đã xong: HM-18a, 18b, 19, 20 (DAT_V3); HM-22, 25, 28 (CHO_NGUOI_DUNG, phần mã xong); HM-08f (một phần, DAT_V3). Không còn hạng mục CHUA_LAM. Bộ hồi quy `node tests/run.js app/land-gis.html` = PASS. Việc dở dang: không. **Không sinh phiên P07** (AUTORUN §6): đã viết handover/TONG_KET.md. Người dùng xem VIEC_CUA_BAN.md (mục 12–14 mới).
+- HM-08f (tiếp, 16/10): gỡ thêm 217 khai báo !important thừa (718→~540 trong <style>) bằng important_scan.js/strip_important.py; xác minh cssdump/cssdiff + ảnh 360/390/430 + bộ đầy đủ PASS. #sidebar vẫn giữ.

@@ -45,7 +45,7 @@ Bộ hồi quy: `node tests/run.js app/land-gis.html` → toàn bộ PASS (≈ 6
 | HM-08d | Luồng Nhập sổ 3 bước (mockup ②③④) | DAT_V3 | Mẫu A (7 mốc + khối phụ 4 mốc 7,10 m²) và Mẫu B (trừ 1,40 m² không cấp GCN) chạy hết 3 bướ |
 | HM-08e | Hồ sơ thửa + Thêm/Cài đặt + Chế độ chuyên gia | DAT_V3 | tests/regress/hm08e_profile_more.js |
 | HM-08g | Xoá có xác nhận + Thùng rác 30 ngày + hoàn tác bền | DAT_V3 | thanh Hoàn tác 6 s; Thùng rác landgis_trash_v1 bền qua tải lại (30 ngày); xoá tất cả 2 xác |
-| HM-08f | Gỡ bố cục desktop/sidebar và CSS chồng lớp không còn dùng | DAT_V3 | tests/regress/hm08f_css.js |
+| HM-08f | Gỡ bố cục desktop/sidebar và CSS chồng lớp không còn dùng | DAT_V3 | tests/regress/hm08f_css.js, tests/tools/cssdump.js+cssdiff.py, tests/tools/shots.js+shotdi |
 | HM-08h | Truy cập: tên nút, nhãn ô nhập, thứ bậc tiêu đề, bỏ onclick nội dòng | DAT_V3 | tests/regress/hm08h_a11y.js, tests/tools/a11y_scan.js |
 | HM-09 | Tự đổi lớp nền khi ô bản đồ lỗi (vòng lặp nghi vấn) | DAT_V3 | lỗi 100% ô ảnh: đổi đúng 3 lần rồi dừng + 1 thông báo; ngoại tuyến không đổi |
 | HM-09b | Hiện lại ghi nguồn bản đồ (attribution) theo điều khoản nhà cung cấp | DAT_V3 | run.js 27/27 PASS |
@@ -124,7 +124,7 @@ Bộ hồi quy: `node tests/run.js app/land-gis.html` → toàn bộ PASS (≈ 6
 
 ## 4. Tồn đọng và lỗi mở
 
-- **HM-08f (dọn CSS/sidebar):** đã gỡ luật CSS chết (công cụ `handover/tools/prune_dead_css.py`, test `hm08f_css`; ảnh 360/390/430 trước–sau không đổi). **Chưa gỡ** `#sidebar` và ~750 `!important` còn sống: sidebar vẫn chứa các panel cũ mở bằng `goLegacyTab` (quét/QR/GPS/CSV/cắm mốc) — phải chuyển từng panel sang màn mới rồi mới gỡ được. Đề xuất làm trong một đợt bảo trì riêng, mỗi panel một commit, so ảnh bằng `tests/tools/shots.js` + `shotdiff.py`.
+- **HM-08f (dọn CSS/sidebar):** đã gỡ luật CSS chết (`prune_dead_css.py`) và 217 khai báo `!important` thừa (`important_scan.js` + `strip_important.py`, kiểm bằng `cssdump.js`/`cssdiff.py` và ảnh 360/390/430; còn ~540 `!important` đang có tác dụng). **Chưa gỡ** `#sidebar`: sidebar vẫn chứa các panel cũ mở bằng `goLegacyTab` (quét/QR/GPS/CSV/cắm mốc) — phải chuyển từng panel sang màn mới rồi mới gỡ được. Đề xuất làm trong một đợt bảo trì riêng, mỗi panel một commit, so ảnh bằng `tests/tools/shots.js` + `shotdiff.py`.
 - **drawPlot từ chối `provCode` không khớp vị trí khi khôi phục:** `LGVersions.applyPlot` đã có dự phòng (thử lại không `provCode`, rồi dựng lại bản cũ); nên rà lại ngưỡng nghi vấn vị trí ở `drawPlot` khi `__restoring`.
 - Gỡ nốt: thang z-index thống nhất và gộp 2 lớp toast (ghi từ HM-08a); Tesseract/pdfmake chưa đóng gói ngoại tuyến (HM-11b); phần ảnh/camera chưa nối vào bước 2 luồng Nhập sổ (HM-08d); nhập khối phụ thành thửa (HM-42).
 - Mốc đối soát thực địa (HM-19) lưu ảnh trong `meta` của thửa (thu nhỏ ≈ 30–60 KB/ảnh): nhiều ảnh có thể làm đầy localStorage — đã có bản sao IndexedDB khi lưu thất bại (HM-00), nhưng nên chuyển ảnh sang IndexedDB nếu dùng nhiều.
