@@ -3968,7 +3968,12 @@ function lgMeasureDock() {
     let top = r.top;
     const sh = document.getElementById('lg103-sheet');   // HM-08c: thông báo/nút nổi nằm TRÊN bottom sheet đang mở
     if (sh && sh.classList.contains('on')) { const sr = sh.getBoundingClientRect(); if (sr.height > 0 && sr.top < top) top = sr.top; }
-    document.documentElement.style.setProperty('--lg-dock-clear', Math.max(0, Math.round(window.innerHeight - top) + 12) + 'px');
+    const clear = Math.max(0, Math.round(window.innerHeight - top) + 12);
+    document.documentElement.style.setProperty('--lg-dock-clear', clear + 'px');
+    // HM-46d: tấm trượt cao (màn chào, nấc giữa) đẩy snackbar lên ngang cột nút bản đồ bên phải → chừa lề phải bằng cột nút, khỏi đè nút "Vị trí"
+    const fb = document.getElementById('lg8c-fabs'), fr = fb && fb.getBoundingClientRect();
+    const crowd = !!(fr && fr.height > 0 && fr.bottom > window.innerHeight - clear - 60);
+    if (document.body) { const v = crowd ? Math.round(window.innerWidth - fr.left + 8) + 'px' : ''; if (document.body.style.getPropertyValue('--lg46-snack-r') !== v) document.body.style.setProperty('--lg46-snack-r', v); }
     return true;
   } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8a0'); return false; }
 }
@@ -14340,9 +14345,13 @@ try {
       toast({ title: 'Không mở được camera', description: e.message, variant: 'destructive' });
       return;
     }
+    // HM-46d: người dùng rời màn quét trong lúc chờ quyền camera/khởi động video (tấm trượt đổi nội dung) → tắt ngay, không để camera chạy ngầm
+    const left = () => !$('qr-video') || !$('qr-cam-wrap') || !stream;
+    if (left()) { stopCamera(); return; }
     const video = $('qr-video');
     video.srcObject = stream;
     await video.play().catch(() => {});
+    if (left() || !video.isConnected) { stopCamera(); return; }
     $('qr-cam-wrap').style.display = 'block';
     // v168 — NÂNG CẤP AN TOÀN: LG73.torch() (bật/tắt đèn flash camera) đã có
     // sẵn đầy đủ, hoạt động với BẤT KỲ camera nào đang mở (nó vá thẳng vào
@@ -25530,6 +25539,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (title !== 'Quét QR sổ đỏ' && window.lgQrStop) window.lgQrStop();   // rời màn quét → tắt camera
     if (title !== 'Cắm mốc RTK' && window.lgStakeoutStop) window.lgStakeoutStop(true);   // rời màn cắm mốc → tắt GPS nền
     gripTitle.textContent = title || '';
+    sheet.classList.remove('lg46-welcome-on');
     body.innerHTML = html || '<div class="lg103-empty">Chưa có dữ liệu.</div>';
     sheet.classList.add('on');
     setState(state || 'medium');
@@ -25539,9 +25549,11 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (window.lgQrStop) window.lgQrStop();
     if (window.lgStakeoutStop) window.lgStakeoutStop(true);
     sheet.classList.remove('on'); sheet.classList.remove('lg8c-card-on'); cardShown = false;
+    if (sheet.classList.contains('lg46-welcome-on')) { sheet.classList.remove('lg46-welcome-on'); body.innerHTML = ''; }
     remeasure();
     currentTab = null;
     Array.prototype.forEach.call(dock.querySelectorAll('.lg103-dbtn'), function (b) { b.setAttribute('aria-selected', 'false'); });
+    if (window.lgWelcomeSync) setTimeout(window.lgWelcomeSync, 0);
   }
 
   function bindDrag() {
@@ -26684,27 +26696,30 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     renderWizard();
   }
   window.lg8dOpen = openWizard; window.lg8dClose = closeWizard;
-  /* HM-08f — MÀN CHÀO khi chưa có thửa: thẻ 3 lối vào; chỉ hiện khi plots.length = 0, tự ẩn khi có thửa */
+  /* HM-08f — MÀN CHÀO khi chưa có thửa: 3 lối vào; chỉ hiện khi plots.length = 0, tự ẩn khi có thửa.
+     HM-46d: là NỘI DUNG TẤM TRƯỢT (nấc thấp) ở màn Bản đồ thay cho thẻ nổi riêng → không thêm lớp nổi nào trên bản đồ. */
   (function () {
     var st = document.createElement('style'); st.id = 'lg-welcome-css';
-    st.textContent = '#lg-welcome{position:fixed;left:12px;right:12px;bottom:calc(var(--lg-dock-clear,84px) + 12px);z-index:1250;background:var(--card,#fff);border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.22);padding:14px;max-width:460px;margin:0 auto}' +
-      '#lg-welcome h3{margin:0 0 4px;font-size:var(--lg-fs,16px);color:#0f4c34}#lg-welcome p{margin:0 0 10px;font-size:var(--lg-fs-sm,14px);color:#5b6b63}' +
+    st.textContent = '#lg103-sheet.lg46-welcome-on[data-state="peak"]{height:auto;max-height:calc(var(--lg103-vh,100vh) * .6)}' +
+      '#lg-welcome{padding:var(--sp-1) 0 var(--sp-1)}#lg-welcome p{margin:0 0 var(--sp-2);font-size:var(--lg-fs-sm,14px);color:#5b6b63}' +
       '#lg-welcome button{display:block;width:100%;min-height:48px;margin:6px 0 0;border:0;border-radius:12px;background:#e3efe8;color:#0f4c34;font-weight:800;font-size:var(--lg-fs,16px);text-align:left;padding:0 14px}#lg-welcome button.p{background:#0f4c34;color:#fff}';
     document.head.appendChild(st);
     var ready = false;   // chỉ hiện sau khi kho thửa đã nạp xong (tránh nháy khi mở app có sẵn thửa)
+    function onWelcome(e) {
+      var b = e.target.closest('[data-lgw]'); if (!b) return; var k = b.getAttribute('data-lgw');
+      if (k === 'scan' && window.lgOpenScan) window.lgOpenScan(); else if (k === 'book') openWizard(); else if (k === 'cad' && window.lgOpenImportCad) window.lgOpenImportCad();
+    }
     function sync() {
+      if (!sheet) return;
       var n = 0; try { n = (window.plots || []).length; } catch (e) { n = 0; }
-      var el = document.getElementById('lg-welcome');
-      if (n > 0 || !ready) { if (el) el.remove(); return; }
-      if (el) return;
-      el = document.createElement('div'); el.id = 'lg-welcome'; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Bắt đầu');
-      el.innerHTML = '<h3>Chưa có thửa đất nào</h3><p>Chọn một cách để thêm thửa đầu tiên:</p>' +
-        '<button type="button" class="p" data-lgw="scan">📷 Chụp sổ đỏ</button><button type="button" data-lgw="book">▤ Nhập bảng kê toạ độ</button><button type="button" data-lgw="cad">⇪ Nhập CAD / CSV</button>';
-      el.addEventListener('click', function (e) {
-        var b = e.target.closest('[data-lgw]'); if (!b) return; var k = b.getAttribute('data-lgw');
-        if (k === 'scan' && window.lgOpenScan) window.lgOpenScan(); else if (k === 'book') openWizard(); else if (k === 'cad' && window.lgOpenImportCad) window.lgOpenImportCad();
-      });
-      document.body.appendChild(el);
+      var shown = sheet.classList.contains('lg46-welcome-on');
+      if (n > 0 || !ready) { if (shown) closeSheet(); return; }
+      if (shown || currentTab || cardShown || sheet.classList.contains('on') || !document.body.classList.contains('lg62-map')) return;
+      openSheet('Chưa có thửa đất nào', '<div id="lg-welcome" role="region" aria-label="Bắt đầu"><p>Chọn một cách để thêm thửa đầu tiên:</p>' +
+        '<button type="button" class="p" data-lgw="scan">📷 Chụp sổ đỏ</button><button type="button" data-lgw="book">▤ Nhập bảng kê toạ độ</button><button type="button" data-lgw="cad">⇪ Nhập CAD / CSV</button></div>', 'peak');
+      sheet.classList.add('lg46-welcome-on');
+      var el = document.getElementById('lg-welcome'); if (el) el.addEventListener('click', onWelcome);
+      remeasure();
     }
     var orig = window.renderPlots;
     if (typeof orig === 'function' && !orig.__lgWelcome) { var w = function () { var r = orig.apply(this, arguments); try { sync(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h08fw'); } return r; }; w.__lgWelcome = true; window.renderPlots = w; }
@@ -29208,10 +29223,8 @@ body.lg62.lg103 #lg103-dock .lg113-hidden{ display:none; }
         var h = document.querySelector('#lg103-dock [data-lg110-home]');
         var m = document.querySelector('#lg103-dock [data-lg103-tab="map"]');
         var back = document.getElementById('lg110-back');
-        if (onMap()) {
-          if (h) h.click(); else if (back) back.click();
-          else if (typeof window.lg111RestoreInput === 'function') window.lg111RestoreInput();
-        } else if (m) { m.click(); }
+        /* HM-46d: luôn ở bản đồ (HM-08f B) → nút này = về Bản đồ: đóng khay đang mở (trước đây gọi lg111RestoreInput đã gỡ → bấm không có tác dụng) */
+        if (m) m.click(); else if (h) h.click(); else if (back) back.click();
         setTimeout(syncToggle, 60);
       });
       dock.insertBefore(tg, dock.firstChild);
