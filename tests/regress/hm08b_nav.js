@@ -38,9 +38,9 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       LandGIS.ui.switchDock('more'); out.legacyToolOff = !document.querySelector('#lg103-body [data-lg103-act="legacy-tool"]'); /* HM-08e: chỉ hiện khi bật chuyên gia */ document.querySelector('#lg103-body [data-lg103-act="expert-toggle"]').click(); await w8(150); out.reach.legacyTool = !!document.querySelector('#lg103-body [data-lg103-act="legacy-tool"]'); document.querySelector('#lg103-body [data-lg103-act="expert-toggle"]').click();
       LandGIS.ui.closeSheet(); return out; }, B);
     const imp = r.imp, more = r.more, prof = r.prof;
-    checks['dock_5_muc_' + w] = r.dock.length === 5 && /Bản Đồ/.test(r.dock[0]) && /Thửa/.test(r.dock[1]) && /Nhập sổ/.test(r.dock[2]) && /Hồ sơ/.test(r.dock[3]) && /Thêm/.test(r.dock[4]);
+    checks['dock_5_muc_' + w] = r.dock.length === 5 && /Bản [Đđ]ồ/.test(r.dock[0]) && /Thửa/.test(r.dock[1]) && /Nhập sổ/.test(r.dock[2]) && /Hồ sơ/.test(r.dock[3]) && /Thêm/.test(r.dock[4]);
     checks['go_tab_ngang_va_nut_noi_' + w] = r.tabsVisible === 0 && r.floatVisible === 0 && !r.hscroll;
-    checks['nhap_so_du_8_cach_' + w] = ['Chụp sổ đỏ', 'Chọn ảnh', 'Quét QR', 'Nhập bảng kê', 'Cạnh + góc', 'CAD', 'GPS thực địa', 'RTK'].every(k => imp.includes(k));
+    checks['nhap_so_du_8_cach_' + w] = ['Chụp sổ đỏ', 'Chọn ảnh', 'QR', 'bảng kê', 'cạnh + góc', 'CAD', 'GPS', 'RTK'] /* HM-46c: nhãn viết theo tình huống người dùng */.every(k => imp.includes(k));
     checks['ho_so_tab_va_thanh_xuat_' + w] = ['Tổng quan', 'Toạ độ', 'Cạnh', 'Ảnh', 'In A4', 'PDF', 'DXF'].every(k => prof.includes(k)) && /Đạt/.test(prof);
     checks['chuc_nang_cu_con_duong_vao_' + w] = Object.values(r.reach).every(Boolean);
     checks['them_4_nhom_' + w] = ['bản đồ', 'cài đặt', 'trợ giúp', 'chế độ chuyên gia'].every(k => more.toLowerCase().includes(k)) && r.legacyToolOff && r.plots.includes('Thửa 131') && errs.length === 0;

@@ -25905,10 +25905,11 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var ps = plotsAll();
     if (!ps.length) return '<div class="lg103-kv"><span>Số thửa</span><span>0</span></div><div class="lg103-empty">Chưa có thửa nào. Bấm ＋ Nhập sổ để thêm thửa đầu tiên.</div>' +
       '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="goto-import">＋ Nhập sổ</button></div>';
-    var chip = function (k, t) { return '<button class="lg103-abtn" data-lg103-act="pf-' + k + '"' + (plotFilter.f === k ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t + '</button>'; };
+    var cnt = function (k) { try { return window.lgPlotListItems ? window.lgPlotListItems(ps, { q: '', f: k }).length : ''; } catch (e) { return ''; } };
+    var chip = function (k, t) { var n = cnt(k); return '<button class="lg103-abtn lg46-chip' + (plotFilter.f === k ? ' on' : '') + '" aria-pressed="' + (plotFilter.f === k) + '" data-lg103-act="pf-' + k + '">' + t + (n !== '' ? ' <span class="n">' + n + '</span>' : '') + '</button>'; };
     setTimeout(bindPlotList, 0);
     return '<input id="lg103-pq" type="search" placeholder="Tìm thửa · tờ · địa chỉ" value="' + escA4(plotFilter.q) + '" style="width:100%;padding:10px;border:1px solid #cfd8dc;border-radius:10px;font-size:var(--lg-fs);margin-bottom:6px">' +
-      '<div class="lg103-actions">' + chip('all', 'Tất cả') + chip('ok', '✔ Đạt') + chip('bad', '✕ Không đạt') + chip('none', '— Chưa GCN') + chip('unsynced', '📱 Chưa đồng bộ') + '</div>' +
+      '<div class="lg46-chips" role="group" aria-label="Lọc thửa">' + chip('all', 'Tất cả') + chip('ok', 'Đạt') + chip('bad', 'Không đạt') + chip('none', 'Chưa GCN') + chip('unsynced', 'Chưa đồng bộ') + '</div>' +
       '<div class="lg103-kv"><span>Hiển thị</span><span id="lg103-pcount"></span></div>' +
       '<div id="lg103-plist" style="position:relative;overflow:auto;height:46vh;border:1px solid #e3e8e5;border-radius:10px"><div style="position:relative"></div></div>' +
       '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="plots-tools">⇪ Xuất dữ liệu &amp; công cụ thửa</button></div>';
@@ -25931,19 +25932,20 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       if (fi) fi.addEventListener('change', function () { var fs = Array.prototype.slice.call(fi.files || []); fi.value = ''; Promise.all(fs.map(function (f) { return LGQueue.add(f, f.name); })).then(function () { queueOpen(); if (navigator.onLine !== false) LGQueue.process().then(queueOpen); }); });
     });
   }
-  function tabImport() {
-    return '<h5>Nhập sổ — chọn cách nhập</h5><div class="lg103-actions">' +
-      '<button class="lg103-abtn" data-lg103-act="import-cam">📷 Chụp sổ đỏ</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-pick">🖼 Chọn ảnh</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-qr">🔳 Quét QR</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-book">📋 Nhập bảng kê</button>' +
-      '<button class="lg103-abtn" data-lg103-act="queue">🕓 Hàng đợi sổ (ngoại tuyến)</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-edges">📐 Cạnh + góc</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-cad">📥 CAD / CSV</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-gps">📡 GPS thực địa</button>' +
-      '<button class="lg103-abtn" data-lg103-act="import-rtk">📍 Cắm mốc RTK</button>' +
-      '<button class="lg103-abtn" data-lg108-act="vision">🤖 Đọc GCN bằng AI</button>' +
-      '</div><div class="lg103-note small">Luồng 3 bước: Đọc → Kiểm tra bảng kê → Kết quả.</div>';
+  function tabImport() {   /* HM-46c: thứ bậc rõ — 1 lối chính · 2 lối phụ · danh sách nguồn khác (theo tình huống của người dùng) */
+    var row = function (act, t, sub, attr) { return '<button type="button" class="lg46-row" ' + (attr || 'data-lg103-act') + '="' + act + '"><span><b>' + t + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</span><span aria-hidden="true">›</span></button>'; };
+    var nq = 0; try { nq = (window.__lg46QueueN | 0); } catch (e) { nq = 0; }
+    return '<button type="button" class="lg46-big" data-lg103-act="import-cam">' + LG46I.cam + '<span><b>Chụp sổ đỏ</b><small>AI đọc bảng toạ độ, số chưa chắc được tô vàng để bạn kiểm tra</small></span></button>' +
+      '<div class="lg46-two"><button type="button" class="lg46-sec" data-lg103-act="import-pick">' + LG46I.img + ' Chọn ảnh</button><button type="button" class="lg46-sec" data-lg103-act="import-book">' + LG46I.list + ' Gõ / dán bảng kê</button></div>' +
+      '<div class="lg46-cap">Nguồn khác</div><div class="lg46-list">' +
+      row('import-qr', 'Quét mã QR trên sổ', 'Sổ mẫu mới có mã QR') +
+      row('import-cad', 'Tệp CAD, CSV, DXF, KML', 'Từ phần mềm đo đạc') +
+      row('import-edges', 'Sổ không có toạ độ', 'Nhập cạnh + góc theo sơ đồ') +
+      row('import-gps', 'Đo tại thực địa bằng GPS', '') +
+      row('import-rtk', 'Cắm mốc bằng máy RTK', '') +
+      row('vision', 'Đọc nhiều trang GCN bằng AI', 'Bìa, trang 2–4', 'data-lg108-act') +
+      row('queue', 'Ảnh đang chờ đọc (ngoại tuyến)', nq ? nq + ' ảnh chờ' : 'Chụp khi mất mạng, tự đọc khi có mạng') +
+      '</div><div class="lg103-note small">Luồng 3 bước: Đọc → Kiểm tra bảng kê → Kết quả. Thửa chỉ được tạo khi bạn bấm Vẽ thửa.</div>';
   }
   /* HM-36 — tab Giáp ranh: tính theo hình học, so với nhãn sổ; kết quả điền bất đồng bộ vào #lg36-box */
   /* HM-13 — tab Biến động: nhiều dòng (ngày · nội dung · cơ quan xác nhận) */
@@ -25988,10 +25990,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var hm = p.meta || {}, hpts = p.points || [], harea = (typeof calcArea === 'function') ? calcArea(hpts) : LG.cad.area(hpts), hg = parseFloat(hm.dien_tich_m2);
     var hv = (isFinite(hg) && hg > 0 && typeof lgAreaVerdict === 'function') ? lgAreaVerdict(harea, hg, parseFloat(hm.dien_tich_khong_cap_gcn) || 0) : null;
     var head = '<div class="lg8e-phead"><b>Thửa ' + escA4(hm.so_thua || p.id) + (hm.to_ban_do ? ' · Tờ ' + escA4(hm.to_ban_do) : '') + '</b><span>' +
-      [hm.loai_dat || hm.muc_dich_su_dung, (hg > 0 ? hg : harea).toFixed(1).replace('.', ',') + ' m²', hv ? (hv.ok ? '✓ Đạt' : '⚠ Không đạt') : ''].filter(Boolean).map(escA4).join(' · ') + '</span></div>';
+      [hm.loai_dat || hm.muc_dich_su_dung, (hg > 0 ? hg : harea).toFixed(1).replace('.', ',') + ' m²'].filter(Boolean).map(escA4).join(' · ') + (hv ? ' <span class="lg46-pill ' + (hv.ok ? 'ok' : 'bad') + '">' + (hv.ok ? 'Đạt' : 'Không đạt') + '</span>' : '') + '</span></div>';
     var tabs = [['overview', 'Tổng quan'], ['coords', 'Toạ độ'], ['edges', 'Cạnh'], ['giap', 'Giáp ranh'], ['bd', 'Biến động'], ['field', 'Thực địa'], ['photos', 'Ảnh']];
-    var bar = '<div class="lg103-actions">' + tabs.map(function (t) {
-      return '<button class="lg103-abtn" data-lg103-act="prof-' + t[0] + '"' + (profTab === t[0] ? ' style="border-color:#0f4c34;font-weight:700"' : '') + '>' + t[1] + '</button>';
+    var bar = '<div class="lg46-seg" role="tablist" aria-label="Mục hồ sơ">' + tabs.map(function (t) {   /* HM-46c: thanh mục cuộn ngang thay lưới nút */
+      return '<button class="lg103-abtn' + (profTab === t[0] ? ' on' : '') + '" role="tab" aria-selected="' + (profTab === t[0]) + '" data-lg103-act="prof-' + t[0] + '">' + t[1] + '</button>';
     }).join('') + '</div>';
     var body;
     if (profTab === 'coords') body = tabCoords();
@@ -26082,14 +26084,20 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '</div>';
   }
 
+  /* HM-46c — một bộ biểu tượng nét SVG (thay emoji hiển thị khác nhau giữa các máy) */
+  var LG46I = (function () { var sv = function (d, f) { return '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (f ? 'currentColor' : 'none') + '" stroke="' + (f ? 'none' : 'currentColor') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + d + '</svg>'; };
+    return { map: sv('<path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>'), list: sv('<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>'),
+      plus: sv('<path d="M12 5v14M5 12h14"/>'), doc: sv('<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'), more: sv('<circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>', true),
+      cam: sv('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'), img: sv('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/>') }; })();
+  window.LG46I = LG46I;
   // v104: nhãn Dock rút gọn tối đa 6 ký tự — 5 cột trên máy 330px chỉ rộng ~64px,
   //       nhãn dài hơn sẽ bị cắt thành "Bảng…" trông như lỗi hiển thị.
   var TABS = {
-    map:     { label: 'Bản Đồ', icon: '🗺' },
-    plots:   { label: 'Thửa',   icon: '▤',  render: tabPlots,   title: 'Thửa đất' },
-    'import':{ label: 'Nhập sổ', icon: '＋', render: tabImport,  title: 'Nhập sổ' },
-    profile: { label: 'Hồ sơ',  icon: '📄', render: tabProfile, title: 'Hồ sơ thửa đang chọn' },
-    more:    { label: 'Thêm',   icon: '⋯',  render: tabMore,    title: 'Thêm' }
+    map:     { label: 'Bản đồ', icon: LG46I.map },
+    plots:   { label: 'Thửa',   icon: LG46I.list,  render: tabPlots,   title: 'Thửa đất' },
+    'import':{ label: 'Nhập sổ', icon: LG46I.plus, render: tabImport,  title: 'Nhập sổ' },
+    profile: { label: 'Hồ sơ',  icon: LG46I.doc, render: tabProfile, title: 'Hồ sơ thửa đang chọn' },
+    more:    { label: 'Thêm',   icon: LG46I.more,  render: tabMore,    title: 'Thêm' }
   };
   /* HM-08f — công cụ dữ liệu thửa (thay tab "Quản lý thửa" cũ): thống kê, xuất, dọn trùng, xoá tất cả, tham số chuyển đổi */
   function plotsToolsHTML() {
@@ -26394,7 +26402,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       var fab = (k === 'import');
       return '<button type="button" role="tab" aria-selected="false" class="lg103-dbtn' + (fab ? ' lg103-fabslot' : '') +
         '" data-lg103-tab="' + k + '">' +
-        (fab ? '<span id="lg103-fab" aria-hidden="true">＋</span>' : '<span class="lg103-ic" aria-hidden="true">' + t.icon + '</span>') +
+        (fab ? '<span id="lg103-fab" aria-hidden="true">' + t.icon + '</span>' : '<span class="lg103-ic" aria-hidden="true">' + t.icon + '</span>') +
         '<span class="lg103-lb">' + t.label + '</span></button>';
     }).join('');
     document.body.appendChild(dock);
@@ -29194,7 +29202,7 @@ body.lg62.lg103 #lg103-dock .lg113-hidden{ display:none; }
       tg.setAttribute('role', 'tab');
       tg.setAttribute('aria-selected', 'false');
       tg.setAttribute('data-lg113-toggle', '1');
-      tg.innerHTML = '<span class="lg103-ic" aria-hidden="true">🗺</span><span class="lg103-lb">Bản Đồ</span>';
+      tg.innerHTML = '<span class="lg103-ic" aria-hidden="true">' + ((window.LG46I && LG46I.map) || '🗺') + '</span><span class="lg103-lb">Bản đồ</span>';   /* HM-46c: biểu tượng SVG chung */
       tg.addEventListener('click', function (e) {
         e.preventDefault(); e.stopPropagation();
         var h = document.querySelector('#lg103-dock [data-lg110-home]');
@@ -29230,8 +29238,7 @@ body.lg62.lg103 #lg103-dock .lg113-hidden{ display:none; }
     var tg = document.querySelector('#lg103-dock [data-lg113-toggle]');
     if (!tg) return;
     var m = false;   // HM-08f (B): luôn ở bản đồ — nút này luôn hiện "Bản Đồ", không còn nhãn MENU/màn nhập liệu
-    setTxt(tg.querySelector('.lg103-ic'), m ? '🏠' : '🗺');
-    setTxt(tg.querySelector('.lg103-lb'), m ? 'MENU' : 'Bản Đồ');
+    setTxt(tg.querySelector('.lg103-lb'), m ? 'MENU' : 'Bản đồ');
     setAttrIf(tg, 'aria-label', m ? 'Quay lại màn hình nhập liệu' : 'Mở bản đồ');
     setAttrIf(tg, 'aria-selected', 'false');
   }
@@ -43504,6 +43511,39 @@ body.lg46-onesel .lg-label.lg-edge > span:not(.lg46-sel){ display:none !importan
   document.addEventListener('DOMContentLoaded', apply); setTimeout(apply, 2500); setTimeout(apply, 6000);
 })();
 </script>
+<style id="lg46c-sheets-css">
+/* HM-46c — tấm Nhập sổ / Thửa / Hồ sơ theo mockup; dock phẳng */
+.lg46-big{ display:flex; align-items:center; gap:12px; width:100%; min-height:64px; border:0; border-radius:14px; background:#0f4c34; color:#fff; padding:12px 14px; text-align:left; font-size:var(--lg-fs,16px); margin:4px 0 10px; }
+.lg46-big b{ display:block; font-size:calc(var(--lg-fs,16px) + 1px); } .lg46-big small{ display:block; opacity:.85; font-size:var(--lg-fs-xs,12px); font-weight:500; line-height:1.35; }
+.lg46-big svg{ flex:0 0 28px; width:28px; height:28px; }
+.lg46-two{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.lg46-sec{ display:flex; align-items:center; justify-content:center; gap:8px; min-height:52px; border:0; border-radius:12px; background:#e3efe8; color:#0f4c34; font-weight:800; font-size:var(--lg-fs-sm,14px); padding:6px 8px; line-height:1.2; }
+.lg46-sec svg{ flex:0 0 20px; width:20px; height:20px; }
+.lg46-cap{ font-size:var(--lg-fs-xs,12px); letter-spacing:.06em; text-transform:uppercase; color:#5b6b63; font-weight:800; margin:0 0 4px; }
+.lg46-list{ border-top:1px solid #e3e8e5; margin-bottom:8px; }
+.lg46-row{ display:flex; align-items:center; gap:10px; width:100%; min-height:52px; border:0; border-bottom:1px solid #eef2ef; background:transparent; padding:8px 2px; text-align:left; font-size:var(--lg-fs,16px); color:inherit; }
+.lg46-row > span:first-child{ flex:1; min-width:0; } .lg46-row b{ display:block; font-weight:700; } .lg46-row small{ display:block; color:#5b6b63; font-size:var(--lg-fs-xs,12px); }
+.lg46-row > span:last-child{ color:#9aa8a0; font-size:22px; }
+.lg46-chips{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 8px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.lg46-chips::-webkit-scrollbar{ display:none; }
+#lg103-sheet .lg46-chips .lg46-chip{ flex:0 0 auto; width:auto; min-height:40px; border-radius:999px; padding:6px 14px; white-space:nowrap; font-weight:700; border:1px solid #cfd8d2; background:#fff; color:#17251e; }
+#lg103-sheet .lg46-chips .lg46-chip.on{ background:#0f4c34; border-color:#0f4c34; color:#fff; }
+.lg46-chip .n{ font-variant-numeric:tabular-nums; opacity:.75; margin-left:2px; }
+.lg46-seg{ display:flex; gap:2px; overflow-x:auto; border-bottom:1px solid #e3e8e5; margin:4px 0 10px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.lg46-seg::-webkit-scrollbar{ display:none; }
+#lg103-sheet .lg46-seg .lg103-abtn{ flex:0 0 auto; width:auto; min-height:44px; border:0; border-bottom:3px solid transparent; border-radius:0; background:transparent; padding:6px 12px; white-space:nowrap; color:#5b6b63; font-weight:700; box-shadow:none; }
+#lg103-sheet .lg46-seg .lg103-abtn.on{ color:#0f4c34; border-bottom-color:#0f4c34; }
+.lg46-pill{ display:inline-block; border-radius:999px; padding:1px 8px; font-size:var(--lg-fs-xs,12px); font-weight:800; vertical-align:1px; }
+.lg46-pill.ok{ background:#e4f3e6; color:#1f7a3d; } .lg46-pill.bad{ background:#fde3e3; color:#8a1f1f; }
+/* dock phẳng: 5 mục cùng cỡ, Nhập sổ nổi bật bằng nền màu, không nhô lên */
+body.lg62.lg103 #lg103-dock .lg103-ic svg{ width:22px; height:22px; display:block; margin:0 auto; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ display:grid; place-items:center; width:48px; height:28px; border-radius:14px; margin:0 auto 2px; }
+body.lg62.lg103 #lg103-dock .lg103-dbtn[aria-selected="true"] .lg103-ic{ background:#e3efe8; color:#0f4c34; }
+body.lg62.lg103 #lg103-fab{ position:static !important; transform:none !important; display:grid; place-items:center; width:52px !important; height:30px !important; min-height:0 !important; border-radius:15px !important; margin:0 auto 2px; box-shadow:none !important; border:0 !important; background:#0f4c34; color:#fff; font-size:0 !important; }
+body.lg62.lg103 #lg103-fab svg{ width:22px; height:22px; }
+body.lg62.lg103 #lg103-dock .lg103-dbtn.lg103-fabslot{ justify-content:center; padding-bottom:0; }
+body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:inherit !important; }
+</style>
 </body>
 
 </html>

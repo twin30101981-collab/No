@@ -148,3 +148,6 @@ Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camer
 - HM-08f (P07 tiếp, 16/10): sửa lỗi rò nút ▣ trên thanh trên (mountHeader canh #lg110-back đã gỡ → thêm 1 nút mỗi nhịp, 76 nút/30 s). Test hm08f_header_leak; bộ đầy đủ PASS. Rà soát UI mobile + mockup đề xuất: https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8 (lộ trình 4 đợt, chờ người dùng duyệt).
 - HM-46a DAT_V3 (16/10): thông báo 1 dòng chung (#lg46-snack) + chip tiến độ hồ sơ. Test hm46a_snack; bộ đầy đủ PASS.
 - HM-46b DAT_V3 (16/10): Bản đồ 4 vùng (bỏ thanh xanh, cột nút phải, nhãn cạnh thửa chọn). Test hm46b_map; bộ đầy đủ PASS.
+- HM-46c DAT_V3 (16/10): Nhập sổ 1 chính · 2 phụ · danh sách; chip lọc Thửa có số đếm; thanh mục Hồ sơ; dock phẳng biểu tượng SVG. Test hm46c_sheets; bộ đầy đủ PASS.
+## 22. ĐÓNG PHIÊN P07 → P08 (ngữ cảnh ≈ 37%, theo yêu cầu người dùng chuyển phiên tự động)
+Đã xong ở P07: HM-08f hướng B, sửa rò nút ▣, HM-46a/b/c. Việc dở dang: không. Kế tiếp: HM-46d (gom z-index/thang chữ/!important, màn chào vào tấm trượt, ảnh trước–sau) — xem handover/PROMPT_PHIEN_SAU.md.
