@@ -3066,27 +3066,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
       <!-- TAB 6 (v35): QUÉT MÃ QR TRÊN SỔ ĐỎ MẪU MỚI -->
-      <div id="tab-qr" class="tab-content">
-        <section class="block">
-          <h3 aria-level="2">Quét Mã QR Trên Sổ Đỏ Mẫu Mới</h3>
-          <p class="small muted">Quét mã QR in ở góc Giấy chứng nhận mẫu mới để lấy <b>mã tra cứu</b>. App ghi nhớ mã, mở sẵn cổng tra cứu <span class="mono">tracuuqr.vbdlis.vn</span> (mã đã được chép vào bộ nhớ tạm và điền sẵn nếu cổng cho phép) và in được phiếu A4 nội dung mã.</p>
-          <div class="row" style="gap:6px;flex-wrap:wrap">
-            <button class="btn primary sm" style="flex:1" id="btn-qr-camera">📷 Quét bằng camera</button>
-            <button class="btn secondary sm" style="flex:1" id="btn-qr-file">🖼 Quét từ ảnh</button>
-          </div>
-          <input type="file" id="qr-file-input" aria-label="Chọn ảnh mã QR" accept="image/*" style="display:none" />
-          <div id="qr-cam-wrap" style="display:none;margin-top:8px">
-            <video id="qr-video" playsinline muted style="width:100%;border-radius:8px;background:#000"></video>
-            <div class="row" style="gap:6px;margin-top:4px">
-              <button class="btn sm" style="flex:1;display:none" id="btn-qr-torch">🔦 Bật đèn</button>
-              <button class="btn sm danger-text" style="flex:1" id="btn-qr-stop">⛔ Dừng quét</button>
-            </div>
-          </div>
-          <div id="qr-result" style="margin-top:10px"></div>
-          <div id="qr-history" style="margin-top:10px"></div>
-        </section>
-      </div>
-
       <!-- v27: khối "Thửa đang chọn" ghim đáy sidebar -->
       <div id="sidebar-selected"></div>
 
@@ -14490,6 +14469,11 @@ try {
     img.onload = async () => {
       URL.revokeObjectURL(url);
       const box = $('qr-result');
+      if (img.width < 60 || img.height < 60) {   // ảnh quá nhỏ: bộ dò QR của trình duyệt có thể treo, và cũng không thể chứa mã đọc được
+        if (box) box.innerHTML = '<div class="small bold" style="color:#b71c1c">Ảnh quá nhỏ (' + img.width + '×' + img.height + 'px) — không đọc được mã QR. Hãy chọn ảnh chụp rõ hơn.</div>';
+        toast({ title: 'Ảnh quá nhỏ để đọc mã QR', variant: 'destructive' });
+        return;
+      }
       if (box) box.innerHTML = '<div class="small muted">⏳ Đang giải mã QR (thử nhiều mức phóng &amp; tương phản)…</div>';
       // v157: kiểm tra trước có bộ giải mã nào dùng được không — tránh chạy phí
       // 84 lần thử rồi đổ lỗi sai cho chất lượng ảnh (xem chú thích tại hasAnyDecoder).
@@ -14522,6 +14506,9 @@ try {
     img.src = url;
   }
 
+  /* HM-08f: màn "Quét QR sổ đỏ" dựng lại trong sheet của giao diện mới (trước đây là tab-qr trong sidebar) */
+  window.lgQrHTML = function () { return '<div class="lg8g lg8g-qr">' + "<h3 aria-level=\"2\">Quét Mã QR Trên Sổ Đỏ Mẫu Mới</h3><p class=\"small muted\">Quét mã QR in ở góc Giấy chứng nhận mẫu mới để lấy <b>mã tra cứu</b>. App ghi nhớ mã, mở sẵn cổng tra cứu <span class=\"mono\">tracuuqr.vbdlis.vn</span> (mã đã được chép vào bộ nhớ tạm và điền sẵn nếu cổng cho phép) và in được phiếu A4 nội dung mã.</p><div class=\"row\" style=\"gap:6px;flex-wrap:wrap\"><button class=\"btn primary sm\" style=\"flex:1\" id=\"btn-qr-camera\">📷 Quét bằng camera</button><button class=\"btn secondary sm\" style=\"flex:1\" id=\"btn-qr-file\">🖼 Quét từ ảnh</button></div><input type=\"file\" id=\"qr-file-input\" aria-label=\"Chọn ảnh mã QR\" accept=\"image/*\" style=\"display:none\" /><div id=\"qr-cam-wrap\" style=\"display:none;margin-top:8px\"><video id=\"qr-video\" playsinline muted style=\"width:100%;border-radius:8px;background:#000\"></video><div class=\"row\" style=\"gap:6px;margin-top:4px\"><button class=\"btn sm\" style=\"flex:1;display:none\" id=\"btn-qr-torch\">🔦 Bật đèn</button><button class=\"btn sm danger-text\" style=\"flex:1\" id=\"btn-qr-stop\">⛔ Dừng quét</button></div></div><div id=\"qr-result\" style=\"margin-top:10px\"></div><div id=\"qr-history\" style=\"margin-top:10px\"></div>" + '</div>'; };
+  window.lgQrStop = stopCamera;
   function mount(){
     if (!$('btn-qr-camera')) return;
     $('btn-qr-camera').onclick = startCamera;
@@ -14529,14 +14516,8 @@ try {
     $('btn-qr-file').onclick = () => $('qr-file-input').click();
     $('qr-file-input').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) scanFile(f); e.target.value = ''; };
     renderHistory();
-    // Rời tab quét QR thì tắt camera để không chiếm ống kính và pin.
-    const prevSwitch = window.switchTab;
-    if (typeof prevSwitch === 'function' && !prevSwitch.__qrWrapped) {
-      const wrapped = function(tabId, btn){ if (tabId !== 'tab-qr') stopCamera(); return prevSwitch.apply(this, arguments); };
-      wrapped.__qrWrapped = true;
-      window.switchTab = wrapped;
-    }
-    window.addEventListener('pagehide', stopCamera);
+    // Đóng/đổi sheet thì tắt camera (openSheet/closeSheet gọi lgQrStop) để không chiếm ống kính và pin.
+    if (!window.__lgQrPagehide) { window.__lgQrPagehide = 1; window.addEventListener('pagehide', stopCamera); }
     // v185d — SỬA GỐC RỄ "camera quét QR vẫn chạy ngầm sau khi rời sang màn Bản đồ":
     // móc tắt camera ở trên CHỈ bắt được khi chuyển giữa các tab-* trong CÙNG màn
     // "Nhập liệu" (qua switchTab, bị bọc lại phía trên) hoặc khi rời hẳn TRANG (pagehide).
@@ -14549,8 +14530,7 @@ try {
     window.__lgStopQrCamera = stopCamera;
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
-  else mount();
+  window.lgQrMount = mount;   // gắn sự kiện sau khi sheet được dựng
 })();
 </script>
 
@@ -25682,6 +25662,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function openSheet(title, html, state) {
     if (!sheet) return;
+    if (title !== 'Quét QR sổ đỏ' && window.lgQrStop) window.lgQrStop();   // rời màn quét → tắt camera
     if (title !== 'Cắm mốc RTK' && window.lgStakeoutStop) window.lgStakeoutStop(true);   // rời màn cắm mốc → tắt GPS nền
     gripTitle.textContent = title || '';
     body.innerHTML = html || '<div class="lg103-empty">Chưa có dữ liệu.</div>';
@@ -25690,6 +25671,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function closeSheet() {
     if (!sheet) return;
+    if (window.lgQrStop) window.lgQrStop();
     if (window.lgStakeoutStop) window.lgStakeoutStop(true);
     sheet.classList.remove('on'); sheet.classList.remove('lg8c-card-on'); cardShown = false;
     remeasure();
@@ -26300,9 +26282,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   };
   // Hành động của các mục mới (gắn một lần vào khay nội dung)
   function newNavAction(act, t) {
-    var legacyTabs = { 'import-qr': 'tab-qr' };
-    if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
-    switch (act) {
+        switch (act) {
       case 'plots-tools': openSheet('Dữ liệu thửa', plotsToolsHTML()); return true;
       case 'pt-geojson': exportPlotsToGeoJSON(); return true;
       case 'pt-kml': exportPlotsToKML(); return true;
@@ -26320,6 +26300,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'man-add': window.lgManualAdd(); return true;
       case 'man-undo': window.lgManualUndo(); return true;
       case 'man-finish': if (window.lgManualFinish()) closeSheet(); return true;
+      case 'import-qr': openSheet('Quét QR sổ đỏ', window.lgQrHTML()); window.lgQrMount(); return true;
       case 'import-rtk': window.lgOpenStakeout(); return true;
       case 'stk-toggle': window.lgStakeoutToggle(); return true;
       case 'goto-import': selectTab('import'); return true;
