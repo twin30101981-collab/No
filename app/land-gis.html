@@ -7500,7 +7500,6 @@ function drawPlot(id, points, lon0, meta = {}, autoSave = true, zone = null){
 
 
   // TỰ ĐỘNG ZOOM VÀ KHÓA VỊ TRÍ THỬA ĐẤT
-  if (typeof closeSidebar === 'function') closeSidebar();
   setTimeout(() => {
     map.invalidateSize();
     map.fitBounds(polygon.getBounds(), { padding: [40, 40], maxZoom: 21 });
@@ -9820,32 +9819,6 @@ setAppViewportHeight();
 window.addEventListener('resize', setAppViewportHeight);
 window.addEventListener('orientationchange', () => setTimeout(setAppViewportHeight, 200));
 
-// ---------------------------------------------------------------
-// v27: SIDEBAR SÁNG MÀU, CỐ ĐỊNH CẠNH TRÁI + THU GỌN ĐƯỢC
-// (bản v26 luôn là drawer nổi đè lên bản đồ, đóng menu là mất chỗ tra cứu)
-// ---------------------------------------------------------------
-const SIDEBAR_STATE_KEY = 'landgis_sidebar_open';
-
-function applySidebarState(open){
-  const sb = document.getElementById('sidebar');
-  if (!sb) return;
-  sb.classList.toggle('open', !!open);
-  document.body.classList.toggle('sidebar-collapsed', !open);
-  // v29: chỉ ghi nhớ trạng thái trên màn hình rộng. Trên điện thoại menu là lớp phủ,
-  // nhớ "đang mở" khiến lần mở app sau bản đồ bị che hoàn toàn -> đúng lỗi của v28
-  // ("bản đồ không hoạt động, không zoom được, không xem được thông tin thửa").
-  if (window.innerWidth >= 640) { try { localStorage.setItem(SIDEBAR_STATE_KEY, open ? 'open' : 'collapsed'); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'q92'); } }
-  if (window.__lgMapReady) { setTimeout(() => map.invalidateSize(), 60); setTimeout(() => map.invalidateSize(), 340); }
-}
-function openSidebar(){ applySidebarState(true); }
-function collapseSidebar(){ applySidebarState(false); }
-// v27: sidebar cố định nên chỉ tự thu gọn khi màn hình hẹp (drawer), tránh việc
-// vừa vẽ xong thửa là menu tra cứu biến mất trên máy tính / máy tính bảng.
-function closeSidebar(){ if (window.innerWidth < 640) applySidebarState(false); }
-function toggleSidebar(){
-  applySidebarState(!document.getElementById('sidebar').classList.contains('open'));
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   initMap();
   populateProvinceSelects();
@@ -9891,11 +9864,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($('plot-info-close')) $('plot-info-close').onclick = () => closePlotPanel();
   renderPlots();
 
-  if ($('btn-collapse-sidebar')) $('btn-collapse-sidebar').onclick = collapseSidebar;
-  // v27: sidebar sáng màu, CỐ ĐỊNH cạnh trái (không còn overlay che bản đồ),
-  // có thể thu gọn và ghi nhớ trạng thái.
-  // v29: điện thoại -> mặc định ĐÓNG để bản đồ chiếm trọn màn hình ngay khi mở app.
-  applySidebarState(window.innerWidth >= 640 && localStorage.getItem(SIDEBAR_STATE_KEY) !== 'collapsed');
 
 
   // Bản đồ chỉ có kích thước chính xác SAU khi layout đã ổn định (font, ảnh, drawer...).
@@ -21551,15 +21519,11 @@ body.lg62.lg62-map #sidebar{ display:none; }
   display:flex; align-items:center; gap:8px; padding-left:10px; padding-right:10px;
   box-shadow:0 -2px 12px rgba(0,0,0,.08);
 }
-.lg62-nbtn{
-  height:48px; border-radius:12px; border:1px solid var(--lg62-green);
-  background:#fff; color:var(--lg62-green); font-size:calc(var(--lg63-fs) + 14px); font-weight:800; padding:0 16px; cursor:pointer;
-  text-transform:uppercase; display:flex; align-items:center; justify-content:center; text-align:center;
-}
-.lg62-nbtn.primary{ background:var(--lg62-green); color:#fff; }
-.lg62-nbtn:disabled{ opacity:.4; }
-#lg62-steps{ flex:1 1 auto; text-align:center; font-size:var(--lg63-fs); color:#5d6d66; font-weight:700; min-width:0; }
-#lg62-steps b{ color:var(--lg62-green); }
+
+
+
+
+
 
 /* ---------- Bottom sheet Setting / Công cụ ---------- */
 .lg62-sheet{
@@ -21670,18 +21634,12 @@ body.lg62 .lg-gps-badge{ bottom:calc(var(--lg62-nav) + 70px); font-size:var(--lg
 /* ---------- Hộp báo tự chuyển màn ---------- */
 body.lg62 .leaflet-control-attribution{ font-size:var(--lg63-fs); opacity:.75; }
 body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
-#lg62-auto{
-  position:fixed; left:12px; right:12px; z-index:4200;
-  bottom:calc(var(--lg62-nav) + env(safe-area-inset-bottom,0px) + 12px);
-  background:var(--lg62-green); color:#fff; border-radius:14px; padding:12px 14px;
-  display:none; align-items:center; gap:10px; box-shadow:0 8px 26px rgba(0,0,0,.35); font-size:var(--lg63-fs); font-weight:700;
-}
-#lg62-auto.on{ display:flex; }
-#lg62-auto button{ margin-left:auto; height:42px; border:0; border-radius:10px; padding:0 14px;
-  background:rgba(255,255,255,.2); color:#fff; font-weight:800; font-size:var(--lg63-fs); cursor:pointer; }
+
+
+
 
 @media print{
-  #lg62-top,#lg62-nav,#lg62-rail,#lg62-scrim,#lg62-auto,.lg62-sheet{ display:none !important; }
+  #lg62-top,#lg62-nav,#lg62-rail,#lg62-scrim,.lg62-sheet{ display:none !important; }
 }
 </style>
 
@@ -21725,19 +21683,12 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
     var nav = document.createElement('div');
     nav.id = 'lg62-nav';
     nav.innerHTML =
-      '<button class="lg62-nbtn" id="lg62-back">Quay lại</button>' +
-      '<div id="lg62-steps"><b>1. Nhập liệu</b> · 2. Bản đồ</div>' +
-      '<button class="lg62-nbtn primary" id="lg62-next">Kế tiếp</button>';
+      '';
     document.body.appendChild(nav);
 
     var scrim = document.createElement('div');
     scrim.id = 'lg62-scrim';
     document.body.appendChild(scrim);
-
-    var auto = document.createElement('div');
-    auto.id = 'lg62-auto';
-    auto.innerHTML = '<span id="lg62-auto-txt">Đã nhận diện thửa đất…</span><button id="lg62-auto-stay">Ở lại</button>';
-    document.body.appendChild(auto);
 
     els.rail = document.createElement('div');
     els.rail.id = 'lg62-rail';
@@ -21749,9 +21700,6 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
     $('lg62-btn-set').onclick = function () { openSheet('set'); };
     $('lg62-btn-tool').onclick = function () { openSheet('tool'); };
     scrim.onclick = closeSheets;
-    $('lg62-back').onclick = function () { goto(false); };
-    $('lg62-next').onclick = function () { goto(true); };
-    $('lg62-auto-stay').onclick = function () { cancelAuto(); };
 
     // Sidebar luôn mở trong màn nhập liệu (v61 dùng lớp .open cho drawer)
     var sb = $('sidebar');
@@ -21797,94 +21745,14 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
     }, 'invalidateSize');
   }
 
-  function goto(toMap) {
-    cancelAuto();
-    // v185d — xem chú thích gốc rễ đầy đủ tại window.__lgStopQrCamera (khối QR sổ đỏ,
-    // dòng ~14015): sang màn Bản đồ thì camera quét QR (nếu đang mở) phải tắt theo,
-    // kể cả khi goto(true) được offerAuto() tự gọi mà người dùng không chủ động bấm gì.
-    if (toMap && typeof window.__lgStopQrCamera === 'function') {
+  /* HM-08f (B): không còn màn Nhập liệu riêng — luôn ở Bản đồ; Scan là lớp phủ (lgOpenScan). Chỉ còn đặt cờ + dọn khi vào bản đồ. */
+  function enterMap() {
+    if (typeof window.__lgStopQrCamera === 'function') {
       try { window.__lgStopQrCamera(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q-v185d'); }
     }
-    toMap = true;   // HM-08f (B): không còn màn Nhập liệu riêng — luôn ở bản đồ; Scan là lớp phủ (lgOpenScan)
-    document.body.classList.toggle('lg62-map', true);
-    var steps = $('lg62-steps');
-    if (steps) steps.innerHTML = toMap ? '1. Nhập liệu · <b>2. Bản đồ</b>' : '<b>1. Nhập liệu</b> · 2. Bản đồ';
-    var sub = $('lg62-sub');
-    if (sub) sub.textContent = toMap ? 'Bản đồ thửa đất · toàn màn hình' : 'Nhập liệu & định vị thửa đất';
-    var back = $('lg62-back'), next = $('lg62-next');
-    if (back) back.disabled = !toMap;
-    if (next) next.disabled = !!toMap;
+    document.body.classList.add('lg62-map');
     closeSheets();
     resizeMap();
-  }
-
-  /* ---------- 3. Tự chuyển khi nhận diện xong & đủ toạ độ ranh thửa ---------- */
-  var autoTimer = null, lastCount = -1, autoDone = false;
-  function plotList() {
-    try {
-      if (Array.isArray(window.plots)) return window.plots;
-      if (window.LG && typeof window.LG.getPlots === 'function') return window.LG.getPlots() || [];
-    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q230'); }
-    return [];
-  }
-  function cancelAuto() {
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-    var a = $('lg62-auto'); if (a) a.classList.remove('on');
-  }
-  window.lg62CancelAuto = cancelAuto; // v154: cho phép nút "← MENU" huỷ đếm ngược tự-chuyển-bản-đồ khi người dùng chủ động quay lại
-  function offerAuto() {
-    var box = $('lg62-auto'), txt = $('lg62-auto-txt');
-    // v154 — SỬA GỐC RỄ THẬT SỰ (tìm được nhờ trace bằng Playwright): offerAuto()
-    // trước đây KHÔNG xoá "autoTimer" cũ trước khi gán một setInterval mới vào
-    // đúng biến đó. Mỗi khi vẽ thêm 1 thửa (kể cả khi thửa trước vẫn đang đếm
-    // ngược dở), một bộ đếm mới được tạo và GHI ĐÈ lên biến autoTimer — bộ đếm
-    // CŨ vẫn tiếp tục chạy ngầm vĩnh viễn vì không còn ai giữ tham chiếu để
-    // clearInterval nó nữa (cancelAuto() chỉ xoá bộ đếm MỚI NHẤT). Bộ đếm mồ côi
-    // đó, sau khi đếm hết 1 lần, cứ mỗi 1 giây lại tự gọi lại goto(true) — ép
-    // quay lại bản đồ liên tục, vô thời hạn, không cách nào tắt được kể cả nút
-    // "← MENU". Xác minh bằng Playwright (trace DOMTokenList.add/toggle): thấy
-    // lg62-map bật lại đều đặn mỗi ~1000ms sau khi nhập thửa thứ 2. Sửa bằng
-    // cách xoá bộ đếm cũ (nếu có) NGAY TRƯỚC khi tạo bộ đếm mới, đảm bảo tại
-    // mỗi thời điểm chỉ có DUY NHẤT một bộ đếm đang chạy.
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-    if (!box) { goto(true); return; }
-    var n = 2;
-    txt.textContent = 'Đã đủ toạ độ ranh thửa — mở bản đồ sau ' + n + 's…';
-    box.classList.add('on');
-    autoTimer = setInterval(function () {
-      n--;
-      if (n <= 0) { cancelAuto(); goto(true); return; }
-      txt.textContent = 'Đã đủ toạ độ ranh thửa — mở bản đồ sau ' + n + 's…';
-    }, 1000);
-  }
-  function watchPlots() {
-    var ps = plotList();
-    var c = ps.length;
-    if (lastCount < 0) { lastCount = c; return; }
-    if (c > lastCount) {
-      var last = ps[c - 1];
-      var pts = last && (last.points || last.pts || []);
-      // v154 — RÀ SOÁT SÂU: watchPlots() chạy theo setInterval riêng mỗi 2.5s
-      // (độc lập với thời điểm người dùng bấm "← MENU"), nên trước đây dù
-      // gotoInput() đã huỷ autoTimer ĐANG chạy tại thời điểm bấm, một thửa vừa
-      // nhập/vẽ xong ngay TRƯỚC đó vẫn có thể chỉ được watchPlots() phát hiện ở
-      // lượt quét 2.5s KẾ TIẾP — tức là SAU khi người dùng đã bấm quay lại — và
-      // tạo một bộ đếm ngược HOÀN TOÀN MỚI, không hề bị huỷ bởi lần bấm trước
-      // đó, rồi vẫn ép quay lại bản đồ. Xác minh bằng Playwright: canh mốc thời
-      // gian cho thấy lớp "lg62-map" tái xuất hiện ở NHỊP QUÉT SAU, không phải
-      // do bộ đếm cũ. Sửa triệt để bằng một cửa sổ "vừa chủ động quay lại" —
-      // trong vài giây sau khi bấm "← MENU", watchPlots() tạm bỏ qua đề nghị
-      // auto-chuyển-bản-đồ dù có phát hiện thửa mới, tôn trọng lựa chọn người
-      // dùng vừa thực hiện thay vì đè lên ngay sau đó.
-      var suppressed = window.__lg154SuppressAutoSwitchUntil && Date.now() < window.__lg154SuppressAutoSwitchUntil;
-      if (pts && pts.length >= 3 && !document.body.classList.contains('lg62-map') && !suppressed) {
-        LOG('info', 'Tu chuyen sang ban do: thua moi co ' + pts.length + ' moc');
-        offerAuto();
-      } else if (suppressed) {
-        LOG('info', 'Bo qua tu-chuyen ban do: nguoi dung vua chu dong bam "MENU" quay lai nhap lieu');
-      }
-    }
-    lastCount = c;
   }
 
   /* ---------- 4. Gom nút ---------- */
@@ -21974,7 +21842,7 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
   var tries = 0, fast = null;
   function boot() {
     if (!buildShell()) return false;
-    goto(false);
+    enterMap();
     sweep();
     return true;
   }
@@ -21982,11 +21850,10 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
     tries++;
     if (!$('lg62-top')) { if (!boot()) return; }
     sweep();
-    watchPlots();
     if (tries === 12 || tries === 40) resizeMap();
     if (tries > 90 && fast) {           // ~60s đầu quét dày, sau đó thưa lại
       clearInterval(fast); fast = null;
-      setInterval(function () { sweep(); watchPlots(); }, 2500);
+      setInterval(sweep, 2500);
     }
   }
   function start() {
@@ -21999,7 +21866,7 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
   else start();
 
   window.LG62 = {
-    goto: goto, sweep: sweep, openSheet: openSheet, closeSheets: closeSheets,
+    goto: enterMap, sweep: sweep, openSheet: openSheet, closeSheets: closeSheets,
     version: '62'
   };
 })();
@@ -24820,8 +24687,7 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
 
 /* 1) VIẾT HOA NÚT */
 #sidebar .btn, #sidebar button,
-.lg62-sheet-body button, .lg62-sheet-body .btn, .lg62-sheet-body .lg31-fab,
-#lg62-nav .lg62-nbtn, header .btn, .lg31-fab{
+.lg62-sheet-body button, .lg62-sheet-body .btn, .lg62-sheet-body .lg31-fab, header .btn, .lg31-fab{
   text-transform: uppercase;
 }
 /* không viết hoa những chỗ chữ là dữ liệu / hồ sơ in / nhãn bản đồ */
@@ -24910,7 +24776,6 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
   function openRtk() {
     try {
       if (window.LG62 && typeof window.LG62.closeSheets === 'function') window.LG62.closeSheets();
-      if (window.LG62 && typeof window.LG62.goto === 'function') window.LG62.goto(false);
       if (typeof window.lgOpenStakeout === 'function') window.lgOpenStakeout();
       LOG('info', 'Mo tab Cam Moc RTK tu bang Cong cu');
     } catch (e) { LOG('warn', 'Loi mo RTK', e && e.message); }
@@ -25156,10 +25021,10 @@ table{ max-width:100%; }
 /* 5b) Tinh chỉnh mật độ: thanh tab & thanh điều hướng dùng bậc chữ phụ để
        hiển thị được nhiều mục, danh sách lựa chọn thẳng hàng ô chọn. */
 
-#lg62-nav, #lg62-nav *, #lg62-nav .lg62-nbtn{
+#lg62-nav, #lg62-nav *{
   font-size:var(--lg-fs-sm) !important; line-height:1.25 !important;
 }
-#lg62-nav .lg62-nbtn{ white-space:nowrap; }
+
 .lg62-sheet-body .leaflet-control-layers label,
 .lg62-sheet-body .lg-layer-ctrl label,
 #sidebar label:has(> input[type="checkbox"]),
@@ -25278,17 +25143,14 @@ header h1{ white-space:nowrap; }               /* tiêu đề vẫn rút gọn 1
   padding-bottom:calc(6px + env(safe-area-inset-bottom,0px)) !important;
   overflow:hidden;
 }
-#lg62-steps{
-  min-width:0; text-align:center;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
+
 #lg62-back, #lg62-next{ flex:0 0 auto; min-width:0; max-width:46%;
   white-space:normal; overflow:hidden; text-overflow:clip; text-align:center; }
 @media (max-width:340px){ #lg62-back, #lg62-next{
   padding-left:8px; padding-right:8px;
   font-size:clamp(11px,3.4vw,14px); letter-spacing:0;
   max-width:46%; word-break:keep-all; } }
-@media (max-width:320px){ #lg62-steps{ display:none; } }
+
 
 #sidebar-selected{ max-height:clamp(110px, 30dvh, 320px); }
 .tab-content{ min-height:132px; }
@@ -25612,7 +25474,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 
 /* ---------- 4) Chống vỡ chữ trên màn hình rất hẹp ----------------------- */
 @media (max-width:360px){
-  body.lg62.lg103 .lg62-nbtn{ font-size:var(--lg103-fs-body); padding:0 8px; }
+  
   body.lg62.lg103 #lg62-top .lg62-brand b,
   body.lg62.lg103 #lg62-top .lg62-brand span{ font-size:var(--lg103-fs-dock) !important; }
 }
@@ -25632,7 +25494,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 }
 
 /* Mọi nhãn trong lớp mobile: không bẻ chữ giữa âm tiết tiếng Việt */
-body.lg62.lg103 button, body.lg62.lg103 label, body.lg62.lg103 .lg62-nbtn, body.lg62.lg103 #lg62-steps{
+body.lg62.lg103 button, body.lg62.lg103 label{
   word-break:keep-all !important; overflow-wrap:normal !important; hyphens:none !important;
 }
 /* Chừa chỗ cho Dock ở cột thông tin, tránh Dock đè dòng cuối (thấy rõ trên desktop) */
@@ -26490,9 +26352,6 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       /* v123: chỉ chuyển khi ĐANG KHÔNG ở bản đồ. Trước đây luôn bấm
          #lg62-next, nên bấm "Bản Đồ" lúc đã ở bản đồ vẫn dựng lại bước wizard
          -> đổi class body -> hàng loạt observer chạy lại -> Dock nháy. */
-      if (!document.body.classList.contains('lg62-map')) {
-        var nx = $('lg62-next'); if (nx && !nx.disabled) nx.click();
-      }
       var mb = dock.querySelector('[data-lg103-tab="map"]');
       if (mb) mb.setAttribute('aria-selected', 'true');
       return;
@@ -26606,7 +26465,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       closeSheet: closeSheet,
       setSheetState: setState,
       triggerCameraScan: triggerCameraScan,
-      toggleSidebar: function () { var b = $('lg62-back'); if (b && !b.disabled) b.click(); else selectTab('map'); },
+      toggleSidebar: function () { selectTab('map'); },
       printPlotA4: printPlotA4,
       refresh: function () { if (currentTab && TABS[currentTab] && TABS[currentTab].render) body.innerHTML = TABS[currentTab].render(); }
     };
@@ -26815,6 +26674,33 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     renderWizard();
   }
   window.lg8dOpen = openWizard; window.lg8dClose = closeWizard;
+  /* HM-08f — MÀN CHÀO khi chưa có thửa: thẻ 3 lối vào; chỉ hiện khi plots.length = 0, tự ẩn khi có thửa */
+  (function () {
+    var st = document.createElement('style'); st.id = 'lg-welcome-css';
+    st.textContent = '#lg-welcome{position:fixed;left:12px;right:12px;bottom:calc(var(--lg-dock-clear,84px) + 12px);z-index:1250;background:var(--card,#fff);border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.22);padding:14px;max-width:460px;margin:0 auto}' +
+      '#lg-welcome h3{margin:0 0 4px;font-size:var(--lg-fs,16px);color:#0f4c34}#lg-welcome p{margin:0 0 10px;font-size:var(--lg-fs-sm,14px);color:#5b6b63}' +
+      '#lg-welcome button{display:block;width:100%;min-height:48px;margin:6px 0 0;border:0;border-radius:12px;background:#e3efe8;color:#0f4c34;font-weight:800;font-size:var(--lg-fs,16px);text-align:left;padding:0 14px}#lg-welcome button.p{background:#0f4c34;color:#fff}';
+    document.head.appendChild(st);
+    var ready = false;   // chỉ hiện sau khi kho thửa đã nạp xong (tránh nháy khi mở app có sẵn thửa)
+    function sync() {
+      var n = 0; try { n = (window.plots || []).length; } catch (e) { n = 0; }
+      var el = document.getElementById('lg-welcome');
+      if (n > 0 || !ready) { if (el) el.remove(); return; }
+      if (el) return;
+      el = document.createElement('div'); el.id = 'lg-welcome'; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Bắt đầu');
+      el.innerHTML = '<h3>Chưa có thửa đất nào</h3><p>Chọn một cách để thêm thửa đầu tiên:</p>' +
+        '<button type="button" class="p" data-lgw="scan">📷 Chụp sổ đỏ</button><button type="button" data-lgw="book">▤ Nhập bảng kê toạ độ</button><button type="button" data-lgw="cad">⇪ Nhập CAD / CSV</button>';
+      el.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-lgw]'); if (!b) return; var k = b.getAttribute('data-lgw');
+        if (k === 'scan' && window.lgOpenScan) window.lgOpenScan(); else if (k === 'book') openWizard(); else if (k === 'cad' && window.lgOpenImportCad) window.lgOpenImportCad();
+      });
+      document.body.appendChild(el);
+    }
+    var orig = window.renderPlots;
+    if (typeof orig === 'function' && !orig.__lgWelcome) { var w = function () { var r = orig.apply(this, arguments); try { sync(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h08fw'); } return r; }; w.__lgWelcome = true; window.renderPlots = w; }
+    window.lgWelcomeSync = sync;
+    setTimeout(function () { ready = true; sync(); }, 1800);
+  })();
   function buildMapOverlay() {
     if (document.getElementById('lg8c-top')) return;
     var top = document.createElement('div'); top.id = 'lg8c-top';
@@ -28625,52 +28511,13 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
   /* ====================================================================
      1) QUAY LẠI MENU CHÍNH
      ==================================================================== */
-  function gotoInput() {
-    try { if (window.lgCloseScan) window.lgCloseScan(); if (window.LandGIS && LandGIS.ui && LandGIS.ui.switchDock) LandGIS.ui.switchDock('import'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f6'); }
-    // v154 — SỬA GỐC RỄ: "← MENU" không mở lại được sidebar trên điện thoại.
-    // NGUYÊN NHÂN: drawPlot() gọi closeSidebar() (cơ chế v27, gắn cờ lớp
-    // "sidebar-collapsed" trên <body>) mỗi khi vẽ/nạp một thửa trên màn hẹp
-    // (<640px) — tức là SAU MỌI LẦN NHẬP LIỆU. Còn gotoInput() ở đây (được nút
-    // "← MENU" hiển thị gọi) chỉ thao tác với #lg62-back/lg62-map — một cơ chế
-    // "màn hình 1/2 bước" cũ từ trước khi có sidebar-collapsed, không hề đụng
-    // tới lớp "sidebar-collapsed". Vòng theo dõi tự phục hồi ở v111
-    // (restoreInputScreen) cũng chỉ bắt sự kiện đổi lớp "lg62-map", vốn không
-    // còn được set trong luồng dock/sidebar hiện tại — nên không bao giờ chạy.
-    // Kết quả: bấm "← MENU" sau khi đã nhập/chọn một thửa trên điện thoại
-    // không có tác dụng gì — người dùng kẹt luôn ở màn bản đồ, không còn cách
-    // nào quay lại Scan/Quét QR/Nhập file/Quản lý Thửa. Sửa bằng cách gọi thẳng
-    // cơ chế mở sidebar THẬT (v27) ở đây, không phụ thuộc bất kỳ patch nào khác.
-    try {
-      var sb = $('sidebar');
-      if (sb) sb.classList.add('open');
-      document.body.classList.remove('sidebar-collapsed');
-      if (typeof window.applySidebarState === 'function') window.applySidebarState(true);
-      var pip = $('plot-info-panel'); if (pip) pip.classList.remove('open', 'show');
-    } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154a'); }
-    // v154 tiếp — RÀ SOÁT SÂU HƠN cho thấy còn một nguyên nhân thứ hai cùng gây
-    // hiện tượng "← MENU bấm xong lại tự nhảy về bản đồ": v62 có sẵn bộ đếm
-    // ngược "Đã đủ toạ độ ranh thửa — mở bản đồ sau 2s…" (offerAuto/autoTimer)
-    // tự chạy goto(true) 2 giây sau khi vẽ xong MỖI thửa mới — kể cả khi người
-    // dùng đã bấm "← MENU" quay lại màn nhập liệu ngay trong 2 giây đó. Bộ đếm
-    // vẫn chạy ngầm và sau đó ép quay lại bản đồ đúng lúc người dùng tưởng đã ở
-    // màn nhập liệu — verify bằng Playwright: dựng lại lỗi thấy rõ lớp
-    // "lg62-map" tự xuất hiện lại ~400ms sau khi vừa gỡ thành công. Phải huỷ bộ
-    // đếm này (không chỉ gỡ lớp 1 lần) thì "← MENU" mới thật sự ăn.
-    try { if (window.lg62CancelAuto) window.lg62CancelAuto(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154d'); }
-    // v154 — đặt cửa sổ ưu tiên ý muốn người dùng (xem chú thích trong watchPlots()
-    // ở v62): 6 giây đủ trùm qua nhịp quét 2.5s kế tiếp mà không cần người dùng
-    // phải nhanh tay hơn một cái setInterval nền.
-    window.__lg154SuppressAutoSwitchUntil = Date.now() + 6000;
-    try { if (window.lg111RestoreInput) window.lg111RestoreInput(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154b'); }
+  function gotoInput() {   // "về menu": đóng Scan, mở mục Nhập sổ của dock
+    try { if (window.lgCloseScan) window.lgCloseScan(); if (window.LandGIS && LandGIS.ui && LandGIS.ui.switchDock) LandGIS.ui.switchDock('import'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h08fa'); }
+    try { var pip = $('plot-info-panel'); if (pip) pip.classList.remove('open', 'show'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154a'); }
     try { if (map && map.invalidateSize) setTimeout(function () { map.invalidateSize(); }, 80); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154c'); }
     try { if (window.LandGIS && window.LandGIS.ui && window.LandGIS.ui.closeSheet) window.LandGIS.ui.closeSheet(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q338'); }
     closeModal();
     rec('info', 'Quay lai man Nhap lieu');
-  }
-  function gotoMap() {
-    var n = $('lg62-next');
-    if (n) { n.disabled = false; n.click(); }
-    else document.body.classList.add('lg62-map');
   }
   window.lg110GotoInput = gotoInput;
 
@@ -28707,19 +28554,6 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
     rec('info', 'Da them muc Nhap lieu vao Dock');
     return true;
   }
-
-  /* Nút Back phần cứng: khi đang ở bản đồ thì quay về nhập liệu thay vì thoát trang */
-  safe(function () {
-    var pushed = false;
-    new MutationObserver(function () {
-      var m = onMap();
-      if (m && !pushed) { try { history.pushState({ lg110: 'map' }, ''); pushed = true; } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q339'); } }
-      if (!m) pushed = false;
-    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    window.addEventListener('popstate', function () {
-      if (onMap()) { pushed = false; gotoInput(); }
-    });
-  }, 'hardware-back');
 
   /* ====================================================================
      2) BẬT/TẮT HIỂN THỊ ĐẦY ĐỦ CÁC CẠNH THỬA
@@ -29001,7 +28835,7 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
       if (a === 'edges') { render('edges'); return; }
       if (a === 'gps') { render('gps'); return; }
       if (a === 'home') { gotoInput(); return; }
-      if (a === 'fit') { if (!onMap()) gotoMap(); lastUserGesture = Date.now(); setTimeout(function () { fitActivePlot(true); }, 260); closeModal(); return; }
+      if (a === 'fit') { lastUserGesture = Date.now(); setTimeout(function () { fitActivePlot(true); }, 260); closeModal(); return; }
       if (a === 'photos') { closeModal(); openRealPhotos(); return; }
       if (a === 'gps-on' || a === 'gps-low') {
         var st = $('lg110-gst');
@@ -29116,17 +28950,6 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
      4) Thanh tiến độ hồ sơ bị Dock cắt mất chữ và đè lên cột nút thu/phóng.
      ========================================================================== -->
 <style id="lg111-ui">
-body.lg62:not(.lg62-map) #sidebar{
-  display:flex; visibility:visible; opacity:1;
-  transform:none; pointer-events:auto;
-}
-
-body.lg62:not(.lg62-map) #plot-info-panel,
-body.lg62:not(.lg62-map) #lg-gps-badge,
-body.lg62:not(.lg62-map) .lg-gps-badge,
-body.lg62:not(.lg62-map) .lg-zoomctrl,
-body.lg62:not(.lg62-map) .lg-v30-fab,
-body.lg62:not(.lg62-map) #lg63-progress{ display:none !important; }
 /* v111 — thanh tiến độ nạp hồ sơ trước đây nằm dưới đáy nên bị Dock cắt chữ và
    đè lên hàng nút bản đồ. Đưa lên ngay dưới thanh tiêu đề, không che thao tác. */
 body.lg62.lg103 #lg63-progress{
@@ -29175,29 +28998,6 @@ body.lg62.lg103 .lg-zoomctrl{ z-index:1100; }
   function rec(l,m,e){ try{ if(window.LGV42&&window.LGV42.record) window.LGV42.record(l,'v111',m,e);}catch (_) { window.lgQuiet && window.lgQuiet(_, 'q344'); } }
   function safe(fn,t){ try{ return fn(); }catch(e){ rec('warn','Loi '+(t||''), e&&e.message); return null; } }
   function onMap(){ return document.body.classList.contains('lg62-map'); }
-
-  function restoreInputScreen(){
-    safe(function(){
-      var sb=document.getElementById('sidebar');
-      if(sb) sb.classList.add('open');
-      document.body.classList.remove('sidebar-collapsed');
-      try{ if(typeof window.applySidebarState==='function') window.applySidebarState(true); }catch (_) { window.lgQuiet && window.lgQuiet(_, 'q345'); }
-      var pip=document.getElementById('plot-info-panel');
-      if(pip){ pip.classList.remove('open','show'); }
-      var m=document.getElementById('lg110-modal'); if(m) m.remove();
-    },'restore-input');
-  }
-  window.lg111RestoreInput = restoreInputScreen;
-
-  safe(function(){
-    var was=onMap();
-    new MutationObserver(function(){
-      var now=onMap();
-      if(was && !now) restoreInputScreen();
-      was=now;
-    }).observe(document.body,{attributes:true,attributeFilter:['class']});
-    if(!was) restoreInputScreen();
-  },'watch-screen');
 
   document.addEventListener('keydown',function(e){
     if(e.key!=='Escape') return;
