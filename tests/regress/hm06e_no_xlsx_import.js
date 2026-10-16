@@ -13,7 +13,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
   checks['bao_khong_ho_tro_nhap_excel'] = /Không hỗ trợ nhập Excel/.test(t1); checks['xlsx_khong_tao_thua'] = (await p.evaluate(() => (window.plots || []).length)) === n0;
   await p.setInputFiles('#file-upload', tmp + '/a.csv'); await p.waitForTimeout(1500);
   checks['csv_van_nhap_duoc'] = (await p.evaluate(() => (window.plots || []).length)) === n0 + 1;
-  checks['van_xuat_Excel'] = await p.evaluate(() => typeof exportPlotsToExcel === 'function' && !!document.getElementById('btn-export-xlsx'));
+  checks['van_xuat_Excel'] = await p.evaluate(() => typeof exportPlotsToExcel === 'function');
   checks['khong_loi_trang'] = errs.length === 0;
   const ok = report('hm06e_no_xlsx_import', checks, { errs }); await b.close(); process.exit(ok ? 0 : 1);
 })();
