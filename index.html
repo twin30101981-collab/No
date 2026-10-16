@@ -7426,7 +7426,7 @@ function drawPlot(id, points, lon0, meta = {}, autoSave = true, zone = null){
       interactive: false,
       icon: L.divIcon({
         className: 'lg-label lg-edge',
-        html: `<span data-edge-len="${len.toFixed(3)}" style="transform:rotate(${rot.toFixed(1)}deg)">${len.toFixed(2)} m</span>`,
+        html: `<span data-edge-len="${len.toFixed(3)}" data-pid="${escapeHtml(String(id))}" style="transform:rotate(${rot.toFixed(1)}deg)">${len.toFixed(2)} m</span>`,
         iconSize: null, iconAnchor: [28, 8]
       })
     }).addTo(edgeGroup);
@@ -26710,7 +26710,14 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<div id="lg8c-res" style="display:none"></div><div id="lg8c-chips"><button type="button" data-chip="ktt"></button><button type="button" data-chip="base"></button><button type="button" data-chip="labels">◧ Nhãn</button></div>';
     document.body.appendChild(top);
     var fabs = document.createElement('div'); fabs.id = 'lg8c-fabs';
-    fabs.innerHTML = '<button type="button" id="lg8c-layers" aria-label="Lớp bản đồ">◫</button><button type="button" id="lg8c-loc" aria-label="Vị trí của tôi">◎</button>';
+    var SV = function (d) { return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
+    /* HM-46b: một cột nút bên phải (Nền ảnh · Lớp phủ · Vừa thửa · Cạnh/mốc) + nút Vị trí tách riêng */
+    fabs.innerHTML = '<div id="lg46-rail" role="group" aria-label="Điều khiển bản đồ">' +
+      '<button type="button" id="lg8c-layers" aria-label="Ảnh nền bản đồ" title="Ảnh nền">' + SV('<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>') + '</button>' +
+      '<button type="button" id="lg46-overlays" aria-label="Lớp phủ (ranh giới, quy hoạch…)" title="Lớp phủ">' + SV('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>') + '</button>' +
+      '<button type="button" id="lg46-fit" aria-label="Về thửa đang chọn" title="Về thửa">' + SV('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><rect x="9" y="9" width="6" height="6"/>') + '</button>' +
+      '<button type="button" id="lg46-edges" aria-label="Hiển thị cạnh thửa, mốc và GPS" title="Cạnh / mốc">' + SV('<path d="M4 18 10 6l10 4-4 10z"/><circle cx="10" cy="6" r="1.6"/><circle cx="20" cy="10" r="1.6"/><circle cx="16" cy="20" r="1.6"/><circle cx="4" cy="18" r="1.6"/>') + '</button>' +
+      '</div><button type="button" id="lg8c-loc" aria-label="Vị trí của tôi" title="Vị trí của tôi">' + SV('<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>') + '</button>';
     document.body.appendChild(fabs);
     var q = document.getElementById('lg8c-q'), res = document.getElementById('lg8c-res');
     try { if (window.LGV42Addr) LGV42Addr.mount(q, res); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f1'); }
@@ -26723,6 +26730,9 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     document.getElementById('lg8c-menu').onclick = function () { selectTab('more'); };
     document.getElementById('lg8c-layers').onclick = function () { newNavAction('imagery'); };
     document.getElementById('lg8c-loc').onclick = function () { if (!clickIf('btn-quick-gps-locate')) clickIf('lg31-compass-fab'); };
+    document.getElementById('lg46-overlays').onclick = function () { clickIf('lg183-layers'); };
+    document.getElementById('lg46-fit').onclick = function () { var z = document.querySelectorAll('.lg-zoomctrl button'); if (z[2]) z[2].click(); };
+    document.getElementById('lg46-edges').onclick = function () { clickIf('lg110-tools'); };
     top.querySelector('#lg8c-chips').addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return; var k = b.getAttribute('data-chip');
       if (k === 'ktt') { var bs = $('lg62-btn-set'); if (bs) bs.click(); }
@@ -26738,10 +26748,10 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       var sel = document.getElementById('province-select'), pn = sel && sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent.replace(/\(.*$/, '').trim() : '';
       var lon0 = p && p.lon0 != null ? p.lon0 : null;
       var kb = top.querySelector('[data-chip="ktt"]'), bb = top.querySelector('[data-chip="base"]');
-      var kt = 'KTT ' + (lon0 != null && window.LG146 && LG146.fmtKtt ? LG146.fmtKtt(lon0) : (lon0 != null ? lon0 + '°' : '—')) + (pn ? ' · ' + pn : '');
+      var kt = lon0 != null ? 'KTT ' + (window.LG146 && LG146.fmtKtt ? LG146.fmtKtt(lon0) : lon0 + '°') + (pn ? ' · ' + pn : '') : 'VN-2000' + (pn ? ' · ' + pn : '');   // HM-46b: chưa có thửa → không hiện "KTT —"
       var bn = ''; try { bn = localStorage.getItem('land_gis_base_layer_name') || ''; } catch (e) { bn = ''; }
-      bn = '🛰 ' + (bn ? bn.replace(/\(.*$/, '').trim().split(' ').slice(0, 2).join(' ') : 'Lớp nền');
-      if (kb.textContent !== '🧭 ' + kt) kb.textContent = '🧭 ' + kt;
+      bn = (bn ? bn.replace(/\(.*$/, '').trim().split(' ').slice(0, 2).join(' ') : 'Lớp nền');
+      if (kb.textContent !== kt) kb.textContent = kt;
       if (bb.textContent !== bn) bb.textContent = bn;
     }
     window.lg8cPaintChips = paintChips; paintChips();
@@ -43425,6 +43435,7 @@ body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-dir
     h.appendChild(sb);
     requestAnimationFrame(function () { sb.classList.add('in'); });
     timer = setTimeout(hide, ms);
+    var mt = setInterval(function () { if (!sb.parentNode) { clearInterval(mt); return; } try { window.lgMeasureDock && window.lgMeasureDock(); } catch (e) { clearInterval(mt); } }, 300);   // tấm trượt mở/đóng khi đang hiện → luôn nằm trên mép tấm
   }
   function hide() { var h = document.getElementById('lg46-snack'); if (!h) return; var sb = h.firstChild; if (!sb) return; sb.classList.remove('in'); setTimeout(function () { if (sb.parentNode) sb.remove(); }, 180); }
   var LV = { ok: 'ok', warn: 'warn', err: 'err', info: 'info' };
@@ -43445,6 +43456,52 @@ body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-dir
   }
   window.lgSnack = show; window.lgSnackHide = hide;
   apply(); document.addEventListener('DOMContentLoaded', apply); setTimeout(apply, 1500);
+})();
+</script>
+<style id="lg46b-map-css">
+/* HM-46b — Bản đồ 4 vùng cố định: trên (tìm kiếm + chip) · phải (một cột nút) · tấm trượt · dock. Thanh xanh v62 và nút phóng to rời bỏ khỏi màn cảm ứng. */
+body.lg103{ --lg62-top: 104px; --lg46-snack-r: 12px; }   /* --lg62-top = chiều cao vùng tìm kiếm + chip: các bảng nổi cũ tự đặt bên dưới */
+body.lg62.lg103 .map-wrap{ top:0 !important; }   /* bản đồ tràn lên mép trên; thanh tìm kiếm nổi đè lên */
+body.lg103 #lg62-top{ display:none !important; }
+body.lg103 #lg183-layers{ display:none !important; }   /* thay bằng nút "Lớp phủ" trong cột phải */
+body.lg103 .lg-zoomctrl{ display:none !important; }    /* ⧉+ ⧉− 🎯 → chụm ngón + nút "Về thửa" */
+@media (pointer:coarse){ body.lg103 .leaflet-control-zoom{ display:none !important; } }
+body.lg103 .leaflet-top.leaflet-left{ top:calc(var(--lg46-top,112px) + 40px); }   /* chuột: ± nằm dưới vùng tìm kiếm */
+body.lg62.lg103 #lg63-progress{ top:var(--lg46-top,112px) !important; left:12px !important; transform:none !important; max-width:calc(100vw - 92px) !important; }
+body.lg103.lg62-map #lg8c-fabs{ top:var(--lg46-top,112px); bottom:auto; right:12px; gap:10px; align-items:flex-end; }
+#lg46-rail{ display:flex; flex-direction:column; background:var(--card,#fff); border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.25); overflow:hidden; }
+#lg8c-fabs #lg46-rail button{ width:46px; height:46px; border-radius:0; box-shadow:none; border-bottom:1px solid #e3e8e5; display:grid; place-items:center; color:#17251e; background:transparent; }
+#lg8c-fabs #lg46-rail button:last-child{ border-bottom:0; }
+#lg8c-fabs #lg8c-loc{ display:grid; place-items:center; color:#0f4c34; }
+#lg8c-fabs button:focus-visible{ outline:3px solid #0f4c34; outline-offset:-3px; }
+/* chip gọn hơn */
+#lg8c-chips button{ min-height:34px; padding:6px 12px; }
+/* nhãn cạnh: chữ trắng viền tối, nhỏ, không nền khối; khi đã chọn một thửa thì chỉ hiện cạnh của thửa đó */
+html body .lg-label.lg-edge > span{ background:transparent !important; box-shadow:none !important; border:0 !important; font-size:calc(var(--lg174-fs,15px) * .78) !important; padding:0 2px !important; text-shadow:0 0 2px #000,0 0 3px #000,0 0 4px rgba(0,0,0,.8); }
+body.lg46-onesel .lg-label.lg-edge > span:not(.lg46-sel){ display:none !important; }
+</style>
+<script id="lg46b-map">
+(function () {
+  'use strict';
+  /* chỉ hiện nhãn cạnh của thửa đang chọn (khi có ≥ 2 thửa) — đánh dấu theo data-pid, chạy lại sau mỗi lần vẽ/chọn */
+  function mark() {
+    var id = window.selectedPlotId, n = 0; try { n = (window.plots || []).length; } catch (e) { n = 0; }
+    var on = !!id && n >= 2; document.body.classList.toggle('lg46-onesel', on);
+    if (!on) return;
+    var sp = document.querySelectorAll('.lg-edge > span[data-pid]');
+    for (var i = 0; i < sp.length; i++) sp[i].classList.toggle('lg46-sel', sp[i].getAttribute('data-pid') === String(id));
+  }
+  function wrap(name) {
+    var f = window[name]; if (typeof f !== 'function' || f.__lg46b) return;
+    var w = function () { var r = f.apply(this, arguments); try { setTimeout(mark, 0); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h46b'); } return r; };
+    w.__lg46b = true; window[name] = w;
+  }
+  function apply() { wrap('setSelectedPlotId'); wrap('drawPlot'); wrap('renderPlots'); try { if (window.map && map.on && !map.__lg46b) { map.on('zoomend', mark); map.__lg46b = 1; } } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h46c'); } mark(); }
+  /* đo đáy vùng tìm kiếm + chip → --lg46-top (cột nút, chip tiến độ, nút ± đặt ngay dưới) */
+  function measureTop() { var t = document.getElementById('lg8c-top'); if (!t) return; var r = t.getBoundingClientRect(); if (r.height > 0) document.documentElement.style.setProperty('--lg46-top', Math.round(r.bottom + 8) + 'px'); }
+  window.addEventListener('resize', measureTop); setTimeout(measureTop, 1500); setTimeout(measureTop, 4000);
+  window.lg46MarkEdges = mark;
+  document.addEventListener('DOMContentLoaded', apply); setTimeout(apply, 2500); setTimeout(apply, 6000);
 })();
 </script>
 </body>
