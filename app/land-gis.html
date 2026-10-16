@@ -1997,7 +1997,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     font-size:var(--lg63-fs); font-weight: 800; letter-spacing: .8px; color: #fff;
     background: var(--accent); padding: 4px 12px;
   }
-  .plot-row-active { border-color: var(--accent) !important; background: #fff5f5 !important; }
+  
 
   /* v27: bảng thông tin thửa dạng toast bên PHẢI bản đồ */
   #plot-info-panel {
@@ -2091,13 +2091,13 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   .dropzone:hover { background: var(--muted); }
   .dropzone.ai { border-color: rgba(211,47,47,.4); background: #fffbfb; }
   
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+  
   .stat { background: var(--muted); border-radius: 6px; padding: 8px; }
   .stat .label { font-size:var(--lg63-fs); color: var(--muted-fg); text-transform: uppercase; }
   .stat .value { font-size:var(--lg63-fs); font-weight: 700; font-family: var(--mono); color: var(--sidebar-bg); }
   
-  .plot-row { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; justify-content: space-between; padding: 8px; background: #fff; border: 1px solid var(--border); border-radius: 6px; font-size:var(--lg63-fs); margin-bottom: 6px; }
-  .plot-row:hover { border-color: var(--sidebar-bg); }
+  
+  
   
   /* Map Wrap */
   main.map-wrap { flex: 1; position: relative; }
@@ -3124,45 +3124,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       </div>
 
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
-      <div id="tab-plots" class="tab-content">
-        <section class="block">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <h3 aria-level="2" style="margin:0">Danh sách thửa đất</h3>
-            <div style="display:flex;gap:4px">
-              <button class="btn sm" id="btn-undo-delete" style="display:none" title="Khôi phục thửa vừa xoá" aria-label="Khôi phục thửa vừa xoá">↩ Hoàn tác</button>
-              <button class="btn sm danger-text" id="btn-clear-all" style="display:none">Xóa tất cả</button>
-            </div>
-          </div>
-          <div class="stat-grid">
-            <div class="stat"><div class="label">Tổng số thửa</div><div class="value" id="stat-count">0</div></div>
-            <div class="stat"><div class="label">Tổng diện tích</div><div class="value" id="stat-area">0 m²</div></div>
-          </div>
-          <input type="text" id="plot-search" aria-label="Tìm kiếm thửa đất" placeholder="🔎 Tìm theo tên thửa / số thửa / địa chỉ..." style="margin:6px 0" />
-          <div id="plot-list"></div>
-          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">
-            <button class="btn sm secondary" id="btn-export-geojson">🗺 GeoJSON</button>
-            <button class="btn sm secondary" id="btn-export-kml">🌍 KML</button>
-            <button class="btn sm secondary" id="btn-export-xlsx">📊 Excel</button>
-            <button class="btn sm secondary" id="btn-export-csvxy" title="Bảng X, Y và chiều dài cạnh S của mọi thửa">📄 CSV toạ độ</button>
-            <button class="btn sm secondary" id="btn-export-scr" title="Kịch bản vẽ tự động cho AutoCAD / MicroStation">📝 SCR AutoCAD</button>
-            <button class="btn sm secondary" id="btn-check-overlap">🔀 Kiểm tra chồng lấn</button>
-            <button class="btn sm secondary" id="btn-clean-dup" title="Xoá các thửa trùng khít toạ độ do các bản cũ nhân bản">🧹 Dọn thửa trùng lặp</button>
-          </div>
-          <div class="small muted" style="margin-top:6px">Tham số chuyển đổi đang dùng: <span id="towgs84-current" class="mono"></span> — <a href="#" id="lnk-open-towgs84" style="color:var(--accent);font-weight:600">đổi tham số</a></div>
-        </section>
-
-
-        <hr class="sep" />
-
-        <section class="block">
-          <h3 aria-level="2">Báo Cáo Bảng Kê Kỹ Thuật Cadastral</h3>
-          <button class="btn secondary" style="width:100%;margin-bottom:6px" id="btn-export-excel">📊 Xuất Bảng Tọa Độ (Excel)</button>
-        </section>
-
-        <hr class="sep" />
-
-      </div>
-
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
       <div id="tab-stakeout" class="tab-content">
         <section class="block">
@@ -8110,66 +8071,8 @@ function updatePdfFabState(){
 
 function renderPlots(){
   document.getElementById('btn-export-dxf').disabled = plots.length === 0;
-  document.getElementById('btn-clear-all').style.display = plots.length > 0 ? 'inline-block' : 'none';
   updatePdfFabState();
-  const undoBtn = document.getElementById('btn-undo-delete');
-  if (undoBtn) undoBtn.style.display = (lastDeletedPlot || (lastClearedPlots && lastClearedPlots.length)) ? 'inline-block' : 'none';
-  document.getElementById('stat-count').textContent = plots.length;
-
-  const totalArea = plots.reduce((s, p) => s + p.area, 0);
-  // v56 — làm tròn 0 chữ số biến 30.7 m² thành "31 m²" ngay trên bảng tổng hợp,
-  // lệch với mọi trang PDF (30.8 m²) -> người dùng tưởng app tính sai. Giữ 1 chữ số.
-  document.getElementById('stat-area').textContent = `${totalArea.toFixed(1)} m²`;
-
-  const towEl = document.getElementById('towgs84-current');
-  if (towEl) towEl.textContent = towgs84NameOf(activeTowgs84Key);
-
-  const searchEl = document.getElementById('plot-search');
-  const q = (searchEl && searchEl.value || '').trim().toLowerCase();
-  const list = document.getElementById('plot-list');
-  list.innerHTML = '';
-  let shown = 0;
-  // v36.2 — TỐI ƯU: renderPlots() dựng lại TOÀN BỘ danh sách mỗi lần gọi (kể cả khi chỉ
-  // sửa 1 thửa) và trước đây `list.appendChild(row)` được gọi NGAY trong vòng lặp —
-  // với danh sách vài trăm thửa, mỗi appendChild trực tiếp vào cây DOM đang hiển thị có
-  // thể kích hoạt reflow riêng, cộng dồn giật lag khi gõ tìm kiếm hoặc sau khi vẽ nhiều
-  // thửa liên tiếp. Gom các dòng vào DocumentFragment (không nằm trong cây DOM, không
-  // gây reflow) rồi chèn 1 LẦN DUY NHẤT — kết quả hiển thị giống hệt, chỉ nhanh hơn.
-  const frag = document.createDocumentFragment();
-  plots.forEach(plot => {
-    plot.meta = plot.meta || {}; // dữ liệu cache cũ có thể thiếu meta -> trước đây crash renderPlots
-    if (q) {
-      const hay = [plot.id, plot.meta.so_thua, plot.meta.to_ban_do, plot.meta.dia_chi, plot.meta.phuong_xa, plot.meta.quan_huyen, plot.meta.chu_su_dung, plot.meta.cccd_cmnd, plot.meta.muc_dich_su_dung, plot.meta.nguon_goc_su_dung]
-        .filter(Boolean).join(' ').toLowerCase();
-      if (!hay.includes(q)) return;
-    }
-    shown++;
-    const warn = plot.geom && !plot.geom.ok;
-    const row = document.createElement('div');
-    row.className = 'plot-row';
-    row.innerHTML = `
-      <div>
-        <div style="font-weight:600;color:var(--sidebar-bg)">${escapeHtml(plot.id)}${plot.meta.so_thua ? ` (Thửa ${escapeHtml(plot.meta.so_thua)}${plot.meta.to_ban_do ? `, Tờ ${escapeHtml(plot.meta.to_ban_do)}` : ''})` : ''}${warn ? ' <span title="Hình học có cảnh báo">⚠️</span>' : ''}</div>
-        <div class="muted mono small">${plot.area.toFixed(1)} m² · Chu vi: ${plot.perimeter.toFixed(1)}m · KTT ${plot.lon0}° / múi ${plot.zone || 3}°</div>
-        ${plot.meta.dia_chi || plot.meta.phuong_xa ? `<div class="muted small">📍 ${escapeHtml([plot.meta.dia_chi, plot.meta.phuong_xa, plot.meta.quan_huyen].filter(Boolean).join(', '))}</div>` : ''}
-      </div>
-      <div style="display:flex;gap:4px">
-        <button class="btn sm" data-act="report" title="Xem Hồ sơ">📄</button>
-        <button class="btn sm" data-act="fly" title="Zoom">🎯</button>
-        <button class="btn sm danger-text" data-act="del">🗑</button>
-      </div>`;
-    // Tên thửa có dấu nháy (VD: Thửa "A'1") làm hỏng onclick nội tuyến ở v23 -> gắn sự kiện trực tiếp.
-    row.querySelector('[data-act="report"]').onclick = () => openReportModal(plot.id);
-    row.querySelector('[data-act="fly"]').onclick = () => flyToPlot(plot.id);
-    row.querySelector('[data-act="del"]').onclick = (e) => { e.stopPropagation(); deletePlot(plot.id); toast({ title: 'Đã xoá thửa', description: 'Bấm “↩ Hoàn tác” để khôi phục.' }); };
-    row.style.cursor = 'pointer';
-    row.onclick = () => selectPlot(plot.id, { fly: false });
-    if (selectedPlotId === plot.id) row.classList.add('plot-row-active');
-    frag.appendChild(row);
-  });
-  list.appendChild(frag);
-  if (q && shown === 0) list.innerHTML = '<div class="small muted">Không có thửa nào khớp từ khoá.</div>';
-
+  plots.forEach(plot => { plot.meta = plot.meta || {}; });   // dữ liệu cache cũ có thể thiếu meta
   refreshPlotPanels();
   updateStakeoutSelects();
 }
@@ -10083,20 +9986,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // v24: các nút mới (tìm kiếm, hoàn tác, xuất dữ liệu, tham số towgs84)
   const $ = id => document.getElementById(id);
-  if ($('plot-search')) $('plot-search').addEventListener('input', () => renderPlots());
-  if ($('btn-undo-delete')) $('btn-undo-delete').onclick = undoDeletePlot;
   // v27 FIX: nút "Xóa tất cả" chỉ được bật/tắt hiển thị trong renderPlots() nhưng
   // CHƯA TỪNG được gán sự kiện click -> bấm không có tác dụng. Nay gắn handler thật.
-  if ($('btn-clear-all')) $('btn-clear-all').onclick = clearAllPlots;
-  if ($('btn-export-geojson')) $('btn-export-geojson').onclick = exportPlotsToGeoJSON;
-  if ($('btn-export-kml')) $('btn-export-kml').onclick = exportPlotsToKML;
-  if ($('btn-export-xlsx')) $('btn-export-xlsx').onclick = exportPlotsToExcel;
   // v106 — xuất CSV toạ độ / SCR AutoCAD cho TOÀN BỘ thửa qua mô-đun LandGIS.export
-  if ($('btn-export-csvxy')) $('btn-export-csvxy').onclick = () => lgV106ExportAll('csv');
-  if ($('btn-export-scr'))   $('btn-export-scr').onclick   = () => lgV106ExportAll('scr');
-  if ($('btn-check-overlap')) $('btn-check-overlap').onclick = checkPlotsOverlap;
-  if ($('btn-clean-dup')) $('btn-clean-dup').onclick = lgCleanDuplicatePlots;
-  if ($('lnk-open-towgs84')) $('lnk-open-towgs84').onclick = (e) => { e.preventDefault(); openTowgs84Modal(); };
   if ($('btn-save-towgs84')) $('btn-save-towgs84').onclick = applyTowgs84Choice;
   if ($('plot-info-close')) $('plot-info-close').onclick = () => closePlotPanel();
   renderPlots();
@@ -15091,14 +14983,13 @@ try {
     });
   }
 
-  function mountAddressSearch() {
-    var input = $id('plot-search');
+  function mountAddressSearch(inputEl, anchorEl) {
+    var input = inputEl || $id('plot-search');
     if (!input || $id('lgv42-addr-box')) return;
-    input.placeholder = '🔎 Tìm thửa/số thửa/địa chỉ (gõ không dấu vẫn khớp) — có cả tra địa chỉ ngoài';
     var box = document.createElement('div');
     box.id = 'lgv42-addr-box';
     box.style.cssText = 'display:none;margin:2px 0 6px;border:1px solid var(--border,#cfd8d3);border-radius:8px;overflow:hidden;font-size:var(--lg-fs-xs)';
-    input.parentNode.insertBefore(box, input.nextSibling);
+    var anchor = anchorEl || input; anchor.parentNode.insertBefore(box, anchor.nextSibling);
 
     function render(list, note) {
       if (!list || !list.length) {
@@ -15699,10 +15590,10 @@ try {
   /* =======================================================================
      10. KHỞI ĐỘNG
      ======================================================================= */
+  window.LGV42Addr = { mount: mountAddressSearch };   // HM-08f: ô tìm của màn Bản đồ mới dùng chung tra địa chỉ ngoài (OSM)
   function boot() {
     try { registerGiapRanhField(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q143'); }
     try { mountPanel(); } catch (e) { V.record('warn', 'panel', String(e && e.message)); }
-    try { mountAddressSearch(); } catch (e) { V.record('warn', 'search', String(e && e.message)); }
     try { startAutosave(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q144'); }
     try { wrapDXF(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q145'); }
     setTimeout(function () { try { wrapDXF(); stampSchema(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q146'); } }, 3000);
@@ -21872,7 +21763,7 @@ body.lg62 #sidebar input, body.lg62 #sidebar select, body.lg62 #sidebar textarea
 body.lg62 #sidebar input[type=checkbox], body.lg62 #sidebar input[type=radio]{
   width:22px !important; height:22px !important; min-height:0 !important; }
 body.lg62 #sidebar .stat .value{ font-size:var(--lg62-fs-num); }
-body.lg62 #sidebar .plot-row{ min-height:56px; font-size:var(--lg62-fs-sm) !important; }
+
 
 /* ---------- Nhãn trên bản đồ to hơn ---------- */
 
@@ -22308,8 +22199,8 @@ html, body{ overflow-x:hidden; }
 
 
 
-.stat-grid{ grid-template-columns:1fr; }
-@media (min-width:520px){ .stat-grid{ grid-template-columns:1fr 1fr; } }
+
+
 .header-actions{ gap:6px; }
 header h1{ font-size:var(--lg63-fs); }
 @media (max-width:720px){ header h1{ max-width:52vw; } }
@@ -22340,7 +22231,7 @@ header h1{ font-size:var(--lg63-fs); }
   .lg-pinfo-grid{ grid-template-columns:minmax(0,40%) minmax(0,1fr) !important; gap:4px 10px !important; }
   .lg-pinfo-grid dt{ margin-top:0; }
 }
-.row > *, .header-actions > *, .lg31-kv > *, .stat, .stat-grid > *, .coord-box,
+.row > *, .header-actions > *, .lg31-kv > *, .stat, .coord-box,
 .card > *, aside > *, main > *, .toast > *, .sheet > *{ min-width:0; }
 img, svg, canvas, video, iframe{ max-width:100%; }
 :not(.lg60-root):not(.lg60-host) > table{ max-width:100%; }
@@ -25067,10 +24958,10 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
 /* bảng rộng vẫn cuộn ngang trong khung, không đẩy vỡ layout */
 
 /* các "bảng" dạng danh sách */
-.lg63-check li, .lg63-check > b, #sidebar .plot-row, .lg-pinfo, .lg-pinfo-grid{
+.lg63-check li, .lg63-check > b, .lg-pinfo, .lg-pinfo-grid{
   font-size: var(--lg83-tbl-fs); line-height: 1.55;
 }
-body.lg62 #sidebar .plot-row{ font-size: var(--lg83-tbl-fs) !important; }
+
 /* hồ sơ in giữ nguyên cỡ chữ pháp lý */
 .lg60-root table, .lg60-root table th, .lg60-root table td,
 .lg60-host table, .lg60-host table th, .lg60-host table td{ font-size: inherit !important; }
@@ -25297,8 +25188,8 @@ header h1{ font-size:var(--lg-fs-title); min-width:0; overflow:hidden; text-over
 
 
 
-.row, .plot-row, .sig-grid{ flex-wrap:wrap; }
-.stat-grid, .lg-pinfo-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+.row, .sig-grid{ flex-wrap:wrap; }
+ .lg-pinfo-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
 .lg-pinfo-grid{ grid-template-columns:minmax(120px,auto) minmax(0,1fr); }
 input, select, textarea{ max-width:100%; }
 .coord-box, .mono, [class*="mono"]{ overflow-wrap:anywhere; }
@@ -26258,7 +26149,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<div class="lg103-actions">' + chip('all', 'Tất cả') + chip('ok', '✔ Đạt') + chip('bad', '✕ Không đạt') + chip('none', '— Chưa GCN') + chip('unsynced', '📱 Chưa đồng bộ') + '</div>' +
       '<div class="lg103-kv"><span>Hiển thị</span><span id="lg103-pcount"></span></div>' +
       '<div id="lg103-plist" style="position:relative;overflow:auto;height:46vh;border:1px solid #e3e8e5;border-radius:10px"><div style="position:relative"></div></div>' +
-      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="legacy-plots">▤ Quản lý thửa đầy đủ (sửa, đối soát)</button></div>';
+      '<div class="lg103-actions"><button class="lg103-abtn" data-lg103-act="plots-tools">⇪ Xuất dữ liệu &amp; công cụ thửa</button></div>';
   }
   /* HM-23 — hàng đợi nhập sổ ngoại tuyến */
   function queueOpen() {
@@ -26398,6 +26289,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       mRow('🧮', 'Quy đổi toạ độ hàng loạt', 'data-lg103-act="conv-batch"') +
       mRow('📄', 'Xuất theo biểu mẫu của bạn', 'data-lg103-act="forms-open"', { sub: 'Bảng kê toạ độ · Excel · trang PDF theo mẫu' }) +
       mRow('✂', 'Mô phỏng tách thửa', 'data-lg103-act="split-open"', { sub: 'Chia thửa đang chọn thành 2 phần' }) +
+      mRow('⇪', 'Xuất dữ liệu &amp; công cụ thửa', 'data-lg103-act="plots-tools"', { sub: 'GeoJSON · KML · Excel · CSV · SCR · DXF · dọn trùng' }) +
       mRow('🧩', 'Kiểm tra chồng lấn / khe hở thửa', 'data-lg103-act="topo"') +
       mRow('📶', 'Bản đồ ngoại tuyến', 'data-lg109-act="cache"') +
       mRow('📍', 'Thửa tại vị trí của tôi', 'data-lg103-act="cad-gps"') +
@@ -26437,11 +26329,31 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     profile: { label: 'Hồ sơ',  icon: '📄', render: tabProfile, title: 'Hồ sơ thửa đang chọn' },
     more:    { label: 'Thêm',   icon: '⋯',  render: tabMore,    title: 'Thêm' }
   };
+  /* HM-08f — công cụ dữ liệu thửa (thay tab "Quản lý thửa" cũ): thống kê, xuất, dọn trùng, xoá tất cả, tham số chuyển đổi */
+  function plotsToolsHTML() {
+    var ps = plotsAll(), n = ps.length, area = ps.reduce(function (s, p) { return s + (p.area || 0); }, 0), tw = '';
+    try { tw = towgs84NameOf(activeTowgs84Key); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f2'); }
+    var b = function (act, t, ttl) { return '<button type="button" class="lg103-abtn" data-lg103-act="' + act + '"' + (ttl ? ' title="' + ttl + '"' : '') + (n ? '' : ' disabled') + '>' + t + '</button>'; };
+    return '<div class="lg8f"><div class="lg8e-kv"><span>Tổng số thửa</span><span id="lg8f-count">' + n + '</span></div><div class="lg8e-kv"><span>Tổng diện tích</span><span id="lg8f-area">' + area.toFixed(1) + ' m²</span></div>' +
+      '<h5>Xuất toàn bộ thửa</h5><div class="lg103-actions">' + b('pt-geojson', '🗺 GeoJSON') + b('pt-kml', '🌍 KML') + b('pt-xlsx', '📊 Excel') + b('pt-csv', '📄 CSV toạ độ', 'Bảng X, Y và chiều dài cạnh S của mọi thửa') + b('pt-scr', '📝 SCR AutoCAD', 'Kịch bản vẽ tự động cho AutoCAD / MicroStation') + b('pt-dxf', '📐 DXF') + '</div>' +
+      '<h5>Dọn dẹp</h5><div class="lg103-actions">' + b('topo', '🔀 Kiểm tra chồng lấn') + b('pt-dup', '🧹 Dọn thửa trùng lặp', 'Xoá các thửa trùng khít toạ độ do các bản cũ nhân bản') + b('pt-clear', '🗑 Xoá tất cả (có Thùng rác)') + '</div>' +
+      '<h5>Chuyển đổi toạ độ</h5><div class="lg8e-kv"><span>Tham số đang dùng</span><span id="lg8f-tow" class="mono">' + escA4(tw) + '</span></div><div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="pt-towgs">Đổi tham số chuyển đổi</button></div></div>';
+  }
   // Hành động của các mục mới (gắn một lần vào khay nội dung)
   function newNavAction(act, t) {
-    var legacyTabs = { 'import-qr': 'tab-qr', 'import-cad': 'tab-import', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout', 'legacy-plots': 'tab-plots' };
+    var legacyTabs = { 'import-qr': 'tab-qr', 'import-cad': 'tab-import', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout' };
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
+      case 'plots-tools': openSheet('Dữ liệu thửa', plotsToolsHTML()); return true;
+      case 'pt-geojson': exportPlotsToGeoJSON(); return true;
+      case 'pt-kml': exportPlotsToKML(); return true;
+      case 'pt-xlsx': exportPlotsToExcel(); return true;
+      case 'pt-csv': lgV106ExportAll('csv'); return true;
+      case 'pt-scr': lgV106ExportAll('scr'); return true;
+      case 'pt-dxf': exportPlotsToDXF(); return true;
+      case 'pt-dup': lgCleanDuplicatePlots(); body.innerHTML = plotsToolsHTML(); return true;
+      case 'pt-clear': clearAllPlots(); body.innerHTML = plotsToolsHTML(); return true;
+      case 'pt-towgs': closeSheet(); openTowgs84Modal(); return true;
       case 'goto-import': selectTab('import'); return true;
       case 'card-profile': cardShown = false; sheet.classList.remove('lg8c-card-on'); selectTab('profile'); return true;
       case 'card-route': clickIf('lg52-fab-route'); return true;
@@ -26899,6 +26811,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     fabs.innerHTML = '<button type="button" id="lg8c-layers" aria-label="Lớp bản đồ">◫</button><button type="button" id="lg8c-loc" aria-label="Vị trí của tôi">◎</button>';
     document.body.appendChild(fabs);
     var q = document.getElementById('lg8c-q'), res = document.getElementById('lg8c-res');
+    try { if (window.LGV42Addr) LGV42Addr.mount(q, res); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f1'); }
     q.addEventListener('input', function () {
       var items = (window.lgPlotListItems ? window.lgPlotListItems(plotsAll(), { q: q.value, f: 'all' }) : []).slice(0, 6);
       res.style.display = (q.value.trim() && items.length) ? 'block' : 'none';

@@ -22,8 +22,8 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       const clickAct = async (key, act) => { LandGIS.ui.switchDock(key); await w8(200); const b = document.querySelector('#lg103-body [data-lg103-act="' + act + '"],#lg103-body [data-lg108-act="' + act + '"],#lg103-body [data-lg109-act="' + act + '"]'); if (!b) return false; b.click(); await w8(900); return true; };
       const active = id => { const e = document.getElementById(id); return !!e && e.classList.contains('active') && vis(e); };
       out.reach = {};
-      for (const [act, tab] of [['import-qr', 'tab-qr'], ['import-cad', 'tab-import'], ['import-gps', 'tab-gps-offline'], ['import-rtk', 'tab-stakeout'], ['legacy-plots', 'tab-plots'], ['import-pick', 'tab-scan-ai']]) {
-        await clickAct(act === 'legacy-plots' ? 'plots' : 'import', act); out.reach[act] = active(tab);
+      for (const [act, tab] of [['import-qr', 'tab-qr'], ['import-cad', 'tab-import'], ['import-gps', 'tab-gps-offline'], ['import-rtk', 'tab-stakeout'], ['import-pick', 'tab-scan-ai']]) {
+        await clickAct('import', act); out.reach[act] = active(tab);
       }
       await clickAct('import', 'import-book'); out.reach.book = !!document.getElementById('lg8d'); const mk = document.getElementById('lg8d'); if (mk) mk.remove();
       await clickAct('import', 'import-edges'); out.reach.edges = !!(window.LG170 && LG170.state && (LG170.state.open || document.querySelector('#lg170-panel,.lg170-panel'))); try { LG170.close(); } catch (e) { }
