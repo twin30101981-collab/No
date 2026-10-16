@@ -145,3 +145,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f đợt 12 (P07, 16/10): ảnh/camera vào bước 1 wizard (hm08f_wizard_photo); dọn sidebar/lg111/lg62-nav/popstate/auto-chuyển + 12 luật CSS chết; màn chào (hm08f_welcome); ảnh 360/390/430 trước–sau khớp (chỉ nhiễu thời gian). Bộ đầy đủ PASS.
 ## 21. ĐÓNG PHIÊN P07 — KẾT THÚC CHUỖI
 Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camera/AI trên máy thật (VIEC_CUA_BAN).
+- HM-08f (P07 tiếp, 16/10): sửa lỗi rò nút ▣ trên thanh trên (mountHeader canh #lg110-back đã gỡ → thêm 1 nút mỗi nhịp, 76 nút/30 s). Test hm08f_header_leak; bộ đầy đủ PASS. Rà soát UI mobile + mockup đề xuất: https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8 (lộ trình 4 đợt, chờ người dùng duyệt).
