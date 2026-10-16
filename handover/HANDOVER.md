@@ -136,3 +136,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f đợt 8 (16/10): dựng lại màn Quét QR (sheet), gỡ tab-qr; ảnh nhỏ <60px báo ngay. Test hm08f_qr; bộ đầy đủ PASS. Còn 1 màn cũ trong #sidebar: Scan sổ đỏ.
 - HM-08f đợt 9 (16/10): gỡ hệ tab sidebar (switchTab); sidebar chỉ còn màn Scan sổ đỏ. Chưa dựng lại màn Scan (cần quyết định A/B, xem backlog HM-08f). Bộ đầy đủ PASS.
 - HM-08f đợt 10 (16/10) hướng A: khung màn Scan sổ đỏ (đầu trang, 3 bước, tuỳ chọn gập; giữ 31 id). Test hm08f_scan_ui; bộ đầy đủ PASS. Hướng B chưa làm.
+- HM-08f đợt 11 (16/10) hướng B: bỏ màn Nhập liệu riêng + sidebar; app luôn ở Bản đồ; Scan sổ đỏ = lớp toàn màn (lgOpenScan), gỡ MENU; đổi chuẩn đo nạp 50 thửa sang DOMContentLoaded. e2e đọc sổ→thửa chạy tốt; bộ đầy đủ PASS. Cần thử camera/AI máy thật.

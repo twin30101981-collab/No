@@ -2945,12 +2945,12 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   </header>
 
   <div class="main">
-    <aside id="sidebar">
-
-      <!-- TAB 1: SCAN SỔ ĐỎ VÀ TỰ ĐỘNG ĐỊNH VỊ VỊ TRÍ ĐẤT -->
+    <!-- HM-08f (hướng B): màn "Scan sổ đỏ" là một lớp toàn màn riêng, mở từ Nhập sổ; id #sidebar được giữ vì ~65 luật CSS chữ/nút của màn này khoá theo id đó -->
+    <section id="sidebar" class="lg-scan-screen" aria-label="Scan sổ đỏ">
+      <div class="lg-scan-bar"><button type="button" id="lg-scan-back" aria-label="Quay lại bản đồ">← Bản đồ</button><b class="lg-scan-title" id="lg-scan-title">📷 Scan sổ đỏ</b></div>
+      <div class="lg-scan-body">
       <div id="tab-scan-ai" class="tab-content active">
         <div class="lg-scan-head">
-          <h2 class="lg-scan-title">📷 Scan sổ đỏ</h2>
           <ol class="lg-scan-steps" aria-label="Các bước"><li>Chụp / chọn ảnh</li><li>Khoanh vùng bảng toạ độ</li><li>Kiểm tra &amp; vẽ thửa</li></ol>
         </div>
         <section class="block lg-scan-card">
@@ -3076,10 +3076,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
       <!-- TAB 6 (v35): QUÉT MÃ QR TRÊN SỔ ĐỎ MẪU MỚI -->
-      <!-- v27: khối "Thửa đang chọn" ghim đáy sidebar -->
-      <div id="sidebar-selected"></div>
-
-    </aside>
+      </div>
+    </section>
+    <div id="sidebar-selected" hidden></div>
 
     <main class="map-wrap">
       <div id="map"></div>
@@ -21806,7 +21805,8 @@ body.lg62.lg62-map .leaflet-bottom.leaflet-right{ bottom:74px; }
     if (toMap && typeof window.__lgStopQrCamera === 'function') {
       try { window.__lgStopQrCamera(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q-v185d'); }
     }
-    document.body.classList.toggle('lg62-map', !!toMap);
+    toMap = true;   // HM-08f (B): không còn màn Nhập liệu riêng — luôn ở bản đồ; Scan là lớp phủ (lgOpenScan)
+    document.body.classList.toggle('lg62-map', true);
     var steps = $('lg62-steps');
     if (steps) steps.innerHTML = toMap ? '1. Nhập liệu · <b>2. Bản đồ</b>' : '<b>1. Nhập liệu</b> · 2. Bản đồ';
     var sub = $('lg62-sub');
@@ -25971,18 +25971,22 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
      🗺 Bản đồ · ▤ Thửa · ＋ Nhập sổ · 📄 Hồ sơ · ⋯ Thêm. Hàng tab ngang bị ẩn; mọi chức năng cũ vẫn có đường vào
      (Nhập sổ → các tab nhập liệu cũ; Hồ sơ → xuất/ A4/ PDF/ DXF; Thêm → cài đặt, trợ giúp, chế độ chuyên gia). */
   var profTab = 'overview';
+  /* HM-08f (hướng B) — màn Scan sổ đỏ: lớp toàn màn #sidebar.on (không còn khung sidebar/tab/drawer) */
+  window.lgOpenScan = function () {
+    closeSheet(); var sc = document.getElementById('sidebar'); if (!sc) return false;
+    sc.classList.add('on', 'open'); sc.scrollTop = 0; var bd = sc.querySelector('.lg-scan-body'); if (bd) bd.scrollTop = 0;
+    if (typeof map !== 'undefined' && map) setTimeout(function () { map.invalidateSize(); }, 150);
+    return true;
+  };
+  window.lgCloseScan = function () { var sc = document.getElementById('sidebar'); if (!sc || !sc.classList.contains('on')) return; sc.classList.remove('on'); if (typeof map !== 'undefined' && map) setTimeout(function () { map.invalidateSize(); }, 150); };
+  (function () {
+    var bk = document.getElementById('lg-scan-back'); if (bk) bk.addEventListener('click', window.lgCloseScan);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var sc = document.getElementById('sidebar'); if (sc && sc.classList.contains('on')) window.lgCloseScan(); } });
+    var od = window.drawPlot;   // vẽ xong thửa (không phải khôi phục) → đóng màn Scan để thấy bản đồ
+    if (typeof od === 'function' && !od.__lgScan) { var w = function (id, pts, lon0, meta) { var r = od.apply(this, arguments); try { if (!(meta && meta.__restoring)) window.lgCloseScan(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f5'); } return r; }; w.__lgScan = 1; window.drawPlot = w; }
+  })();
   /* HM-08f: sidebar chỉ còn MỘT màn — "Scan sổ đỏ" (#tab-scan-ai, luôn ở trạng thái active); không còn hệ tab */
-  function goLegacyTab(id) {
-    closeSheet();
-    if (map) setTimeout(function () { map.invalidateSize(); }, 150);
-    // lớp v62 đổi màn có độ trễ: lặp lại tối đa ~2 giây cho tới khi màn nhập liệu hiện ra (chỉ bấm Quay lại khi đang ở bản đồ)
-    (function ensure(n) {
-      var el = document.getElementById(id), r = el && el.getBoundingClientRect();
-      if (r && r.width > 0 && r.height > 0) return;
-      if (document.body.classList.contains('lg62-map')) { var bk = $('lg62-back'); if (bk && !bk.disabled) bk.click(); }
-      if (n < 8) setTimeout(function () { ensure(n + 1); }, 250);
-    })(0);
-  }
+  function goLegacyTab() { window.lgOpenScan(); }
   function clickIf(id) { var e = document.getElementById(id); if (e) { e.click(); return true; } return false; }
   function plotsAll() { try { return window.plots || []; } catch (e) { return []; } }
   /* ============ HM-08i — MÀN THỬA (mockup ⑦): danh sách ảo hoá + tìm + lọc Đạt/Không đạt + trạng thái đồng bộ ============ */
@@ -26324,7 +26328,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       }
       case 'import-cam': closeSheet(); triggerCameraScan(); return true;
       case 'import-pick': {
-        goLegacyTab('tab-scan-ai');
+        window.lgOpenScan();
         var f = document.querySelector('#tab-scan-ai input[type=file]:not([capture])') || document.querySelector('#tab-scan-ai input[type=file]');
         if (f) setTimeout(function () { f.click(); }, 150); return true;
       }
@@ -26500,6 +26504,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
 
   function triggerCameraScan() {
     LG.diag.log('info', 'ui', 'Kich hoat quet So Do tu Dock');
+    window.lgOpenScan();
     var sels = ['#tab-scan-ai input[type=file][capture]', '#tab-scan-ai input[type=file]', 'input[type=file][accept*="image"]'];
     // Ưu tiên đúng nút chụp ảnh gốc của v86 để giữ nguyên luồng xử lý
     var btn = Array.prototype.find.call(document.querySelectorAll('#tab-scan-ai button, button'), function (b) {
@@ -28563,9 +28568,7 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
      1) QUAY LẠI MENU CHÍNH
      ==================================================================== */
   function gotoInput() {
-    var b = $('lg62-back');
-    if (b) { b.disabled = false; b.click(); }
-    else document.body.classList.remove('lg62-map');
+    try { if (window.lgCloseScan) window.lgCloseScan(); if (window.LandGIS && LandGIS.ui && LandGIS.ui.switchDock) LandGIS.ui.switchDock('import'); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f6'); }
     // v154 — SỬA GỐC RỄ: "← MENU" không mở lại được sidebar trên điện thoại.
     // NGUYÊN NHÂN: drawPlot() gọi closeSidebar() (cơ chế v27, gắn cờ lớp
     // "sidebar-collapsed" trên <body>) mỗi khi vẽ/nạp một thửa trên màn hẹp
@@ -28616,12 +28619,6 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
   function mountHeader() {
     var top = $('lg62-top');
     if (!top || $('lg110-back')) return !!$('lg110-back');
-    var back = document.createElement('button');
-    back.id = 'lg110-back';
-    back.type = 'button';
-    back.setAttribute('aria-label', 'Quay lại menu chính');
-    back.innerHTML = '← MENU';
-    back.onclick = function (e) { e.preventDefault(); gotoInput(); };
     var tools = document.createElement('button');
     tools.id = 'lg110-tools';
     tools.type = 'button';
@@ -28630,7 +28627,6 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
     tools.textContent = '▣';
     tools.onclick = function (e) { e.preventDefault(); openModal('edges'); };
     var brand = top.querySelector('.lg62-brand');
-    if (brand) top.insertBefore(back, brand); else top.insertBefore(back, top.firstChild);
     top.appendChild(tools);
     rec('info', 'Da gan nut MENU + cong cu tren thanh tieu de');
     return true;
@@ -28639,6 +28635,7 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
   /* Thêm mục "Nhập liệu" vào Dock v103 (Dock vốn không có đường về) */
   function mountDockHome() {
     var dock = $('lg103-dock');
+    return !!dock;   // HM-08f (B): không còn màn Nhập liệu riêng → không thêm mục MENU/🏠 vào Dock
     if (!dock || dock.querySelector('[data-lg110-home]')) return !!dock;
     var b = document.createElement('button');
     b.type = 'button';
@@ -29359,7 +29356,7 @@ body.lg62.lg103 #lg103-dock .lg113-hidden{ display:none; }
   function syncToggle() {
     var tg = document.querySelector('#lg103-dock [data-lg113-toggle]');
     if (!tg) return;
-    var m = onMap();
+    var m = false;   // HM-08f (B): luôn ở bản đồ — nút này luôn hiện "Bản Đồ", không còn nhãn MENU/màn nhập liệu
     setTxt(tg.querySelector('.lg103-ic'), m ? '🏠' : '🗺');
     setTxt(tg.querySelector('.lg103-lb'), m ? 'MENU' : 'Bản Đồ');
     setAttrIf(tg, 'aria-label', m ? 'Quay lại màn hình nhập liệu' : 'Mở bản đồ');
@@ -43509,6 +43506,12 @@ body.lg175-stack-open #lg124-stack{
 #tab-scan-ai .lg-scan-opts > summary, #tab-scan-ai .lg-scan-more > summary{ cursor:pointer; font-weight:700; font-size:var(--lg-fs-sm,15px); min-height:36px; display:flex; align-items:center; }
 #tab-scan-ai .lg-scan-more{ margin-top:10px; padding:6px 10px; }
 #tab-scan-ai .row > label.btn{ font-size:var(--lg-fs-sm,15px); }
+/* HM-08f (B) — màn Scan sổ đỏ toàn màn */
+body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-direction:column; position:fixed; inset:0; top:0; bottom:0; z-index:5000; background:var(--bg,#f4f7f5); visibility:visible; opacity:1; transform:none; pointer-events:auto; }
+#sidebar.lg-scan-screen .lg-scan-bar{ display:flex; align-items:center; gap:12px; padding:calc(env(safe-area-inset-top,0px) + 8px) 12px 8px; background:#0f4c34; color:#fff; flex:0 0 auto; }
+#sidebar.lg-scan-screen .lg-scan-bar button{ min-height:44px; padding:6px 14px; border:1px solid rgba(255,255,255,.5); border-radius:10px; background:transparent; color:#fff; font-size:var(--lg-fs-sm,15px); font-weight:700; }
+#sidebar.lg-scan-screen .lg-scan-title{ font-size:var(--lg-fs-num,18px); }
+#sidebar.lg-scan-screen .lg-scan-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 24px); }
 </style>
 </body>
 
