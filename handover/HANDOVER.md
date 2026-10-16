@@ -132,3 +132,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f đợt 4 (16/10): dựng lại màn Quản lý thửa → sheet Dữ liệu thửa (Thửa/Thêm → ⇪); tra địa chỉ ngoài chuyển sang ô tìm màn Bản đồ; gỡ tab-plots. Test hm08f_plots_tools; bộ đầy đủ PASS. Còn 5 màn cũ trong #sidebar.
 - HM-08f đợt 5 (16/10): dựng lại màn Nhập CAD/CSV (sheet lgOpenImportCad, chọn tỉnh/KTT trên màn); gỡ tab-import. Test hm08f_cad_import; bộ đầy đủ PASS. Còn 4 màn cũ trong #sidebar.
 - HM-08f đợt 6 (16/10): dựng lại màn GPS thực địa (sheet lgOpenFieldGps); gỡ tab-gps-offline. Test hm08f_gps_field; bộ đầy đủ PASS. Còn 3 màn cũ trong #sidebar (scan, QR, RTK).
+- HM-08f đợt 7 (16/10): dựng lại màn Cắm mốc RTK (sheet lgOpenStakeout), sửa lỗi đổi thửa không cập nhật mốc; gỡ tab-stakeout. Test hm08f_rtk; bộ đầy đủ PASS. Còn 2 màn cũ trong #sidebar (scan, QR).

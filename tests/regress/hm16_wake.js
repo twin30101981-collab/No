@@ -9,7 +9,7 @@ const { open, report } = require('../lib');
     const vib = []; navigator.vibrate = p => { vib.push(p); return true; };
     // GPS giả: đứng cách mốc 3 m → 0,8 m → 0,3 m
     const pts = [[2259336.23, 568027.14], [2259334.17, 568027.23], [2259334.42, 568031.07], [2259316.85, 568031.69]].map(q => ({ x: q[0], y: q[1] }));
-    drawPlot('Thửa 7', pts, 105.5, { so_thua: '7' }, false, 3); updateStakeoutSelects(); await w(200);
+    drawPlot('Thửa 7', pts, 105.5, { so_thua: '7' }, false, 3); await w(3000); lgOpenStakeout(); await w(300);
     document.getElementById('stakeout-plot-select').value = 'Thửa 7'; updateStakeoutPins(); document.getElementById('stakeout-pin-select').value = '0';
     const def = LGCore.Geometry.vn2000.def({ ktt: 105.5, mui: 3 }); const ll = (dN) => { const q = proj4(def, 'WGS84', [568027.14, 2259336.23 + dN]); return { latitude: q[1], longitude: q[0], accuracy: 1 }; };
     let cb = null; navigator.geolocation.watchPosition = (ok) => { cb = ok; return 77; }; navigator.geolocation.clearWatch = () => { };
