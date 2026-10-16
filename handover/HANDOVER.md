@@ -135,3 +135,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f đợt 7 (16/10): dựng lại màn Cắm mốc RTK (sheet lgOpenStakeout), sửa lỗi đổi thửa không cập nhật mốc; gỡ tab-stakeout. Test hm08f_rtk; bộ đầy đủ PASS. Còn 2 màn cũ trong #sidebar (scan, QR).
 - HM-08f đợt 8 (16/10): dựng lại màn Quét QR (sheet), gỡ tab-qr; ảnh nhỏ <60px báo ngay. Test hm08f_qr; bộ đầy đủ PASS. Còn 1 màn cũ trong #sidebar: Scan sổ đỏ.
 - HM-08f đợt 9 (16/10): gỡ hệ tab sidebar (switchTab); sidebar chỉ còn màn Scan sổ đỏ. Chưa dựng lại màn Scan (cần quyết định A/B, xem backlog HM-08f). Bộ đầy đủ PASS.
+- HM-08f đợt 10 (16/10) hướng A: khung màn Scan sổ đỏ (đầu trang, 3 bước, tuỳ chọn gập; giữ 31 id). Test hm08f_scan_ui; bộ đầy đủ PASS. Hướng B chưa làm.

@@ -2949,20 +2949,13 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
 
       <!-- TAB 1: SCAN SỔ ĐỎ VÀ TỰ ĐỘNG ĐỊNH VỊ VỊ TRÍ ĐẤT -->
       <div id="tab-scan-ai" class="tab-content active">
-        <section class="block">
-          <h3 aria-level="2">1. Chụp Ảnh / Tải Ảnh Sổ Đỏ Tự Động Tìm Vị Trí Đất</h3>
-          <p class="small muted lg-scan-intro">Chụp hình trực tiếp bằng Camera hoặc chọn ảnh Sổ Đỏ từ thư viện. Hệ thống tự động scan bảng tọa độ X, Y và nhảy thẳng đến vị trí thửa đất trên bản đồ.</p>
-          
-          <div style="margin-bottom:8px;background:var(--muted);padding:8px;border-radius:6px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span class="small bold">Tiền xử lý ảnh:</span>
-              <button class="btn sm" id="btn-rotate-img" type="button">🔄 Xoay 90°</button>
-            </div>
-            <label class="small muted" style="display:flex;align-items:center;gap:6px;margin-top:6px">
-              <input type="checkbox" id="chk-enhance-image" checked /> 
-              <span>Tự động tăng tương phản (Contrast +40%) & Binarization</span>
-            </label>
-          </div>
+        <div class="lg-scan-head">
+          <h2 class="lg-scan-title">📷 Scan sổ đỏ</h2>
+          <ol class="lg-scan-steps" aria-label="Các bước"><li>Chụp / chọn ảnh</li><li>Khoanh vùng bảng toạ độ</li><li>Kiểm tra &amp; vẽ thửa</li></ol>
+        </div>
+        <section class="block lg-scan-card">
+          <h3 aria-level="2">Bước 1 · Ảnh sổ đỏ</h3>
+          <p class="small muted lg-scan-intro">Chụp bằng camera hoặc chọn ảnh từ thư viện; app đọc bảng toạ độ X, Y và nhảy tới vị trí thửa trên bản đồ.</p>
 
           <div class="row">
             <!-- Nút Chụp Ảnh Trực Tiếp Từ Camera Di Động -->
@@ -2978,9 +2971,22 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
             <input type="file" id="sodo-file-upload" accept="image/*" style="display:none" />
           </div>
 
+          <details class="lg-scan-opts">
+            <summary>⚙ Tuỳ chọn xử lý ảnh</summary>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px">
+              <span class="small bold">Xoay ảnh</span>
+              <button class="btn sm" id="btn-rotate-img" type="button">🔄 Xoay 90°</button>
+            </div>
+            <label class="small muted" style="display:flex;align-items:center;gap:6px;margin-top:6px">
+              <input type="checkbox" id="chk-enhance-image" checked />
+              <span>Tự động tăng tương phản (+40%) &amp; nhị phân hoá</span>
+            </label>
+          </details>
+
           <!-- Interactive Crop ROI Canvas -->
           <div id="roi-wrapper" style="display:none;margin-top:8px">
-            <p class="small muted" style="margin:4px 0 2px">💡 Khoanh vùng Bảng Tọa Độ trên ảnh để quét chính xác 100%:</p>
+            <h3 aria-level="2" class="lg-scan-h3">Bước 2 · Khoanh vùng bảng toạ độ</h3>
+            <p class="small muted" style="margin:4px 0 2px">Kéo khung quanh bảng toạ độ trên ảnh để đọc chính xác hơn:</p>
             <div class="roi-editor-container">
               <canvas id="roi-canvas"></canvas>
             </div>
@@ -2996,9 +3002,12 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
           <div id="sodo-pending" class="small muted" style="display:none;text-align:center;margin-top:8px">⌛ Đang bóc tách bảng tọa độ & tìm vị trí đất trên bản đồ...</div>
 
           <div id="sodo-result" style="display:none;margin-top:10px;">
+            <h3 aria-level="2" class="lg-scan-h3">Bước 3 · Kiểm tra kết quả</h3>
             <div class="coord-box small" id="sodo-metadata" style="margin-bottom:8px;"></div>
             <div id="sodo-list" style="max-height:110px;overflow-y:auto;border:1px solid #ccc;border-radius:4px;padding:4px;background:#fff;"></div>
-            
+
+            <details class="lg-scan-opts" open>
+            <summary>🧭 Hệ toạ độ: tỉnh · ngày cấp GCN · múi chiếu</summary>
             <div style="margin-top:6px">
               <label class="small muted">Tỉnh/Thành (Xác định Kinh tuyến trục VN-2000):</label>
               <select id="province-select" aria-label="Tỉnh/thành (kinh tuyến trục VN-2000)" style="margin-top:2px"></select>
@@ -3019,6 +3028,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
               </select>
               <div class="small muted" style="margin-top:2px">⚠️ Chọn sai múi chiếu gây lệch tới ~20 m ở rìa múi.</div>
             </div>
+            </details>
 
             <!-- ĐÁNH GIÁ CÂN BẰNG BÌNH SAI BOWDITCH -->
             <div id="closure-check-box" style="margin-top:8px;background:#fff;border:1px solid var(--border);padding:8px;border-radius:6px;display:none">
@@ -3040,9 +3050,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
         </section>
 
         <!-- v38: QUÉT BỔ SUNG CÁC TRANG CÒN LẠI CỦA SỔ ĐỎ -->
-        <section class="block">
-          <h3 aria-level="2">2. Quét Bổ Sung (Bìa / Trang 3-4) Cho Thửa Đã Có</h3>
-          <p class="small muted lg-scan-intro">Chụp/tải thêm ảnh các trang còn lại của sổ đỏ (trang bìa, trang ghi chú biến động...) để bổ sung Chủ sử dụng, Mục đích, Thời hạn, Nguồn gốc SD, Ghi chú biến động/thế chấp... App tự khớp vào đúng thửa đã có trong danh sách theo <b>Số thửa + Tờ bản đồ</b> đọc được trên ảnh.</p>
+        <details class="block lg-scan-card lg-scan-more">
+          <summary>➕ Bổ sung trang khác của sổ (bìa, trang 3–4) cho thửa đã có</summary>
+          <p class="small muted lg-scan-intro">Chụp/tải thêm các trang còn lại để bổ sung chủ sử dụng, mục đích, thời hạn, nguồn gốc, ghi chú biến động/thế chấp. App tự khớp vào thửa đã có theo <b>Số thửa + Tờ bản đồ</b> đọc được trên ảnh.</p>
 
           <div class="row">
             <label for="supplement-camera-upload" class="btn secondary" style="flex:1;padding:10px;text-align:center">
@@ -3058,7 +3068,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
 
           <div id="supplement-pending" class="small muted" style="display:none;text-align:center;margin-top:8px">⌛ Đang đọc ảnh bổ sung & khớp thửa...</div>
           <div id="supplement-result" style="display:none;margin-top:8px;max-height:160px;overflow-y:auto;border:1px solid #ccc;border-radius:4px;padding:6px;background:#fff;"></div>
-        </section>
+        </details>
       </div>
 
       <!-- TAB 2: ĐỊNH VỊ GPS VỆ TINH OFFLINE TRỰC THỪA -->
@@ -43487,6 +43497,19 @@ body.lg175-stack-open #lg124-stack{
   window.LGForms = { mount: mount, list: list, get: get, add: add, remove: remove, validate: validate, render: render, plotData: plotData, pageHTML: pageHTML, open: open, table: table, toCSV: toCSV, exportTable: exportTable, panelHTML: panelHTML };
 })();
 </script>
+<style id="lg8f-scan-css">
+/* HM-08f (hướng A) — khung màn "Scan sổ đỏ": đầu trang + 3 bước, tuỳ chọn gập, chữ gọn; logic và id giữ nguyên */
+#tab-scan-ai .lg-scan-head{ padding:6px 4px 2px; }
+#tab-scan-ai .lg-scan-title{ margin:0 0 4px; font-size:var(--lg-fs-num,18px); line-height:1.2; }
+#tab-scan-ai .lg-scan-steps{ display:flex; gap:6px; margin:0 0 6px; padding:0; list-style:none; counter-reset:s; flex-wrap:wrap; }
+#tab-scan-ai .lg-scan-steps li{ counter-increment:s; font-size:13px; color:#355; background:#e8f1ec; border-radius:999px; padding:2px 8px; }
+#tab-scan-ai .lg-scan-steps li::before{ content:counter(s) ". "; font-weight:700; }
+#tab-scan-ai .lg-scan-card h3, #tab-scan-ai .lg-scan-h3{ font-size:var(--lg-fs-sm,15px); margin:0 0 4px; text-transform:none; letter-spacing:0; }
+#tab-scan-ai .lg-scan-opts{ margin:8px 0; background:var(--muted,#eef3f0); border-radius:8px; padding:6px 10px; }
+#tab-scan-ai .lg-scan-opts > summary, #tab-scan-ai .lg-scan-more > summary{ cursor:pointer; font-weight:700; font-size:var(--lg-fs-sm,15px); min-height:36px; display:flex; align-items:center; }
+#tab-scan-ai .lg-scan-more{ margin-top:10px; padding:6px 10px; }
+#tab-scan-ai .row > label.btn{ font-size:var(--lg-fs-sm,15px); }
+</style>
 </body>
 
 </html>
