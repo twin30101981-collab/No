@@ -82,3 +82,4 @@
 - 16/10 · HM-46a: thông báo gọn 1 dòng trên dock, tiến độ hồ sơ thành chip nhỏ.
 - 16/10 · HM-46b: màn Bản đồ gọn — thanh tìm kiếm ở trên, một cột nút bên phải, nhãn cạnh chỉ của thửa đang chọn.
 - 16/10 · HM-46c: tấm Nhập sổ/Thửa/Hồ sơ theo mockup, dock biểu tượng đồng bộ. Chuyển sang P08: gom CSS (HM-46d).
+- 16/10 · P08 · HM-46d: gom tầng chồng (z-index 51→20), thang chữ/khoảng cách, bớt !important (516→440); màn chào nằm trong tấm trượt; nút Bản đồ trên dock đóng được khay; thông báo không còn che nút Vị trí. Ảnh trước–sau trên trang đề xuất. Hàng đợi hết — chuỗi kết thúc.

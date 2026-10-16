@@ -154,3 +154,6 @@ Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camer
 - Phiên kế: P08 = session_01CbedJka1VDEMyXGXEcyohq (sinh 16/10 lúc đóng P07).
 ## 23. Phiên P08
 - S-OPEN phiên 8 (P08, 16/10/2026). Mở HM-46d: gom z-index, thang chữ/khoảng cách, gỡ !important, màn chào vào tấm trượt, ảnh trước–sau.
+- HM-46d DAT_V3 (một phần, 16/10): z-index 51 → 20 (15 biến --z-*; zprobe 0 điểm đổi); thang --fs-1..4/--sp-1..5; !important 516 → 440 (chưa đạt <200 — phần còn lại có tác dụng thật); màn chào vào tấm trượt; sửa nút dock Bản đồ không đóng khay, snackbar đè nút Vị trí, QR camera chạy ngầm khi rời màn. Test hm46d_css, hm46d_welcome; công cụ tests/tools/zprobe.js + zprobediff.py. Ảnh trước–sau: trang đề xuất (cùng URL). Bộ đầy đủ PASS.
+## 24. ĐÓNG PHIÊN P08 — KẾT THÚC CHUỖI
+Hàng đợi hết; không sinh phiên mới. Việc dở dang: không. Tồn: !important 440 (cần tách luật thủ công theo khối, nếu muốn làm tiếp: mở hạng mục mới); thử camera/AI/GPS trên máy thật (VIEC_CUA_BAN).
