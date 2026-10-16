@@ -79,3 +79,4 @@
 - 16/10 · Chuyển tiếp P07 theo yêu cầu người dùng: nối ảnh/camera vào bước 2 wizard Nhập sổ (HM-08f hướng B còn lại), dọn vòng tự phục hồi lg62/v111, màn chào khi chưa có thửa. Prompt: handover/PROMPT_PHIEN_SAU.md.
 - P07 (16/10): HM-08f hướng B hoàn tất — ảnh/camera vào bước 1 Nhập sổ, dọn mã chết sidebar/lg62/lg111, màn chào khi chưa có thửa; ảnh 360/390/430 khớp. Hàng đợi hết — chuỗi kết thúc, còn thử máy thật.
 - 16/10 · Sửa lỗi thanh trên nhân bản nút ▣; đã có trang rà soát giao diện mobile + mockup (chờ duyệt đợt 1).
+- 16/10 · HM-46a: thông báo gọn 1 dòng trên dock, tiến độ hồ sơ thành chip nhỏ.

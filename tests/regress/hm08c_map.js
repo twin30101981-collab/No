@@ -17,12 +17,12 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       out.cardOn = sheet.classList.contains('on') && sheet.classList.contains('lg8c-card-on'); out.card = (document.getElementById('lg103-body') || {}).innerText || '';
       // toast + chồng lớp nửa dưới
       toast({ title: 'Thử thông báo', description: 'một dòng' }); LGV42.notify('info', 'Thử v42', 'mô tả'); await w8(900);
-      const half = innerHeight / 2, allowed = ['lg103-dock', 'lg103-sheet', 'lg8c-fabs', 'toast-wrap', 'lgv42-toast-host', 'lg8c-top'];
+      const half = innerHeight / 2, allowed = ['lg103-dock', 'lg103-sheet', 'lg8c-fabs', 'lg46-snack', 'lg8c-top'];
       const rects = {};
-      document.querySelectorAll('body *').forEach(e => { const cs = getComputedStyle(e); if (!['fixed', 'absolute'].includes(cs.position)) return; if (e.closest('.leaflet-container,#map,#map-wrap,.map-wrap,.leaflet-pane,.leaflet-control')) return; if (e.closest('#lg103-dock,#lg103-sheet,#lg8c-fabs,#lg8c-top,#toast-wrap,#lgv42-toast-host')) return; if (!vis(e)) return; const r = e.getBoundingClientRect(); if (r.bottom <= half || r.top >= innerHeight) return; if (+cs.opacity === 0) return; (rects.other = rects.other || []).push((e.id || e.className.toString().split(' ')[0]) + '@' + Math.round(r.top)); });
+      document.querySelectorAll('body *').forEach(e => { const cs = getComputedStyle(e); if (!['fixed', 'absolute'].includes(cs.position)) return; if (e.closest('.leaflet-container,#map,#map-wrap,.map-wrap,.leaflet-pane,.leaflet-control')) return; if (e.closest('#lg103-dock,#lg103-sheet,#lg8c-fabs,#lg8c-top,#lg46-snack')) return; if (!vis(e)) return; const r = e.getBoundingClientRect(); if (r.bottom <= half || r.top >= innerHeight) return; if (+cs.opacity === 0) return; (rects.other = rects.other || []).push((e.id || e.className.toString().split(' ')[0]) + '@' + Math.round(r.top)); });
       out.others = rects.other || [];
       const R = id => { const e = document.getElementById(id); return e && vis(e) ? e.getBoundingClientRect() : null; };
-      const set = { dock: R('lg103-dock'), sheet: R('lg103-sheet'), fabs: R('lg8c-fabs'), toast: R('lgv42-toast-host') };
+      const set = { dock: R('lg103-dock'), sheet: R('lg103-sheet'), fabs: R('lg8c-fabs'), toast: (() => { const e = document.querySelector('#lg46-snack .sb'); return e && vis(e) ? e.getBoundingClientRect() : null; })() };
       const names = Object.keys(set).filter(k => set[k]); const hit = [];
       for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) { const a = set[names[i]], c = set[names[j]]; if (a.left < c.right && c.left < a.right && a.top < c.bottom - 1 && c.top < a.bottom - 1) hit.push(names[i] + '×' + names[j]); }
       out.overlap = hit;
