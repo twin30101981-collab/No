@@ -1,5 +1,5 @@
 // HM-46d — gom CSS: (1) thang tầng chồng --z-* duy nhất: số giá trị z-index khác nhau trong <style> (trừ CSS Leaflet) ≤ 20, lớp nổi chính đọc từ biến;
-// thứ tự chồng đúng: bản đồ < nút bản đồ < bảng thửa < tấm trượt < màn mờ < dock < thông báo < lớp toàn màn.
+// (2) thang chữ --fs-1..4 & khoảng cách --sp-1..5 cho khối lg46/lg8c/lg103; thứ tự chồng đúng: bản đồ < nút bản đồ < bảng thửa < tấm trượt < màn mờ < dock < thông báo < lớp toàn màn.
 const { open, report } = require('../lib'); const fs = require('fs');
 (async () => {
   const app = process.argv[2], s = fs.readFileSync(app, 'utf8'), vals = new Set();
@@ -18,6 +18,7 @@ const { open, report } = require('../lib'); const fs = require('fs');
     z_index_khac_nhau_le_20: thuc.size <= 20,
     thang_z_tang_dan_du_15_bien: tang,
     lop_noi_doc_tu_bien: /#lg103-sheet\{[^}]*z-index:var\(--z-sheet\)|z-index:var\(--z-sheet\)/.test(s) && /#lg46-snack\{[^}]*z-index:var\(--z-toast\)/.test(s) && /#lg8d \{[^}]*z-index:var\(--z-modal\)/.test(s),
+    thang_chu_khoang_cach: /--fs-1:13px; --fs-2:15px; --fs-3:17px; --fs-4:20px; --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;/.test(s) && (s.match(/var\(--(fs|sp)-\d\)/g) || []).length >= 20,
     thu_tu_chong_dung: z.top < z.pip && z.stack < z.pip && z.pip < z.sheet && z.sheet < z.dock && z.dock < z.snack,
     khong_loi_trang: errs.length === 0
   }, { so_gia_tri_z: thuc.size, chuoi_khac_nhau: vals.size, z, errs: errs.slice(0, 2) });
