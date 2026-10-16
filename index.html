@@ -26654,7 +26654,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     var step = W.step, names = ['1 · Đọc', '2 · Kiểm tra bảng kê', '3 · Kết quả'];
     var main, foot;
     if (step === 1) {
-      main = '<label class="f">Bảng kê toạ độ in trên sổ (mỗi dòng: STT · X · Y · S). Dòng lặp mốc 1 = khép vòng; khối phụ viết tiếp bên dưới.</label>' +
+      main = photoBlock() + '<label class="f">Bảng kê toạ độ in trên sổ (mỗi dòng: STT · X · Y · S). Dòng lặp mốc 1 = khép vòng; khối phụ viết tiếp bên dưới.</label>' +
         '<textarea id="lg8d-text" placeholder="1 2259336.23 568027.14 2.06&#10;2 2259334.17 568027.23 3.85&#10;…&#10;1 2259336.23 568027.14">' + escA4(W.text) + '</textarea>' +
         '<label class="f">Diện tích ghi trên GCN (m²)</label><input class="f" id="lg8d-gcn" inputmode="decimal" value="' + escA4(W.gcn) + '">' +
         '<label class="f">Diện tích không cấp GCN (m²) — nếu có</label><input class="f" id="lg8d-kc" inputmode="decimal" value="' + escA4(W.kc) + '">' +
@@ -26664,12 +26664,12 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         '<label class="f">Sổ không có toạ độ? Nhập độ dài các cạnh (m) theo sơ đồ + diện tích GCN ở trên rồi bấm Tìm theo hình</label><div style="display:flex;gap:8px"><input class="f" id="lg8d-edges" inputmode="decimal" value="' + escA4(W.edgesTxt || '') + '" placeholder="vd 20 15 20 15"><button type="button" data-w="shape" style="min-height:44px">Tìm theo hình</button></div>' +
         (W.shape ? '<div class="' + (W.shape.ung_vien && W.shape.ung_vien.length ? 'warn' : 'bad') + '" role="status">' + escA4(W.shape.msg) + '</div>' + (W.shape.ung_vien || []).map(function (c) { return '<button type="button" data-w="cadpick" data-to="' + c.to + '" data-thua="' + c.thua + '" style="display:block;width:100%;text-align:left;min-height:48px;margin:4px 0"><b>Tờ ' + c.to + ' · Thửa ' + c.thua + ' — ' + c.pct + '%</b><br><small>' + escA4(c.why) + '</small></button>'; }).join('') : '') +
         '<label class="f">Địa chỉ thửa đất (để chốt tỉnh/KTT)</label><input class="f" id="lg8d-dc" value="' + escA4(W.dc) + '">' +
-        '<label class="f">Tỉnh / thành (kinh tuyến trục VN-2000) — chọn đúng địa bàn ghi trên sổ</label><select class="f" id="lg8d-prov">' + provOptions(W.prov) + '</select>' +
-        '<div class="warn" style="margin-top:12px">Chưa có bảng kê? Quay lại ＋ Nhập sổ để chụp / chọn ảnh / quét QR — kết quả đọc được điền vào đây để kiểm tra.</div>';
+        '<label class="f">Tỉnh / thành (kinh tuyến trục VN-2000) — chọn đúng địa bàn ghi trên sổ</label><select class="f" id="lg8d-prov">' + provOptions(W.prov) + '</select>';
       foot = '<button data-w="cancel">Huỷ</button><button class="p" data-w="next">Kiểm tra →</button>';
     } else if (step === 2) {
       var r = parseWiz(), t = r.t, n = t.points.length;
-      var rows = t.points.map(function (q, i) { return '<tr><td>' + (i + 1) + '</td><td>' + fmt2c(q.x) + '</td><td>' + fmt2c(q.y) + '</td><td>' + (t.sides && t.sides[i] != null ? fmt2c(t.sides[i]) : '—') + '</td></tr>'; }).join('');
+      var low = (W.lowIdx && W.text === W.photoText) ? W.lowIdx : [];
+      var rows = t.points.map(function (q, i) { return '<tr' + (low.indexOf(i) >= 0 ? ' class="lg-review" style="background:#fff3b0;color:#5c4400" title="AI không chắc số này — đối chiếu với sổ"' : '') + '><td>' + (i + 1) + '</td><td>' + fmt2c(q.x) + '</td><td>' + fmt2c(q.y) + '</td><td>' + (t.sides && t.sides[i] != null ? fmt2c(t.sides[i]) : '—') + '</td></tr>'; }).join('');
       var msgs = '';
       (t.warnings || []).forEach(function (w) { msgs += '<div class="warn">⚠ ' + escA4(w) + '</div>'; });
       if (t.blocks && t.blocks.length) msgs += '<div class="warn">Khối phụ tách riêng: ' + t.blocks.map(function (b) { return b.points.length + ' mốc' + (b.area != null ? ' (≈ ' + fmt2c(b.area) + ' m²)' : ''); }).join(', ') + ' — không cộng vào vòng ranh chính.</div>';
@@ -26677,6 +26677,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       var area = r.chk ? r.chk.area : 0, V = (r.chk && isFinite(r.gcn) && r.gcn > 0) ? lgAreaVerdict(area, r.gcn, r.kc) : null;
       var verdict = !n || n < 3 ? '<div class="bad">Cần ≥ 3 mốc hợp lệ.</div>' : V ? '<div class="' + (V.ok ? 'good' : 'warn') + '">' + (V.ok ? '✔ ĐẠT' : '⚠ KHÔNG ĐẠT') + ' — đo ' + fmt2c(area) + (r.kc ? ' − ' + fmt2c(r.kc) + ' (không cấp GCN)' : '') + ' so với ' + fmt2c(r.gcn) + ' m²: lệch ' + fmt2c(V.diff) + ', cho phép ±' + fmt2c(V.tol) + '</div>' : '<div class="warn">Chưa nhập diện tích GCN — chưa đối chiếu được.</div>';
       var edgeMsg = r.chk && r.chk.okEdge === false ? '<div class="warn">⚠ Có cạnh lệch cột S in trên sổ (> 2 cm).</div>' : (r.chk && r.chk.okEdge === true ? '<div class="good">✔ Mọi cạnh khớp cột S in trên sổ.</div>' : '');
+      if (low.length) msgs += '<div class="warn">Dòng tô vàng: AI đọc chưa chắc (&lt; 90%) — đối chiếu lại với sổ trước khi vẽ.</div>';
       main = verdict + edgeMsg + msgs + '<table><thead><tr><th>Mốc</th><th>X (m)</th><th>Y (m)</th><th>S (m)</th></tr></thead><tbody>' + rows + '</tbody></table>';
       W.canDraw = n >= 3 && !(r.G && !r.G.ok);
       foot = '<button data-w="back">← Sửa</button><button class="p" data-w="draw"' + (W.canDraw ? '' : ' disabled') + '>Vẽ thửa →</button>';
@@ -26736,6 +26737,60 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     } catch (e) { W.result = { error: (e && e.message) || String(e) }; }
     W.step = 3; renderWizard();
   }
+  /* HM-08f — ảnh/camera ngay trong bước 1: ảnh → AI (lgAiExtractRaw) → điền sẵn bảng kê/diện tích/số thửa; CHƯA tạo thửa cho tới khi người dùng bấm Vẽ ở bước 2 */
+  function photoBlock() {
+    var P = W.photo || {};
+    var h = '<div class="f" style="margin:8px 0 4px;font-weight:700;font-size:var(--lg-fs-sm)">Đọc từ ảnh sổ</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-w="cam" style="flex:1;min-height:48px"' + (P.busy ? ' disabled' : '') + '>📷 Chụp bằng camera</button>' +
+      '<button type="button" data-w="pick" style="flex:1;min-height:48px"' + (P.busy ? ' disabled' : '') + '>🖼 Chọn ảnh</button></div>' +
+      '<input type="file" id="lg8d-cam" accept="image/*" capture="environment" hidden><input type="file" id="lg8d-pick" accept="image/*" hidden>' +
+      '<button type="button" data-w="roi" style="margin-top:6px;min-height:44px;width:100%">✂ Khoanh vùng bảng toạ độ trước (mở màn Scan)</button>';
+    if (P.busy) h += '<div class="warn" role="status">⏳ Đang đọc ảnh bằng AI…</div>';
+    if (P.err) h += '<div class="bad" role="alert">✕ ' + escA4(P.err) + '</div>';
+    if (P.ok) {
+      h += '<div class="good" role="status">✔ Đã đọc ' + P.n + ' mốc' + (P.nPhu ? ' + ' + P.nPhu + ' mốc khối phụ' : '') + ' — kiểm tra lại các ô bên dưới rồi bấm Kiểm tra →.</div>';
+      if (P.review && P.review.length) h += '<div class="lg-review" style="background:#fff3b0;color:#5c4400;border-radius:8px;padding:8px 10px;margin:6px 0">Số AI chưa chắc (&lt; 90%), cần đối chiếu: ' + P.review.map(escA4).join(', ') + '</div>';
+      if (P.giap) h += '<div class="warn">Giáp ranh đọc được: ' + escA4(P.giap) + '</div>';
+    }
+    return h + '<div class="warn" style="margin-top:8px">Hoặc gõ/dán bảng kê vào ô bên dưới. Ảnh chỉ điền sẵn — thửa chỉ được tạo khi bạn bấm Vẽ thửa ở bước 2.</div>';
+  }
+  function photoToB64(file) {
+    return (window.createImageBitmap ? createImageBitmap(file) : Promise.reject(new Error('no bitmap'))).then(function (bm) {
+      var k = Math.min(1, 1600 / Math.max(bm.width, bm.height)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bm.width * k)); c.height = Math.max(1, Math.round(bm.height * k)); c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height);
+      return c.toDataURL('image/jpeg', 0.85).split(',')[1];
+    }).catch(function () { return new Promise(function (ok, no) { var r = new FileReader(); r.onload = function () { ok(String(r.result).split(',')[1]); }; r.onerror = function () { no(new Error('Không đọc được tệp ảnh.')); }; r.readAsDataURL(file); }); });
+  }
+  function ringLines(pts) {
+    var l = pts.map(function (p, i) { return (p.ten || (i + 1)) + ' ' + p.x + ' ' + p.y + (p.s != null && isFinite(p.s) ? ' ' + p.s : ''); });
+    if (pts.length) l.push((pts[0].ten || 1) + ' ' + pts[0].x + ' ' + pts[0].y); return l;
+  }
+  async function wizardPhoto(file) {
+    if (!file) return; readStep1();
+    W.photo = { busy: true }; renderWizard();
+    try {
+      if (!/^image\//.test(file.type || 'image/')) throw new Error('Tệp không phải ảnh.');
+      var b64 = await photoToB64(file);
+      if (!b64) throw new Error('Không đọc được ảnh.');
+      var res = await window.lgAiExtractRaw(b64);
+      var ok = function (p) { return p && isFinite(p.x) && isFinite(p.y); };
+      var pts = ((res && res.diem_moc) || []).filter(ok);
+      if (!pts.length) { W.photo = { err: (res && res.co_bang_toa_do === false) ? 'Ảnh này không có bảng toạ độ dạng số (chỉ có sơ đồ). Hãy chụp trang có bảng X/Y hoặc nhập tay.' : 'AI không đọc được mốc nào từ ảnh. Thử chụp rõ hơn, hoặc khoanh vùng bảng toạ độ.' }; renderWizard(); return; }
+      var lines = ringLines(pts), low = [], review = (res.so_phai_ra_soat || []).slice();
+      pts.forEach(function (p, i) { if (p.do_tin_cay != null && p.do_tin_cay < LG_CONF_REVIEW) low.push(i); });
+      var nPhu = 0;
+      (res.khoi_phu || []).forEach(function (k) { var kp = (k.diem_moc || []).filter(ok); if (kp.length >= 3) { lines.push(''); lines = lines.concat(ringLines(kp)); nPhu += kp.length; } });
+      W.text = lines.join('\n'); W.photoText = W.text; W.lowIdx = low; W.nguon = ''; W.cadText = null;
+      var g = res.dien_tich_tong_m2 != null ? res.dien_tich_tong_m2 : res.dien_tich_m2; if (g != null && isFinite(g)) W.gcn = String(g);
+      if (res.dien_tich_khong_cap_gcn != null && isFinite(res.dien_tich_khong_cap_gcn)) W.kc = String(res.dien_tich_khong_cap_gcn);
+      if (res.so_thua) W.so = String(res.so_thua); if (res.to_ban_do) W.to = String(res.to_ban_do); if (res.dia_chi) W.dc = String(res.dia_chi);
+      var gr = (res.giap_ranh || []).map(function (x) { return ({ bac: 'Bắc', dong: 'Đông', nam: 'Nam', tay: 'Tây' })[x.huong] + ': ' + x.doi_tuong; }).join(' · ');
+      W.photo = { ok: true, n: pts.length, nPhu: nPhu, review: review, giap: gr };
+    } catch (e) {
+      var m = String((e && e.message) || e), off = navigator.onLine === false || /fetch|network|failed to load/i.test(m);
+      W.photo = { err: off ? 'Không gọi được AI (mất mạng hoặc chưa cấu hình khoá AI). Kiểm tra kết nối rồi thử lại, hoặc nhập tay: ' + m.slice(0, 120) : 'Đọc ảnh thất bại: ' + m.slice(0, 200) };
+    }
+    renderWizard();
+  }
   function openWizard(seed) {
     closeWizard();
     W = { step: 1, prov: (document.getElementById('province-select') || {}).value || '', text: (seed && seed.text) || '', gcn: (seed && seed.gcn) || '', kc: (seed && seed.kc) || '', so: (seed && seed.so) || '', to: (seed && seed.to) || '', dc: (seed && seed.dc) || '' };
@@ -26749,11 +26804,14 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       else if (a === 'cad') { readStep1(); wizardCad(); }
       else if (a === 'shape') { readStep1(); wizardShape(); }
       else if (a === 'cadpick') { readStep1(); W.to = b.getAttribute('data-to'); W.so = b.getAttribute('data-thua'); wizardCad(); }
+      else if (a === 'cam' || a === 'pick') { var fi = document.getElementById(a === 'cam' ? 'lg8d-cam' : 'lg8d-pick'); if (fi) fi.click(); }
+      else if (a === 'roi') { readStep1(); closeWizard(); if (typeof window.lgOpenScan === 'function') window.lgOpenScan(); }
       else if (a === 'draw') { b.disabled = true; wizardDraw(); }
       else if (a === 'again') { openWizard(); }
       else if (a === 'map') { closeWizard(); selectTab('map'); }
       else if (a === 'profile') { closeWizard(); selectTab('profile'); }
     });
+    root.addEventListener('change', function (e) { var t = e.target; if (t && (t.id === 'lg8d-cam' || t.id === 'lg8d-pick') && t.files && t.files[0]) wizardPhoto(t.files[0]); });
     renderWizard();
   }
   window.lg8dOpen = openWizard; window.lg8dClose = closeWizard;
