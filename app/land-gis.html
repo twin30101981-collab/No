@@ -28523,7 +28523,7 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
 
   function mountHeader() {
     var top = $('lg62-top');
-    if (!top || $('lg110-back')) return !!$('lg110-back');
+    if (!top || $('lg110-tools')) return !!$('lg110-tools');   // HM-08f: #lg110-back đã gỡ → canh theo nút công cụ (trước đây thêm 1 nút mỗi nhịp quét)
     var tools = document.createElement('button');
     tools.id = 'lg110-tools';
     tools.type = 'button';
