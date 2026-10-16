@@ -74,3 +74,4 @@
 - 16/10 · HM-08f đợt 7: dựng lại màn Cắm mốc RTK; sidebar còn 2 màn cũ (scan sổ, QR).
 - 16/10 · HM-08f đợt 8: dựng lại màn Quét QR; sidebar còn 1 màn cũ (Scan sổ đỏ).
 - 16/10 · HM-08f đợt 9: gỡ hệ tab sidebar; còn màn Scan sổ đỏ — chờ quyết định hướng dựng lại (A giữ / B viết lại thành bước 2 Nhập sổ).
+- 16/10 · HM-08f đợt 10: Scan sổ đỏ hướng A xong (khung + 3 bước + tuỳ chọn gập). Hướng B chờ thử máy thật.
