@@ -1,4 +1,4 @@
-# TỔNG KẾT ĐỀ ÁN LANDGIS v1.8 — chuỗi tự động P02–P06 (15/10/2026)
+# TỔNG KẾT ĐỀ ÁN LANDGIS v1.8 — chuỗi tự động P02–P08 (15–16/10/2026)
 
 Skill: web-app-repair-upgrade v3.2.0 · Chế độ 3-tự-động · Nhánh `ccr-9dbbe50d-dw0kll` · Mã app: `app/land-gis.html` (HTML một file + PWA; bản đang triển khai `index.html`/`sw.js` sinh bằng `handover/tools/deploy_pages.py`).
 
@@ -6,7 +6,7 @@ Skill: web-app-repair-upgrade v3.2.0 · Chế độ 3-tự-động · Nhánh `cc
 
 | Trạng thái | Số hạng mục |
 |---|---|
-| Đạt, kiểm thử tự động V3 (Playwright) | 58 |
+| Đạt, kiểm thử tự động V3 (Playwright) | 62 |
 | Phần mã/tài liệu xong, chờ việc của người dùng | 8 |
 | Đạt, kiểm thử V2 (công cụ Python) | 1 |
 
@@ -85,6 +85,10 @@ Bộ hồi quy: `node tests/run.js app/land-gis.html` → toàn bộ PASS (≈ 6
 | HM-37 | Đối chiếu mốc chung/cạnh chung với sổ thửa bên cạnh + biên bản PDF (mockup ㉑) | DAT_V3 | tests/regress/hm37_doichieu.js |
 | HM-38 | Mục 'Tứ cận' + bảng giáp ranh theo cạnh trên hồ sơ in A4/PDF | DAT_V3 | tests/regress/hm38_tucan.js |
 | HM-06e | Bỏ nhập/đọc Excel (.xlsx); chỉ giữ xuất Excel | DAT_V3 | tests/regress/hm06e_no_xlsx_import.js |
+| HM-46a | Thông báo 1 dòng + chip tiến độ hồ sơ | DAT_V3 | tests/regress/hm46a_snack.js |
+| HM-46b | Bản đồ: 4 vùng cố định | DAT_V3 | tests/regress/hm46b_map.js |
+| HM-46c | Nhập sổ, Hồ sơ, Thửa, màn chào theo mockup | DAT_V3 | tests/regress/hm46c_sheets.js |
+| HM-46d | Gom CSS: 6 tầng z-index + thang chữ/khoảng cách | DAT_V3 | tests/regress/hm46d_css.js, tests/regress/hm46d_welcome.js, tests/tools/zprobe.js, tests/t |
 
 ## 3. Lỗi → nguyên nhân gốc → cách sửa → chống tái diễn
 
@@ -126,6 +130,7 @@ Bộ hồi quy: `node tests/run.js app/land-gis.html` → toàn bộ PASS (≈ 6
 
 - **HM-08f (dọn CSS/sidebar) — đã xong phần lớn:** đã gỡ luật CSS chết, 217 khai báo `!important` thừa (kiểm bằng `cssdump.js`/`cssdiff.py` + ảnh 360/390/430), toàn bộ vỏ sidebar (thanh tab, drawer, backdrop, nút ☰/MENU) và dựng lại 6 màn cũ thành giao diện mới: Dữ liệu thửa, Nhập CAD/CSV, GPS thực địa, Cắm mốc RTK, Quét QR (sheet) và Scan sổ đỏ (lớp toàn màn, hướng B). App nay luôn mở ở màn Bản đồ; màn Nhập liệu riêng không còn. **Còn lại:** id `#sidebar` được giữ cho lớp Scan sổ đỏ (65 luật CSS chữ/nút khoá theo id); chưa nối ảnh/camera vào bước 2 của luồng Nhập sổ 3 bước; các vòng tự phục hồi lg62/v111 và nút `#lg62-back/next` đã vô hiệu nhưng chưa xoá mã; chưa có màn chào khi chưa có thửa. Chuẩn đo nạp 50 thửa đổi sang DOMContentLoaded ≤ 2 s (load ≤ 6 s) vì bản đồ hiện ngay lúc mở.
 - **HM-08f hướng B — hoàn tất ở P07:** ảnh/camera nằm ngay bước 1 luồng Nhập sổ (AI điền sẵn, số <90% tô vàng, lỗi báo rõ, không tự tạo thửa); đã gỡ vòng tự phục hồi sidebar/lg111, #lg62-back/next/steps, auto-chuyển bản đồ, popstate; màn chào 3 lối vào khi chưa có thửa. Việc còn lại: thử camera + AI trên máy thật.
+- **HM-46 (giao diện điện thoại, P07–P08) — hoàn tất, một tiêu chí chưa đạt:** HM-46a thông báo 1 dòng + chip tiến độ; HM-46b bản đồ 4 vùng cố định; HM-46c tấm Nhập sổ/Thửa/Hồ sơ theo mockup, dock SVG; HM-46d thang tầng chồng 15 biến `--z-*` (z-index khác nhau 51 → 20, kiểm bằng `tests/tools/zprobe.js`: 0 điểm đổi lớp trên cùng), thang chữ/khoảng cách `--fs-*`/`--sp-*`, màn chào nằm trong tấm trượt, sửa nút dock Bản đồ không đóng khay, snackbar che nút Vị trí, camera QR chạy ngầm khi rời màn. **Còn lại:** `!important` mới giảm 516 → 440 trong `<style>` (mục tiêu < 50 chưa đạt): phần còn lại đều có tác dụng thật (thắng luật khác/kiểu inline do JS gắn, luật cho modal/nhãn không dựng sẵn, @media print) — muốn giảm tiếp phải tách luật thủ công theo từng khối. Ảnh trước–sau ở trang đề xuất https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8.
 - **drawPlot từ chối `provCode` không khớp vị trí khi khôi phục:** `LGVersions.applyPlot` đã có dự phòng (thử lại không `provCode`, rồi dựng lại bản cũ); nên rà lại ngưỡng nghi vấn vị trí ở `drawPlot` khi `__restoring`.
 - Gỡ nốt: thang z-index thống nhất và gộp 2 lớp toast (ghi từ HM-08a); Tesseract/pdfmake chưa đóng gói ngoại tuyến (HM-11b); phần ảnh/camera chưa nối vào bước 2 luồng Nhập sổ (HM-08d); nhập khối phụ thành thửa (HM-42).
 - Mốc đối soát thực địa (HM-19) lưu ảnh trong `meta` của thửa (thu nhỏ ≈ 30–60 KB/ảnh): nhiều ảnh có thể làm đầy localStorage — đã có bản sao IndexedDB khi lưu thất bại (HM-00), nhưng nên chuyển ảnh sang IndexedDB nếu dùng nhiều.
@@ -161,5 +166,7 @@ Mỗi hạng mục là một commit `HM-xx` trên nhánh `ccr-9dbbe50d-dw0kll` (
 | P05 | session_01BkGonUVGr8NKwj4qGMa9sH | HM-27a, HM-27b, HM-29, HM-30, HM-31, HM-32, HM-34, HM-11, HM-11b, HM-40, HM-44, HM-10b(CHO_NGUOI_DUNG), HM-08h, HM-12a, HM-35, HM-36, HM-14, HM-15, HM-16, HM-24 |
 | P06 | session_016bfgvkpo5ZM5L3ZStYgd1r | HM-18a, HM-18b, HM-19, HM-20, HM-22(CHO_NGUOI_DUNG), HM-25(CHO_NGUOI_DUNG), HM-28(CHO_NGUOI_DUNG), HM-08f(một phần: CSS chết) |
 | P07 | session_01SkwQ3cwS7GRmmnPqAbVswr | HM-08f (hướng B hoàn tất: ảnh vào wizard, dọn mã chết, màn chào) |
+| P07 | session_01SkwQ3cwS7GRmmnPqAbVswr | HM-08f (hướng B), sửa rò nút ▣, HM-46a, HM-46b, HM-46c |
+| P08 | session_01CbedJka1VDEMyXGXEcyohq | HM-46d (z-index 51→20, thang chữ/khoảng cách, !important 516→440, màn chào vào tấm trượt, ảnh trước–sau) |
 
 **Bạn có cần xuất tài liệu tổng kết (Word/PDF) từ báo cáo này không?** Nếu có, nhắn ở phiên mới — báo cáo này là nguồn.
