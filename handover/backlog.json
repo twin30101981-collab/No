@@ -2908,7 +2908,7 @@
       "effort": "M",
       "model_version": "claude-opus-5-5",
       "model_effort_recommended": "medium",
-      "model_effort_actual": "",
+      "model_effort_actual": "medium",
       "phu_thuoc": [
         "HM-46a"
       ],
@@ -2921,9 +2921,16 @@
       ],
       "rui_ro": "Trung bình",
       "kiem_chung_du_kien": "V3 (360/390/430)",
-      "trang_thai": "CHUA_LAM",
-      "bang_chung": {},
-      "ghi_chu_ban_giao": "",
+      "trang_thai": "DAT_V3",
+      "bang_chung": {
+        "lenh": "node tests/run.js app/land-gis.html",
+        "pass": 1,
+        "fail": 0,
+        "artifact": [
+          "tests/regress/hm46b_map.js"
+        ]
+      },
+      "ghi_chu_ban_giao": "Ẩn #lg62-top (nút vẫn tồn tại, mở qua Thêm), #lg183-layers, .lg-zoomctrl, ± trên cảm ứng; bản đồ tràn mép trên; cột #lg46-rail (Ảnh nền · Lớp phủ→lg183 · Về thửa→⧉🎯 · Cạnh/mốc→lg110-tools) + Vị trí; --lg46-top đo đáy vùng tìm kiếm; nhãn cạnh nhỏ, chỉ thửa đang chọn (data-pid, body.lg46-onesel); chip 'VN-2000 · tỉnh' khi chưa có thửa; snackbar tự canh trên tấm trượt. hm08c_map: fabs 2→5.",
       "can_nguoi_dung": null,
       "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
     },

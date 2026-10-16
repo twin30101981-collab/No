@@ -80,3 +80,4 @@
 - P07 (16/10): HM-08f hướng B hoàn tất — ảnh/camera vào bước 1 Nhập sổ, dọn mã chết sidebar/lg62/lg111, màn chào khi chưa có thửa; ảnh 360/390/430 khớp. Hàng đợi hết — chuỗi kết thúc, còn thử máy thật.
 - 16/10 · Sửa lỗi thanh trên nhân bản nút ▣; đã có trang rà soát giao diện mobile + mockup (chờ duyệt đợt 1).
 - 16/10 · HM-46a: thông báo gọn 1 dòng trên dock, tiến độ hồ sơ thành chip nhỏ.
+- 16/10 · HM-46b: màn Bản đồ gọn — thanh tìm kiếm ở trên, một cột nút bên phải, nhãn cạnh chỉ của thửa đang chọn.

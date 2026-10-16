@@ -36,7 +36,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       lg8cPaintChips(); out.ktt = document.querySelector('[data-chip="ktt"]').textContent;
       return out; }, B);
     const c = r.card;
-    checks['o_tim_chip_nut_tron_' + w] = r.top && r.q && r.chips.length === 3 && r.fabs === 2 && /105°30′/.test(r.ktt);
+    checks['o_tim_chip_nut_tron_' + w] = r.top && r.q && r.chips.length === 3 && r.fabs === 5 /* HM-46b: cột 4 nút + Vị trí */ && /105°30′/.test(r.ktt);
     checks['the_thua_dang_chon_' + w] = r.cardOn && /Thửa 131 · Tờ 10\.1/.test(c) && /ĐẠT/.test(c) && /89,90 m²/.test(c) && /Hồ sơ/.test(c) && /Chỉ đường/.test(c) && /📷/.test(c);
     checks['bo_rail_va_bang_cu_' + w] = r.railHidden && r.infoHidden;
     checks['khong_chong_lop_nua_duoi_' + w] = r.overlap.length === 0 && r.others.length === 0;
