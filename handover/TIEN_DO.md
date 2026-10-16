@@ -76,3 +76,4 @@
 - 16/10 · HM-08f đợt 9: gỡ hệ tab sidebar; còn màn Scan sổ đỏ — chờ quyết định hướng dựng lại (A giữ / B viết lại thành bước 2 Nhập sổ).
 - 16/10 · HM-08f đợt 10: Scan sổ đỏ hướng A xong (khung + 3 bước + tuỳ chọn gập). Hướng B chờ thử máy thật.
 - 16/10 · HM-08f đợt 11 (hướng B): app luôn mở ở Bản đồ; Scan sổ đỏ là lớp toàn màn từ Nhập sổ; gỡ sidebar/MENU. Cần thử camera + AI trên máy thật.
+- 16/10 · Chuyển tiếp P07 theo yêu cầu người dùng: nối ảnh/camera vào bước 2 wizard Nhập sổ (HM-08f hướng B còn lại), dọn vòng tự phục hồi lg62/v111, màn chào khi chưa có thửa. Prompt: handover/PROMPT_PHIEN_SAU.md.
