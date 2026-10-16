@@ -1,7 +1,7 @@
 {
   "du_an": "LANDGIS",
   "skill_version": "3.2.0",
-  "phien_hien_tai": 7,
+  "phien_hien_tai": 8,
   "che_do": "3-tu-dong",
   "de_an": {
     "phien_ban": "1.8",
@@ -2942,7 +2942,7 @@
       "effort": "M",
       "model_version": "claude-opus-5-5",
       "model_effort_recommended": "medium",
-      "model_effort_actual": "",
+      "model_effort_actual": "medium",
       "phu_thuoc": [
         "HM-46b"
       ],
@@ -2955,9 +2955,16 @@
       ],
       "rui_ro": "Trung bình",
       "kiem_chung_du_kien": "V3 (360/390/430)",
-      "trang_thai": "CHUA_LAM",
-      "bang_chung": {},
-      "ghi_chu_ban_giao": "",
+      "trang_thai": "DAT_V3",
+      "bang_chung": {
+        "lenh": "node tests/run.js app/land-gis.html",
+        "pass": 1,
+        "fail": 0,
+        "artifact": [
+          "tests/regress/hm46c_sheets.js"
+        ]
+      },
+      "ghi_chu_ban_giao": "tabImport: .lg46-big (import-cam) + 2 .lg46-sec (pick/book) + 7 .lg46-row (giữ đủ data-act); Thửa: .lg46-chips có số đếm; Hồ sơ: .lg46-seg role=tablist + chip Đạt/Không đạt; LG46I = bộ biểu tượng SVG (dock, Nhập sổ); #lg103-fab phẳng; nhãn 'Bản đồ'. Test hm08b_nav nới từ khoá nhãn. CHƯA: màn chào vào tấm trượt (chuyển sang HM-46d bước 4).",
       "can_nguoi_dung": null,
       "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
     },
@@ -3222,6 +3229,18 @@
         "hang_muc_xong": [
           "HM-08f (hướng B hoàn tất: ảnh vào wizard, dọn mã chết, màn chào)"
         ]
+      },
+      {
+        "phien": 7,
+        "session_id": "session_01SkwQ3cwS7GRmmnPqAbVswr",
+        "hang_muc_xong": [
+          "HM-08f (hướng B)",
+          "sửa rò nút ▣",
+          "HM-46a",
+          "HM-46b",
+          "HM-46c"
+        ],
+        "ghi_chu": "Người dùng duyệt đề xuất UI mobile, yêu cầu chạy tự động; P08 làm HM-46d"
       }
     ]
   }

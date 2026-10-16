@@ -81,3 +81,4 @@
 - 16/10 · Sửa lỗi thanh trên nhân bản nút ▣; đã có trang rà soát giao diện mobile + mockup (chờ duyệt đợt 1).
 - 16/10 · HM-46a: thông báo gọn 1 dòng trên dock, tiến độ hồ sơ thành chip nhỏ.
 - 16/10 · HM-46b: màn Bản đồ gọn — thanh tìm kiếm ở trên, một cột nút bên phải, nhãn cạnh chỉ của thửa đang chọn.
+- 16/10 · HM-46c: tấm Nhập sổ/Thửa/Hồ sơ theo mockup, dock biểu tượng đồng bộ. Chuyển sang P08: gom CSS (HM-46d).
