@@ -2219,7 +2219,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   /* HM-08a — KHUNG LAYOUT MOBILE: một token --lg-dock-clear (khoảng chừa phía dưới = chiều cao dock thật + 12px, JS đo)
      cho MỌI lớp thông báo; thông báo nằm TRÊN dock nên không bao giờ che 5 nút dock. */
   :root { --lg-dock-clear: calc(84px + env(safe-area-inset-bottom, 0px)); }
-  #lgv42-toast-host, .toast-wrap { bottom: var(--lg-dock-clear) !important; left: 12px; right: auto !important; max-width: min(calc(100vw - 96px), 380px) !important; }   /* HM-08c: thông báo bên trái, nút tròn bên phải — không chồng nhau */
+  #lgv42-toast-host, .toast-wrap { bottom: var(--lg-dock-clear) !important; left: 12px; right: auto !important; max-width: min(calc(100vw - 96px), 380px); }   /* HM-08c: thông báo bên trái, nút tròn bên phải — không chồng nhau */
   #lgv42-toast-host > div:not(:has(button)), .toast-wrap > .toast { pointer-events: none !important; }
   .toast-wrap { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom,0px) + var(--lg62-nav-reserve, 0px)); right: 16px; display: flex; flex-direction: column; gap: 6px; z-index: var(--z-sheet); pointer-events: none; }
   .toast { background: #08100c; color: #fff; padding: 8px 12px; border-radius: 6px; font-size:var(--lg63-fs); box-shadow: 0 4px 12px rgba(0,0,0,.25); max-width: 320px; pointer-events: auto; }
@@ -21589,7 +21589,7 @@ body.lg62.lg62-map #sidebar{ display:none; }
 /* ---------- Thanh 5 nút giữ ngoài bản đồ ---------- */
 body.lg62 #lg62-rail .lg31-fab{
   width:auto; height:58px !important; min-width:60px;
-  border-radius:13px; font-size:var(--lg-fs) !important; padding:0 10px;
+  border-radius:13px; font-size:var(--lg-fs); padding:0 10px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   box-shadow:0 3px 12px rgba(0,0,0,.28) !important;
 }
@@ -21614,7 +21614,7 @@ body.lg62 #sidebar h4{ font-size:var(--lg63-fs) !important; }
 body.lg62 #sidebar p, body.lg62 #sidebar label,
 body.lg62 #sidebar .small, body.lg62 #sidebar .muted{ font-size:var(--lg62-fs-sm) !important; line-height:1.6 !important; }
 body.lg62 #sidebar .btn{ min-height:50px; font-size:var(--lg63-fs) !important; font-weight:700; }
-body.lg62 #sidebar .btn.sm{ min-height:46px !important; font-size:var(--lg63-fs) !important; }
+body.lg62 #sidebar .btn.sm{ min-height:46px; font-size:var(--lg63-fs) !important; }
 body.lg62 #sidebar input, body.lg62 #sidebar select, body.lg62 #sidebar textarea{
   font-size:var(--lg-fs) !important; min-height:48px; }
 body.lg62 #sidebar input[type=checkbox], body.lg62 #sidebar input[type=radio]{
@@ -21630,7 +21630,7 @@ body.lg62 .lg-compass span{ font-size:var(--lg63-fs-map) !important; }
 body.lg62 #plot-info-panel{ font-size:var(--lg62-fs-sm); max-width:min(94vw,420px); }
 body.lg62 #clicked-coords-panel{ bottom:calc(var(--lg62-nav) + 70px) !important; font-size:var(--lg62-fs-sm); }
 body.lg62 #lg-source-status{ font-size:var(--lg63-fs); }
-body.lg62 .lg-gps-badge{ bottom:calc(var(--lg62-nav) + 70px); font-size:var(--lg63-fs) !important; }
+body.lg62 .lg-gps-badge{ bottom:calc(var(--lg62-nav) + 70px); font-size:var(--lg63-fs); }
 
 /* ---------- Hộp báo tự chuyển màn ---------- */
 body.lg62 .leaflet-control-attribution{ font-size:var(--lg63-fs); opacity:.75; }
@@ -22616,7 +22616,7 @@ a.lg66-src:hover{ background:rgba(0,0,0,.04); }
      ========================================================================== -->
 <style id="lg9b-attr">
 /* HM-09b — GHI NGUỒN BẢN ĐỒ: góc dưới trái, chữ 10 px; thu gọn thành nhãn “ⓘ Nguồn”, bấm để mở rộng (đúng tên nguồn theo lớp nền đang dùng) */
-html body.lg62 .leaflet-control-attribution { display:block; font-size:0 !important; line-height:0; background:rgba(255,255,255,.82); border-radius:8px; padding:4px 8px; margin:0 0 6px 8px; max-width:min(70vw, 360px); cursor:pointer; color:#33413a; }
+html body.lg62 .leaflet-control-attribution { display:block; font-size:0; line-height:0; background:rgba(255,255,255,.82); border-radius:8px; padding:4px 8px; margin:0 0 6px 8px; max-width:min(70vw, 360px); cursor:pointer; color:#33413a; }
 html body.lg62 .leaflet-control-attribution::before { content:"ⓘ Nguồn"; font-size:10px; line-height:14px; font-weight:700; }
 html body.lg62 .leaflet-control-attribution.lg9b-open { font-size:10px !important; line-height:14px; }
 html body.lg62 .leaflet-control-attribution.lg9b-open::before { content:"ⓘ "; }
@@ -24741,7 +24741,7 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
 .lg62-sheet-body .leaflet-control-layers label,
 .lg62-sheet-body .lg-layer-ctrl label{ font-size:var(--lg-fs-map) !important; }
 .lg62-sheet-body .lg31-fab small{ font-size:var(--lg-fs-num) !important; }
-.lg62-group{ font-size:var(--lg-fs) !important; }
+.lg62-group{ font-size:var(--lg-fs); }
 .lg62-sheet-body{ padding:12px 14px 22px; }
 
 /* 3b) danh sách lớp nền: giữ nhãn liền mạch, không xuống dòng lệch */
@@ -25024,7 +25024,7 @@ table{ max-width:100%; }
        hiển thị được nhiều mục, danh sách lựa chọn thẳng hàng ô chọn. */
 
 #lg62-nav, #lg62-nav *{
-  font-size:var(--lg-fs-sm) !important; line-height:1.25 !important;
+  font-size:var(--lg-fs-sm); line-height:1.25;
 }
 
 .lg62-sheet-body .leaflet-control-layers label,
@@ -25048,7 +25048,7 @@ table{ max-width:100%; }
 .leaflet-control-layers label > span{ overflow-wrap:normal !important; word-break:normal !important; }
 .leaflet-control-layers label > span > span{ min-width:0; overflow-wrap:normal; word-break:normal; }
 .leaflet-control-layers label .lgv42-dot{ margin-left:auto; }
-.lg62-group{ font-size:var(--lg-fs-sm) !important; }
+.lg62-group{ font-size:var(--lg-fs-sm); }
 
 /* 6) Máy hẹp: hạ nhẹ một bậc để tuyệt đối không tràn */
 @media (max-width:360px){
@@ -25196,7 +25196,7 @@ header h1{ white-space:nowrap; }               /* tiêu đề vẫn rút gọn 1
 /* HM-08b — gỡ hàng tab ngang và các nút nổi trùng (🌙 🕰 lg184): chức năng chuyển vào ＋ Nhập sổ / ⋯ Thêm (nút vẫn có trong DOM để mã gọi) */
 /* HM-08c — MÀN BẢN ĐỒ (mockup ①): ô tìm + chip lớp phủ ở trên; 2 nút tròn bên phải; thẻ thửa đang chọn là bottom sheet; bỏ thanh rail dưới và bảng chi tiết nổi cũ
    (nút của rail vẫn trong DOM; chức năng chuyển vào ⋯ Thêm / chip). Không có phần tử nào chồng nhau ở nửa dưới màn hình. */
-body.lg103 #lg62-rail, body.lg103 #plot-info-panel, body.lg103 #geo-warn-banner, body.lg103 #lg-gps-badge, body.lg103 .lg138-legend, body.lg103 #lg138-legend, body.lg103 .lg138-ktt-badge, body.lg103 #lg138-ktt-badge, body.lg103 #lg62-nav { display:none !important; }
+body.lg103 #lg62-rail, body.lg103 #plot-info-panel, body.lg103 #geo-warn-banner, body.lg103 #lg-gps-badge, body.lg103 .lg138-legend, body.lg103 #lg138-legend, body.lg103 .lg138-ktt-badge, body.lg103 #lg138-ktt-badge, body.lg103 #lg62-nav { display:none; }
 body.lg103.lg8c-info #plot-info-panel { display:block !important; position:fixed !important; left:8px !important; right:8px !important; top:64px !important; bottom:calc(var(--lg103-dock-h) + 8px + env(safe-area-inset-bottom,0px)) !important; z-index:var(--z-side) !important; overflow:auto !important; width:auto !important; height:auto !important; }
 #lg8c-top, #lg8c-fabs { display:none; }
 /* HM-08d — LUỒNG NHẬP SỔ 3 BƯỚC (mockup ②③④): toàn màn hình, thanh nút dưới luôn thấy (cao theo visualViewport → bàn phím ảo không che nút) */
@@ -25304,8 +25304,8 @@ body:not(.lg62) #lg103-dock, body:not(.lg62) #lg103-sheet{ display:none !importa
    body.lg62, khiến nhãn Dock bị đẩy lên ~17px rồi cắt cụt thành "CAM …".
    Buộc phải ghi đè bằng !important đúng phạm vi Dock. */
 body.lg62.lg103 #lg103-dock .lg103-lb{ font-size:var(--lg103-fs-dock); line-height:1.15; }
-body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:9px !important; }
-body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:calc(var(--lg103-fs-dock) + 7px) !important; }
+body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:9px; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:calc(var(--lg103-fs-dock) + 7px); }
 /* Hàng nút nổi trên bản đồ (Chỉ đường / Ảnh thực tế / La bàn) phải nằm CAO HƠN
    nút Camera nổi, nếu không FAB sẽ che mất nút giữa. */
 body.lg62.lg103 #lg62-rail{
@@ -25362,12 +25362,12 @@ body.lg62.lg103 #lg62-rail{
   @page{ size:A4 portrait; margin:12mm; }
 }
 body.lg62.lg103 #lg-gps-badge{
-  bottom:calc(var(--lg103-dock-h) + env(safe-area-inset-bottom,0px) + var(--lg103-fab) / 2 + 88px) !important;
+  bottom:calc(var(--lg103-dock-h) + env(safe-area-inset-bottom,0px) + var(--lg103-fab) / 2 + 88px);
 }
 @media (max-width:400px){
   /* Trên máy hẹp hàng nút cao hơn (nhãn xuống nhiều dòng) nên chip GPS phải lên cao hơn nữa. */
   body.lg62.lg103 #lg-gps-badge{
-    bottom:calc(var(--lg103-dock-h) + env(safe-area-inset-bottom,0px) + var(--lg103-fab) / 2 + 138px) !important;
+    bottom:calc(var(--lg103-dock-h) + env(safe-area-inset-bottom,0px) + var(--lg103-fab) / 2 + 138px);
   }
 }
 body.lg62.lg103 #lg62-rail .lg31-fab[disabled],
@@ -25478,12 +25478,12 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 @media (max-width:360px){
   
   body.lg62.lg103 #lg62-top .lg62-brand b,
-  body.lg62.lg103 #lg62-top .lg62-brand span{ font-size:var(--lg103-fs-dock) !important; }
+  body.lg62.lg103 #lg62-top .lg62-brand span{ font-size:var(--lg103-fs-dock); }
 }
 @media (max-width:340px){
   :root{ --lg103-dock-h: 60px; --lg103-fab: 50px; }
   body.lg62.lg103 #lg103-dock .lg103-lb{ font-size:9px; }
-  body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--fs-2) !important; }
+  body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--fs-2); }
 }
 /* Màn hình lớn: thu Dock thành thanh nổi gọn ở giữa, không chiếm hết bề ngang */
 @media (min-width:1024px){
@@ -25497,7 +25497,7 @@ body.lg62.lg103 #lg62-rail .lg31-fab small{ max-width:100%; }
 
 /* Mọi nhãn trong lớp mobile: không bẻ chữ giữa âm tiết tiếng Việt */
 body.lg62.lg103 button, body.lg62.lg103 label{
-  word-break:keep-all !important; overflow-wrap:normal !important; hyphens:none !important;
+  word-break:keep-all; overflow-wrap:normal !important; hyphens:none;
 }
 /* Chừa chỗ cho Dock ở cột thông tin, tránh Dock đè dòng cuối (thấy rõ trên desktop) */
 body.lg62.lg103 #sidebar{ padding-bottom:calc(var(--lg103-dock-h) + env(safe-area-inset-bottom,0px) + 10px); }
@@ -28377,19 +28377,19 @@ body.lg62.lg103 #lg103-dock .lg103-lb{
   font-size:12px; line-height:1.15;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
 }
-body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:10.5px !important; }
+body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:10.5px; }
 /* Thanh tiêu đề: chữ vừa khung, không còn "Land GIS VN-200…" bị cắt giữa từ */
 body.lg62 #lg62-top{ padding-left:10px; padding-right:10px; gap:8px; }
 body.lg62 #lg62-top .lg62-brand b{ font-size:17px; line-height:1.2; }
 body.lg62 #lg62-top .lg62-brand span{ font-size:14.5px; line-height:1.2; }
 body.lg62.lg62-map #lg62-top .lg62-brand{ display:none; }
-body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px; }
 body.lg62.lg103 #lg103-dock .lg103-dbtn{ min-height:56px; }
 
 /* Thẻ tab trong màn nhập liệu: to, dễ bấm, không bị cắt chữ */
 
 body.lg62 #sidebar .btn{ min-height:56px; font-size:20px !important; }
-body.lg62 #sidebar .btn.sm{ min-height:50px !important; font-size:18px !important; }
+body.lg62 #sidebar .btn.sm{ min-height:50px; font-size:18px !important; }
 body.lg62 #sidebar input, body.lg62 #sidebar select, body.lg62 #sidebar textarea{
   font-size:20px !important; min-height:54px; }
 body.lg62 #sidebar input[type=checkbox], body.lg62 #sidebar input[type=radio]{
@@ -28471,7 +28471,7 @@ body.lg62.lg103 #lg62-rail{ z-index:var(--z-head); }
    lại trần chiều cao + cuộn trong, và kê lên trên Dock. */
 @media (max-width:640px){
   body.lg62 #plot-info-panel{
-    max-height:44dvh !important; overflow:auto;
+    max-height:44dvh; overflow:auto;
     -webkit-overflow-scrolling:touch;
     bottom:calc(var(--lg103-dock-h, 74px) + 86px + env(safe-area-inset-bottom,0px));
   }
@@ -28483,7 +28483,7 @@ body.lg62.lg103 #lg62-rail{ z-index:var(--z-head); }
 /* Hàng nút tác vụ trên bản đồ & nút zoom: chữ gọn, không tràn khỏi khung */
 body.lg62 #lg62-rail .lg31-fab{
   height:auto !important; min-height:64px; padding:6px 10px;
-  font-size:19px !important; line-height:1.1 !important; white-space:normal;
+  font-size:19px; line-height:1.1 !important; white-space:normal;
 }
 body.lg62 #lg62-rail .lg31-fab small{ font-size:14px !important; line-height:1.1 !important; }
 body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
@@ -28974,9 +28974,9 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
    đè lên hàng nút bản đồ. Đưa lên ngay dưới thanh tiêu đề, không che thao tác. */
 /* HM-46a: tiến độ hồ sơ = chip nhỏ 1 dòng giữa nút phóng to (trái) và nút Lớp (phải) */
 body.lg62.lg103 #lg63-progress{
-  left:50% !important; right:auto !important; bottom:auto !important; transform:translateX(-50%);
-  top:calc(var(--lg62-top,66px) + 10px) !important;
-  max-width:calc(100vw - 168px) !important; width:auto !important; text-align:center;
+  left:50%; right:auto; bottom:auto; transform:translateX(-50%);
+  top:calc(var(--lg62-top,66px) + 10px);
+  max-width:calc(100vw - 168px); width:auto; text-align:center;
   padding:4px 10px; border-radius:999px; font-size:var(--lg-fs-xs,12px); line-height:1.4;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(15,76,52,.92); box-shadow:0 2px 8px rgba(0,0,0,.25);
 }
@@ -29172,7 +29172,7 @@ body.lg62.lg103 #lg103-dock .lg103-lb,
 body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{
   font-size:var(--lg113-lb); line-height:1.15; font-weight:700;
 }
-body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--lg113-ic) !important; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--lg113-ic); }
 body.lg62.lg103 #lg103-fab{ font-size:calc(var(--lg113-ic) + 2px); }
 /* Nút bị gộp: giữ nguyên trong DOM (giữ listener gốc) nhưng không chiếm ô lưới */
 body.lg62.lg103 #lg103-dock .lg113-hidden{ display:none; }
@@ -29480,9 +29480,9 @@ body.lg62.lg103{
 }
 body.lg62.lg103 #lg103-dock .lg103-lb{ font-size:var(--lg113-lb); }
 body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{
-  font-size:calc(var(--lg113-lb) * 0.92) !important;
+  font-size:calc(var(--lg113-lb) * 0.92);
 }
-body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--lg113-ic) !important; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:var(--lg113-ic); }
 body.lg62.lg103 #lg103-fab{ font-size:calc(var(--lg113-ic) + 3px); }
 body.lg62.lg103 #lg103-dock .lg103-dbtn{ min-height:var(--lg-tap); }
 
@@ -29510,7 +29510,7 @@ body.lg62 #lg62-top button, body.lg62 #lg62-top .lg62-btn{
 .leaflet-control-layers, .leaflet-control-layers *{ font-size:var(--lg-fs-sm) !important; }
 .leaflet-container .leaflet-control-zoom a,
 .lg-zoomctrl button, .lg-layer-ctrl button{
-  font-size:var(--lg-fs) !important;
+  font-size:var(--lg-fs);
   min-width:var(--lg-tap); min-height:var(--lg-tap);
 }
 .lg-gps-badge{
@@ -29518,7 +29518,7 @@ body.lg62 #lg62-top button, body.lg62 #lg62-top .lg62-btn{
   padding:calc(var(--lg-fs) * 0.4) calc(var(--lg-fs) * 0.7) !important;
 }
 .lg103-abtn{ font-size:var(--lg-fs-sm) !important; min-height:var(--lg-tap); }
-.lg31-fab, .lg32-menu, .lg32-menu *{ font-size:var(--lg-fs-sm) !important; }
+.lg31-fab, .lg32-menu, .lg32-menu *{ font-size:var(--lg-fs-sm); }
 
 /* --- Ô nhập liệu: chống Safari tự phóng, đủ lớn để đọc ---------------- */
 input, select, textarea{ font-size:var(--lg-fs) !important; }
@@ -29661,7 +29661,7 @@ body.lg62 #lg62-nav{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
    không cắt mất nội dung trong các khay cuộn trên mobile. */
 body.lg62{ line-height:1.35; }
 body.lg62 p, body.lg62 li, body.lg62 .desc{ line-height:1.35 !important; font-size:var(--lg-fs-sm) !important; }
-body.lg62 #sidebar .lg-scan-intro.small.muted{ font-size:var(--lg-fs-sm) !important; line-height:1.35 !important; }
+body.lg62 #sidebar .lg-scan-intro.small.muted{ font-size:var(--lg-fs-sm); line-height:1.35; }
 body.lg62 #sidebar .small, body.lg62 #sidebar .muted{ line-height:1.35 !important; }
 body.lg62 .small, body.lg62 .muted, body.lg62 .hint, body.lg62 small{
   font-size:var(--lg-fs-xs) !important; line-height:1.35 !important;
@@ -29689,10 +29689,10 @@ body.lg62 h1,body.lg62 h2,body.lg62 h3,body.lg62 h4{ line-height:1.25; }
 html body .lg-label.lg-edge > span,
 html body .lg-label.lg-vertex > span,
 html body .lg-label.lg-angle > span{
-  background: var(--lg116-edge-bg) !important;
+  background: var(--lg116-edge-bg);
   color:#fff;
   font-weight:800;
-  font-size:20px !important;
+  font-size:20px;
   line-height:1.15;
   letter-spacing:.2px;
   padding:4px 8px;
@@ -29701,7 +29701,7 @@ html body .lg-label.lg-angle > span{
   box-shadow:0 2px 8px rgba(0,0,0,.55);
   white-space:nowrap;
 }
-html body .lg-label.lg-vertex > span{ background:rgba(140,20,20,.92) !important; }
+html body .lg-label.lg-vertex > span{ background:rgba(140,20,20,.92); }
 html body .lg-label.lg-angle  > span{ background:rgba(20,40,90,.88) !important; font-size:17px !important; }
 html body .lg-label.lg-info > span, html body .lg-label.lg-info > div{
   background:var(--lg116-edge-bg) !important; color:#fff !important;
@@ -29721,7 +29721,7 @@ html body .lg-label.lg-info > span, html body .lg-label.lg-info > div{
 
 /* ---- 4) BẢNG THÔNG TIN THỬA ĐẤT: có trần chiều cao + cuộn được ---- */
 html body #plot-info-panel{
-  max-height:46dvh !important;
+  max-height:46dvh;
   overflow:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
@@ -29730,7 +29730,7 @@ html body #plot-info-panel{
 #plot-info-panel .pip-bar{ position:sticky; top:0; z-index:3; }
 #plot-info-panel [style*="max-height"]{ overflow:auto !important; }
 @media (max-width:640px){
-  html body #plot-info-panel{ max-height:34dvh !important; }
+  html body #plot-info-panel{ max-height:34dvh; }
 }
 
 /* ---- 5) DOCK & NÚT TÁC VỤ TO, ĐỌC ĐƯỢC TRÊN ĐIỆN THOẠI ---- */
@@ -29744,7 +29744,7 @@ html body #plot-info-panel{
   }
   #lg103-dock svg, #lg103-dock .lg103-ic{ width:26px; height:26px; }
   html body.lg62.lg103 #lg62-rail .lg31-fab{
-    min-height:74px !important; font-size:21px !important; padding:8px 10px !important;
+    min-height:74px; font-size:21px !important; padding:8px 10px !important;
   }
   html body.lg62.lg103 #lg62-rail .lg31-fab small{
     font-size:var(--fs-2) !important; font-weight:800; line-height:1.15 !important;
@@ -30318,7 +30318,7 @@ body.lg62.lg103 #lg103-dock .lg103-lb,
 }
 body.lg62.lg103 #lg103-dock .lg103-ic,
 #lg103-dock .lg103-ic { font-size: 22px; line-height: 1; }
-body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb { font-size: 11.5px !important; }
+body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb { font-size: 11.5px; }
 /* Ô đang chọn nổi rõ hơn để biết mình đang ở màn hình nào */
 #lg103-dock .lg103-dbtn[aria-selected="true"] .lg103-lb { color: var(--lg103-green); }
 #lg103-dock .lg103-dbtn[aria-selected="true"]::after {
@@ -30490,7 +30490,7 @@ input, select, textarea{ font-size:16px !important; }
 /* Bottom nav giữ đúng thông số đã chốt ở v117 */
 body.lg62.lg103{ --lg103-dock-h:64px; --lg103-fab:56px; }
 body.lg62.lg103 #lg103-dock .lg103-lb{ font-size:13.5px; }
-body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
+body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px; }
 </style>
 <script>
 (function () {
@@ -32178,7 +32178,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
 }
 /* #lg116-ctrl và .lg122-fab vốn đã là flex-column riêng -> giữ nguyên, chỉ tắt neo tuyệt đối */
 #lg124-stack #lg116-ctrl{ display:flex; flex-direction:column; gap:6px; }
-#lg124-stack .lg122-fab{ display:flex !important; flex-direction:column; align-items:flex-end; gap:6px; }
+#lg124-stack .lg122-fab{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
 /* Panel số liệu đệm ô ảnh mở SANG TRÁI để không tràn ra ngoài mép phải màn hình */
 #lg124-stack .lg122-panel{ max-width:min(72vw,320px); }
 @media (max-width:480px){ #lg124-stack{ right:8px; } }
@@ -32197,14 +32197,14 @@ body.lg62.lg103 #lg103-dock{
   --lg103-fs-dock: 17.5px;
 }
 body.lg62.lg103 #lg103-dock .lg103-ic{
-  font-size: 28px !important;
+  font-size: 28px;
 }
 body.lg62.lg103 #lg103-dock .lg103-lb{
   font-size: var(--lg103-fs-dock); line-height:1.1;
 }
 @media (max-width:360px){
   body.lg62.lg103 #lg103-dock{ --lg103-fs-dock: 15.5px; }
-  body.lg62.lg103 #lg103-dock .lg103-ic{ font-size: 25px !important; }
+  body.lg62.lg103 #lg103-dock .lg103-ic{ font-size: 25px; }
 }
 
 /* ---- C) BẢNG CÀI ĐẶT / CÔNG CỤ — đồng bộ cỡ với #lg110 (Hiển thị thửa đất):
@@ -32223,7 +32223,7 @@ body.lg62.lg103 #lg103-dock .lg103-lb{
 }
 .lg62-sheet-body .lg31-fab small{ font-size:var(--lg124-fs) !important; }
 .lg62-sheet-head{ font-size:calc(var(--lg124-fs) + 3px) !important; }
-.lg62-group{ font-size:calc(var(--lg124-fs) - 4px) !important; }
+.lg62-group{ font-size:calc(var(--lg124-fs) - 4px); }
 .lg62-sheet-body .leaflet-control-layers,
 .lg62-sheet-body .lg-layer-ctrl{
   font-size:var(--lg124-fs) !important; line-height:2.15 !important;
@@ -33633,8 +33633,8 @@ body.lg62:not(.lg62-map) #lg138-bar{
 #lg124-stack #lg138-bar{
   position:static !important; inset:auto;
   left:auto !important; right:auto !important; top:auto !important; bottom:auto !important;
-  z-index:auto !important; margin:6px 0 0 !important;
-  display:flex !important; flex-direction:column; align-items:flex-start !important;
+  z-index:auto !important; margin:6px 0 0;
+  display:flex; flex-direction:column; align-items:flex-start !important;
   gap:4px; max-width:100%;
 }
 #lg124-stack #lg138-bar button,
@@ -38256,12 +38256,12 @@ window.LG172_CFG = {"url":"https://bpgjtghriyjutxstpely.supabase.co","key":"sb_p
 html body .lg-label.lg-edge > span,
 html body .lg-label.lg-vertex > span,
 html body .lg-label.lg-angle > span{
-  font-size: var(--lg174-fs, 15px) !important;
+  font-size: var(--lg174-fs, 15px);
   padding: 2px 6px;
   border-width: 1px;
   box-shadow: 0 1px 5px rgba(0,0,0,.55);
 }
-html body .lg-label.lg-vertex > span{ font-size: var(--lg174-fs-v, 14px) !important; }
+html body .lg-label.lg-vertex > span{ font-size: var(--lg174-fs-v, 14px); }
 html body .lg-label.lg-angle  > span{ font-size: var(--lg174-fs-a, 12px) !important; }
 html body .lg-label.lg174-hidden{ display:none; }
 /* Ảnh nền: giữ nét, tăng nhẹ tương phản để chữ nướng trong tile (tên đường,
@@ -43408,7 +43408,7 @@ body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-dir
 #lg46-snack .sb.warn .dot{ background:#f0b54a; } #lg46-snack .sb.err .dot{ background:#ff8a80; } #lg46-snack .sb.info .dot{ background:#8ecdf0; }
 #lg46-snack .sb button{ flex:0 0 auto; min-height:36px; border:0; background:transparent; color:#9be3b8; font-weight:800; font-size:var(--lg-fs-sm,14px); padding:0 var(--sp-2); border-radius:8px; }
 #lg46-snack .sb.err button{ color:#ffb4ab; }
-#toast-wrap, .toast-wrap, #lgv42-toast-host{ display:none !important; }
+#toast-wrap, .toast-wrap, #lgv42-toast-host{ display:none; }
 @media (prefers-reduced-motion:reduce){ #lg46-snack .sb{ transition:none; } }
 @media print{ #lg46-snack{ display:none !important; } }
 </style>
@@ -43472,13 +43472,13 @@ body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-dir
 <style id="lg46b-map-css">
 /* HM-46b — Bản đồ 4 vùng cố định: trên (tìm kiếm + chip) · phải (một cột nút) · tấm trượt · dock. Thanh xanh v62 và nút phóng to rời bỏ khỏi màn cảm ứng. */
 body.lg103{ --lg62-top: 104px; --lg46-snack-r: 12px; }   /* --lg62-top = chiều cao vùng tìm kiếm + chip: các bảng nổi cũ tự đặt bên dưới */
-body.lg62.lg103 .map-wrap{ top:0 !important; }   /* bản đồ tràn lên mép trên; thanh tìm kiếm nổi đè lên */
-body.lg103 #lg62-top{ display:none !important; }
+body.lg62.lg103 .map-wrap{ top:0; }   /* bản đồ tràn lên mép trên; thanh tìm kiếm nổi đè lên */
+body.lg103 #lg62-top{ display:none; }
 body.lg103 #lg183-layers{ display:none !important; }   /* thay bằng nút "Lớp phủ" trong cột phải */
-body.lg103 .lg-zoomctrl{ display:none !important; }    /* ⧉+ ⧉− 🎯 → chụm ngón + nút "Về thửa" */
-@media (pointer:coarse){ body.lg103 .leaflet-control-zoom{ display:none !important; } }
+body.lg103 .lg-zoomctrl{ display:none; }    /* ⧉+ ⧉− 🎯 → chụm ngón + nút "Về thửa" */
+@media (pointer:coarse){ body.lg103 .leaflet-control-zoom{ display:none; } }
 body.lg103 .leaflet-top.leaflet-left{ top:calc(var(--lg46-top,112px) + 40px); }   /* chuột: ± nằm dưới vùng tìm kiếm */
-body.lg62.lg103 #lg63-progress{ top:var(--lg46-top,112px) !important; left:12px !important; transform:none !important; max-width:calc(100vw - 92px) !important; }
+body.lg62.lg103 #lg63-progress{ top:var(--lg46-top,112px); left:12px; transform:none; max-width:calc(100vw - 92px); }
 body.lg103.lg62-map #lg8c-fabs{ top:var(--lg46-top,112px); bottom:auto; right:12px; gap:10px; align-items:flex-end; }
 #lg46-rail{ display:flex; flex-direction:column; background:var(--card,#fff); border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.25); overflow:hidden; }
 #lg8c-fabs #lg46-rail button{ width:46px; height:46px; border-radius:0; box-shadow:none; border-bottom:1px solid #e3e8e5; display:grid; place-items:center; color:#17251e; background:transparent; }
@@ -43488,7 +43488,7 @@ body.lg103.lg62-map #lg8c-fabs{ top:var(--lg46-top,112px); bottom:auto; right:12
 /* chip gọn hơn */
 #lg8c-chips button{ min-height:34px; padding:6px 12px; }
 /* nhãn cạnh: chữ trắng viền tối, nhỏ, không nền khối; khi đã chọn một thửa thì chỉ hiện cạnh của thửa đó */
-html body .lg-label.lg-edge > span{ background:transparent !important; box-shadow:none !important; border:0 !important; font-size:calc(var(--lg174-fs,15px) * .78) !important; padding:0 2px !important; text-shadow:0 0 2px #000,0 0 3px #000,0 0 4px rgba(0,0,0,.8); }
+html body .lg-label.lg-edge > span{ background:transparent; box-shadow:none; border:0; font-size:calc(var(--lg174-fs,15px) * .78); padding:0 2px; text-shadow:0 0 2px #000,0 0 3px #000,0 0 4px rgba(0,0,0,.8); }
 body.lg46-onesel .lg-label.lg-edge > span:not(.lg46-sel){ display:none !important; }
 </style>
 <script id="lg46b-map">
@@ -43543,10 +43543,10 @@ body.lg46-onesel .lg-label.lg-edge > span:not(.lg46-sel){ display:none !importan
 body.lg62.lg103 #lg103-dock .lg103-ic svg{ width:22px; height:22px; display:block; margin:0 auto; }
 body.lg62.lg103 #lg103-dock .lg103-ic{ display:grid; place-items:center; width:48px; height:28px; border-radius:14px; margin:0 auto 2px; }
 body.lg62.lg103 #lg103-dock .lg103-dbtn[aria-selected="true"] .lg103-ic{ background:#e3efe8; color:#0f4c34; }
-body.lg62.lg103 #lg103-fab{ position:static !important; transform:none !important; display:grid; place-items:center; width:52px !important; height:30px !important; min-height:0 !important; border-radius:15px !important; margin:0 auto 2px; box-shadow:none !important; border:0 !important; background:#0f4c34; color:#fff; font-size:0 !important; }
+body.lg62.lg103 #lg103-fab{ position:static; transform:none; display:grid; place-items:center; width:52px; height:30px; min-height:0; border-radius:15px; margin:0 auto 2px; box-shadow:none; border:0; background:#0f4c34; color:#fff; font-size:0; }
 body.lg62.lg103 #lg103-fab svg{ width:22px; height:22px; }
 body.lg62.lg103 #lg103-dock .lg103-dbtn.lg103-fabslot{ justify-content:center; padding-bottom:0; }
-body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:inherit !important; }
+body.lg62.lg103 #lg103-dock .lg103-fabslot .lg103-lb{ font-size:inherit; }
 </style>
 </body>
 
