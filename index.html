@@ -3065,26 +3065,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       <!-- TAB 3: NHẬP FILE CAD / EXCEL -->
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
-      <div id="tab-stakeout" class="tab-content">
-        <section class="block">
-          <h3 aria-level="2">Dẫn Đường Cắm Mốc RTK (Âm Thanh Geiger)</h3>
-          <label class="small muted">Chọn thửa đất và mốc cần cắm:</label>
-          <select id="stakeout-plot-select" aria-label="Thửa cần cắm mốc" style="margin:4px 0"></select>
-          <select id="stakeout-pin-select" aria-label="Mốc cần cắm" style="margin-bottom:8px"></select>
-
-          <button class="btn primary" style="width:100%" id="btn-start-stakeout">🧭 Bật Dẫn Đường GPS RTK</button>
-
-          <div class="stakeout-panel" id="stakeout-panel" style="display:none">
-            <div class="stakeout-arrow" id="stakeout-arrow">⬆</div>
-            <div style="font-size:var(--lg-fs-num);font-weight:700;color:var(--accent)" id="stakeout-dist">0.0 m</div>
-            <div class="small muted" id="stakeout-bearing">Phương vị: 0°</div>
-            <div id="stakeout-proximity-msg" class="small bold" style="margin-top:6px;color:#2e7d32"></div>
-            <label class="small" style="display:block;margin-top:8px">Rung báo khi cách mốc dưới (m, 0 = tắt)
-              <input type="number" id="stakeout-vib" min="0" step="0.5" value="1" inputmode="decimal" style="width:80px"></label>
-          </div>
-        </section>
-      </div>
-
       <!-- TAB 6 (v35): QUÉT MÃ QR TRÊN SỔ ĐỎ MẪU MỚI -->
       <div id="tab-qr" class="tab-content">
         <section class="block">
@@ -4023,14 +4003,7 @@ function switchTab(tabId, btnElement) {
   if (map) setTimeout(() => map.invalidateSize(), 150);
 
   // Rời khỏi tab "Cắm Mốc RTK" mà quên bấm tắt sẽ để GPS chạy nền vô thời hạn -> tự tắt giúp.
-  if (tabId !== 'tab-stakeout' && stakeoutWatchId) {
-    navigator.geolocation.clearWatch(stakeoutWatchId);
-    stakeoutWatchId = null;
-    const panel = document.getElementById('stakeout-panel');
-    if (panel) panel.style.display = 'none';
-    const btnStake = document.getElementById('btn-start-stakeout');
-    if (btnStake) { btnStake.textContent = '🧭 Bật Dẫn Đường GPS RTK'; btnStake.classList.remove('danger'); }
-  }
+  if (tabId !== 'tab-stakeout' && stakeoutWatchId && window.lgStakeoutStop) window.lgStakeoutStop();
 }
 
 // ---------------------------------------------------------------
@@ -8765,6 +8738,8 @@ function applyTowgs84Choice(){
 
 function updateStakeoutSelects() {
   const pSel = document.getElementById('stakeout-plot-select');
+  if (!pSel) return;   // HM-08f: ô chọn nằm trong sheet "Cắm mốc RTK" — chỉ có khi sheet đã mở
+  const keep = pSel.value;
   pSel.innerHTML = '';
   plots.forEach((p) => {
     const opt = document.createElement('option');
@@ -8772,12 +8747,15 @@ function updateStakeoutSelects() {
     opt.textContent = `${p.id} (${p.area.toFixed(0)} m²)`;
     pSel.appendChild(opt);
   });
+  if (keep && plots.some(p => p.id === keep)) pSel.value = keep;
+  else if (window.selectedPlotId && plots.some(p => p.id === window.selectedPlotId)) pSel.value = window.selectedPlotId;
   updateStakeoutPins();
 }
 
 function updateStakeoutPins() {
   const pSel = document.getElementById('stakeout-plot-select');
   const pinSel = document.getElementById('stakeout-pin-select');
+  if (!pSel || !pinSel) return;
   pinSel.innerHTML = '';
   const plot = plots.find(p => p.id === pSel.value);
   if (!plot) return;
@@ -10372,21 +10350,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // vô thời hạn — KHÔNG CÓ NÚT TẮT nào trong toàn bộ ứng dụng. GPS cứ chạy nền mãi,
   // tốn pin, và liên tục ép bản đồ map.setView() theo vị trí người dùng khiến không
   // thể tự do xem/kéo bản đồ trong lúc cắm mốc. Sửa: cùng 1 nút, bấm lần 2 để tắt.
-  document.getElementById('btn-start-stakeout').onclick = () => {
-    const btnStake = document.getElementById('btn-start-stakeout');
+  /* HM-08f: dẫn đường cắm mốc nằm trong sheet "Cắm mốc RTK"; mọi thao tác DOM đều chịu được việc sheet đã đóng */
+  const stkEl = (id, fn) => { const e = document.getElementById(id); if (e) fn(e); };
+  window.lgStakeoutActive = () => !!stakeoutWatchId;
+  window.lgStakeoutStop = (quiet) => {
+    if (!stakeoutWatchId) return false;
+    navigator.geolocation.clearWatch(stakeoutWatchId);
+    stakeoutWatchId = null; try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16c'); }
+    stkEl('stakeout-panel', e => { e.style.display = 'none'; });
+    stkEl('btn-start-stakeout', e => { e.textContent = '🧭 Bật Dẫn Đường GPS RTK'; e.classList.remove('danger'); });
+    if (!quiet) toast({ title: 'Đã tắt dẫn đường GPS RTK' });
+    return true;
+  };
+  window.lgStakeoutToggle = () => {
+    if (stakeoutWatchId) { window.lgStakeoutStop(); return; }
+    const btnStake = document.getElementById('btn-start-stakeout') || document.createElement('button');
 
-    if (stakeoutWatchId) {
-      navigator.geolocation.clearWatch(stakeoutWatchId);
-      stakeoutWatchId = null; try { window.lgWake && window.lgWake.off(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16c'); }
-      document.getElementById('stakeout-panel').style.display = 'none';
-      btnStake.textContent = '🧭 Bật Dẫn Đường GPS RTK';
-      btnStake.classList.remove('danger');
-      toast({ title: 'Đã tắt dẫn đường GPS RTK' });
-      return;
-    }
-
-    const pSel = document.getElementById('stakeout-plot-select').value;
-    const pinIdx = Number(document.getElementById('stakeout-pin-select').value);
+    const pSel = (document.getElementById('stakeout-plot-select') || {}).value;
+    const pinIdx = Number((document.getElementById('stakeout-pin-select') || {}).value);
     const plot = plots.find(p => p.id === pSel);
     if (!plot || !plot.points[pinIdx]) return;
 
@@ -10404,7 +10385,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    document.getElementById('stakeout-panel').style.display = 'block';
+    stkEl('stakeout-panel', e => { e.style.display = 'block'; });
     btnStake.textContent = '⏹ Tắt Dẫn Đường GPS RTK';
     btnStake.classList.add('danger');
     toast({ title: 'Đã bật dẫn đường GPS RTK', description: `Mốc target: ${targetPt.ten}` });
@@ -10428,21 +10409,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const devHeading = (typeof window.lgGetCompassHeading === 'function') ? window.lgGetCompassHeading() : null;
         const arrowRot = devHeading == null ? azimuth : ((azimuth - devHeading) % 360 + 360) % 360;
 
-        document.getElementById('stakeout-dist').textContent = `${dist.toFixed(2)} m`;
-        document.getElementById('stakeout-bearing').textContent = devHeading == null
+        stkEl('stakeout-dist', e => { e.textContent = `${dist.toFixed(2)} m`; });
+        stkEl('stakeout-bearing', e => { e.textContent = devHeading == null
           ? `Phương vị cắm mốc: ${azimuth.toFixed(1)}° (bật la bàn để mũi tên tự xoay theo hướng cầm máy)`
-          : `Phương vị cắm mốc: ${azimuth.toFixed(1)}° · đang xoay theo la bàn`;
-        document.getElementById('stakeout-arrow').style.transform = `rotate(${arrowRot}deg)`;
+          : `Phương vị cắm mốc: ${azimuth.toFixed(1)}° · đang xoay theo la bàn`; });
+        stkEl('stakeout-arrow', e => { e.style.transform = `rotate(${arrowRot}deg)`; });
 
         playStakeoutGeigerBeep(dist);
         try { window.lgWake && window.lgWake.buzz(dist); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h16g'); }
 
-        const msgEl = document.getElementById('stakeout-proximity-msg');
-        if (dist <= 0.5) {
-          msgEl.textContent = "🎯 BẠN ĐÃ ĐẾN ĐÚNG MỐC CẦN CẮM (< 0.5m)";
-        } else {
-          msgEl.textContent = "";
-        }
+        stkEl('stakeout-proximity-msg', msgEl => { msgEl.textContent = dist <= 0.5 ? "🎯 BẠN ĐÃ ĐẾN ĐÚNG MỐC CẦN CẮM (< 0.5m)" : ""; });
 
         if (map) map.setView([userLat, userLng], 19); // v37.7 - 4.3
       },
@@ -24954,11 +24930,7 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
     try {
       if (window.LG62 && typeof window.LG62.closeSheets === 'function') window.LG62.closeSheets();
       if (window.LG62 && typeof window.LG62.goto === 'function') window.LG62.goto(false);
-      if (typeof window.switchTab === 'function') window.switchTab('tab-stakeout', null);
-      var sb = document.getElementById('sidebar');
-      if (sb) { sb.classList.add('open'); sb.scrollTop = 0; }
-      var target = document.getElementById('tab-stakeout');
-      if (target) target.classList.add('active');
+      if (typeof window.lgOpenStakeout === 'function') window.lgOpenStakeout();
       LOG('info', 'Mo tab Cam Moc RTK tu bang Cong cu');
     } catch (e) { LOG('warn', 'Loi mo RTK', e && e.message); }
   }
@@ -25710,6 +25682,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function openSheet(title, html, state) {
     if (!sheet) return;
+    if (title !== 'Cắm mốc RTK' && window.lgStakeoutStop) window.lgStakeoutStop(true);   // rời màn cắm mốc → tắt GPS nền
     gripTitle.textContent = title || '';
     body.innerHTML = html || '<div class="lg103-empty">Chưa có dữ liệu.</div>';
     sheet.classList.add('on');
@@ -25717,6 +25690,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   }
   function closeSheet() {
     if (!sheet) return;
+    if (window.lgStakeoutStop) window.lgStakeoutStop(true);
     sheet.classList.remove('on'); sheet.classList.remove('lg8c-card-on'); cardShown = false;
     remeasure();
     currentTab = null;
@@ -26308,9 +26282,25 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       '<div class="lg103-actions"><button type="button" class="lg103-abtn" id="btn-undo-manual-point" data-lg103-act="man-undo" style="display:none">↩️ Xoá mốc cuối</button><button type="button" class="lg103-abtn" id="btn-finish-manual-plot" data-lg103-act="man-finish" style="display:none">✅ Hoàn tất &amp; vẽ thửa</button></div></div>';
   }
   window.lgOpenFieldGps = function () { openSheet('GPS thực địa', fieldGpsHTML()); if (window.lgManualRender) window.lgManualRender(); };
+  /* HM-08f — màn "Cắm mốc RTK" dựng lại trong sheet (thay tab-stakeout): chọn thửa + mốc → mũi tên, khoảng cách, phương vị, báo "đã tới mốc", rung, âm Geiger */
+  function stakeoutHTML() {
+    var vib = ''; try { vib = localStorage.getItem('landgis_vibrate_m'); } catch (e) { vib = ''; }
+    return '<div class="lg8g lg8g-rtk"><p class="lg8e-note">Chọn thửa và mốc cần cắm, bật dẫn đường rồi đi theo mũi tên. Đóng màn này sẽ tự tắt GPS để tiết kiệm pin. Cần mở bằng https:// và cho phép vị trí.</p>' +
+      '<label>Thửa <select id="stakeout-plot-select" aria-label="Thửa cần cắm mốc"></select></label>' +
+      '<label>Mốc cần cắm <select id="stakeout-pin-select" aria-label="Mốc cần cắm"></select></label>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" id="btn-start-stakeout" data-lg103-act="stk-toggle">🧭 Bật Dẫn Đường GPS RTK</button></div>' +
+      '<div class="stakeout-panel" id="stakeout-panel" style="display:none"><div class="stakeout-arrow" id="stakeout-arrow">⬆</div>' +
+      '<div style="font-size:var(--lg-fs-num);font-weight:700" id="stakeout-dist">0.0 m</div><div class="lg8e-note" id="stakeout-bearing">Phương vị: 0°</div><div id="stakeout-proximity-msg" class="lg8e-note" style="font-weight:700;color:#2e7d32"></div>' +
+      '<label>Rung báo khi cách mốc dưới (m, 0 = tắt) <input type="number" id="stakeout-vib" min="0" step="0.5" value="' + (vib != null && vib !== '' ? escA4(vib) : '1') + '" inputmode="decimal" aria-label="Ngưỡng rung báo (m)" style="width:90px"></label></div></div>';
+  }
+  window.lgOpenStakeout = function () {
+    if (!plotsAll().length) { try { window.toast({ title: 'Chưa có thửa để cắm mốc', description: 'Nhập hoặc vẽ một thửa trước.' }); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h8f4'); } return; }
+    openSheet('Cắm mốc RTK', stakeoutHTML()); updateStakeoutSelects();
+    var ps = document.getElementById('stakeout-plot-select'); if (ps) ps.addEventListener('change', updateStakeoutPins);
+  };
   // Hành động của các mục mới (gắn một lần vào khay nội dung)
   function newNavAction(act, t) {
-    var legacyTabs = { 'import-qr': 'tab-qr', 'import-rtk': 'tab-stakeout' };
+    var legacyTabs = { 'import-qr': 'tab-qr' };
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
       case 'plots-tools': openSheet('Dữ liệu thửa', plotsToolsHTML()); return true;
@@ -26330,6 +26320,8 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'man-add': window.lgManualAdd(); return true;
       case 'man-undo': window.lgManualUndo(); return true;
       case 'man-finish': if (window.lgManualFinish()) closeSheet(); return true;
+      case 'import-rtk': window.lgOpenStakeout(); return true;
+      case 'stk-toggle': window.lgStakeoutToggle(); return true;
       case 'goto-import': selectTab('import'); return true;
       case 'card-profile': cardShown = false; sheet.classList.remove('lg8c-card-on'); selectTab('profile'); return true;
       case 'card-route': clickIf('lg52-fab-route'); return true;
