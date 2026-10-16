@@ -72,3 +72,4 @@
 - 16/10 · HM-08f đợt 5: dựng lại màn Nhập CAD/CSV; sidebar còn 4 màn cũ (scan, QR, GPS, RTK).
 - 16/10 · HM-08f đợt 6: dựng lại màn GPS thực địa; sidebar còn 3 màn cũ (scan, QR, RTK).
 - 16/10 · HM-08f đợt 7: dựng lại màn Cắm mốc RTK; sidebar còn 2 màn cũ (scan sổ, QR).
+- 16/10 · HM-08f đợt 8: dựng lại màn Quét QR; sidebar còn 1 màn cũ (Scan sổ đỏ).
