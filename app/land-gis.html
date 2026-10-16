@@ -3062,48 +3062,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       </div>
 
       <!-- TAB 2: ĐỊNH VỊ GPS VỆ TINH OFFLINE TRỰC THỪA -->
-      <div id="tab-gps-offline" class="tab-content">
-        <section class="block">
-          <h3 aria-level="2">1. Trực tiếp Vị trí GPS Vệ tinh Thực địa (Không cần 3G/4G)</h3>
-          <button class="btn primary" style="width:100%;margin-bottom:8px" id="btn-trigger-gps-live">📍 Bật Định Vị GPS Vệ Tinh Thời Gian Thực</button>
-
-          <div id="gps-live-card" style="display:none;background:var(--muted);padding:10px;border-radius:6px;border:1px solid var(--border)">
-            <div style="font-size:var(--lg-fs-xs);font-weight:700;color:var(--sidebar-bg);margin-bottom:4px">Tọa độ WGS84 Vệ tinh:</div>
-            <div class="small mono" id="gps-wgs84-val">Lat: --, Lng: --</div>
-            <hr style="border:none;border-top:1px solid #ccc;margin:6px 0"/>
-            <div style="font-size:var(--lg-fs-xs);font-weight:700;color:var(--accent);margin-bottom:4px">Tọa độ Địa chính VN-2000:</div>
-            <div class="small mono" id="gps-vn2000-val">X (Bắc): -- m<br/>Y (Đông): -- m</div>
-            <div class="small muted" id="gps-province-detected" style="margin-top:4px">Tỉnh/Thành: --</div>
-          </div>
-        </section>
-
-        <hr class="sep" />
-
-        <section class="block">
-          <h3 aria-level="2">2. Nhập Tọa độ VN-2000 Thủ công tại Thực địa</h3>
-          <div class="row">
-            <input type="number" id="manual-x" aria-label="Toạ độ X (Bắc)" placeholder="Tọa độ X (Northing - Bắc)..." />
-          </div>
-          <div class="row">
-            <input type="number" id="manual-y" aria-label="Toạ độ Y (Đông)" placeholder="Tọa độ Y (Easting - Đông)..." />
-          </div>
-          <div style="margin-bottom:6px">
-            <label class="small muted">Chọn Tỉnh/Thành:</label>
-            <select id="manual-province-select" aria-label="Tỉnh/thành của toạ độ"></select>
-          </div>
-          <button class="btn secondary" style="width:100%" id="btn-add-manual-point">📌 Thêm Mốc Tọa Độ Vào Thửa</button>
-          <!-- v159: thửa thật hầu như luôn có ≥4 cạnh — không thể tự chốt hình
-               ngay khi đủ 3 mốc như trước (xem chú thích tại btn-add-manual-point).
-               Cần hiển thị số mốc đã đo + để người dùng TỰ bấm hoàn tất khi đã đi
-               hết ranh thửa ngoài thực địa, và có đường lùi nếu bấm nhầm 1 mốc. -->
-          <div id="manual-pts-status" class="small muted" style="margin-top:8px;display:none"></div>
-          <div style="display:flex;gap:6px;margin-top:6px">
-            <button class="btn" style="flex:1;display:none" id="btn-undo-manual-point">↩️ Xoá mốc cuối</button>
-            <button class="btn primary" style="flex:2;display:none" id="btn-finish-manual-plot">✅ Hoàn tất & Vẽ Thửa</button>
-          </div>
-        </section>
-      </div>
-
       <!-- TAB 3: NHẬP FILE CAD / EXCEL -->
       <!-- TAB 4: QUẢN LÝ THỬA ĐẤT & ĐÁNH GIÁ SỐ LIỆU -->
       <!-- TAB 5: CẮM MỐC THỰC ĐỊA GPS / RTK GEIGER COMPASS -->
@@ -9267,12 +9225,13 @@ function triggerLiveGPSLocate() {
       const lon0 = matchedProv ? matchedProv.lon0 : DEFAULT_LON0;
       const vnCoord = convertWGS84ToVN2000(lat, lng, lon0, getZoneWidth());
 
-      document.getElementById('gps-live-card').style.display = 'block';
-      document.getElementById('gps-wgs84-val').textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
-      document.getElementById('gps-vn2000-val').innerHTML = `X (Bắc): <strong>${vnCoord.x.toFixed(2)}</strong> m<br/>Y (Đông): <strong>${vnCoord.y.toFixed(2)}</strong> m`;
-      document.getElementById('gps-province-detected').textContent = `Tỉnh/Thành: ${matchedProv ? matchedProv.name : 'Chưa xác định'} (KTT: ${lon0}°)`;
+      // HM-08f: thẻ kết quả nằm trong sheet "GPS thực địa" (có thể chưa mở khi bấm từ nút nhanh)
+      const gpsCard = (id, fn) => { const e = document.getElementById(id); if (e) fn(e); };
+      gpsCard('gps-live-card', e => { e.style.display = 'block'; });
+      gpsCard('gps-wgs84-val', e => { e.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}` + (pos.coords.accuracy != null ? ` · ±${pos.coords.accuracy.toFixed(1)} m` : ''); });
+      gpsCard('gps-vn2000-val', e => { e.innerHTML = `X (Bắc): <strong>${vnCoord.x.toFixed(2)}</strong> m<br/>Y (Đông): <strong>${vnCoord.y.toFixed(2)}</strong> m`; });
+      gpsCard('gps-province-detected', e => { e.textContent = `Tỉnh/Thành: ${matchedProv ? matchedProv.name : 'Chưa xác định'} (KTT: ${lon0}°)`; });
 
-      if (typeof closeSidebar === 'function') closeSidebar();
       setTimeout(() => { map.invalidateSize(); map.setView([lat, lng], 17); }, 320);
       // v35: trước đây mỗi lần bấm "GPS Vị Trí Hiện Tại" lại thả THÊM một marker mới,
       // đo vài lần là bản đồ đầy ghim chồng nhau. Nay dùng đúng MỘT marker vị trí.
@@ -10043,7 +10002,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('btn-quick-gps-locate').onclick = triggerLiveGPSLocate;
-  document.getElementById('btn-trigger-gps-live').onclick = triggerLiveGPSLocate;
+  window.lgGpsLive = triggerLiveGPSLocate;
 
   // Lắng nghe sự kiện Upload từ Camera & Thư viện
   const handleImageInput = (e) => {
@@ -10140,10 +10099,11 @@ document.addEventListener('DOMContentLoaded', () => {
     drawPlot(`Thửa ${sodoMeta.so_thua || 'AI'}`, sodoCoords, lon0, sodoMeta);
   };
 
-  document.getElementById('btn-add-manual-point').onclick = () => {
+  /* HM-08f: nhập mốc tay tại thực địa — sheet "GPS thực địa" của giao diện mới gọi các hàm này (trước đây là các ô trong sidebar) */
+  window.lgManualAdd = () => {
     const x = parseFloat(document.getElementById('manual-x').value);
     const y = parseFloat(document.getElementById('manual-y').value);
-    const provCode = document.getElementById('manual-province-select').value;
+    const provCode = (document.getElementById('manual-province-select') || document.getElementById('province-select') || {}).value;
     const lon0 = VN2000_PROVINCES[provCode]?.lon0 || DEFAULT_LON0;
 
     if (!isFinite(x) || !isFinite(y)) {
@@ -10158,7 +10118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     manualPlotLon0 = lon0; // v159: nhớ KTT của LẦN NHẬP ĐẦU TIÊN cho cả thửa — xem chú thích renderManualPtsStatus()
     document.getElementById('manual-x').value = '';
     document.getElementById('manual-y').value = '';
-    document.getElementById('manual-x').focus();
+    try { document.getElementById('manual-x').focus(); } catch (_) { window.lgQuiet && window.lgQuiet(_, 'h8f3'); }
     toast({ title: `Đã thêm mốc M${manualPlotPoints.length}`, description: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)}` });
     renderManualPtsStatus();
   };
@@ -10183,6 +10143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const box = document.getElementById('manual-pts-status');
     const undoBtn = document.getElementById('btn-undo-manual-point');
     const finishBtn = document.getElementById('btn-finish-manual-plot');
+    if (!box || !undoBtn || !finishBtn) return;   // sheet chưa mở — trạng thái được vẽ lại khi mở
     const n = manualPlotPoints.length;
     if (n === 0) {
       box.style.display = 'none'; undoBtn.style.display = 'none'; finishBtn.style.display = 'none';
@@ -10195,16 +10156,19 @@ document.addEventListener('DOMContentLoaded', () => {
     box.innerHTML = `📍 Đã đo <b>${n} mốc</b>${n < 3 ? ' — cần tối thiểu 3 mốc' : ' — đi hết ranh thửa rồi bấm "Hoàn tất"'}.<br/><span style="opacity:.8">${escapeHtml(list)}</span>`;
   }
 
-  document.getElementById('btn-undo-manual-point').onclick = () => {
+  window.lgManualRender = renderManualPtsStatus;
+  window.lgManualCount = () => manualPlotPoints.length;
+  window.lgManualUndo = () => {
     manualPlotPoints.pop();
     renderManualPtsStatus();
   };
 
-  document.getElementById('btn-finish-manual-plot').onclick = () => {
-    if (manualPlotPoints.length < 3) return;
+  window.lgManualFinish = () => {
+    if (manualPlotPoints.length < 3) return false;
     drawPlot(`Thửa Thực Địa ${plots.length + 1}`, manualPlotPoints, manualPlotLon0 || DEFAULT_LON0);
     manualPlotPoints = [];
     renderManualPtsStatus();
+    return true;
   };
 
 
@@ -26328,9 +26292,25 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
     if (f) f.addEventListener('change', function () { var file = f.files && f.files[0]; f.value = ''; if (file) { closeSheet(); window.lgImportCadFile(file); } });
     if (sel) sel.addEventListener('change', function () { var ps = document.getElementById('province-select'); if (ps) { ps.value = sel.value; ps.dispatchEvent(new Event('change', { bubbles: true })); } });
   };
+  /* HM-08f — màn "GPS thực địa" dựng lại trong sheet (thay tab-gps-offline): định vị GPS + nhập mốc tay → vẽ thửa */
+  function fieldGpsHTML() {
+    var ps = document.getElementById('province-select'), opts = '';
+    if (ps) for (var i = 0; i < ps.options.length; i++) opts += '<option value="' + escA4(ps.options[i].value) + '"' + (ps.options[i].value === ps.value ? ' selected' : '') + '>' + escA4(ps.options[i].textContent) + '</option>';
+    return '<div class="lg8g lg8g-gps"><h5>1. Vị trí GPS hiện tại (không cần 3G/4G)</h5>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="gps-live">📍 Định vị GPS vệ tinh</button></div>' +
+      '<div id="gps-live-card" style="display:none"><div class="lg8e-kv"><span>WGS84</span><span class="mono" id="gps-wgs84-val">Lat: --, Lng: --</span></div><div class="lg8e-kv"><span>VN-2000</span><span class="mono" id="gps-vn2000-val">X (Bắc): -- m<br>Y (Đông): -- m</span></div><div class="lg8e-note" id="gps-province-detected">Tỉnh/Thành: --</div></div>' +
+      '<h5>2. Nhập toạ độ VN-2000 tại thực địa</h5>' +
+      '<label>Toạ độ X (Bắc) <input type="number" id="manual-x" inputmode="decimal" aria-label="Toạ độ X (Bắc)" placeholder="vd 2259336.23"></label>' +
+      '<label>Toạ độ Y (Đông) <input type="number" id="manual-y" inputmode="decimal" aria-label="Toạ độ Y (Đông)" placeholder="vd 568027.14"></label>' +
+      '<label>Tỉnh / kinh tuyến trục <select id="manual-province-select" aria-label="Tỉnh/thành của toạ độ">' + opts + '</select></label>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" data-lg103-act="man-add">📌 Thêm mốc</button></div>' +
+      '<div id="manual-pts-status" class="lg8e-note" style="display:none"></div>' +
+      '<div class="lg103-actions"><button type="button" class="lg103-abtn" id="btn-undo-manual-point" data-lg103-act="man-undo" style="display:none">↩️ Xoá mốc cuối</button><button type="button" class="lg103-abtn" id="btn-finish-manual-plot" data-lg103-act="man-finish" style="display:none">✅ Hoàn tất &amp; vẽ thửa</button></div></div>';
+  }
+  window.lgOpenFieldGps = function () { openSheet('GPS thực địa', fieldGpsHTML()); if (window.lgManualRender) window.lgManualRender(); };
   // Hành động của các mục mới (gắn một lần vào khay nội dung)
   function newNavAction(act, t) {
-    var legacyTabs = { 'import-qr': 'tab-qr', 'import-gps': 'tab-gps-offline', 'import-rtk': 'tab-stakeout' };
+    var legacyTabs = { 'import-qr': 'tab-qr', 'import-rtk': 'tab-stakeout' };
     if (legacyTabs[act]) { goLegacyTab(legacyTabs[act]); return true; }
     switch (act) {
       case 'plots-tools': openSheet('Dữ liệu thửa', plotsToolsHTML()); return true;
@@ -26345,6 +26325,11 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
       case 'pt-towgs': closeSheet(); openTowgs84Modal(); return true;
       case 'import-cad': window.lgOpenImportCad(); return true;
       case 'cad-paste': { var ta8 = document.getElementById('paste-coords'); if (ta8 && window.lgImportPasteText(ta8.value)) { ta8.value = ''; closeSheet(); } return true; }
+      case 'import-gps': window.lgOpenFieldGps(); return true;
+      case 'gps-live': window.lgGpsLive(); return true;
+      case 'man-add': window.lgManualAdd(); return true;
+      case 'man-undo': window.lgManualUndo(); return true;
+      case 'man-finish': if (window.lgManualFinish()) closeSheet(); return true;
       case 'goto-import': selectTab('import'); return true;
       case 'card-profile': cardShown = false; sheet.classList.remove('lg8c-card-on'); selectTab('profile'); return true;
       case 'card-route': clickIf('lg52-fab-route'); return true;
