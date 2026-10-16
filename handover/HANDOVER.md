@@ -138,3 +138,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f đợt 10 (16/10) hướng A: khung màn Scan sổ đỏ (đầu trang, 3 bước, tuỳ chọn gập; giữ 31 id). Test hm08f_scan_ui; bộ đầy đủ PASS. Hướng B chưa làm.
 - HM-08f đợt 11 (16/10) hướng B: bỏ màn Nhập liệu riêng + sidebar; app luôn ở Bản đồ; Scan sổ đỏ = lớp toàn màn (lgOpenScan), gỡ MENU; đổi chuẩn đo nạp 50 thửa sang DOMContentLoaded. e2e đọc sổ→thửa chạy tốt; bộ đầy đủ PASS. Cần thử camera/AI máy thật.
 - Chuyển tiếp sang P07 (16/10): xem handover/PROMPT_PHIEN_SAU.md — việc: nối ảnh/camera vào bước 2 wizard; dọn mã chết lg62/v111; màn chào.
+- Phiên kế: P07 = session_01SkwQ3cwS7GRmmnPqAbVswr (sinh 16/10 lúc đóng P06).

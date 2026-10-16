@@ -3084,7 +3084,8 @@
      "HM-08f(một phần: CSS chết)"
     ],
     "ly_do_dong": "mọi hạng mục ở DAT_*/CHO_NGUOI_DUNG → kết thúc chuỗi, viết TONG_KET.md",
-    "ghi_chu": "P06 tiếp tục sau khi đóng chuỗi theo yêu cầu người dùng: HM-08f đợt 1–11 (dọn CSS/!important, dựng lại 6 màn, bỏ sidebar/màn Nhập liệu). Chuyển P07: nối ảnh/camera vào bước 2 wizard Nhập sổ, dọn vòng tự phục hồi, màn chào."
+    "ghi_chu": "P06 tiếp tục sau khi đóng chuỗi theo yêu cầu người dùng: HM-08f đợt 1–11 (dọn CSS/!important, dựng lại 6 màn, bỏ sidebar/màn Nhập liệu). Chuyển P07: nối ảnh/camera vào bước 2 wizard Nhập sổ, dọn vòng tự phục hồi, màn chào.",
+    "phien_ke": "session_01SkwQ3cwS7GRmmnPqAbVswr (P07)"
    }
   ]
  }
