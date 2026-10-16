@@ -12,7 +12,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
       await new Promise(r => setTimeout(r, 600));
       const btns = [...document.querySelectorAll('.lg103-dbtn')].filter(e => e.getBoundingClientRect().width > 0);
       const miss = btns.filter(e => { const r = e.getBoundingClientRect(); const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(el === e || e.contains(el)); }).length;
-      const a = document.getElementById('toast-wrap'), h = document.getElementById('lgv42-toast-host');
+      const a = document.getElementById('lg46-snack'), h = document.getElementById('lg46-snack');   // HM-46a: một snackbar chung
       const dup = (() => { for (let i = 0; i < 3; i++) LGV42.notify('info', 'Trùng', 'cùng nội dung'); return h.children.length; })();
       return { n: btns.length, miss, appToasts: a.children.length, v42Toasts: h ? h.children.length : 0, dup, hscroll: document.documentElement.scrollWidth > innerWidth }; });
     checks['dock_' + w + '_5_nut_chạm_trúng'] = r.n === 5 && r.miss === 0;

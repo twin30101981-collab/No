@@ -29,7 +29,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
   let k = n0 + 1;
   for (const [f, name] of [['a.csv', 'csv'], ['a.txt', 'txt'], ['a.dxf', 'dxf'], ['a.geojson', 'geojson'], ['a.kml', 'kml']]) { await openSheet(); await p.setInputFiles('#cad-file', tmp + '/' + f); await p.waitForTimeout(1500); const m = await n(); c['file_' + name] = m === k + 1; k = m; }
   // Excel bị từ chối
-  await openSheet(); await p.setInputFiles('#cad-file', tmp + '/a.xlsx'); await p.waitForTimeout(800); c.xlsx_tu_choi = (await n()) === k && /Không hỗ trợ nhập Excel/.test(await p.evaluate(() => [...document.querySelectorAll('[class*=toast]')].map(e => e.innerText).join(' ')));
+  await openSheet(); await p.setInputFiles('#cad-file', tmp + '/a.xlsx'); await p.waitForTimeout(800); c.xlsx_tu_choi = (await n()) === k && /Không hỗ trợ nhập Excel/.test(await p.evaluate(() => [...document.querySelectorAll('[class*=toast], #lg46-snack')].map(e => e.innerText).join(' ')));
   // chọn tỉnh đồng bộ với bộ chọn toàn cục
   await openSheet(); const sync = await p.evaluate(async () => { const s = document.getElementById('lg8g-prov'), opt = Array.from(s.options).find(o => o.value !== s.value); s.value = opt.value; s.dispatchEvent(new Event('change', { bubbles: true })); await new Promise(r => setTimeout(r, 200)); return document.getElementById('province-select').value === opt.value; }); c.chon_tinh_dong_bo = sync;
   // OCR điền sẵn

@@ -146,3 +146,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 ## 21. ĐÓNG PHIÊN P07 — KẾT THÚC CHUỖI
 Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camera/AI trên máy thật (VIEC_CUA_BAN).
 - HM-08f (P07 tiếp, 16/10): sửa lỗi rò nút ▣ trên thanh trên (mountHeader canh #lg110-back đã gỡ → thêm 1 nút mỗi nhịp, 76 nút/30 s). Test hm08f_header_leak; bộ đầy đủ PASS. Rà soát UI mobile + mockup đề xuất: https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8 (lộ trình 4 đợt, chờ người dùng duyệt).
+- HM-46a DAT_V3 (16/10): thông báo 1 dòng chung (#lg46-snack) + chip tiến độ hồ sơ. Test hm46a_snack; bộ đầy đủ PASS.

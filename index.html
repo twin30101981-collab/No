@@ -3943,6 +3943,7 @@ function closeKeyModal() { document.getElementById('key-modal').style.display = 
 function showLoading(show) { document.getElementById('loading-bar').style.display = show ? 'block' : 'none'; }
 
 function toast({title, description, variant}){
+  if (typeof window.__lg46Sink === 'function') { window.__lg46Sink(); return; }   // HM-46a: snackbar chung
   const wrap = document.getElementById('toast-wrap');
   // v24: giới hạn 4 thông báo cùng lúc — thao tác hàng loạt (vẽ lại toàn bộ thửa,
   // nhập file nhiều thửa) từng xếp chồng che kín bản đồ ở v23.
@@ -22102,7 +22103,8 @@ a.lg66-src:hover{ background:rgba(0,0,0,.04); }
     }
     if (!text) { box.hidden = true; return; }
     box.hidden = false;
-    box.textContent = text;
+    box.textContent = text;                       // HM-46a: chip 1 dòng; chi tiết ở title/aria
+    box.title = arguments[1] || text; box.setAttribute('aria-label', arguments[1] || text);
   }
 
   /* ---------- Nháy nút "Chi tiết thửa đất" 3 lần ---------- */
@@ -22130,13 +22132,13 @@ a.lg66-src:hover{ background:rgba(0,0,0,.04); }
         var done = 0;
         for (var i = 0; i < secs.length; i++) {
           if (wanted) break;                  // người dùng đã chọn thửa khác -> bỏ dở
-          progress('Đang chuẩn bị hồ sơ (' + (i + 1) + '/' + secs.length + '): ' + secs[i].title.toLowerCase());
+          progress('Đang chuẩn bị hồ sơ ' + (i + 1) + '/' + secs.length, secs[i].title);
           try { var r = await window.LG59.sectionHTML(p, secs[i]); if (r && r.ok) done++; }
           catch (e) { log('mục', secs[i].key, 'lỗi', e && e.message); }
         }
         if (!wanted) {
           var a = LG63.audit(p);
-          progress('Hồ sơ đã sẵn sàng: ' + done + '/' + secs.length + ' mục ảnh/bản đồ · '
+          progress('Hồ sơ sẵn sàng ' + done + '/' + secs.length, 'Hồ sơ đã sẵn sàng: ' + done + '/' + secs.length + ' mục ảnh/bản đồ · '
             + a.have.length + '/' + a.total + ' trường sổ đỏ');
           LG63.blink();
           setTimeout(function () { progress(''); }, 6000);
@@ -28952,10 +28954,13 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
 <style id="lg111-ui">
 /* v111 — thanh tiến độ nạp hồ sơ trước đây nằm dưới đáy nên bị Dock cắt chữ và
    đè lên hàng nút bản đồ. Đưa lên ngay dưới thanh tiêu đề, không che thao tác. */
+/* HM-46a: tiến độ hồ sơ = chip nhỏ 1 dòng giữa nút phóng to (trái) và nút Lớp (phải) */
 body.lg62.lg103 #lg63-progress{
-  left:10px !important; right:10px !important; bottom:auto !important;
-  top:calc(var(--lg62-top,66px) + 8px) !important;
-  max-width:none !important; width:auto !important; text-align:center;
+  left:50% !important; right:auto !important; bottom:auto !important; transform:translateX(-50%);
+  top:calc(var(--lg62-top,66px) + 10px) !important;
+  max-width:calc(100vw - 168px) !important; width:auto !important; text-align:center;
+  padding:4px 10px; border-radius:999px; font-size:var(--lg-fs-xs,12px); line-height:1.4;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(15,76,52,.92); box-shadow:0 2px 8px rgba(0,0,0,.25);
 }
 body.lg62 .lg-gps-badge{ max-width:calc(100vw - 24px); }
 body.lg62.lg103 .lg-zoomctrl{ z-index:1100; }
@@ -43371,6 +43376,77 @@ body.lg62.lg62-map #sidebar.lg-scan-screen.on{ display:flex !important; flex-dir
 #sidebar.lg-scan-screen .lg-scan-title{ font-size:var(--lg-fs-num,18px); }
 #sidebar.lg-scan-screen .lg-scan-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 24px); }
 </style>
+<style id="lg46a-snack-css">
+/* HM-46a — MỘT kiểu thông báo cho cả app: snackbar 1 dòng ngay trên dock (hoặc trên mép tấm trượt đang mở), tối đa 1 cái, tự tắt */
+#lg46-snack{ position:fixed; left:12px; right:var(--lg46-snack-r,76px); bottom:var(--lg-dock-clear,84px); z-index:99999; display:flex; justify-content:flex-start; pointer-events:none; }   /* chừa cột nút tròn bên phải */
+#lg46-snack .sb{ pointer-events:auto; display:flex; align-items:center; gap:10px; width:100%; max-width:480px; min-height:44px; background:#26312b; color:#f2f8f5; border-radius:10px; padding:8px 8px 8px 12px; box-shadow:0 4px 16px rgba(0,0,0,.3); font-size:var(--lg-fs-sm,14px); line-height:1.35; opacity:0; transform:translateY(6px); transition:opacity .16s, transform .16s; }
+#lg46-snack .sb.in{ opacity:1; transform:none; }
+#lg46-snack .sb .tx{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#lg46-snack .sb.open .tx{ white-space:normal; }
+#lg46-snack .sb .dot{ flex:0 0 8px; height:8px; border-radius:50%; background:#7fd6a2; }
+#lg46-snack .sb.warn .dot{ background:#f0b54a; } #lg46-snack .sb.err .dot{ background:#ff8a80; } #lg46-snack .sb.info .dot{ background:#8ecdf0; }
+#lg46-snack .sb button{ flex:0 0 auto; min-height:36px; border:0; background:transparent; color:#9be3b8; font-weight:800; font-size:var(--lg-fs-sm,14px); padding:0 8px; border-radius:8px; }
+#lg46-snack .sb.err button{ color:#ffb4ab; }
+#toast-wrap, .toast-wrap, #lgv42-toast-host{ display:none !important; }
+@media (prefers-reduced-motion:reduce){ #lg46-snack .sb{ transition:none; } }
+@media print{ #lg46-snack{ display:none !important; } }
+</style>
+<script id="lg46a-snack">
+/* HM-46a — gom toast() (v24) và LGV42.notify (v42) về một snackbar 1 dòng. Bấm vào chữ để xem đủ nội dung. */
+(function () {
+  'use strict';
+  var timer = null, last = '', lastAt = 0;
+  function host() {
+    var h = document.getElementById('lg46-snack');
+    if (!h && document.body) { h = document.createElement('div'); h.id = 'lg46-snack'; h.setAttribute('role', 'status'); h.setAttribute('aria-live', 'polite'); document.body.appendChild(h); }
+    return h;
+  }
+  function show(level, title, desc, opts) {
+    opts = opts || {};
+    var h = host(); if (!h) return;
+    var key = level + '|' + title + '|' + (desc || ''), now = Date.now();
+    if (key === last && now - lastAt < 3000) return; last = key; lastAt = now;
+    try { if (window.lgMeasureDock) window.lgMeasureDock(); } catch (e) { window.lgQuiet && window.lgQuiet(e, 'h46a'); }
+    if (timer) { clearTimeout(timer); timer = null; }
+    h.innerHTML = '';
+    var sb = document.createElement('div'); sb.className = 'sb ' + (level || 'ok');
+    var dot = document.createElement('span'); dot.className = 'dot'; dot.setAttribute('aria-hidden', 'true');
+    var tx = document.createElement('span'); tx.className = 'tx';
+    var full = String(title || '') + (desc ? ' · ' + String(desc) : '');
+    tx.textContent = full; sb.title = full;                    // textContent: nội dung có thể đến từ AI/OSM
+    sb.appendChild(dot); sb.appendChild(tx);
+    var ms = opts.ms || (level === 'err' ? 8000 : desc ? 4500 : 3500);
+    if (opts.actionLabel && typeof opts.onAction === 'function') {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = opts.actionLabel;
+      b.onclick = function (e) { e.stopPropagation(); try { opts.onAction(); } finally { hide(); } };
+      sb.appendChild(b); ms = Math.max(ms, 8000);
+    }
+    tx.addEventListener('click', function () { sb.classList.toggle('open'); if (timer) { clearTimeout(timer); timer = setTimeout(hide, ms); } });
+    h.appendChild(sb);
+    requestAnimationFrame(function () { sb.classList.add('in'); });
+    timer = setTimeout(hide, ms);
+  }
+  function hide() { var h = document.getElementById('lg46-snack'); if (!h) return; var sb = h.firstChild; if (!sb) return; sb.classList.remove('in'); setTimeout(function () { if (sb.parentNode) sb.remove(); }, 180); }
+  var LV = { ok: 'ok', warn: 'warn', err: 'err', info: 'info' };
+  function apply() {
+    var V = window.LGV42;
+    if (V && typeof V.notify === 'function' && !V.notify.__lg46) {
+      var n = function (level, title, desc, opts) { show(LV[level] || 'info', title, desc, opts); }; n.__lg46 = true; V.notify = n;
+    }
+    var t = window.toast;
+    if (typeof t === 'function' && !t.__lg46) {
+      var w = function (o) {   // gọi qua lớp bọc cũ (v125 nén thông báo khởi động) rồi mới hiện
+        o = o || {}; var shown = false;
+        var keep = window.__lg46RealToast; window.__lg46Sink = function () { shown = true; show(o.variant === 'destructive' ? 'err' : 'ok', o.title, o.description); };
+        try { return t.apply(this, arguments); } finally { window.__lg46Sink = null; if (!shown && keep === undefined) { /* bị nén → không hiện */ } }
+      };
+      w.__lg46 = true; window.toast = w;
+    }
+  }
+  window.lgSnack = show; window.lgSnackHide = hide;
+  apply(); document.addEventListener('DOMContentLoaded', apply); setTimeout(apply, 1500);
+})();
+</script>
 </body>
 
 </html>

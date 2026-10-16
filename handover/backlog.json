@@ -2868,6 +2868,118 @@
       "ghi_chu_ban_giao": "",
       "zip": "",
       "can_nguoi_dung": null
+    },
+    {
+      "id": "HM-46a",
+      "ten": "Thông báo 1 dòng + chip tiến độ hồ sơ",
+      "dot": 4,
+      "uu_tien": "P2",
+      "effort": "S",
+      "model_version": "claude-opus-5-5",
+      "model_effort_recommended": "medium",
+      "model_effort_actual": "medium",
+      "phu_thuoc": [],
+      "pham_vi": "app/land-gis.html — giao diện điện thoại",
+      "hanh_vi_mong_doi": "Mọi toast/LGV42.notify thành 1 snackbar 1 dòng trên dock, tự tắt; băng tiến độ thành chip 1 dòng",
+      "tieu_chi_nghiem_thu": [
+        "≤1 snackbar, cao ≤52px, không đè dock/nút tròn",
+        "chip tiến độ ≤34px, không đè nút phóng to/Lớp"
+      ],
+      "rui_ro": "Trung bình",
+      "kiem_chung_du_kien": "V3 (360/390/430)",
+      "trang_thai": "DAT_V3",
+      "bang_chung": {
+        "lenh": "node tests/run.js app/land-gis.html",
+        "pass": 1,
+        "fail": 0,
+        "artifact": [
+          "tests/regress/hm46a_snack.js"
+        ]
+      },
+      "ghi_chu_ban_giao": "Snackbar chung #lg46-snack (window.lgSnack): toast() và LGV42.notify đi qua một chỗ, 1 dòng (bấm để xem đủ), tự tắt 3,5–8 s, có nút hành động; #toast-wrap/#lgv42-toast-host ẩn. Tiến độ hồ sơ #lg63-progress = chip 1 dòng giữa nút +/Lớp. Test cũ hm08a/hm08c/hm39/hm08f_cad_import trỏ sang #lg46-snack.",
+      "can_nguoi_dung": null,
+      "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
+    },
+    {
+      "id": "HM-46b",
+      "ten": "Bản đồ: 4 vùng cố định",
+      "dot": 4,
+      "uu_tien": "P2",
+      "effort": "M",
+      "model_version": "claude-opus-5-5",
+      "model_effort_recommended": "medium",
+      "model_effort_actual": "",
+      "phu_thuoc": [
+        "HM-46a"
+      ],
+      "pham_vi": "app/land-gis.html — giao diện điện thoại",
+      "hanh_vi_mong_doi": "Thanh tìm kiếm nổi thay thanh xanh #lg62-top (⋯ mở Cài đặt/Công cụ); một cột nút phải (Lớp · Vừa khung · Cạnh/mốc), nút Vị trí riêng; bỏ ± và ⧉ trên cảm ứng; chip hệ toạ độ; nhãn cạnh chỉ thửa đang chọn, cỡ 11px, ẩn khi zoom<18; tấm trượt nấc thấp tóm tắt thửa + 4 hành động",
+      "tieu_chi_nghiem_thu": [
+        "≤5 lớp cố định thấy được ở Bản đồ",
+        "không phần tử nổi nào giao nhau ở 360/390/430",
+        "mọi chức năng cũ vẫn có đường vào"
+      ],
+      "rui_ro": "Trung bình",
+      "kiem_chung_du_kien": "V3 (360/390/430)",
+      "trang_thai": "CHUA_LAM",
+      "bang_chung": {},
+      "ghi_chu_ban_giao": "",
+      "can_nguoi_dung": null,
+      "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
+    },
+    {
+      "id": "HM-46c",
+      "ten": "Nhập sổ, Hồ sơ, Thửa, màn chào theo mockup",
+      "dot": 4,
+      "uu_tien": "P2",
+      "effort": "M",
+      "model_version": "claude-opus-5-5",
+      "model_effort_recommended": "medium",
+      "model_effort_actual": "",
+      "phu_thuoc": [
+        "HM-46b"
+      ],
+      "pham_vi": "app/land-gis.html — giao diện điện thoại",
+      "hanh_vi_mong_doi": "Nhập sổ: 1 chính (Chụp sổ đỏ) · 2 phụ · danh sách 'Nguồn khác'; Hồ sơ: thanh mục cuộn ngang + thanh hành động dính đáy; Thửa: chip lọc có số đếm + chip trạng thái; màn chào vào tấm trượt; tấm nhập liệu mở nấc cao; biểu tượng SVG thay emoji ở dock/tấm",
+      "tieu_chi_nghiem_thu": [
+        "thứ bậc nút đúng mockup",
+        "không chữ bị cắt ở 360",
+        "test cũ hm08* vẫn đạt"
+      ],
+      "rui_ro": "Trung bình",
+      "kiem_chung_du_kien": "V3 (360/390/430)",
+      "trang_thai": "CHUA_LAM",
+      "bang_chung": {},
+      "ghi_chu_ban_giao": "",
+      "can_nguoi_dung": null,
+      "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
+    },
+    {
+      "id": "HM-46d",
+      "ten": "Gom CSS: 6 tầng z-index + thang chữ/khoảng cách",
+      "dot": 4,
+      "uu_tien": "P2",
+      "effort": "M",
+      "model_version": "claude-opus-5-5",
+      "model_effort_recommended": "medium",
+      "model_effort_actual": "",
+      "phu_thuoc": [
+        "HM-46c"
+      ],
+      "pham_vi": "app/land-gis.html — giao diện điện thoại",
+      "hanh_vi_mong_doi": "Biến CSS --z-*, --fs-*, --sp-*; gỡ khối CSS cũ bị thay; !important < 50",
+      "tieu_chi_nghiem_thu": [
+        "cssdump/cssdiff không đổi ngoài chủ ý",
+        "số z-index khác nhau ≤ 10",
+        "!important < 50"
+      ],
+      "rui_ro": "Trung bình",
+      "kiem_chung_du_kien": "V3 (360/390/430)",
+      "trang_thai": "CHUA_LAM",
+      "bang_chung": {},
+      "ghi_chu_ban_giao": "",
+      "can_nguoi_dung": null,
+      "nguon": "Rà soát UI mobile 16/10 — https://claude.ai/artifact/5wUji3PZKePvjc3mZcQbd8"
     }
   ],
   "quyet_dinh_da_chot": [
@@ -2890,6 +3002,10 @@
     {
       "ngay": "15/10/2026",
       "noi_dung": "Người dùng chốt: BỎ chức năng NHẬP/đọc file Excel (.xlsx) trong app, chỉ giữ XUẤT Excel. Lý do: không có SheetJS ≥0.20.3 để vá lỗ hổng khi đọc file lạ."
+    },
+    {
+      "ngay": "2026-10-16",
+      "noi_dung": "Người dùng duyệt đề xuất giao diện mobile (trang rà soát + mockup) và yêu cầu thực thi tự động nhiều phiên: HM-46a→46d."
     }
   ],
   "loi_nen_ngoai_pham_vi": [
@@ -2969,7 +3085,11 @@
     "HM-19",
     "HM-20",
     "HM-22",
-    "HM-25"
+    "HM-25",
+    "HM-46a",
+    "HM-46b",
+    "HM-46c",
+    "HM-46d"
   ],
   "chuoi_phien": {
     "phien_toi_da": 8,
