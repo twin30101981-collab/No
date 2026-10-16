@@ -6,6 +6,7 @@ const { open, report } = require('../lib'); const fs = require('fs');
   for (const sm of s.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) for (const rm of sm[1].matchAll(/([^{}]*)\{([^{}]*)\}/g)) { if (/leaflet/.test(rm[1])) continue; for (const m of rm[2].matchAll(/z-index\s*:\s*([0-9]+|var\([^)]*\)|auto)/g)) vals.add(m[1]); }
   const tok = {}; for (const m of s.matchAll(/--z-([a-z]+):(\d+);/g)) tok[m[1]] = m[2];   // giá trị thực sau khi thế biến
   const thuc = new Set([...vals].map(v => { const m = /^var\(--z-([a-z]+)\)$/.exec(v); return m ? tok[m[1]] : v; }));
+  let imp = 0; for (const sm of s.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) imp += (sm[1].match(/!important/g) || []).length;   // (3) đợt gỡ !important thừa HM-46d: 516 → 440
   const { b, p, errs } = await open(app, { width: 390, height: 844 });
   await p.evaluate(() => { window.lgSnack && lgSnack('Kiểm tra'); }); await p.waitForTimeout(300);
   const z = await p.evaluate(() => {
@@ -19,8 +20,9 @@ const { open, report } = require('../lib'); const fs = require('fs');
     thang_z_tang_dan_du_15_bien: tang,
     lop_noi_doc_tu_bien: /#lg103-sheet\{[^}]*z-index:var\(--z-sheet\)|z-index:var\(--z-sheet\)/.test(s) && /#lg46-snack\{[^}]*z-index:var\(--z-toast\)/.test(s) && /#lg8d \{[^}]*z-index:var\(--z-modal\)/.test(s),
     thang_chu_khoang_cach: /--fs-1:13px; --fs-2:15px; --fs-3:17px; --fs-4:20px; --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;/.test(s) && (s.match(/var\(--(fs|sp)-\d\)/g) || []).length >= 20,
+    important_trong_style_khong_tang: imp <= 440,
     thu_tu_chong_dung: z.top < z.pip && z.stack < z.pip && z.pip < z.sheet && z.sheet < z.dock && z.dock < z.snack,
     khong_loi_trang: errs.length === 0
-  }, { so_gia_tri_z: thuc.size, chuoi_khac_nhau: vals.size, z, errs: errs.slice(0, 2) });
+  }, { important_style: imp, so_gia_tri_z: thuc.size, chuoi_khac_nhau: vals.size, z, errs: errs.slice(0, 2) });
   await b.close(); process.exit(ok ? 0 : 1);
 })();
