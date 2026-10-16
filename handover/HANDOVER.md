@@ -130,3 +130,4 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 - HM-08f (tiếp, 16/10): gỡ thêm 217 khai báo !important thừa (718→~540 trong <style>) bằng important_scan.js/strip_important.py; xác minh cssdump/cssdiff + ảnh 360/390/430 + bộ đầy đủ PASS. #sidebar vẫn giữ.
 - HM-08f đợt 3 (16/10): gỡ vỏ sidebar không hiện (thanh tab, nút đóng/☰, backdrop, JS) + 24 luật CSS chết; test hm08h_a11y chỉnh theo (tạo nút uỷ quyền tạm). #sidebar giữ vì còn 6 màn chức năng cũ.
 - HM-08f đợt 4 (16/10): dựng lại màn Quản lý thửa → sheet Dữ liệu thửa (Thửa/Thêm → ⇪); tra địa chỉ ngoài chuyển sang ô tìm màn Bản đồ; gỡ tab-plots. Test hm08f_plots_tools; bộ đầy đủ PASS. Còn 5 màn cũ trong #sidebar.
+- HM-08f đợt 5 (16/10): dựng lại màn Nhập CAD/CSV (sheet lgOpenImportCad, chọn tỉnh/KTT trên màn); gỡ tab-import. Test hm08f_cad_import; bộ đầy đủ PASS. Còn 4 màn cũ trong #sidebar.
