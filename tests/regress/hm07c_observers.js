@@ -25,13 +25,13 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright'); const p
     for (let i = 0; i < 12; i++) { const t0 = performance.now(); m.panBy([i % 2 ? 300 : -300, i % 3 ? 200 : -200], { animate: false }); document.body.getBoundingClientRect(); t.push(performance.now() - t0); await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0))); }
     t.sort((a, b) => a - b); out.panMedian = Math.round(t[6]);
     return out; });
-  const load50 = JSON.parse(execFileSync('node', [path.join(__dirname, '../tools/prof.js'), process.argv[2], '50'], { encoding: 'utf8', maxBuffer: 1 << 26 })).loadMs;
+  const prof50 = JSON.parse(execFileSync('node', [path.join(__dirname, '../tools/prof.js'), process.argv[2], '50'], { encoding: 'utf8', maxBuffer: 1 << 26 })), load50 = prof50.dclMs;   // từ hướng B bản đồ hiện ngay lúc mở app: đo tới hết DOMContentLoaded (nạp + vẽ 50 thửa); sự kiện load kèm cả vẽ bản đồ nên chỉ chặn ở 6 s
   const g = r.got;
   const ok = report('hm07c_observers', {
     toi_da_3_observer_that: r.hubs >= 1 && r.hubs <= 3,
     khong_xoa_quy_tac_CSS_luc_chay: r.del === 0,
     ngu_nghia_observer_giu_nguyen: g.cls === 1 && g.any === 2 && g.kidAttr === 2 && g.child === 1 && g.childDeep === 2 && g.dis === 0,
-    nap_50_thua_duoi_2s: load50 <= 2000,
+    nap_50_thua_duoi_2s: load50 <= 2000 && prof50.loadMs <= 6000,
     keo_ban_do_duoi_10ms: r.panMedian <= 10 }, { r, load50 });
   await b.close(); process.exit(ok && !errs.length ? 0 : 1);
 })();
