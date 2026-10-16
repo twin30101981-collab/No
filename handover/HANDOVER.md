@@ -142,3 +142,6 @@ Mỗi commit "HM-xx" là một điểm hoàn tác; baseline/ bất biến.
 
 ## 20. Phiên P07
 - S-OPEN phiên 7 (P07, 16/10/2026). Mở HM-08f hướng B phần còn lại: nối ảnh/camera vào wizard, dọn lg62/lg111, màn chào.
+- HM-08f đợt 12 (P07, 16/10): ảnh/camera vào bước 1 wizard (hm08f_wizard_photo); dọn sidebar/lg111/lg62-nav/popstate/auto-chuyển + 12 luật CSS chết; màn chào (hm08f_welcome); ảnh 360/390/430 trước–sau khớp (chỉ nhiễu thời gian). Bộ đầy đủ PASS.
+## 21. ĐÓNG PHIÊN P07 — KẾT THÚC CHUỖI
+Hàng đợi hết; không sinh P08. Việc dở dang: không. Còn: thử camera/AI trên máy thật (VIEC_CUA_BAN).
