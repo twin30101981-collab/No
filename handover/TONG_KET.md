@@ -125,6 +125,7 @@ Bộ hồi quy: `node tests/run.js app/land-gis.html` → toàn bộ PASS (≈ 6
 ## 4. Tồn đọng và lỗi mở
 
 - **HM-08f (dọn CSS/sidebar) — đã xong phần lớn:** đã gỡ luật CSS chết, 217 khai báo `!important` thừa (kiểm bằng `cssdump.js`/`cssdiff.py` + ảnh 360/390/430), toàn bộ vỏ sidebar (thanh tab, drawer, backdrop, nút ☰/MENU) và dựng lại 6 màn cũ thành giao diện mới: Dữ liệu thửa, Nhập CAD/CSV, GPS thực địa, Cắm mốc RTK, Quét QR (sheet) và Scan sổ đỏ (lớp toàn màn, hướng B). App nay luôn mở ở màn Bản đồ; màn Nhập liệu riêng không còn. **Còn lại:** id `#sidebar` được giữ cho lớp Scan sổ đỏ (65 luật CSS chữ/nút khoá theo id); chưa nối ảnh/camera vào bước 2 của luồng Nhập sổ 3 bước; các vòng tự phục hồi lg62/v111 và nút `#lg62-back/next` đã vô hiệu nhưng chưa xoá mã; chưa có màn chào khi chưa có thửa. Chuẩn đo nạp 50 thửa đổi sang DOMContentLoaded ≤ 2 s (load ≤ 6 s) vì bản đồ hiện ngay lúc mở.
+- **HM-08f hướng B — hoàn tất ở P07:** ảnh/camera nằm ngay bước 1 luồng Nhập sổ (AI điền sẵn, số <90% tô vàng, lỗi báo rõ, không tự tạo thửa); đã gỡ vòng tự phục hồi sidebar/lg111, #lg62-back/next/steps, auto-chuyển bản đồ, popstate; màn chào 3 lối vào khi chưa có thửa. Việc còn lại: thử camera + AI trên máy thật.
 - **drawPlot từ chối `provCode` không khớp vị trí khi khôi phục:** `LGVersions.applyPlot` đã có dự phòng (thử lại không `provCode`, rồi dựng lại bản cũ); nên rà lại ngưỡng nghi vấn vị trí ở `drawPlot` khi `__restoring`.
 - Gỡ nốt: thang z-index thống nhất và gộp 2 lớp toast (ghi từ HM-08a); Tesseract/pdfmake chưa đóng gói ngoại tuyến (HM-11b); phần ảnh/camera chưa nối vào bước 2 luồng Nhập sổ (HM-08d); nhập khối phụ thành thửa (HM-42).
 - Mốc đối soát thực địa (HM-19) lưu ảnh trong `meta` của thửa (thu nhỏ ≈ 30–60 KB/ảnh): nhiều ảnh có thể làm đầy localStorage — đã có bản sao IndexedDB khi lưu thất bại (HM-00), nhưng nên chuyển ảnh sang IndexedDB nếu dùng nhiều.
@@ -159,5 +160,6 @@ Mỗi hạng mục là một commit `HM-xx` trên nhánh `ccr-9dbbe50d-dw0kll` (
 | P04 | session_019ewFw84Vv2eKp8d3ECg9Y2 | HM-08e, HM-06e, HM-39, HM-33(CHO_NGUOI_DUNG) |
 | P05 | session_01BkGonUVGr8NKwj4qGMa9sH | HM-27a, HM-27b, HM-29, HM-30, HM-31, HM-32, HM-34, HM-11, HM-11b, HM-40, HM-44, HM-10b(CHO_NGUOI_DUNG), HM-08h, HM-12a, HM-35, HM-36, HM-14, HM-15, HM-16, HM-24 |
 | P06 | session_016bfgvkpo5ZM5L3ZStYgd1r | HM-18a, HM-18b, HM-19, HM-20, HM-22(CHO_NGUOI_DUNG), HM-25(CHO_NGUOI_DUNG), HM-28(CHO_NGUOI_DUNG), HM-08f(một phần: CSS chết) |
+| P07 | session_01SkwQ3cwS7GRmmnPqAbVswr | HM-08f (hướng B hoàn tất: ảnh vào wizard, dọn mã chết, màn chào) |
 
 **Bạn có cần xuất tài liệu tổng kết (Word/PDF) từ báo cáo này không?** Nếu có, nhắn ở phiên mới — báo cáo này là nguồn.
