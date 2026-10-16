@@ -11,7 +11,7 @@ const { open, report } = require('../lib'); const fs = require('fs'), path = req
     let prev = 0; document.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(h => { const l = +(h.getAttribute('aria-level') || h.tagName[1]); if (prev && l > prev + 1) o.hd.push('h' + prev + '→' + l); prev = l; });
     o.onclickDom = document.querySelectorAll('[onclick]').length;
     // hành vi: nút tab cũ, mở/đóng hộp khoá AI qua data-lg-call
-    const tabBtn = document.querySelector('[data-lg-call="switchTab"][data-lg-arg="tab-plots"]'); tabBtn.click(); await new Promise(r => setTimeout(r, 300)); o.tab = document.getElementById('tab-plots').classList.contains('active') && tabBtn.classList.contains('active');
+    const tabBtn = document.createElement('button'); tabBtn.setAttribute('data-lg-call', 'switchTab'); tabBtn.setAttribute('data-lg-arg', 'tab-plots'); tabBtn.setAttribute('data-lg-this', '1'); document.body.appendChild(tabBtn); tabBtn.click(); await new Promise(r => setTimeout(r, 300)); o.tab = document.getElementById('tab-plots').classList.contains('active'); tabBtn.remove();
     openKeyModal(); await new Promise(r => setTimeout(r, 300)); const km = document.getElementById('modal-key-config') || document.querySelector('.modal.open, [id*=key-modal]'); const closeBtn = document.querySelector('[data-lg-call="closeKeyModal"]');
     o.keyOpen = !!closeBtn; closeBtn.click(); await new Promise(r => setTimeout(r, 300)); o.keyClosed = (typeof isKeyModalOpen === 'function') ? !isKeyModalOpen() : true;
     return o; });

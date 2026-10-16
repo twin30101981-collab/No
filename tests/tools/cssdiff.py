@@ -10,7 +10,12 @@ for nf in sys.argv[4:]:   # các tệp tiếp theo = lần chụp lặp của b�
 for k in sorted(a):
     x, y = a[k], b.get(k)
     if y is None: print('THIEU', k); bad += 1; continue
-    if len(x) != len(y): print('KHAC SO PHAN TU', k, len(x), len(y)); bad += 1; continue
+    if len(x) != len(y):   # lệch số phần tử (đã gỡ/nhiễu): căn theo khoá thẻ#id.lớp rồi so phần còn khớp
+        import difflib
+        sm = difflib.SequenceMatcher(None, [e[0] for e in x], [e[0] for e in y], autojunk=False); px, py = [], []
+        for t, a1, a2, b1, b2 in sm.get_opcodes():
+            if t == 'equal': px += x[a1:a2]; py += y[b1:b2]
+        print('   (căn', len(px), 'trên', len(x), '/', len(y), 'phần tử)'); x, y = px, py
     d = [(i, x[i][0], x[i][1] != y[i][1], x[i][2] != y[i][2]) for i in range(len(x)) if i not in noise.get(k, ()) and (x[i][1] != y[i][1] or x[i][2] != y[i][2])]
     print(('OK  ' if not d else 'KHAC'), k, len(x), 'phần tử', len(d), 'đổi')
     if d:

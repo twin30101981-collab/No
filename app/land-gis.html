@@ -1815,7 +1815,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     background: var(--card) !important; color: var(--fg) !important; border-color: var(--border) !important;
   }
   /* v185g (tiếp) — vài chỗ cuối còn sót khi soát bằng Playwright ở ngưỡng nhỏ hơn. */
-  html[data-lg-theme="dark"] .nav-tabs, html[data-lg-theme="dark"] #lg103-dock,
+   html[data-lg-theme="dark"] #lg103-dock,
   html[data-lg-theme="dark"] #lg103-sheet, html[data-lg-theme="dark"] #lg83-rtk-open {
     background: var(--card) !important; color: var(--fg) !important; border-color: var(--border) !important;
   }
@@ -1833,7 +1833,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   /* v25: vùng chạm tối thiểu 44px trên thiết bị cảm ứng (WCAG 2.5.5) */
   /* v63: vùng chạm >= 44px ở MỌI bề rộng (trước đây chỉ áp dụng <=820px nên
      nhiều nút trên máy tính bảng/ngang máy vẫn nhỏ hơn ngưỡng WCAG 2.5.5). */
-  .btn, .tab-btn { min-height: 44px; }
+  .btn{ min-height: 44px; }
   .btn.sm { min-height: 44px; }
   input, select, textarea { min-height: 44px; }
 
@@ -1848,7 +1848,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   @media print {
     @page { size: A4 portrait; margin: 12mm 10mm; }
     html, body { height:auto !important; overflow:visible !important; background:#fff !important; }
-    .app, header, #sidebar, #sidebar-backdrop, .toast-wrap, #geo-warn-banner,
+    .app, header, #sidebar, .toast-wrap, #geo-warn-banner,
     #clicked-coords-panel, .leaflet-container, #map, #loading-bar { display:none !important; }
     .modal-overlay { display:none !important; }
     /* v111 — GỐC RỄ: trước đây quy tắc này ép #report-modal hiện khi in, kể cả
@@ -1971,9 +1971,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
     min-width: 0;
   }
   aside:not(.open) { margin-left: calc(var(--sidebar-width) * -1); }
-  .sidebar-backdrop {
-    display: none; position: absolute; inset: 0; background: rgba(0,0,0,.4); z-index: 820;
-  }
+  
   @media (max-width: 640px) {
     /* v29: drawer chiếm 88% chiều rộng -> luôn thấy mép bản đồ phía sau; khi ĐÓNG thì
        rời hẳn khỏi luồng chạm để không nuốt cử chỉ zoom/bấm thửa. */
@@ -1982,10 +1980,10 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
       visibility: hidden; box-shadow: 4px 0 18px rgba(3,20,13,.28); }
     aside.open { transform: translateX(0); visibility: visible; }
     aside:not(.open) { margin-left: 0; pointer-events: none; }
-    .sidebar-backdrop.open { display: block; }
+    
   }
-  .mobile-toggle { display: inline-flex; }
-  aside, aside .tab-content, aside .nav-tabs { overflow-x: hidden; }
+  
+  aside, aside .tab-content{ overflow-x: hidden; }
   /* Khi bảng thửa mở, đẩy các control góc phải của Leaflet sang trái để không chồng lên nhau */
   .map-wrap.pip-open .leaflet-top.leaflet-right { margin-top: var(--pip-h, 320px); }
   .map-wrap.pip-open .leaflet-bottom.leaflet-right { margin-right: min(352px, calc(100vw - 40px)); }
@@ -2065,9 +2063,9 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   }
   #geo-warn-banner .gw-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
 
-  .nav-tabs { display: flex; background: #d1ded8; border-bottom: 1px solid var(--border); }
-  .tab-btn { flex: 1; min-width: 0; padding: 10px 2px; font-size:var(--lg63-fs); font-weight: 600; text-align: center; letter-spacing: 0; line-height: 1.25; white-space: normal; overflow-wrap: anywhere; min-height: 44px; border: none; background: transparent; color: var(--muted-fg); }
-  .tab-btn.active { background: #fff; color: var(--sidebar-bg); border-bottom: 2px solid var(--sidebar-bg); }
+  
+  
+  
   
   .tab-content { flex: 1; overflow-y: auto; padding: 14px; display: none; }
   .tab-content.active { display: block; }
@@ -2932,7 +2930,6 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   
   <header>
     <div style="display:flex;align-items:center;gap:8px">
-      <button class="btn outline-light mobile-toggle" id="btn-toggle-sidebar" aria-label="Mở menu chức năng" aria-controls="sidebar">☰ Menu</button>
       <div>
         <h1>🗺️ Land GIS VN-2000 Hybrid v58</h1>
         <p>Tự động Scan Sổ Đỏ Định Vị Đất · Online & Offline GPS RTK</p>
@@ -2948,18 +2945,7 @@ window.__lgEscCanonical = window.__lgEscCanonical || function (v) {
   </header>
 
   <div class="main">
-    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
     <aside id="sidebar">
-      <!-- Sidebar Navigation Tabs -->
-      <div class="nav-tabs">
-        <button class="tab-btn active" data-lg-call="switchTab" data-lg-arg="tab-scan-ai" data-lg-this="1">📷 Scan Sổ Đỏ</button>
-        <button class="tab-btn" id="lg83-tab-qr" data-lg-call="switchTab" data-lg-arg="tab-qr" data-lg-this="1">🔳 Quét QR Sổ Đỏ</button>
-        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-gps-offline" data-lg-this="1">📡 GPS Thực Địa</button>
-        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-import" data-lg-this="1">📥 Nhập CAD/CSV</button>
-        <button class="tab-btn" data-lg-call="switchTab" data-lg-arg="tab-plots" data-lg-this="1">📐 Quản lý Thửa</button>
-        <button class="tab-btn lg83-hidden-tab" id="lg83-tab-stakeout" data-lg-call="switchTab" data-lg-arg="tab-stakeout" data-lg-this="1">📍 Cắm Mốc RTK</button>
-        <button id="btn-close-sidebar" class="tab-btn" style="flex:0 0 auto;padding:10px 12px;color:var(--accent);font-weight:700" title="Đóng menu">✕</button>
-      </div>
 
       <!-- TAB 1: SCAN SỔ ĐỎ VÀ TỰ ĐỘNG ĐỊNH VỊ VỊ TRÍ ĐẤT -->
       <div id="tab-scan-ai" class="tab-content active">
@@ -4130,9 +4116,7 @@ function showCustomDialog(title, message) {
 function closeDialog() { document.getElementById('dialog-modal').style.display = 'none'; }
 
 function switchTab(tabId, btnElement) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  if (btnElement) btnElement.classList.add('active');
   const target = document.getElementById(tabId);
   if (target) target.classList.add('active');
   if (map) setTimeout(() => map.invalidateSize(), 150);
@@ -10043,12 +10027,9 @@ const SIDEBAR_STATE_KEY = 'landgis_sidebar_open';
 
 function applySidebarState(open){
   const sb = document.getElementById('sidebar');
-  const bd = document.getElementById('sidebar-backdrop');
   if (!sb) return;
   sb.classList.toggle('open', !!open);
   document.body.classList.toggle('sidebar-collapsed', !open);
-  // Trên màn hình rất hẹp sidebar phủ toàn bộ -> cần lớp nền mờ để bấm ra ngoài đóng lại.
-  if (bd) bd.classList.toggle('open', !!open && window.innerWidth < 640);
   // v29: chỉ ghi nhớ trạng thái trên màn hình rộng. Trên điện thoại menu là lớp phủ,
   // nhớ "đang mở" khiến lần mở app sau bản đồ bị che hoàn toàn -> đúng lỗi của v28
   // ("bản đồ không hoạt động, không zoom được, không xem được thông tin thửa").
@@ -10063,11 +10044,6 @@ function closeSidebar(){ if (window.innerWidth < 640) applySidebarState(false); 
 function toggleSidebar(){
   applySidebarState(!document.getElementById('sidebar').classList.contains('open'));
 }
-window.addEventListener('resize', () => {
-  const open = document.getElementById('sidebar')?.classList.contains('open');
-  const bd = document.getElementById('sidebar-backdrop');
-  if (bd) bd.classList.toggle('open', !!open && window.innerWidth < 640);
-});
 
 document.addEventListener('DOMContentLoaded', () => {
   initMap();
@@ -10125,11 +10101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($('plot-info-close')) $('plot-info-close').onclick = () => closePlotPanel();
   renderPlots();
 
-  document.getElementById('btn-toggle-sidebar').onclick = toggleSidebar;
-
-  document.getElementById('btn-close-sidebar').onclick = collapseSidebar;
   if ($('btn-collapse-sidebar')) $('btn-collapse-sidebar').onclick = collapseSidebar;
-  document.getElementById('sidebar-backdrop').onclick = collapseSidebar;
   // v27: sidebar sáng màu, CỐ ĐỊNH cạnh trái (không còn overlay che bản đồ),
   // có thể thu gọn và ghi nhớ trạng thái.
   // v29: điện thoại -> mặc định ĐÓNG để bản đồ chiếm trọn màn hình ngay khi mở app.
@@ -21775,7 +21747,7 @@ body.lg62 #sidebar{
   z-index:1500; overflow-y:auto; -webkit-overflow-scrolling:touch;
   background:#fff; box-shadow:none; transform:none;
 }
-body.lg62 .sidebar-backdrop{ display:none; }
+
 body.lg62 .map-wrap{
   position:fixed; left:0; right:0;
   top:calc(var(--lg62-top) + env(safe-area-inset-top,0px));
@@ -21884,13 +21856,10 @@ body.lg62:not(.lg62-map) #lg62-rail{ display:none; }
 body.lg62{ --lg62-nav-reserve: calc(var(--lg62-nav) + env(safe-area-inset-bottom,0px) + 16px); }
 
 /* ---------- Chữ to, dễ đọc trong màn nhập liệu ---------- */
-body.lg62 #sidebar .nav-tabs{ position:sticky; top:0; z-index:5; background:#fff;
-  overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
-body.lg62 #sidebar .tab-btn{ flex:0 0 auto; font-size:var(--lg63-fs) !important; font-weight:700;
-  min-height:52px; padding:8px 14px !important; white-space:nowrap; }
-body.lg62 #sidebar .tab-btn.active{ background:var(--lg62-green) !important; color:#fff;
-  border-bottom:0; border-radius:10px 10px 0 0; }
-body.lg62 #btn-close-sidebar{ display:none; }
+
+
+
+
 body.lg62 #sidebar .block, body.lg62 #sidebar section.block{ padding:14px; }
 body.lg62 #sidebar h3{ font-size:var(--lg-fs) !important; line-height:1.4; }
 body.lg62 #sidebar h4{ font-size:var(--lg63-fs) !important; }
@@ -22270,7 +22239,7 @@ body{ font-size: var(--lg63-fs); }
 
 /* 2) Vùng chạm tối thiểu 44x44 (WCAG 2.5.5) cho mọi nút, kể cả nút nổi
       và nút do JS sinh bằng inline style. */
-button, .btn, .tab-btn, .lg31-fab, [role="button"]{ min-height:44px; }
+button, .btn, .lg31-fab, [role="button"]{ min-height:44px; }
 button, .btn{ min-width:44px; }
 .lg31-fab{ min-width:56px; }
 .leaflet-touch .leaflet-bar a{ width:44px; height:44px; line-height:44px; font-size:var(--lg-fs-map); }
@@ -22336,16 +22305,16 @@ body:not(.lg60-print) #sidebar, body #sidebar .small, body #sidebar .muted{ line
 html, body{ overflow-x:hidden; }
 
 /* --- v65: gia cố cho cỡ chữ 18px --- */
-.nav-tabs{ overflow-x:auto; scrollbar-width:none; }
-.nav-tabs::-webkit-scrollbar{ display:none; }
-.tab-btn{ flex:0 0 auto; padding-left:12px; padding-right:12px; white-space:nowrap; }
+
+
+
 .stat-grid{ grid-template-columns:1fr; }
 @media (min-width:520px){ .stat-grid{ grid-template-columns:1fr 1fr; } }
 .header-actions{ gap:6px; }
 header h1{ font-size:var(--lg63-fs); }
 @media (max-width:720px){ header h1{ max-width:52vw; } }
 .lg-pinfo-grid{ grid-template-columns:minmax(124px,auto) minmax(0,1fr); }
-.btn, .tab-btn, #sidebar select, #sidebar input{ letter-spacing:0; }
+.btn, #sidebar select, #sidebar input{ letter-spacing:0; }
 .coord-box, .mono, #sidebar .mono{ overflow-wrap:anywhere; }
 .toast{ max-width:min(94vw,360px); }
 .lg60-root, .lg60-root *, .lg60-host, .lg60-host *{ overflow-wrap:normal; }
@@ -25066,7 +25035,7 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
 :root{ --lg83-tbl-fs: var(--lg-fs); }
 
 /* 1) VIẾT HOA NÚT */
-#sidebar .btn, #sidebar button, .nav-tabs .tab-btn,
+#sidebar .btn, #sidebar button,
 .lg62-sheet-body button, .lg62-sheet-body .btn, .lg62-sheet-body .lg31-fab,
 #lg62-nav .lg62-nbtn, header .btn, .lg31-fab{
   text-transform: uppercase;
@@ -25080,7 +25049,7 @@ div[style*="Made with Replit"]{ display: none !important; visibility: hidden !im
   text-transform: none;
 }
 /* chữ HOA cần dãn dòng/khoảng chữ nhẹ để không bị vỡ khung */
-#sidebar .btn, .nav-tabs .tab-btn, .lg62-sheet-body button, .lg62-sheet-body .btn{
+#sidebar .btn, .lg62-sheet-body button, .lg62-sheet-body .btn{
   letter-spacing: .2px; line-height: 1.3; white-space: normal; overflow-wrap: anywhere;
 }
 
@@ -25132,10 +25101,7 @@ body.lg62 #sidebar .plot-row{ font-size: var(--lg83-tbl-fs) !important; }
 .lg62-sheet-body .lg-layer-ctrl label > span{ min-width:0; }
 
 /* 4) ẨN TAB CẮM MỐC RTK (vẫn giữ phần tử để không hỏng logic) */
-.nav-tabs .lg83-hidden-tab,
-body.lg62 #sidebar .tab-btn.lg83-hidden-tab{
-  display:none;
-}
+
 /* nút mở RTK trong bảng Công cụ */
 #lg83-rtk-open{ cursor:pointer; }
 
@@ -25161,8 +25127,7 @@ body.lg62 #sidebar .tab-btn.lg83-hidden-tab{
     try {
       if (window.LG62 && typeof window.LG62.closeSheets === 'function') window.LG62.closeSheets();
       if (window.LG62 && typeof window.LG62.goto === 'function') window.LG62.goto(false);
-      var btn = document.getElementById('lg83-tab-stakeout');
-      if (typeof window.switchTab === 'function') window.switchTab('tab-stakeout', btn || null);
+      if (typeof window.switchTab === 'function') window.switchTab('tab-stakeout', null);
       var sb = document.getElementById('sidebar');
       if (sb) { sb.classList.add('open'); sb.scrollTop = 0; }
       var target = document.getElementById('tab-stakeout');
@@ -25309,8 +25274,7 @@ body{ font-size:var(--lg-fs); line-height:var(--lg-lh); }
 
 /* 1) UI màn hình — 20px đồng bộ */
 #sidebar, #sidebar *, .panel, .panel *, .modal-card, .modal-card *,
-.lg62-sheet, .lg62-sheet *, #lg62-top, #lg62-top *, #lg62-nav, #lg62-nav *,
-.tab-btn, .btn, button, input, select, textarea, label, .toast{
+.lg62-sheet, .lg62-sheet *, #lg62-top, #lg62-top *, #lg62-nav, #lg62-nav *, .btn, button, input, select, textarea, label, .toast{
   font-size:var(--lg-fs);
 }
 #sidebar .small, #sidebar .muted, #sidebar .hint, .panel .small,
@@ -25329,10 +25293,10 @@ h3, h4{ font-size:var(--lg-fs); }
 #sidebar, .panel, .lg62-sheet-body, .modal-body{ overflow-wrap:anywhere; word-break:break-word; }
 header h1{ font-size:var(--lg-fs-title); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .header-actions{ flex:0 0 auto; display:flex; gap:6px; }
-.btn, .tab-btn, button{ white-space:normal; line-height:1.25; min-height:44px; }
-.nav-tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-.nav-tabs::-webkit-scrollbar{ display:none; }
-.nav-tabs .tab-btn{ flex:0 0 auto; min-width:max-content; padding:10px 12px; }
+.btn, button{ white-space:normal; line-height:1.25; min-height:44px; }
+
+
+
 .row, .plot-row, .sig-grid{ flex-wrap:wrap; }
 .stat-grid, .lg-pinfo-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
 .lg-pinfo-grid{ grid-template-columns:minmax(120px,auto) minmax(0,1fr); }
@@ -25411,9 +25375,7 @@ table{ max-width:100%; }
 
 /* 5b) Tinh chỉnh mật độ: thanh tab & thanh điều hướng dùng bậc chữ phụ để
        hiển thị được nhiều mục, danh sách lựa chọn thẳng hàng ô chọn. */
-.nav-tabs .tab-btn, body.lg62 #sidebar .tab-btn{
-  font-size:var(--lg-fs-sm); padding:10px 12px; letter-spacing:0;
-}
+
 #lg62-nav, #lg62-nav *, #lg62-nav .lg62-nbtn{
   font-size:var(--lg-fs-sm) !important; line-height:1.25 !important;
 }
@@ -25500,7 +25462,7 @@ html, body{ overscroll-behavior-y:none; }
 .lg62-sheet-body::-webkit-scrollbar-thumb{ background:rgba(15,61,36,.28); border-radius:8px; }
 
 /* Vùng cuộn ngang (thanh tab, bảng rộng): chỉ cuộn ngang, không nuốt cử chỉ dọc */
-.nav-tabs, .header-actions{
+ .header-actions{
   overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
 }
 
@@ -25509,7 +25471,7 @@ html, body{ overscroll-behavior-y:none; }
 .map-wrap{ min-height:0; }
 
 /* --- 5) Chống cắt/đè khi zoom lớn (bề rộng CSS rất hẹp) --------------- */
-.btn, .tab-btn, button{ height:auto !important; min-height:var(--lg-tap); }
+.btn, button{ height:auto !important; min-height:var(--lg-tap); }
 .leaflet-control a, .leaflet-control button{ min-height:0 !important; }
 .header-actions, .row,
 [class*="actions"], [class*="footer"]{ flex-wrap:wrap; }
@@ -25520,8 +25482,8 @@ h1,h2,h3,h4,legend,label,.sel-head,.pip-title,.modal-header{
 header h1{ white-space:nowrap; }               /* tiêu đề vẫn rút gọn 1 dòng */
 @media (max-width:340px){
   header{ padding:4px 8px; }
-  .nav-tabs .tab-btn{ padding:8px 10px; }
-  .btn, .tab-btn, button{ min-height:40px; }
+  
+  .btn, button{ min-height:40px; }
 }
 
 
@@ -25620,7 +25582,7 @@ body.lg103.lg62-map #lg8c-fabs { display:flex; position:fixed; right:12px; botto
 .lg8c-card .t { font-weight:800; font-size:calc(var(--lg-fs) + 2px); } .lg8c-card .s { color:#5b6b63; font-size:var(--lg-fs-sm); } .lg8c-card .n { margin:8px 0; font-size:var(--lg-fs); }
 .lg8c-card .acts { display:flex; gap:8px; } .lg8c-card .acts button { flex:1; min-height:48px; border-radius:12px; border:0; background:#e3efe8; font-weight:700; font-size:var(--lg-fs); } .lg8c-card .acts button.p { background:#0f4c34; color:#fff; flex:1.3; } .lg8c-card .acts button.i { flex:0 0 56px; }
 .lg8c-chip { padding:6px 10px; border-radius:999px; font-weight:800; font-size:var(--lg-fs-sm); } .lg8c-chip.ok { background:#e4f3e6; color:#1f7a3d; } .lg8c-chip.bad { background:#fde3e3; color:#8a1f1f; } .lg8c-chip.none { background:#eee; color:#555; }
-body.lg62.lg103 .nav-tabs,
+
 body.lg103 #lg185-theme-fab, body.lg103 #lg185-cmp-fab, body.lg103 #lg184-fab { display:none !important; }
 :root{
   --lg103-dock-h: 62px;
@@ -26227,8 +26189,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
   var profTab = 'overview';
   function goLegacyTab(id) {
     closeSheet();
-    var btn = document.querySelector('.tab-btn[onclick*="' + id + '"]');
-    if (typeof window.switchTab === 'function') window.switchTab(id, btn || null);
+    if (typeof window.switchTab === 'function') window.switchTab(id, null);
     // lớp v62 đổi màn có độ trễ: lặp lại tối đa ~2 giây cho tới khi màn nhập liệu hiện ra (chỉ bấm Quay lại khi đang ở bản đồ)
     (function ensure(n) {
       var el = document.getElementById(id), r = el && el.getBoundingClientRect();
@@ -28204,7 +28165,7 @@ body.lg62.lg103 .leaflet-bottom{ bottom:calc(var(--lg103-dock-h) + env(safe-area
         var hasErr = !!(window.LGV42 && window.LGV42.record) || typeof window.onerror === 'function';
         var hasRej = !!(window.LGV42 || window.__LG_SAFE__ || window.onunhandledrejection || (core().diag && core().diag.getLogs));
         var hasToast = typeof window.toast === 'function';
-        var appAlive = !!document.querySelector('#lg103-dock, .nav-tabs, #map');
+        var appAlive = !!document.querySelector('#lg103-dock, #map');
         return {
           pass: hasErr && hasRej && hasToast && appAlive,
           detail: 'window.onerror=' + hasErr + ' · bắt promise=' + hasRej + ' · Toast=' + hasToast + ' · giao diện dựng=' + appAlive
@@ -28593,7 +28554,7 @@ body.lg62.lg103 #lg103-dock .lg103-ic{ font-size:22px !important; }
 body.lg62.lg103 #lg103-dock .lg103-dbtn{ min-height:56px; }
 
 /* Thẻ tab trong màn nhập liệu: to, dễ bấm, không bị cắt chữ */
-body.lg62 #sidebar .tab-btn{ font-size:17.5px !important; min-height:58px; padding:10px 14px !important; }
+
 body.lg62 #sidebar .btn{ min-height:56px; font-size:20px !important; }
 body.lg62 #sidebar .btn.sm{ min-height:50px !important; font-size:18px !important; }
 body.lg62 #sidebar input, body.lg62 #sidebar select, body.lg62 #sidebar textarea{
@@ -28759,7 +28720,6 @@ body.lg62 #lg62-rail .lg31-fab span{ line-height:1.1 !important; }
       if (sb) sb.classList.add('open');
       document.body.classList.remove('sidebar-collapsed');
       if (typeof window.applySidebarState === 'function') window.applySidebarState(true);
-      var bd = $('sidebar-backdrop'); if (bd) bd.classList.remove('open');
       var pip = $('plot-info-panel'); if (pip) pip.classList.remove('open', 'show');
     } catch (e) { window.lgQuiet && window.lgQuiet(e, 'q154a'); }
     // v154 tiếp — RÀ SOÁT SÂU HƠN cho thấy còn một nguyên nhân thứ hai cùng gây
@@ -29241,7 +29201,7 @@ body.lg62:not(.lg62-map) #sidebar{
   display:flex; visibility:visible; opacity:1;
   transform:none; pointer-events:auto;
 }
-body.lg62:not(.lg62-map) #sidebar-backdrop{ display:none; }
+
 body.lg62:not(.lg62-map) #plot-info-panel,
 body.lg62:not(.lg62-map) #lg-gps-badge,
 body.lg62:not(.lg62-map) .lg-gps-badge,
@@ -29303,7 +29263,6 @@ body.lg62.lg103 .lg-zoomctrl{ z-index:1100; }
       if(sb) sb.classList.add('open');
       document.body.classList.remove('sidebar-collapsed');
       try{ if(typeof window.applySidebarState==='function') window.applySidebarState(true); }catch (_) { window.lgQuiet && window.lgQuiet(_, 'q345'); }
-      var bd=document.getElementById('sidebar-backdrop'); if(bd) bd.classList.remove('open');
       var pip=document.getElementById('plot-info-panel');
       if(pip){ pip.classList.remove('open','show'); }
       var m=document.getElementById('lg110-modal'); if(m) m.remove();
@@ -29830,9 +29789,7 @@ input, select{ min-height:var(--lg-tap); }
 #sidebar h3, .panel h3, .lg62-sheet h3, .modal-card h3{
   font-size:calc(var(--lg-fs) * 1.08) !important; line-height:1.3 !important;
 }
-body.lg62 #lg62-nav .tab-btn, body.lg62 .tab-btn{
-  font-size:var(--lg-fs-sm); white-space:nowrap;
-}
+
 body.lg62 #lg62-nav{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
 /* Không để chữ to gây tràn ngang toàn trang */
 #sidebar, .panel, .lg62-sheet, .modal-card{ overflow-wrap:break-word; }
@@ -29969,7 +29926,7 @@ body.lg62 .small, body.lg62 .muted, body.lg62 .hint, body.lg62 small{
   font-size:var(--lg-fs-xs) !important; line-height:1.35 !important;
 }
 body.lg62 h1,body.lg62 h2,body.lg62 h3,body.lg62 h4{ line-height:1.25; }
-body.lg62 .tab-btn{ font-size:var(--lg-fs-sm); padding-inline:14px; }
+
 @media print{ body.lg62,body.lg62 p,body.lg62 li{ line-height:1.35; font-size:var(--lg-fs-print); } }
 </style>
 <style id="lg116-style">
@@ -30536,7 +30493,7 @@ input, select, textarea,
 }
 input[type="checkbox"], input[type="radio"] { font-size: inherit !important; }
 /* Chặn "double-tap to zoom" trên các phần tử bấm — nguồn gây phóng to ngoài ý muốn */
-button, .btn, a, label, .lg103-dbtn, .lg52-b, .tab-btn { touch-action: manipulation; }
+button, .btn, a, label, .lg103-dbtn, .lg52-b{ touch-action: manipulation; }
 
 /* ---------------------------------------------------------------------
    2) BẢNG 🤖 AI: bảng 4 cột không thể vừa màn hình điện thoại

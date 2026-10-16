@@ -1220,7 +1220,7 @@
     ]
    },
    "nguyen_nhan_goc": "",
-   "ghi_chu_ban_giao": "Đợt 1: gỡ 10 luật CSS chết (prune_dead_css.py). Đợt 2 (P06 tiếp): gỡ 217 khai báo !important thừa (tests/tools/important_scan.js → handover/tools/strip_important.py; loại trừ ngữ cảnh động lg62-sheet/leaflet-control-layers + 41 khai báo gây khác biệt do important_culprits.js); !important trong <style> 718→~540. Kiểm: cssdump/cssdiff (kiểu dáng tính toán mọi phần tử, 4 độ rộng × sáng/tối × 7 màn: không khác biệt ổn định ngoài nhiễu thời gian), ảnh 360/390/430 khớp, bộ đầy đủ PASS. CHƯA LÀM: gỡ #sidebar (panel cũ còn mở bằng goLegacyTab).",
+   "ghi_chu_ban_giao": "Đợt 1: gỡ 10 luật CSS chết (prune_dead_css.py). Đợt 2 (P06 tiếp): gỡ 217 khai báo !important thừa (tests/tools/important_scan.js → handover/tools/strip_important.py; loại trừ ngữ cảnh động lg62-sheet/leaflet-control-layers + 41 khai báo gây khác biệt do important_culprits.js); !important trong <style> 718→~540. Kiểm: cssdump/cssdiff (kiểu dáng tính toán mọi phần tử, 4 độ rộng × sáng/tối × 7 màn: không khác biệt ổn định ngoài nhiễu thời gian), ảnh 360/390/430 khớp, bộ đầy đủ PASS. CHƯA LÀM: gỡ #sidebar (panel cũ còn mở bằng goLegacyTab). Đợt 3 (16/10): gỡ vỏ sidebar không hiện (nav-tabs, nút đóng/☰, backdrop + JS) và 24 luật CSS chết. #sidebar còn vì chứa 6 màn chức năng cũ (scan/QR/GPS/CAD/thửa/RTK) vẫn dùng qua legacyTabs — cần dựng lại từng màn mới mới gỡ được.",
    "zip": "",
    "can_nguoi_dung": null
   },
