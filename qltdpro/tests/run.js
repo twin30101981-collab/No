@@ -42,6 +42,6 @@ if (!has('--no-e2e')) {
   let J = []; try { J = JSON.parse(fs.readFileSync('/tmp/td_e2e.json', 'utf8')) } catch (e) {}
   if (!J.length) add(4, 'e2e không chạy được', false, r.out.slice(-300)); else { const f = J.filter(x => !x.ok); add(4, 'e2e: ' + (J.length - f.length) + '/' + J.length + ' phép kiểm đạt (' + [...new Set(J.map(x => x.hm))].length + ' nhóm HM)', f.length === 0, f.slice(0, 3).map(x => '[' + x.hm + '] ' + x.name).join(' | ')); }
 }
-if (has('--mutation')) { console.log('\nTầng 5 — đột biến (bộ test phải thất bại với mã lỗi)'); const r = run('node', [path.join(__dirname, 'mutation.js'), APP], 10800000); process.stdout.write(r.out.split('\n').map(l => '  ' + l).join('\n') + '\n'); add(5, 'bộ test phát hiện mọi đột biến', r.code === 0); }
+if (has('--mutation')) { console.log('\nTầng 5 — đột biến (bộ test phải thất bại với mã lỗi)'); const r = run('node', [path.join(__dirname, 'mutation.js'), APP], 16 * 3600000); /* P10: 59 đột biến × ~9 phút ≈ 9 giờ (giới hạn cũ 3 giờ cắt sau 20 đột biến) */ process.stdout.write(r.out.split('\n').map(l => '  ' + l).join('\n') + '\n'); add(5, 'bộ test phát hiện mọi đột biến', r.code === 0); }
 if (has('--real')) console.log('\n(--real: các kiểm thử dữ liệu thật nằm ở evidence/scripts/hm*_real.js, hm17b_test.js… — chạy riêng, xem tests/README.md)');
 const f = rows.filter(x => !x.ok); console.log('\n' + '═'.repeat(60) + '\nTỔNG: ' + (rows.length - f.length) + '/' + rows.length + ' nhóm đạt' + (f.length ? ' — ' + f.length + ' NHÓM LỖI' : ' — TẤT CẢ ĐẠT')); process.exit(f.length ? 1 : 0);

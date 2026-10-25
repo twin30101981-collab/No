@@ -63,8 +63,9 @@ const MUT = [
   { hm: 'P10-T10', name: 'Trung tâm nhập không giữ nội dung tệp đã đọc (đọc lại 3 lần mỗi tệp)', f: s => s.replace('if (keep && bufHeld() + f.size <= BUF_MAX) f.__tdBuf = p;', '') },
 ];
 const ONLY = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : null; // vd. --only HM-16c
+const FROM = process.argv.includes('--from') ? +process.argv[process.argv.indexOf('--from') + 1] : 1; // P10: chạy tiếp từ đột biến thứ N (1 = đầu)
 let bad = 0;
-for (const m of MUT.filter(x => !ONLY || x.hm === ONLY)) {
+for (const m of MUT.filter(x => !ONLY || x.hm === ONLY).slice(FROM - 1)) {
   const out = m.f(html); if (out === html) { console.log('✘ ' + m.hm + ' — đột biến không áp dụng được (mẫu mã đã đổi): ' + m.name); bad++; continue; }
   const f = path.join(os.tmpdir(), 'td_mut_' + m.hm.replace(/\W/g, '') + '.html'); fs.writeFileSync(f, out);
   const r = cp.spawnSync('node', [path.join(__dirname, 'e2e/suite.js'), f, '--json', f + '.json'], { encoding: 'utf8', timeout: 900000, env: process.env });
