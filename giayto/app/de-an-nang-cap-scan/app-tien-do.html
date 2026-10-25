@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tiến độ nâng cấp scan PDF</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#f4f6f5;color:#14211d}
+header{background:#0f766e;color:#fff;padding:16px}h1{margin:0;font-size:18px}
+.bar{height:10px;background:#cde7e3;border-radius:6px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:#fbbf24}
+main{padding:12px;max-width:720px;margin:auto}
+.c{background:#fff;border-radius:10px;padding:12px;margin:8px 0;display:flex;gap:10px;align-items:flex-start;box-shadow:0 1px 2px #0001}
+.c b{min-width:48px}.c div{flex:1}.c small{color:#5b6b66;display:block;white-space:pre-wrap}
+select{padding:6px;border-radius:6px}
+.xong{border-left:5px solid #16a34a}.xong-phan-1{border-left:5px solid #65a30d}
+.tiep-theo{border-left:5px solid #f59e0b}.dang-lam{border-left:5px solid #2563eb}
+.da-do-chua-dat{border-left:5px solid #dc2626}.cho{border-left:5px solid #cbd5e1}.bo-qua{border-left:5px solid #9ca3af}
+button{padding:8px 12px;border:0;border-radius:8px;background:#0f766e;color:#fff;margin:4px 4px 0 0}
+#loc{margin:8px 0}
+</style></head><body>
+<header><h1 id="t">Tiến độ</h1><div id="s"></div><div class="bar"><i id="p"></i></div></header>
+<main><section id="r"></section><div id="loc"></div><div id="l"></div>
+<button onclick="xuat()">Xuất tien-do.json</button><button onclick="tai()">Nạp lại từ tệp</button>
+<p><small>Dữ liệu luôn đọc mới từ tien-do.json (không lưu cache trên máy). Bấm "Xuất" để tải bản JSON đã chỉnh trạng thái.</small></p></main>
+<script>
+const TT={xong:"Xong","xong-phan-1":"Xong phần 1","dang-lam":"Đang làm","da-do-chua-dat":"Đã đo, chưa đạt","tiep-theo":"Tiếp theo",cho:"Chờ","bo-qua":"Bỏ qua"};
+let d=null, loc="";
+async function tai(){
+  try{ d=await (await fetch('tien-do.json?ts='+Date.now(),{cache:'no-store'})).json() }
+  catch(e){ document.getElementById('l').innerHTML='<p>Không đọc được tien-do.json – hãy mở qua máy chủ web (vd: python3 -m http.server) cạnh tệp này.</p>'; return }
+  ve()
+}
+function ve(){
+  const ds=d.buoc.filter(b=>!loc||b.trang_thai===loc);
+  const n=d.buoc.length, x=d.buoc.filter(b=>b.trang_thai==='xong').length;
+  t.textContent=d.du_an||'Tiến độ';
+  s.textContent=`${x}/${n} bước xong · cập nhật ${d.cap_nhat||''}`;
+  p.style.width=(x/n*100)+'%';
+  const R=d.lo_trinh_r||[], rx=R.filter(g=>g.trang_thai==='xong').length;
+  document.getElementById('r').innerHTML=R.length?`<h2>Lộ trình gói R: ${rx}/${R.length} gói xong</h2><p><small>Kế tiếp: ${d.buoc_ke_tiep||''}</small></p>`+
+    R.map(g=>`<div class="c ${g.trang_thai}"><b>${g.ma}</b><div>${g.viec}<small>Kiểm chứng: ${g.kiem_chung}\nPhụ thuộc: ${g.phu_thuoc}</small></div><span>${TT[g.trang_thai]||g.trang_thai}</span></div>`).join('')+'<h2>Mục cũ (B/S/V/P)</h2>':'';
+  document.getElementById('loc').innerHTML='Lọc: <select onchange="loc=this.value;ve()"><option value="">Tất cả</option>'+
+    Object.entries(TT).map(([k,v])=>`<option value="${k}" ${k===loc?'selected':''}>${v}</option>`).join('')+'</select>';
+  l.innerHTML=ds.map(b=>{const i=d.buoc.indexOf(b);
+    const phu=[b.nghiem_thu,b.ket_qua,b.kiem_thu,b.ghi_chu,b.bang_chung,b.con_thieu].filter(Boolean).join('\n');
+    return `<div class="c ${b.trang_thai}"><b>${b.ma}</b><div>${b.ten}<small>${phu}</small></div>`+
+    `<select onchange="d.buoc[${i}].trang_thai=this.value;ve()">${Object.entries(TT).map(([k,v])=>`<option value="${k}" ${k===b.trang_thai?'selected':''}>${v}</option>`).join('')}</select></div>`}).join('')
+}
+function xuat(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='tien-do.json';a.click()}
+tai();
+</script></body></html>

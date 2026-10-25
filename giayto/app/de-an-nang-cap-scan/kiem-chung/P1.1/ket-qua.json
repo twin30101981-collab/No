@@ -1,0 +1,12 @@
+{
+  "dien-thoai": {
+    "viewport": "390x844",
+    "loi_console": [],
+    "perf": {}
+  },
+  "may-tinh": {
+    "viewport": "1280x800",
+    "loi_console": [],
+    "perf": {}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  // R6.3: chạy thử bản phát hành (dist/) tại máy: bunx wrangler dev -c wrangler.local.jsonc --port 4174
+  "name": "giayto-scan-local",
+  "main": "dist/server/index.mjs",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "dist/client", "binding": "ASSETS" }
+}
