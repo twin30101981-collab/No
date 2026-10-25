@@ -1,0 +1,18 @@
+== HM-13 router (bản HM-17)
+PASS 27 FAIL 0
+== HM-14 menu
+PASS 55 FAIL 0
+== HM-15 topbar/phím tắt
+PASS 18 FAIL 0
+== HM-07 ngày dữ liệu
+PASS 20 FAIL 0
+== HM-12 đối soát thật
+dải (chưa TSBĐ): 🔎 Đối soát: ✅ 9/9 chỉ tiêu khớp (1 chưa có dữ liệu để so)
+✅ 10/10 chỉ tiêu khớp
+== smoke
+   "docWidth": 390,
+  "errs": []
+   "docWidth": 1366,
+  "errs": []
+   "docWidth": 1920,
+  "errs": []

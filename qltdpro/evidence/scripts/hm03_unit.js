@@ -1,0 +1,14 @@
+const { chromium } = require('playwright');const W=process.argv[2];
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext()).newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message.slice(0,120)));p.on('dialog',d=>d.accept());
+ await p.goto('http://127.0.0.1:8771/index.html',{waitUntil:'load'});await p.waitForTimeout(8000);
+ await p.setInputFiles('#import-file',`${W}/data_private/20.10.2026.XLS`);await p.waitForTimeout(14000);await p.evaluate(()=>doImport());await p.waitForTimeout(1000);await p.evaluate(()=>completeImportToDataArchive());await p.waitForTimeout(6000);
+ const r=await p.evaluate(()=>{const d=DATA.qltd;const o={};
+  d[0][8]=1900;d[1][8]=850;d[2][8]=9;d[2]._rateManual=true;d[3][8]=0;d[4][8]=8;d[4]._sprdRaw=9;d[5][8]=7.5;
+  const raw3=d[3]._sprdRaw; o.sprdRaw3=raw3;
+  o.fixN=__autoFixRateX100();o.A=d[0][8];o.B=d[1][8];o.C=d[2][8];
+  HSVRate.healOnLoad(false);o.D_after_heal=d[4][8];o.E_after_heal=d[5][8];
+  repairSprdRatesOnLoad();o.D_after_repair=d[4][8];
+  o.zero_after=d[3][8];
+  TD_recalcRate();o.D_after_force=d[4][8];
+  return o});
+ console.log(JSON.stringify(r),JSON.stringify(errs));await b.close();})();

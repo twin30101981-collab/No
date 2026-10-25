@@ -1,0 +1,37 @@
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TD UPGRADE PACK v2 — DATA GRID v2 (Lovable, 2026-06-10)
+     Giai đoạn 2 theo tài liệu TD_UIUX_Desktop_Upgrade.docx.
+     Phụ thêm cuối <body>. KHÔNG sửa code cũ. Tất cả opt-in / an toàn,
+     dùng prefix `tdup2-` để tránh xung đột với app và với Pack v1.
+     Gồm:
+       - Sticky header + sticky cột đầu (opt-in)
+       - Sort 1 cột + multi-sort (Shift+click)
+       - Resize cột (kéo viền) + ẩn/hiện cột (menu ⚙)
+       - Saved views (cột/độ rộng/sort) → IndexedDB (fallback localStorage)
+       - Bulk select (opt-in) + thanh action nổi: xuất CSV / in / bỏ chọn
+       - Virtual scroll (chỉ bảng >1000 dòng & tĩnh)
+       - Inline edit (opt-in: .tdup2-editable hoặc [data-tdup2-edit])
+       - Drawer phải thay Modal cho form dài: TDUP2.drawer(...)
+       - Lệnh mới cho Command Palette (Ctrl+K) của Pack v1
+     Rollback: xoá toàn bộ khối từ comment này tới </script> cuối Pack v2.
+═══════════════════════════════════════════════════════════════ -->
+
+
+<div id="tdup2-bulkbar" role="toolbar" aria-label="Hành động hàng loạt">
+  <span><b id="tdup2-bulkcount">0</b> dòng đã chọn</span>
+  <button type="button" data-tdup2-bulk="csv">Xuất CSV</button>
+  <button type="button" data-tdup2-bulk="print">In</button>
+  <button type="button" data-tdup2-bulk="clear">Bỏ chọn</button>
+</div>
+
+<div id="tdup2-drawer-backdrop"></div>
+<aside id="tdup2-drawer" role="dialog" aria-modal="true" aria-label="Bảng thông tin">
+  <header><span class="tdup2-title">Chi tiết</span><button type="button" class="tdup2-x" aria-label="Đóng">×</button></header>
+  <div class="tdup2-body"></div>
+  <footer></footer>
+</aside>
+

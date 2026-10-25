@@ -1,0 +1,20 @@
+FAIL topbar ≤ 6 nút hiển thị ["dp-undo-btn","dp-redo-btn","td-datechip","btn-import-ipcas-hdr","💾 Lưu","td-cmd-btn","util-trigger"]
+PASS có nút Lưu, Nhập IPCAS, Tiện ích, Ctrl K, ngày
+PASS không còn nút Reset ở topbar
+PASS menu có Máy tính lãi/In A4/Nhật ký/Desktop/Mật độ/Reset
+PASS mật độ Compact áp dụng
+PASS Ctrl+S (tổng quan) ⇒ saveData đúng 1 lần, không bộ xử lý cũ
+PASS Ctrl+S (HSVV) ⇒ hosoSaveCurrent 1 lần, không saveData thêm
+PASS Ctrl+E (dư nợ) ⇒ exportQltdExcel 1 lần
+PASS Ctrl+E (đến hạn) ⇒ exportTableExcel 1 lần
+PASS Ctrl+E (TSBĐ) ⇒ tsbdExportExcel 1 lần
+PASS Ctrl+K mở bảng lệnh
+PASS Ctrl+K lần 2 đóng
+PASS Ctrl+Shift+K mở cùng bảng lệnh (không mở bảng lệnh cũ)
+PASS chỉ một lớp bảng lệnh hiển thị tại một thời điểm
+PASS bảng lệnh tìm được "gia dat"
+PASS Enter mở trang Giá đất
+PASS Ctrl+L vẫn mở máy tính lãi
+PASS không pageerror
+PASS 17 FAIL 1
+exit=0

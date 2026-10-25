@@ -1,0 +1,26 @@
+PASS sạch 20/10/2026 · main khớp cũ/mới
+PASS sạch 20/10/2026 · nhom khớp cũ/mới
+PASS sạch 20/10/2026 · pb khớp cũ/mới
+PASS sạch 20/10/2026 · cbtd khớp cũ/mới
+PASS sạch 20/10/2026 · top khớp cũ/mới
+PASS sạch 20/10/2026 · due khớp cũ/mới
+PASS sạch 20/10/2026 · over khớp cũ/mới
+PASS sạch 20/10/2026 · lai khớp cũ/mới
+PASS sạch 20/10/2026 · sub khớp cũ/mới
+PASS sạch 20/10/2026 · không pageerror
+PASS sạch 30/08/2026 · main khớp cũ/mới
+PASS sạch 30/08/2026 · nhom khớp cũ/mới
+PASS sạch 30/08/2026 · pb khớp cũ/mới
+PASS sạch 30/08/2026 · cbtd khớp cũ/mới
+PASS sạch 30/08/2026 · top khớp cũ/mới
+PASS sạch 30/08/2026 · due khớp cũ/mới
+PASS sạch 30/08/2026 · over khớp cũ/mới
+PASS sạch 30/08/2026 · lai khớp cũ/mới
+PASS sạch 30/08/2026 · sub khớp cũ/mới
+PASS sạch 30/08/2026 · không pageerror
+PASS biên · không pageerror
+PASS biên · mới có dòng Khác
+PASS biên · mới có Không rõ nhóm
+PASS biên · MỚI Σloại=Σnhóm=Σpb=tổng
+PASS biên · CŨ lệch (chứng minh lỗi gốc)
+PASS 25 FAIL 0

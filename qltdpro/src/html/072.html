@@ -1,0 +1,87 @@
+
+
+
+
+
+<!-- ══ FEATURE 5: MODAL DANH SÁCH HỒ SƠ NHIỀU KH ══ -->
+<div id="hoso-list-ov" onclick="if(event.target===this)hosoListClose()">
+  <div id="hoso-list-box">
+    <div class="hl-hdr">
+      <h3>📋 Danh sách hồ sơ đã lưu</h3>
+      <button class="hl-close" onclick="hosoListClose()">✕</button>
+    </div>
+    <!-- ① BATCH EXPORT TOOLBAR -->
+    <div class="hl-toolbar">
+      <div class="hl-toolbar-left">
+        <button class="hl-sel-btn" onclick="hosoBatchSelectAll()">Chọn tất cả</button>
+        <button class="hl-sel-btn" onclick="hosoBatchSelectNone()">Bỏ chọn</button>
+        <span class="hl-sel-count" id="hl-sel-count">0 hồ sơ chọn</span>
+      </div>
+      <button class="hl-batch-btn" id="hl-batch-btn" onclick="hosoBatchExport()" disabled>
+        📦 Xuất ZIP nhiều hồ sơ
+      </button>
+    </div>
+    <!-- ② SEARCH BAR -->
+    <div class="hl-search-wrap">
+      <span class="hl-search-icon">🔍</span>
+      <input type="text" class="hl-search-input" id="hl-search-input"
+        placeholder="Tìm theo tên KH, mã KH, số HĐ..."
+        oninput="hosoSearchFilter(this.value)"
+        onkeydown="if(event.key==='Escape'){this.value='';hosoSearchFilter('');}"
+      >
+      <button class="hl-search-clear" id="hl-search-clear" onclick="document.getElementById('hl-search-input').value='';hosoSearchFilter('');" title="Xóa">✕</button>
+      <div class="hl-search-hint" id="hl-search-hint"></div>
+    </div>
+    <div class="hl-body" id="hoso-list-body">
+      <div class="hl-empty">Chưa có hồ sơ nào được lưu.</div>
+    </div>
+    <div class="hl-footer">
+      <button class="hl-new-btn" onclick="hosoNew();hosoListClose()">＋ Tạo hồ sơ mới</button>
+      <button class="hl-new-btn export-json" onclick="hosoExportJSON()" title="Xuất toàn bộ hồ sơ ra file JSON để backup hoặc chuyển máy">⬇️ Xuất JSON</button>
+      <button class="hl-new-btn import-json" onclick="document.getElementById('hoso-import-fi').click()" title="Nhập bộ hồ sơ từ file JSON đã xuất trước đó">⬆️ Nhập JSON</button>
+      <button class="hl-new-btn" style="background:#163352;flex:0 0 auto;padding:9px 16px" onclick="hosoCompareOpen()">⚖️ So sánh</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="hoso-import-fi" accept=".json" onchange="hosoImportJSON(event)">
+
+
+<!-- ══ ③ MODAL SO SÁNH 2 HỒ SƠ ══ -->
+<div id="hoso-compare-ov" onclick="if(event.target===this)hosoCompareClose()">
+  <div id="hoso-compare-box">
+    <div class="hc-hdr">
+      <h3>⚖️ So sánh 2 hồ sơ</h3>
+      <button class="hc-close" onclick="hosoCompareClose()">✕</button>
+    </div>
+    <div class="hc-pick-row">
+      <div class="hc-pick">
+        <label>🅰 Hồ sơ gốc</label>
+        <select id="hc-sel-a" onchange="hosoCompareDiff()"></select>
+      </div>
+      <div class="hc-pick">
+        <label>🅱 Hồ sơ so sánh</label>
+        <select id="hc-sel-b" onchange="hosoCompareDiff()"></select>
+      </div>
+    </div>
+    <div class="hc-body">
+      <div class="hc-legend">
+        <div class="hc-leg"><div class="hc-leg-dot" style="background:#FEF9EC;border:1.5px solid #C9952A"></div> Khác nhau</div>
+        <div class="hc-leg"><div class="hc-leg-dot" style="background:#F0FDF4;border:1.5px solid #86EFAC"></div> Giống nhau</div>
+      </div>
+      <div class="hc-summary" id="hc-summary"></div>
+      <table class="hc-table" id="hc-table">
+        <thead><tr>
+          <th>Trường</th>
+          <th>🅰 Hồ sơ gốc</th>
+          <th>🅱 Hồ sơ so sánh</th>
+        </tr></thead>
+        <tbody id="hc-tbody"></tbody>
+      </table>
+    </div>
+    <div class="hc-footer">
+      <button class="hc-btn sec" onclick="hosoCompareToggleAll()">Hiện tất cả trường</button>
+      <button class="hc-btn pr" onclick="hosoCompareClose()">Đóng</button>
+    </div>
+  </div>
+</div>
+

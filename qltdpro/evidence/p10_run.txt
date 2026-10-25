@@ -1,0 +1,38 @@
+App: app/QLTD_PRO_v2026-10-25_v22.3-P10.html
+
+Tầng 0 — src/ dựng ra đúng tệp phát hành (HM-20) và các cổng build bắt được lỗi
+  ✔ src → build == app: 8 phép kiểm đạt, 0 lỗi
+
+Tầng 1 — biên dịch mọi khối <script>
+  ✔ check_scripts: 78 khối, 0 lỗi
+
+Tầng 2 — kiểm thử đơn vị (module td_*.js)
+  ✔ td_cols: 26 ca đạt, 0 lỗi
+  ✔ td_datadate: 26 ca đạt, 0 lỗi
+  ✔ td_doisoat: 7 ca đạt, 0 lỗi
+  ✔ td_giadat: 21 ca đạt, 0 lỗi
+  ✔ td_hub: 14 ca đạt, 0 lỗi
+  ✔ td_keys: 14 ca đạt, 0 lỗi
+  ✔ td_kh360: 11 ca đạt, 0 lỗi
+  ✔ td_metrics: 18 ca đạt, 0 lỗi
+  ✔ td_net: 12 ca đạt, 0 lỗi
+  ✔ td_numdate: 71 ca đạt, 0 lỗi
+  … td_pl02.test.js bỏ qua (cần PL02 .docx thật: --real)
+  ✔ td_report: 9 ca đạt, 0 lỗi
+  ✔ td_reportdocx: 12 ca đạt, 0 lỗi
+  ✔ td_roster: 14 ca đạt, 0 lỗi
+  ✔ td_router: 34 ca đạt, 0 lỗi
+  ✔ td_trend: 14 ca đạt, 0 lỗi
+  ✔ td_tsbd: 13 ca đạt, 0 lỗi
+  ✔ td_warn: 14 ca đạt, 0 lỗi
+  ✔ td_xlsrows: 21 ca đạt, 0 lỗi
+  ✔ td_xlsx: 15 ca đạt, 0 lỗi
+
+Tầng 3 — module nhúng trong app = tệp nguồn
+  ✔ 20 module nguồn đều nhúng nguyên văn trong app
+
+Tầng 4 — e2e (Playwright + Chromium, fixture ẩn danh)
+  ✔ e2e: 121/121 phép kiểm đạt (46 nhóm HM)
+
+════════════════════════════════════════════════════════════
+TỔNG: 23/23 nhóm đạt — TẤT CẢ ĐẠT

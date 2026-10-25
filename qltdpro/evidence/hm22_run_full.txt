@@ -1,0 +1,40 @@
+App: app/QLTD_PRO_v2026-10-22_v22.3-HM28b.html
+
+Tầng 1 — biên dịch mọi khối <script>
+  ✔ check_scripts: 77 khối, 0 lỗi
+
+Tầng 2 — kiểm thử đơn vị (module td_*.js)
+  ✔ td_cols: 14 ca đạt, 0 lỗi
+  ✔ td_datadate: 26 ca đạt, 0 lỗi
+  ✔ td_doisoat: 7 ca đạt, 0 lỗi
+  ✔ td_giadat: 21 ca đạt, 0 lỗi
+  ✔ td_hub: 10 ca đạt, 0 lỗi
+  ✔ td_keys: 14 ca đạt, 0 lỗi
+  ✔ td_kh360: 11 ca đạt, 0 lỗi
+  ✔ td_metrics: 18 ca đạt, 0 lỗi
+  ✔ td_numdate: 71 ca đạt, 0 lỗi
+  … td_pl02.test.js bỏ qua (cần PL02 .docx thật: --real)
+  ✔ td_report: 9 ca đạt, 0 lỗi
+  ✔ td_reportdocx: 12 ca đạt, 0 lỗi
+  ✔ td_router: 34 ca đạt, 0 lỗi
+  ✔ td_trend: 10 ca đạt, 0 lỗi
+  ✔ td_tsbd: 13 ca đạt, 0 lỗi
+  ✔ td_warn: 14 ca đạt, 0 lỗi
+
+Tầng 3 — module nhúng trong app = tệp nguồn
+  ✔ 16 module nguồn đều nhúng nguyên văn trong app
+
+Tầng 4 — e2e (Playwright + Chromium, fixture ẩn danh)
+  ✔ e2e: 40/40 phép kiểm đạt (26 nhóm HM)
+
+Tầng 5 — đột biến (bộ test phải thất bại với mã lỗi)
+  ✔ HM-01 — chèn xuống dòng vào chuỗi SheetJS (script vendor không biên dịch) → phát hiện: SheetJS nạp được (XLSX.version) và ghi/đọc lại .xlsx
+  ✔ HM-08 — đếm khách hàng theo số dòng thay vì theo mã → phát hiện: Dashboard: tổng dư nợ = 141.940.949.969 và 120 KH (theo mã)
+  ✔ HM-09 — báo cáo theo CBTD bỏ im lặng phần chưa phân → phát hiện: TD_AUDIT (đối chiếu với tệp) không có vấn đề
+  ✔ HM-17b — bật lại pager desktop-patch chồng lên bảng dữ liệu → phát hiện: chỉ MỘT cơ chế phân trang (không pager ẩn dòng/nút "Hiển thị thêm" chồ
+  ✔ HM-16b — thêm z-index literal ≥100 ngoài thang token → phát hiện: không còn z-index literal ≥100 (dùng token --z-N)
+  
+  ✔ bộ test phát hiện mọi đột biến
+
+════════════════════════════════════════════════════════════
+TỔNG: 19/19 nhóm đạt — TẤT CẢ ĐẠT

@@ -1,0 +1,204 @@
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="mob-overlay" onclick="mobCloseSidebar()"></div>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">A</div>
+    <div class="logo-text">
+      <h2>Agribank chi nhánh Thiên Trường</h2>
+      <p style="font-size:9.5px;color:rgba(255,255,255,.55);margin-top:3px;font-style:italic;font-weight:500;letter-spacing:.3px">MADE BY: T.WIN</p>
+    </div>
+
+  </div>
+
+  <div class="sidebar-section">TỔNG QUAN</div>
+  <a class="nav-item active" data-page="dashboard" href="#/tong-quan" onclick="showPage('dashboard',this); return false;">
+    <span class="icon">📊</span><span class="label">TỔNG QUAN</span>
+  </a>
+  <a class="nav-item" data-page="ctkh" href="#/chi-tieu" onclick="showPage('ctkh',this); return false;">
+    <span class="icon">🎯</span><span class="label">CHỈ TIÊU KẾ HOẠCH</span>
+  </a>
+  <a class="nav-item" data-page="doisoat" href="#/doi-soat" onclick="showPage('doisoat',this); return false;">
+    <span class="icon">🔎</span><span class="label">ĐỐI SOÁT SỐ LIỆU</span>
+  </a>
+  <a class="nav-item" data-page="canhbao" href="#/canh-bao" onclick="showPage('canhbao',this); return false;">
+    <span class="icon">⚠️</span><span class="label">CẢNH BÁO SỚM</span>
+  </a>
+  <a class="nav-item" data-page="xuhuong" href="#/xu-huong" onclick="showPage('xuhuong',this); return false;">
+    <span class="icon">📈</span><span class="label">XU HƯỚNG NHIỀU KỲ</span>
+  </a>
+  <div class="sidebar-section">DƯ NỢ & THEO DÕI</div>
+  <a class="nav-item" data-page="khachhang" href="#/khach-hang" onclick="showPage('khachhang',this); return false;">
+    <span class="icon">👤</span><span class="label">KHÁCH HÀNG 360°</span>
+  </a>
+  <a class="nav-item-parent active-able" id="nav-qltd-parent" data-page="qltd" href="#/du-no" onclick="showPage('qltd',this); return false;">
+    <span class="icon">📋</span><span class="label">DƯ NỢ</span>
+    <span class="badge" id="badge-qltd">0</span>
+  </a>
+  <div class="nav-children open" id="nav-qltd-children" style="max-height:none">
+    <a class="nav-child-item" data-page="kd" href="#/han-muc" onclick="showPage('kd',this); return false;">
+      <span class="icon">📃</span><span>DƯ NỢ NGẮN HẠN</span>
+      <span class="badge" id="badge-kd">0</span>
+    </a>
+    <a class="nav-child-item" data-page="td" href="#/tieu-dung" onclick="showPage('td',this); return false;">
+      <span class="icon">💳</span><span>DƯ NỢ TRUNG-DÀI HẠN</span>
+      <span class="badge" id="badge-td">0</span>
+    </a>
+    <a class="nav-child-item" data-page="qcamco" href="#/cam-co" onclick="showPage('qcamco',this); return false;">
+      <span class="icon">🔒</span><span>DƯ NỢ CẦM CỐ</span>
+    </a>
+  </div>
+  <a class="nav-item" data-page="denhan" href="#/lich-tra-no" onclick="showPage('denhan',this); return false;">
+    <span class="icon">📅</span><span class="label">NỢ ĐẾN HẠN</span>
+    <span class="badge red" id="badge-denhan">0</span>
+  </a>
+  <a class="nav-item" data-page="laidong" href="#/lai-dong" onclick="showPage('laidong',this); return false;">
+    <span class="icon">💰</span><span class="label">LÃI ĐỌNG</span>
+    <span class="badge red" id="badge-laidong">0</span>
+  </a>
+  <a class="nav-item" data-page="chlm" href="#/chuyen-han-muc" onclick="showPage('chlm',this); return false;">
+    <span class="icon">🔄</span><span class="label">CHUYỂN HẠN MỨC</span>
+    <span class="badge blue" id="badge-chlm">0</span>
+  </a>
+  <a class="nav-item" data-page="tranop" href="#/tra-no" onclick="showPage('tranop',this); return false;">
+    <span class="icon">📤</span><span class="label">TRẢ NỢ / XUẤT TÀI SẢN</span>
+  </a>
+  <a class="nav-item" data-page="khmoi" href="#/khach-hang-moi" onclick="showPage('khmoi',this); if(typeof khmoiInit==='function') khmoiInit(); return false;">
+    <span class="icon">🆕</span><span class="label">KHÁCH HÀNG MỚI</span>
+  </a>
+  <div class="sidebar-section">TÀI SẢN & GIÁ ĐẤT</div>
+  <a class="nav-item" data-page="tsbd" href="#/tai-san" onclick="showPage('tsbd',this); if(typeof tsbdInit==='function') tsbdInit(); return false;">
+    <span class="icon">🏠</span><span class="label">TÀI SẢN BẢO ĐẢM</span>
+    <span class="badge blue" id="badge-tsbd">0</span>
+  </a>
+  <a class="nav-item" data-page="giadat" href="#/gia-dat" onclick="showPage('giadat',this); return false;">
+    <span class="icon">🏗️</span><span class="label">GIÁ ĐẤT & HỆ SỐ K, H</span>
+  </a>
+  <div class="sidebar-section">HỒ SƠ VAY</div>
+  <a class="nav-item" data-page="hsvv" href="#/ho-so-vay" onclick="showPage('hsvv',this); return false;">
+    <span class="icon">📝</span><span class="label">FORM HỒ SƠ VAY VỐN</span>
+  </a>
+  <a class="nav-item" data-page="hmtd" href="#/ho-so-hmtd" onclick="showPage('hmtd',this); return false;">
+    <span class="icon">📃</span><span class="label">HỒ SƠ HẠN MỨC TÍN DỤNG</span>
+  </a>
+  <a class="nav-item" data-page="tieudung" href="#/ho-so-tieu-dung" onclick="showPage('tieudung',this); return false;">
+    <span class="icon">💳</span><span class="label">HỒ SƠ TIÊU DÙNG</span>
+  </a>
+  <a class="nav-item" data-page="camco" href="#/ho-so-cam-co" onclick="showPage('camco',this); return false;">
+    <span class="icon">🔒</span><span class="label">HỒ SƠ CẦM CỐ</span>
+  </a>
+  <a class="nav-item" data-page="fhs" href="#/fhs" onclick="showPage('fhs',this); return false;">
+    <span class="icon">🗂️</span><span class="label">FORM HỒ SƠ (FHS)</span>
+  </a>
+  <div class="sidebar-section">NGHIỆP VỤ</div>
+  <a class="nav-item" data-page="phidv" href="#/giai-ngan" onclick="showPage('phidv',this); return false;">
+    <span class="icon">🧾</span><span class="label">GIẢI NGÂN</span>
+  </a>
+  <a class="nav-item" data-page="baocao" href="#/bao-cao-ipcas" onclick="showPage('baocao',this); return false;">
+    <span class="icon">📰</span><span class="label">BÁO CÁO IPCAS</span>
+  </a>
+  <div class="sidebar-section">HỆ THỐNG</div>
+  <a class="nav-item" data-page="nhap" href="#/nhap-du-lieu" onclick="showPage('nhap',this); return false;">
+    <span class="icon">📥</span><span class="label">TRUNG TÂM NHẬP DỮ LIỆU</span>
+  </a>
+  <a class="nav-item" data-page="archive" href="#/luu-tru" onclick="showPage('archive',this); return false;">
+    <span class="icon">💾</span><span class="label">LƯU TRỮ FILE</span>
+  </a>
+  <div class="nav-item" onclick="openAutoSyncModal()" style="cursor:pointer" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAutoSyncModal();}">
+    <span class="icon">🔄</span><span class="label">AUTO-SYNC IPCAS</span>
+    <span class="badge blue" id="badge-autosync" style="display:none">ON</span>
+  </div>
+  <div class="nav-item" onclick="openNotifDetail()" style="cursor:pointer" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNotifDetail();}">
+    <span class="icon">🔔</span><span class="label">THÔNG BÁO NỢ</span>
+    <span class="badge red" id="badge-notif" style="display:none">0</span>
+  </div>
+
+
+  <div class="sidebar-footer">
+    <div><strong>Hệ thống QLTD PRO v1.7 (PRO-33→39)</strong></div>
+    <div style="margin-top:3px">Nguồn: msit80 IPCAS</div>
+    <div style="margin-top:2px">© 2026 Phòng Khách Hàng</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN CONTAINER
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="main">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button id="btn-mob-menu" onclick="mobToggleSidebar()" title="Mở menu">☰</button>
+  <div class="topbar-left">
+    <h1 id="page-title">TỔNG QUAN</h1>
+    <p id="page-sub">Phòng Khách Hàng</p>
+  </div>
+  <div class="topbar-right">
+    <button type="button" id="td-datechip" onclick="tdToggleDataDate()" aria-label="Ngày dữ liệu" title="Ngày dữ liệu">📅</button>
+    <!-- ═══ NÚT NHẬP IPCAS — đưa lên header chính cho 1-click access ═══ -->
+    
+    <button type="button" id="btn-import-ipcas-hdr"
+            onclick="try{openImportModal()}catch(e){console.error(e);window.showToast&&showToast('⚠️ Không mở được hộp nhập IPCAS','err')}"
+            data-tipkey="import"
+            aria-label="Nhập file nguồn IPCAS"
+            title="Nhập file nguồn msit80.xlsx / .csv từ IPCAS">
+      <span class="ipcas-ico" aria-hidden="true">📂</span><span class="ipcas-lbl">Nhập IPCAS</span>
+    </button>
+
+    <button class="btn btn-green" onclick="saveData()" data-tipkey="save" title="Lưu dữ liệu (Ctrl+S)">💾 Lưu</button>
+    <button type="button" id="td-cmd-btn" onclick="TD.keys.run('palette')" title="Bảng lệnh: tìm trang, khách hàng, thao tác (Ctrl+K)">🔍 Tìm / lệnh <kbd>Ctrl K</kbd></button>
+    <!-- v13.9.7 FIX: gỡ nút Rollback L/S -->
+    <!-- v13.9.7 FIX: gỡ nút Khôi phục L/S từ sprd -->
+    <span id="save-ts" class="save-status saved">✅ Đã lưu</span>
+
+
+    <!-- ═══ ⋯ TIỆN ÍCH — Menu gom các thao tác dữ liệu/sao lưu (hiện trên cả desktop & mobile) ═══ -->
+    
+    <div class="util-wrap" id="util-wrap">
+      <button type="button" class="util-trigger" id="util-trigger" onclick="toggleUtilMenu(event)" title="Tiện ích: Sao lưu · Lưu trữ · Nhập IPCAS · Auto-Sync">⋯ Tiện ích <span class="caret">▼</span></button>
+      <div class="util-menu" id="util-menu" role="menu">
+        <div class="util-head">Hôm nay</div>
+        <button class="util-item" onclick="utilRun(openTodoToday)"><span class="ue">📋</span> Việc cần làm hôm nay</button>
+        <div class="util-sep"></div>
+        <div class="util-head">Sao lưu &amp; khôi phục</div>
+        <button class="util-item" onclick="utilRun(exportBackup)"><span class="ue">📤</span> Backup (xuất JSON)</button>
+        <button class="util-item" onclick="utilRun(importBackup)"><span class="ue">📥</span> Khôi phục từ file JSON</button>
+        <button class="util-item" onclick="utilRun(function(){ if (window.TD && window.TD.loadLocalTemplates) window.TD.loadLocalTemplates(); else alert('Chức năng chưa sẵn sàng, hãy thử lại sau khi trang tải xong.'); })"><span class="ue">📁</span> Nạp mẫu Word (.docx) ngoại tuyến</button>
+        <div class="util-sep"></div>
+        <div class="util-head">Lưu trữ snapshot</div>
+        <button class="util-item" onclick="utilRun(archiveSaveData)"><span class="ue">💾</span> Archive Data</button>
+        <button class="util-item" onclick="utilRun(archiveSaveReport)"><span class="ue">📊</span> Archive Report</button>
+        <button class="util-item" onclick="utilRun(function(){showPage('archive');})"><span class="ue">🗄️</span> Mở trang Lưu trữ file</button>
+        <div class="util-sep"></div>
+        <div class="util-head">IPCAS</div>
+        <!-- "Nhập IPCAS" đã chuyển lên header chính (#btn-import-ipcas-hdr) để truy cập 1-click -->
+        <button class="util-item" onclick="utilRun(openAutoSyncModal)"><span class="ue">🔄</span> Auto-Sync IPCAS</button>
+        <button class="util-item" onclick="utilRun(function(){showPage('baocao');})"><span class="ue">📰</span> Báo cáo IPCAS</button>
+        <div class="util-sep"></div>
+        <div class="util-head">Công cụ</div>
+        <button class="util-item" onclick="utilRun(tdReportExport)"><span class="ue">📊</span> Báo cáo chuẩn (Excel .xlsx)</button>
+        <button class="util-item" onclick="utilRun(tdReportDialog)"><span class="ue">📝</span> Báo cáo Word / chọn kỳ…</button>
+        <button class="util-item" onclick="utilRun(tdNetDialog)"><span class="ue">🌐</span> Chế độ có mạng…</button>
+        <button class="util-item" onclick="utilRun(tdRosterDialog)"><span class="ue">👥</span> Danh sách cán bộ…</button>
+        <button class="util-item" onclick="utilRun(openLaiCalcModal)"><span class="ue">🧮</span> Máy tính lãi (Ctrl+L)</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.getElementById('btn-print-tables-a4'); if(b) b.click();})"><span class="ue">📊</span> In bảng A4</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.getElementById('td-audit-actor-chip'); if(b) b.click();})"><span class="ue">👤</span> Đặt tên người thao tác</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.getElementById('btn-audit-log'); if(b) b.click();})"><span class="ue">📜</span> Nhật ký chỉnh sửa</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.getElementById('dp-toggle-btn'); if(b) b.click();})"><span class="ue">🖥️</span> Chế độ Desktop (bật/tắt)</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.querySelector('#dp-density-bar [data-d=compact]'); if(b) b.click();})"><span class="ue">⊟</span> Mật độ: Compact</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.querySelector('#dp-density-bar [data-d=normal]'); if(b) b.click();})"><span class="ue">⊡</span> Mật độ: Normal</button>
+        <button class="util-item" onclick="utilRun(function(){var b=document.querySelector('#dp-density-bar [data-d=comfortable]'); if(b) b.click();})"><span class="ue">⊞</span> Mật độ: Comfortable</button>
+        <button class="util-item" onclick="utilRun(function(){alert('PHÍM TẮT\n\nCtrl+K  Bảng lệnh (tìm trang, khách hàng, thao tác)\nCtrl+S  Lưu (hồ sơ đang mở / dữ liệu)\nCtrl+E  Xuất Excel trang hiện tại\nCtrl+L  Máy tính lãi\n/  Tìm kiếm trên trang\nEsc  Đóng hộp thoại');})"><span class="ue">⌨️</span> Phím tắt</button>
+        <div class="util-sep"></div>
+        <div class="util-head">Khác</div>
+        <button class="util-item" onclick="utilRun(function(){ (window.exportCurrentTable||function(){})(); })"><span class="ue">⬇️</span> Xuất CSV trang hiện tại</button>
+        <button class="util-item" onclick="utilRun(function(){ (window.printActivePage||window.print)(); })"><span class="ue">🖨️</span> In trang đang xem</button>
+        <button class="util-item danger" onclick="utilRun(resetAllData)"><span class="ue">🔄</span> Reset dữ liệu phiên (giữ cấu hình)</button>
+        <button class="util-item danger" onclick="utilRun(hardcoreReset)"><span class="ue">☢️</span> Xóa cứng toàn bộ</button>
+      </div>
+    </div>
+    

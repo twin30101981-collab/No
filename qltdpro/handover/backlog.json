@@ -1,0 +1,1693 @@
+{
+ "du_an": "QLTDPRO",
+ "skill_version": "3.2.0",
+ "phien_hien_tai": 10,
+ "che_do": 3,
+ "de_an": {
+  "phien_ban": "1.0",
+  "trang_thai": "DA_DUYET",
+  "ngay_duyet": "2026-10-21",
+  "tep": "de-an/DE_AN_QLTDPRO_v1.0.docx",
+  "so_phien_uoc_tinh": "5-6 (dot 1-4); 7-8 (ca dot 5)",
+  "dieu_chinh": [
+   "Dinh chinh so lieu de an v1.0: so KH co du no>0 ngay 20/10 la 1.865 (khong phai 1.871) - sua o v1.1",
+   "HM-05 khong gom DATA.macb (quyet dinh treo)",
+   "HM-02 them sua loadSheetJS cho cho vendor tri hoan (P2-6)"
+  ]
+ },
+ "moi_truong": {
+  "node": "22.22.0",
+  "v3_kha_dung": true,
+  "ghi_chu": "Node 22, Playwright + Chromium; unzip; python openpyxl/xlrd (pip --target) chi cho kiem thu du lieu that; khong can build tool ngoai (tools/*.mjs dung Node thuan)"
+ },
+ "baseline": {
+  "tep": "QLTD_PRO_v2026-10-20_v22.3-FIX-GIA-DAT.html",
+  "sha256": "e51038eeaebffecd755c79a351cb2be9c3fadeabf62d2caa5ffe2efdf87fbb37",
+  "bytes": 13976395,
+  "ghi_chu": "Khong dong goi vi chua du lieu ca nhan; nguoi dung tu giu ban goc",
+  "sha256_sau_HM01": "b9f6c2838c97e0ca76e7b2fb214f117d50200a8d497a60e34df48076ebffa724",
+  "sha256_sau_HM02": "4786ea70fdcba01e67ca94c43ba3e91f382519b2280547dbe3e002f344c730a0",
+  "sha256_sau_HM03": "9aa4adc5e18da35bb8363b391c17f9644fe85f28d6c341d64f9b39cf0e77dc05",
+  "sha256_sau_HM04": "1c2632458c9dd95c70e6f19de585bb59e43a05312fa14bf134938731db6348d0",
+  "sha256_sau_HM05": "137bdb300459dd002f7b057ea41410029af9848ec47e73800423108668c3bbb6",
+  "tep_hien_hanh": "QLTD_PRO_v2026-10-23_v22.3-P05.html",
+  "sha256_sau_HM06": "5278ff793ac34f9553161b46e61c850e983dd04a5c976fade5914acfe5edc50b",
+  "sha256_sau_HM07": "9b7806e6cf62dcbd000261642f5e9bd245ab6ac41e14b6748d1ff36ab7c7699e",
+  "sha256_P05": "9ab44f16110efe6e30e61231cfc0ca5584337f665c9d251915256b0c9f933204"
+ },
+ "hang_muc": [
+  {
+   "id": "HM-01",
+   "ten": "Sửa thư viện SheetJS nhúng bị hỏng",
+   "dot": 1,
+   "uu_tien": "P0",
+   "effort": "XS",
+   "pham_vi": "Khối <script id=\"td-vendor-xlsx\"> (byte ~1,47–2,18 triệu; L11304–11306): gỡ 2 khối <style id=\"td-global-font\">/\"fix-nut-noi-density\" bị chèn vào chuỗi yb='<html>…'; đưa CSS về <style> chung.",
+   "tieu_chi_nghiem_thu": [
+    "new Function() parse được cả 74 khối script",
+    "window.XLSX khả dụng sau tải trang, không còn pageerror \"Invalid or unexpected token\"",
+    "Nhập 20.10.2026.XLS thành công (3.918 dòng)",
+    "Có script kiểm tra parse vendor chạy trước mỗi lần phát hành"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp; chỉ đụng vùng vendor đã khoanh.",
+   "chi_phi_uoc_tinh_pct": 3,
+   "model_version": "ghi khi mở phiên",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 8,
+   "hanh_vi_mong_doi": "new Function() parse được cả 74 khối script",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node build/check_scripts.js; node build/hm01_test.js",
+    "pass": 9,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "check_scripts: goc 1/74 loi, moi 0/74 loi",
+     "XLSX.version=0.20.3 o 1920 va 1366",
+     "Khong pageerror/console.error khi tai",
+     "Xuat-doc lai .xlsx co tieng Viet dat",
+     "Nhap 20.10.2026.XLS: 3918 dong, tong 2160375016661, 1865 KH du no>0, lai suat khop 3918/3918",
+     "Nhap 30.06.2026.XLS: 3763 dong, tong 2064987992653, lai suat khop 3763/3763",
+     "Chi 1 vung bi doi (byte 2334191, -1171 byte)"
+    ],
+    "artifact": [
+     "evidence/hm01_result.md",
+     "evidence/shots/hm01_1366.jpg"
+    ]
+   },
+   "nguyen_nhan_goc": "Hai khoi <style> (td-global-font dang \\\\n thoat chuoi, fix-nut-noi-density co xuong dong that) bi chen vao chuoi JS yb='<html><head>...' cua SheetJS; xuong dong that lam ca script khong bien dich -> XLSX undefined.",
+   "ghi_chu_ban_giao": "CSS trong 2 khoi chua tung co hieu luc; KHONG ap vao app (doi giao dien) - de lai quyet dinh cho HM-15/HM-16.",
+   "zip": "QLTDPRO_P01_HM01_20261021.zip"
+  },
+  {
+   "id": "HM-02",
+   "ten": "Bộ đọc .xlsx không biến số thành ngày",
+   "dot": 1,
+   "uu_tien": "P0",
+   "effort": "S",
+   "pham_vi": "parseXLSX (L32053–32116): bỏ quy tắc \"1<số<100000 ⇒ ngày\"; đọc qua SheetJS (cellDates theo định dạng ô) hoặc dựa vào styles.xml; xử lý thẻ <c/> tự đóng; chọn sheet đầu tiên thực tế.",
+   "tieu_chi_nghiem_thu": [
+    "Nhập 31.05.2026.xlsx: phân bố lãi suất khớp tệp (9%: 1.322; 8,5%: 750; 9,5%: 476…)",
+    "Không khoản nào 19% nếu tệp không có",
+    "Σ dư nợ, số dòng, số KH khớp tệp gốc",
+    "Test Node với tệp mẫu ẩn danh có ô ngày và ô số nhỏ"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình: luồng nhập là luồng lõi.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 7,
+   "hanh_vi_mong_doi": "Nhập 31.05.2026.xlsx: phân bố lãi suất khớp tệp (9%: 1.322; 8,5%: 750; 9,5%: 476…)",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node build/hm02_test.js (truoc/sau) + python3 build/hm02_compare.py",
+    "pass": 14,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "Ma cu: 31.05.xlsx 3642/3642 sai LS; 31.12.2025.xlsx 3684/3684 sai LS; synthetic 3/3 sai LS",
+     "Ma moi: 0 sai LS/du no/ngay o 7 to hop (3 xlsx x 2 duong + XLS hoi quy)",
+     "Khong pageerror/console.error/hop thoai loi",
+     "Chi doi vung L32050-32190"
+    ],
+    "artifact": [
+     "evidence/hm02_result.md",
+     "evidence/hm02_compare.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "parseXLSX tu viet doi moi so 1<x<100000 thanh chuoi ngay (khong xet dinh dang o) -> LS 8,5 thanh 1900-01-07 -> 19%; regex o nuot o ke tiep voi <c/>; luon doc sheet1.xml.",
+   "ghi_chu_ban_giao": "Kiem 2/6 thang xlsx that; chua Edge/Windows; tai lai van bi bang 04/06 ghi de (HM-03).",
+   "zip": "QLTDPRO_P01_HM02_20261021.zip"
+  },
+  {
+   "id": "HM-03",
+   "ten": "Chặn ghi đè lãi suất khi khởi động",
+   "dot": 1,
+   "uu_tien": "P0",
+   "effort": "M",
+   "pham_vi": "__autoFixRateX100 (L24646), wireRateAutoFixOnBoot (L24690), HSVRate.healOnLoad (L24433), coercePercent (L24380), bảng __IPCAS_SPRD_PIPE 04/06/2026 (L24520): lưu cờ sửa tay ở bảng phụ lưu được (overlay theo dsbsseq); chỉ chuẩn hoá khi nhập tệp; bỏ ghi ngược khi render; gỡ bảng cứng.",
+   "tieu_chi_nghiem_thu": [
+    "Tải lại 3 lần: lãi suất không đổi",
+    "Sửa tay 1 khoản, tải lại vẫn giữ",
+    "Nhập kỳ mới cập nhật đúng lãi suất trong tệp",
+    "Không còn hằng số lãi suất nhúng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-02"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Cao: đụng dữ liệu đã lưu; cần migrate và sao lưu trước.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 9,
+   "hanh_vi_mong_doi": "Tải lại 3 lần: lãi suất không đổi",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node build/hm03_test.js (truoc/sau) + python3 build/hm03_compare.py + node build/hm03_unit.js",
+    "pass": 8,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "Truoc: 23 khoan ve gia tri cu sau tai lai, sua tay giu 0/5",
+     "Sau: 0 sai, sua tay giu 5/5 (reload x3)",
+     "Gia tri hop le khong bi tu dong de; gia tri khong hop le duoc khoi phuc; nut Khoi phuc (force) hoat dong",
+     "Gop bang cung 3.700 cap khoi tep"
+    ],
+    "artifact": [
+     "evidence/hm03_result.md",
+     "evidence/hm03_compare.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Co _rateManual/_sprdRaw gan len mang mat khi JSON; 5 ham tu-chua chay moi lan mo app ghi de r[8] theo bang cung 04/06; HSVRate.format ghi nguoc khi ve bang.",
+   "ghi_chu_ban_giao": "Du lieu cu da luu voi LS 19% (loi xlsx cu) khong tu sua: nhap lai tep. Overlay sua tay qua nhieu lan nhap -> HM-23.",
+   "zip": "QLTDPRO_P01_HM03_20261021.zip"
+  },
+  {
+   "id": "HM-04",
+   "ten": "Lưu trữ toàn vẹn và sao lưu đầy đủ",
+   "dot": 1,
+   "uu_tien": "P0",
+   "effort": "M",
+   "pham_vi": "idbGetChunked (L24122), idbSetChunked (L24093), saveData (L24246), loadData (L24313–24324), exportBackup (L24856): kiểm tra meta.length, báo lỗi thay vì trả [], ghi một giao dịch, xoá chunk thừa; khôi phục đủ hosovay/chlmStatus/hdvSnapshots/hdvCurrentPeriod; backup có schemaVersion + checksum + đủ trường.",
+   "tieu_chi_nghiem_thu": [
+    "Giả lập chunk hỏng ⇒ app báo lỗi, không lưu đè",
+    "Tải lại giữ nguyên hồ sơ vay và trạng thái CHLM",
+    "Sao lưu → khôi phục trên hồ sơ trình duyệt mới cho kết quả giống hệt (so checksum)"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Cao: thay đổi lớp lưu trữ; phải có bản sao lưu trước khi migrate.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 8,
+   "hanh_vi_mong_doi": "Giả lập chunk hỏng ⇒ app báo lỗi, không lưu đè",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node build/hm04_test.js <port> before|after",
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "chunk thua duoc xoa",
+     "meta hosovay/chlm/period khoi phuc",
+     "chunk hong+LS con: nap du va tu lanh",
+     "chunk hong+mat LS: chan ghi de + banner",
+     "restore tu backup v3 dung",
+     "backup bi sua: hoi checksum"
+    ],
+    "artifact": [
+     "evidence/hm04_result.md"
+    ]
+   },
+   "nguyen_nhan_goc": "idbGetChunked res([]) khong doi chieu meta.length -> chunk hong thanh mang rong roi bi luu de; chunk thua khong xoa; 5 ghi roi; loadData thieu meta; backup thieu truong/checksum.",
+   "ghi_chu_ban_giao": "Kiem bang du lieu tong hop; TWIN_Archive_v1 chua dung den.",
+   "zip": "QLTDPRO_P01_DONGPHIEN_20261021.zip"
+  },
+  {
+   "id": "HM-05",
+   "ten": "Gỡ dữ liệu cứng và dữ liệu cá nhân nhúng trong tệp",
+   "dot": 1,
+   "uu_tien": "P0",
+   "effort": "M",
+   "pham_vi": "tsbd-seed-data (~1,4 MB, nguồn 18.08.2026-TS.XLS), TD_PASTDUE seed (L55952–55994), denhan-amt-data (L23238), _PRE_SNAPS (L34437–34440), danh mục macb có số tài khoản: chuyển ra ngoài; thêm \"dữ liệu mẫu ẩn danh\" tuỳ chọn và nút \"Xoá dữ liệu cục bộ\" (kể cả QLTDProTSBD).",
+   "tieu_chi_nghiem_thu": [
+    "Quét tệp phát hành không còn tên/mã KH/số GCN thật",
+    "Máy mới mở app: KPI trống cho đến khi nhập tệp",
+    "Không còn khoản \"quá hạn 23/06\" tự xuất hiện",
+    "Dung lượng tệp giảm ≥ 2 MB"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-04"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình: người dùng đang dựa vào seed phải nhập lại dữ liệu từ tệp gốc.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 9,
+   "hanh_vi_mong_doi": "Quét tệp phát hành không còn tên/mã KH/số GCN thật",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "python3 apply_hm05.py; node hm05_test.js <port> before|after; node hm05_migrate.js",
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "Trang moi: 0 TSBD/qua han/moc luu tru/TKSTT/den han",
+     "Nhap 20.10.2026.XLS roi tai lai: 3848 khoan, 1 moc luu tru",
+     "15 trang khong pageerror truoc/sau nhap",
+     "Nguoi dung cu: chi con khoan tu dan",
+     "Tep 13,9 MB -> 5,97 MB",
+     "Quet PII: 0 ma KH/so khoan vay; 28 ten (can bo/duong pho/chu thich)"
+    ],
+    "artifact": [
+     "evidence/hm05_result.md",
+     "evidence/hm05_piiscan.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Du lieu that cua chi nhanh nhung thang vao tep HTML va tu ghi vao trinh duyet khi mo (seed).",
+   "ghi_chu_ban_giao": "Giu DATA.macb (quyet dinh treo). Den han dung du no hien tai. TKSTT trong.",
+   "zip": "QLTDPRO_P01_DONGPHIEN_20261021.zip"
+  },
+  {
+   "id": "HM-06",
+   "ten": "Một module số/ngày dùng chung (TD.num, TD.date)",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "Thay 3 bản parseVNDate (L23592, L54604, L54840), 2 bản parseNum (L54612, L55931), 9 hàm fmt*, groupDigits/stripDots (L59042) bằng 1 module; có test Node. | GOI Y BAT DAU: grep parseVNDate (3 ban), parseNum (2 ban), groupDigits/stripDots (rootfix v6).",
+   "tieu_chi_nghiem_thu": [
+    "\"300,000,000\" và \"300.000.000\" ⇒ 300000000",
+    "\"2026-05-31\" ⇒ 31/05/2026 (không ra 2031)",
+    "31/02 bị từ chối",
+    "Số thập phân, số âm giữ nguyên khi định dạng",
+    "≥ 40 ca kiểm thử Node đạt"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình: nhiều nơi gọi; thay dần theo từng màn hình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 8,
+   "hanh_vi_mong_doi": "\"300,000,000\" và \"300.000.000\" ⇒ 300000000",
+   "trang_thai": "DA_BAN_GIAO",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node build/td_numdate.test.js; node build/hm06_oldnew.js <ban HM-05>; node build/hm06_test.js <cong> before|after",
+    "pass": 71,
+    "fail": 0,
+    "skip": 0,
+    "chi_tiet": [
+     "Node 71/71 ca",
+     "Ham cu sai 5/7 ca doi chung, module dung 7/7",
+     "Nhap 4 tep that 15.107 dong: 0 o khac nhau giua HM-05 va HM-06",
+     "Ve 12 trang voi ngay sai: khong loi"
+    ],
+    "artifact": [
+     "evidence/hm06_result.md",
+     "evidence/hm06_unit.txt",
+     "evidence/hm06_oldnew.txt",
+     "evidence/hm06_compare.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Khong co lop chuan hoa so/ngay dung chung: 3 parseVNDate, 2 parseNum, groupDigits tu viet; parseNum xoa dau . roi doi dau , dau tien; TDUP5 khong neo chuoi; ngay khong ton tai bi cuon.",
+   "ghi_chu_ban_giao": "Chua gom 9 ham fmt*; mot so doan tu regex ngay rieng; ngay khong ton tai nay tra null.",
+   "zip": "QLTDPRO_P01_DONGPHIEN_20261021_HM06.zip"
+  },
+  {
+   "id": "HM-07",
+   "ten": "\"Ngày dữ liệu\" là nguồn sự thật",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "S",
+   "pham_vi": "todayMidnight (L31234), dayKey snapshot (L32859), regex ngày từ tên tệp (L31993), _currentFileDate: dùng ngày của tệp cho đến hạn/quá hạn/snapshot; nhận \"_30_06_2026\", \"DUNO_18.08.2026\"; hiển thị chip ngày dữ liệu toàn app.",
+   "tieu_chi_nghiem_thu": [
+    "Mở tệp cũ: đến hạn/quá hạn tính theo ngày của tệp",
+    "Nhập 2 tệp khác ngày trong cùng 1 ngày ⇒ 2 mốc riêng",
+    "6 mẫu tên tệp đều nhận đúng ngày"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-06"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Mở tệp cũ: đến hạn/quá hạn tính theo ngày của tệp",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_datadate.test.js; node hm07_test.js <dir> <cong>; node check_scripts.js; node smoke.js",
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm07_result.md",
+     "evidence/hm07_unit.txt",
+     "evidence/hm07_e2e.txt",
+     "evidence/shots/hm07_chip_1500.png",
+     "evidence/hm07_real.txt"
+    ],
+    "pass": 46
+   },
+   "nguyen_nhan_goc": "todayMidnight() luon la dong ho may nen mo tep cu van tinh den han/qua han theo hom nay; mốc snapshot theo ngay bam nhap (2 tep khac ngay nhap cung ngay ghi de nhau); regex \\b coi \"_\" la ky tu tu nen bo sot DUNO_18.08.2026 / msit80_30_06_2026; lan nhap dau (du lieu trong) khong ghi ngay tep.",
+   "ghi_chu_ban_giao": "Chip \"Ngay du lieu\" tren topbar (bam: Du lieu <-> Hom nay, nho qua tai lai); tep khong co ngay trong ten => dung hom nay (xoa ngay cu). V3 them tren 3 tep IPCAS that (30.06 XLS, 20.10 XLS, 31.05 xlsx): 3 moc rieng (1.839/1.865/1.815 KH); qua han theo ngay du lieu 31/05 = 2 so voi theo hom nay = 2.014 (hm07_real.txt). P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md).",
+   "zip": ""
+  },
+  {
+   "id": "HM-08",
+   "ten": "Engine KPI duy nhất (TD.metrics) – phần 1: lõi + Dashboard",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "renderDashboard (L31228): tách hàm thuần tính tổng/nhóm/phòng/loại vay/đến hạn; KH theo mã (không theo tên); nhóm trống ⇒ \"Không rõ nhóm\"; loại vay không khớp ⇒ \"Khác\"; sửa regex /d+/ (L31514).",
+   "tieu_chi_nghiem_thu": [
+    "Σ các bảng con = tổng (có dòng Khác/Không rõ)",
+    "Số KH theo mã khớp tệp (31/05: 1.815)",
+    "Top-10 lấy nhóm nợ xấu nhất",
+    "Test Node trên tệp mẫu"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-06",
+    "HM-07"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Σ các bảng con = tổng (có dòng Khác/Không rõ)",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_metrics.test.js; node hm08_test.js <dir> <cu.html> <moi.html>; node real08.js",
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm08_result.md",
+     "evidence/hm08_unit.txt",
+     "evidence/hm08_synthetic.txt",
+     "evidence/hm08_real.txt"
+    ],
+    "pass": 48
+   },
+   "nguyen_nhan_goc": "Dashboard tu tinh tung bang bang vong lap rieng nen tong theo loai vay/nhom no khong bi rang buoc bang tong: loai vay la roi khoi Bang I, nhom trong gan Nhom 1, nhom la (Nhom 9) roi khoi Bang II, \"trung va dai han\" co the dem 2 lan; regex /d+/ thieu dau \\\\ nen nhom no cao nhat cua KH o Top 10 luon bang 0.",
+   "ghi_chu_ban_giao": "Du lieu that hien sach (khong co loai/nhom la) nen cu/moi giong het tren 5 tep; khac biet chi thay o du lieu bien tong hop. Bang CBTD van 8 cot co dinh (khong co cot Khac).",
+   "zip": ""
+  },
+  {
+   "id": "HM-09",
+   "ten": "TD.metrics – phần 2: Báo cáo, snapshot, so sánh kỳ",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "bckhAggregateData (L25521), snapshot ngày/báo cáo/dữ liệu (L32869, L32989, L33047), TDCMP (L54999), TDUP5 đọc DOM (L54655), TD_AUDIT (L56151): gọi chung TD.metrics; thêm dòng \"Chưa phân CBTD\".",
+   "tieu_chi_nghiem_thu": [
+    "Tổng Báo cáo = tổng Dashboard = tổng tệp",
+    "Snapshot lưu số KH theo mã",
+    "TD_AUDIT so với tệp gốc thay vì tự so với chính nó"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-08"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "Tổng Báo cáo = tổng Dashboard = tổng tệp",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3 (tong hop + snapshot that; trang KHKD khong khoi phuc theo quyet dinh P05)",
+   "bang_chung": {
+    "lenh": "node hm09_test.js <cu> <moi>",
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm09_result.md",
+     "evidence/hm09_e2e.txt"
+    ],
+    "pass": 5
+   },
+   "nguyen_nhan_goc": "4 noi tao snapshot dem KH theo TEN (r[1]) trong khi dashboard dem theo ma; bckhAggregateData bo im lang dong co CBTD trong/khong khop.",
+   "ghi_chu_ban_giao": "Con lai chuyen HM-09b: TDCMP, TDUP5 doc DOM, TD_AUDIT dung chung TD.metrics; dong \"Chua phan CBTD\" trong bang II-V BCKH (can quyet dinh thiet ke: bang la mau Excel co dinh). P04d: nguoi dung chon them dong Chua phan CBTD vao bang II-V, nhung trang BCKH (#page-bckh) khong ton tai tu ban goc (chi con ma JS mo coi); bao cao dang dung (Theo CBTD) da co dong '(Chua phan cong)'. Can nguoi dung xac nhan co muon khoi phuc trang KHKD khong. Loi phu trong ma mo coi: bckhRecalc('khachhang') ghi de tong KH moi cot bang du lieu hien tai. P05: nguoi dung chon KHONG khoi phuc trang KHKD (Bang II-V) => go ma mo coi bckh* (73 khai bao JS ~2.300 dong, 69 quy tac CSS, modal drill-down, 6 muc tro giup, cac diem vao chet); GIU 8 khai bao con dung: bckhAggregateData (TD_AUDIT B1, BCN snapshot, e2e), bckhBuildCBTDMap, bckhNormName, bckhIsKHDN, bckhFmtMoney, BCKH_PHONG, BCKH_PHONG_KEYS, BCKH_CBTD_ALIASES. Tuyen router bckh giu (vo hai). Dai canh bao tdBckhShowUnassigned (chi goi tu bang II-V) da go cung. (evidence/p05_result.md)",
+   "zip": ""
+  },
+  {
+   "id": "HM-09b",
+   "ten": "TD.metrics phan con lai: TDCMP, TDUP5, TD_AUDIT, dong Chua phan CBTD trong BCKH",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "S",
+   "pham_vi": "TDCMP (so sanh ky), TDUP5 doc DOM, TD_AUDIT dung chung TD.metrics; dong \"Chua phan CBTD\" trong bang II-V BCKH (can quyet dinh thiet ke).",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-09"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 2,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node hm09b_test.js <cu> <moi>; node hm09b_real.js",
+    "pass": 9,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm09b_result.md",
+     "evidence/hm09b_e2e.txt",
+     "evidence/hm09b_real.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "TDCMP bo dong thieu ma+HD; TD_AUDIT tu so voi chinh no; TDUP5 doc DOM.",
+   "ghi_chu_ban_giao": "Dong \"Chua phan CBTD\" trong bang II-V BCKH: chi giu dai canh bao (mau Excel co dinh) - cho quyet dinh thiet ke.",
+   "zip": ""
+  },
+  {
+   "id": "HM-10",
+   "ten": "Đối soát Tài sản bảo đảm",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "tsbdImportFile (L58588), tsbdReconcile (L58630), syncTSBDFromHsvv (rootfix v6 L59128/59227): lọc clholdcd (đang giữ), TS hết hạn, quy đổi USD/EUR, khử trùng clno, dư nợ tính 1 lần/KH; thống nhất clamt/plgamt; không tự ghi đè tsbdGiaTri khi mở form.",
+   "tieu_chi_nghiem_thu": [
+    "Σ giá trị TS không cộng lặp (66 clno trùng ở 20/10)",
+    "Tỷ lệ phủ TS theo KH khớp tính độc lập",
+    "Mở form sửa không thay đổi số liệu nếu không bấm lưu"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-05",
+    "HM-08"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 6,
+   "hanh_vi_mong_doi": "Σ giá trị TS không cộng lặp (66 clno trùng ở 20/10)",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_tsbd.test.js; node real10.js; python3 ts_indep.py",
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm10_result.md",
+     "evidence/hm10_unit.txt",
+     "evidence/hm10_real.txt",
+     "evidence/hm10_indep_python.txt"
+    ],
+    "pass": 22
+   },
+   "nguyen_nhan_goc": "66 dong thua (64 clno) bi cong lap; 145 TS ngoai te cong nhu dong; KPI KH con du no dem khoa phia TS (2.742 thay vi 1.865); mo form tu ghi de tsbdGiaTri.",
+   "ghi_chu_ban_giao": "clholdcd chi co N (15.486) va trong (3.647): chua biet nghia nghiep vu nen KHONG loc - can nguoi dung cho biet; khong co ty gia USD/EUR (tach rieng, chua quy doi); apprno gan nhu trong nen khong noi TS->HD; 7 KH chua co TS theo ma KH co the co TS dung ten ben thu ba. P04b: hoi quy tren sao ke that 20/10 dat (real10.js); them fixture TSBD an danh + e2e buoc X + dot bien khu trung clno.",
+   "zip": ""
+  },
+  {
+   "id": "HM-11",
+   "ten": "Giá đất: khoá tra cứu, lỗi dữ liệu, nối hồ sơ vay",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "bgd_UBND (L34061) khoá ward|từ|đến ⇒ thêm tên đường; gộp kh_getCoeff/bgd_getK2; đánh dấu 40 ô \"#DIV/0!/Chưa hoàn thiện\", TB ≠ (cao+thấp)/2, giá NQ38 > thấp nhất; nhập PL02 .docx mới; nút đưa kết quả sang calcGiaDat (L38475).",
+   "tieu_chi_nghiem_thu": [
+    "54 khoá trùng ⇒ 0",
+    "Trang \"Lỗi dữ liệu bảng giá\" liệt kê đủ ô lỗi",
+    "Ví dụ tính tay khớp app (đơn giá × ΠK × ΠH × diện tích)"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-06"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp; cần người dùng xác nhận cách xử lý ô lỗi.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "54 khoá trùng ⇒ 0",
+   "trang_thai": "DAT_MOT_PHAN",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_giadat.test.js; node hm11_test.js",
+    "pass": 29,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm11_result.md",
+     "evidence/hm11_unit.txt",
+     "evidence/hm11_e2e.txt",
+     "evidence/hm11_docx_issues.json"
+    ]
+   },
+   "nguyen_nhan_goc": "Gia NQ38 tra theo khoa tu|||den khong co ten duong: 54 nhom khoa trung (162 dong, 143 dong nhan gia cua duong khac); khong bao 40 o #DIV/0!/Chua hoan thien va 28 dong PL02 khong co trong bang; 2 TB lech; 15 NQ38>thap nhat.",
+   "ghi_chu_ban_giao": "Chua lam: nhap PL02 .docx moi trong app (HM-11b); bo sung gia NQ38 cho khoa trung can PDF NQ38 (scan, chua OCR). Ham K2 da gop. Nut dua G0 sang ho so vay da co. P04d: OCR NQ38 (tesseract vie): tep chi co nghi quyet + quy dinh chung; Phu luc I (bang gia theo ten duong) KHONG co trong tep => khong bo sung duoc 54 khoa trung; can tep Phu luc I. Gia dat nong nghiep khu vuc phuong trong app khop OCR.",
+   "zip": ""
+  },
+  {
+   "id": "HM-11b",
+   "ten": "Nhap PL02 .docx moi ngay trong app + bo sung gia NQ38 theo ten duong",
+   "dot": 2,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Bo doc .docx trong trinh duyet (zip+xml); doi chieu voi bang dang nap; bo sung ten duong cho khoa NQ38 trung khi co nguon (PDF NQ38 can OCR).",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-11"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_pl02.test.js <app> <pl02.docx>; node hm11b_test.js <app> <pl02.docx>",
+    "pass": 15,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm11b_result.md",
+     "evidence/hm11b_unit.txt",
+     "evidence/hm11b_e2e.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "PL02 chi duoc quet ngoai tuyen, nhung cung trong app; khong nhap duoc PL02 moi.",
+   "ghi_chu_ban_giao": "Bo sung gia NQ38 theo ten duong: KHONG lam (PDF NQ38 la anh scan, chua co nguon chu) - theo quyet dinh mac dinh chi liet ke.",
+   "zip": ""
+  },
+  {
+   "id": "HM-12",
+   "ten": "Trang Đối soát số liệu",
+   "dot": 2,
+   "uu_tien": "P1",
+   "effort": "S",
+   "pham_vi": "Trang mới tính lại độc lập từ tệp gốc đã lưu và so với mọi màn hình; xuất biên bản; dải trạng thái trên Dashboard.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-09"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_doisoat.test.js; node real12.js",
+    "pass": 17,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm12_result.md",
+     "evidence/hm12_unit.txt",
+     "evidence/hm12_real.txt",
+     "evidence/hm12_bienban_mau.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Khong co noi nao tinh lai doc lap va so voi cac man hinh; sai lech chi phat hien bang mat.",
+   "ghi_chu_ban_giao": "10 chi tieu; chua doi soat TDCMP/TDUP5/Lich tra no (HM-09b). Bien ban .txt (chua co o nguoi lap). P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md).",
+   "zip": ""
+  },
+  {
+   "id": "HM-13",
+   "ten": "Một router duy nhất thay 10 lớp bọc showPage",
+   "dot": 3,
+   "uu_tien": "P1",
+   "effort": "M",
+   "pham_vi": "showPage gốc (L27795) và các lớp bọc L11840, L42638, L46828, L50251, L50330, L51386, L51612, L51977, L52890, L55574: router hash (#/du-no), lịch sử Back/F5, hook onPageEnter đăng ký theo trang.",
+   "tieu_chi_nghiem_thu": [
+    "F5 giữ trang hiện tại; Back quay lại trang trước",
+    "Chuyển trang không tạo setTimeout dư",
+    "Mọi chức năng từng gắn vào showPage vẫn chạy (danh sách 9 hook)"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-01"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình: đụng mọi trang.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "F5 giữ trang hiện tại; Back quay lại trang trước",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_router.test.js; node hm13_test.js",
+    "pass": 61,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm13_result.md",
+     "evidence/hm13_unit.txt",
+     "evidence/hm13_e2e.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Dieu huong chi la showPage() bi boc 12 lop; khong co dia chi cho tung trang: Back thoat app, F5 ve Dashboard.",
+   "ghi_chu_ban_giao": "Da co router hash (25 trang) + onPageEnter; theo doi lop .active nen khong sua cac lop boc. Chua gop 12 lop boc (HM-13b). P04d: HM-13b xong (mot showPage + so hook).",
+   "zip": ""
+  },
+  {
+   "id": "HM-13b",
+   "ten": "Gop 12 lop boc showPage thanh mot duong + hook onPageEnter",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Doc tung lop boc showPage (grep \"window.showPage =\"), chuyen hanh vi rieng thanh TD.router.onPageEnter; chuyen hook doisoat/tsbd/giadat trong showPage goc.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-13"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": null,
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": null,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": " P04d: TD.onShowPage (so dang ky hook, chay dong bo cuoi showPage moi lan goi); 9 lop boc chuyen thanh dang ky, lop 031 (chua bao gio duoc cai) va 093 (trung) go; doi chung 28 lan chuyen trang trung khop (hm13b_trace.js); go nhanh Ctrl/Cmd+S/E/K cu o 6 bo nghe (Ctrl+Shift+S truoc day goi hosoSilentSave x2 + saveData + luu nhap). e2e buoc Z + dot bien.",
+   "zip": ""
+  },
+  {
+   "id": "HM-14",
+   "ten": "Cây menu mới, đưa HSVV/FHS/mẫu biểu vào menu",
+   "dot": 3,
+   "uu_tien": "P1",
+   "effort": "S",
+   "pham_vi": "Sidebar L11978–12066, PAGE_TITLES, PAGE_FS_PAGES (L50261): 6 nhóm; nhãn trùng tiêu đề trang; gỡ lối vào trùng; menu dùng <a href=\"#/…\"> để dùng bàn phím.",
+   "tieu_chi_nghiem_thu": [
+    "Mọi trang có đúng 1 lối vào chính",
+    "Không còn target chết (dh, ld, huy, bckh, hdv, macb)",
+    "Tab/Enter điều hướng được"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-13"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "Mọi trang có đúng 1 lối vào chính",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node hm14_test.js",
+    "pass": 55,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm14_result.md",
+     "evidence/hm14_e2e.txt",
+     "evidence/shots/hm14_menu_1366.png"
+    ]
+   },
+   "nguyen_nhan_goc": "6 trang (HSVV, HMTD, Tieu dung, Cam co, FHS, Du no cam co) khong co loi vao menu; nhanh con NGAN HAN/TRUNG-DAI HAN bi flex co ve cao 0 (khong nhin thay); nhan menu khac tieu de trang; muc menu la div onclick (khong Tab/Enter).",
+   "ghi_chu_ban_giao": "6 nhom, 22 trang, <a href=\"#/...\"> khop router; #sidebar>*{flex-shrink:0}. Sidebar cao 1196px >1080 nen cuon (HM-15/16 nen mat do). bckh/hdv/macb co trong PAGE_TITLES nhung khong con trong DOM.",
+   "zip": ""
+  },
+  {
+   "id": "HM-15",
+   "ten": "Topbar gọn, 1 bảng lệnh (Ctrl K), 1 bộ phím tắt",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Topbar 14–15 nút (L3824…), density bar #dp-density-bar, dock #tdup-dock, 3 palette, 4 handler Ctrl+S, 3 handler Ctrl+E.",
+   "tieu_chi_nghiem_thu": [
+    "Ở 1366 topbar 1 hàng, không phần tử chồng nhau",
+    "Mỗi phím tắt đúng 1 hành động",
+    "Bảng phím tắt khớp hành vi thật"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-13"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Ở 1366 topbar 1 hàng, không phần tử chồng nhau",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_keys.test.js; node hm15_test.js",
+    "pass": 32,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm15_result.md",
+     "evidence/hm15_unit.txt",
+     "evidence/hm15_e2e.txt",
+     "evidence/shots/hm15_topbar_1366.png",
+     "evidence/shots/hm15_topbar_390.png"
+    ]
+   },
+   "nguyen_nhan_goc": "Topbar 14 nut (Reset do canh Luu); Ctrl+S 4 bo xu ly chong nhau, Ctrl+E 3 bo (khoa dh/ld khong khop id bang nen khong xuat duoc Den han/Lai dong), 3 bang lenh.",
+   "ghi_chu_ban_giao": "TD.keys capture tren window chan bo cu (go han o HM-21). Topbar con 6 nut; 8 nut vao menu Tien ich (an khoi topbar, van trong DOM). Chua gom dock #tdup-dock/nut noi (HM-16). P05: nut undo/redo vao topbar (het de nut Luu); Xuat CSV/Them moi xuong thanh cong cu trang; breadcrumb Nhom > Trang.",
+   "zip": ""
+  },
+  {
+   "id": "HM-16",
+   "ten": "Một bộ design token, font offline, chế độ tối chuẩn",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "M",
+   "pham_vi": "9 bộ :root, 2 hệ density, 5 hệ toast, ~12 kiểu tab, 60 giá trị z-index (tới 2147483601), dark \"auto\" (L53013).",
+   "tieu_chi_nghiem_thu": [
+    "1 tệp token; thang z-index ≤ 8 bậc",
+    "Font Inter/JetBrains Mono nhúng offline (hoặc font hệ thống thống nhất)",
+    "Chế độ tối mặc định tắt; khi bật, tương phản chữ ≥ 4,5:1 ở các trang chính"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-15"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Trung bình: thay đổi nhìn thấy trên toàn app.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "1 tệp token; thang z-index ≤ 8 bậc",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node contrast.js <app> light; node hm16_test.js",
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm16_result.md",
+     "evidence/hm16_e2e.txt",
+     "evidence/hm16_contrast_truoc.txt",
+     "evidence/hm16_contrast_sau.txt",
+     "evidence/hm16_regression.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Che do sang: 2-12% phan tu chu <4,5:1 (cam #e07b2c, xam #8594a8/#888/#999, xanh #16a34a); theme mac dinh auto theo he dieu hanh bat giao dien toi do dang (Dashboard 27%, Gia dat 36%, Doi soat 78% phan tu chu khong dat).",
+   "ghi_chu_ban_giao": "Hoan tat qua HM-16b (z-index) va HM-16c (token/toast/tab/go che do toi). P04: xoa khoi :root --apc-* nam trong chu thich CSS (khong dung o dau). Con (thay doi nhin thay, cho nguoi dung duyet HM-16c): tab tren nen toi (.lt-tab,.hsv-mob-tab), nut dieu huong trang Gia dat (bgd-snav). Luu y: chu thich 'PAGE HSVV' trong 009-*.css chua dong nen 2 luat #page-hsvv{padding:0} va .hsvv-wrap khong co hieu luc tu ban goc - giu nguyen (dong lai se doi giao dien). P04d: thanh muc Gia dat (bgd-snav, truoc day khong co CSS) = kieu A; tab nen toi dung chung token --tab-dk-*. Xong.",
+   "zip": ""
+  },
+  {
+   "id": "HM-16b",
+   "ten": "Thang z-index <=8 bac, gop :root/toast/tab, hoan thien giao dien toi",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Quy z-index ve token (60 gia tri -> <=8 bac) kiem bang kich ban lop phu; gop 9 bo :root, 5 he toast, ~12 kieu tab; hoan thien che do toi (tuong phan >=4,5:1) hoac go han.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-16"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 2,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node hm16b_test.js <cu> <moi>; node hm16b_overlay.js <cu> <moi>",
+    "pass": 6,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm16b_result.md",
+     "evidence/hm16b_e2e.txt",
+     "evidence/hm16b_overlay.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "40 gia tri z-index >=100 roi rac trong CSS va chuoi JS.",
+   "ghi_chu_ban_giao": "z-index xong (HM-16b); gop :root/toast/tab va go che do toi xong o HM-16c. Con: nut dieu huong rieng trang Gia dat, tab tren nen toi, khoi :root trong chu thich (--apc-*).",
+   "zip": ""
+  },
+  {
+   "id": "HM-17",
+   "ten": "Một hệ bảng dữ liệu cho màn hình rộng",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "M",
+   "pham_vi": "Gỡ 3 cơ chế phân trang (core 250 dòng L24720/L29056, desktop-patch L52512, tdup2 virtual L53563); preset cột \"Gọn 1366\"/\"Đầy đủ 1920\"; ghim cột KH; chọn cột; dòng tổng theo bộ lọc.",
+   "tieu_chi_nghiem_thu": [
+    "Bảng Dư nợ không cuộn ngang ở 1920 với preset mặc định",
+    "Lọc/sắp xếp không làm pager cũ",
+    "Cuộn 3.918 dòng mượt (đo thời gian render)"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-16"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Bảng Dư nợ không cuộn ngang ở 1920 với preset mặc định",
+   "trang_thai": "DAT_MOT_PHAN",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_cols.test.js; node hm17_test.js",
+    "pass": 29,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm17_result.md",
+     "evidence/hm17_unit.txt",
+     "evidence/hm17_e2e.txt",
+     "evidence/shots/hm17_qltd_1920_blur.png"
+    ]
+   },
+   "nguyen_nhan_goc": "Bang Du no/NH/TD 20 cot rong 2.734px trong khung 1.842px o 1920 (cuon ngang); khong chon duoc cot; dong tong khong hien du no.",
+   "ghi_chu_ban_giao": "Da: preset cot + 1 co che phan trang (HM-17b). Chua: ap cho Chuyen HM, TSBD, Gia dat; \"Tat ca\" 3.848 dong ~4,8 s. P04c: do 'Tat ca' 3.848 dong - chi phi la style/layout lan dau cua ~120k phan tu (table-layout auto), CSS khong phai nguyen nhan; dung dan theo dot rui ro (chon tat ca/xuat/loc cot) => giu nguyen (evidence/p04c_result.md). P07: ghim cột đến Tên KH BẬT mặc định ở bảng chính (màn ≥1280 px) khi người dùng chưa chọn; đã chọn thì theo lựa chọn (e2e + đột biến). Chưa: ghim cho Chuyển HM/TSBĐ/Giá đất. | P08: ghim cột đến Tên KH cho Chuyển HM (cột 4) và TSBĐ (cột 2) — tuỳ chọn, mặc định TẮT; Giá đất không ghim (tiêu đề 2 hàng). e2e 89/89 + 1 đột biến.",
+   "zip": ""
+  },
+  {
+   "id": "HM-17b",
+   "ten": "Go 3 co che phan trang chong nhau + ap chon cot cho cac bang khac",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Go phan trang core 250 dong, desktop-patch setupPagination (>80 dong), tdup2 virtual; mot co che duy nhat; do cuon 3.918 dong; ap TD.cols cho Den han, Lai dong, Chuyen HM, TSBD.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-17"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 3,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node evidence/scripts/hm17c_real.js <app>; node tests/run.js --mutation",
+    "pass": 24,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/p04b_result.md",
+     "evidence/p04b_run_full.txt",
+     "evidence/scripts/hm17c_real.js"
+    ]
+   },
+   "nguyen_nhan_goc": "3 co che phan trang chong tren cung bang: core cat 250 + nut them, desktop-patch an dong (Trang 1/3 sai), tdup2 virtual khi >1000.",
+   "ghi_chu_ban_giao": "Da: 1 co che theo trang cho qltd/kd/td/denhan/laidong. P04b (du lieu that): Chuyen HM/TSBD/Gia dat KHONG chong co che phan trang (35 nhom / 1 thanh trang 100 / 1 thanh trang 50) - van de that la tran ngang o 1366 => TD.cols.SPECS + grid/span (colspan tieu de/dong tong gop o), mac dinh Day du (khong tu an), mau Gon 1366 do tren du lieu that. hm17c_real.js 24/24, e2e buoc W, dot bien colspan. Con: Tat ca 3.848 dong ~5,4 s; chua ghim cot cho 3 bang moi. P05: bang Du no mac dinh tu lui mau (Gon 1920 -> Gon 1600 -> Gon 1366) toi khi vua khung (sua tran o 1920 do menu co dinh); them mau Gon 1600; e2e 1920/1600 + dot bien. Bang Chuyen HM/TSBD/Gia dat van mac dinh 'Day du' (quyet dinh P04b) nen cuon ngang trong khung khi zoom 125%. | P08: ĐO \"Tất cả\" tăng tuyến tính ≈2,5 ms/dòng đến khung hình đầu (320→0,5 s; 1.280→2,5 s; 3.848→9,6 s trong container đo; 100/trang: 0,13–0,38 s). Đã làm dựng dần: >600 dòng ⇒ 400 dòng đầu ngay, phần còn lại theo đợt 400 (setTimeout), huỷ khi dựng lại. +1 e2e +1 đột biến. | P09: Phí DV phân trang (5.817→547 ms); bộ phân trang chung __TDPgBarHtml.",
+   "zip": ""
+  },
+  {
+   "id": "HM-18",
+   "ten": "Hiệu năng: gỡ observer, interval, content-visibility gây lỗi",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "8 MutationObserver (L37186, 51619, 52788, 52836, 52943, 53850, 54267, 56445), setInterval scanTables 2,5 s (L51983), content-visibility trên .page/.card/.table-wrap (L795, L4099), table{contain} (L4105).",
+   "tieu_chi_nghiem_thu": [
+    "Modal hiển thị đúng khi trang đang cuộn",
+    "Không còn interval chạy nền khi không cần",
+    "Thời gian chuyển trang đo trước/sau"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-13"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Modal hiển thị đúng khi trang đang cuộn",
+   "trang_thai": "DAT_MOT_PHAN",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node perf18.js <app> <nhan>; node prof18b.js <app>; node hm18_test.js",
+    "pass": 27,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm18_result.md",
+     "evidence/hm18_perf.txt",
+     "evidence/hm18_e2e.txt",
+     "evidence/hm18_regression.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Observer toan body (desktop-ux-patch-v10) do getBoundingClientRect moi bang sau moi dot doi DOM: 455-643ms khi vao Dashboard; innerText tung dong 112ms; localeCompare tao collator moi moi lan 89ms; scanTables quet moi dong moi 2,5s; updateTableTopScrollbars xen ke ghi/doc tren moi .table-wrap.",
+   "ghi_chu_ban_giao": "Chua go han 8 MutationObserver / interval (chi giam chi phi, chi chay khi DOM doi); content-visibility khong phai nguyen nhan (thu tat khong cai thien); Dashboard con ~500-600ms layout (DOM lon) -> HM-17/19. P07: thêm e2e \"bảng lệnh mở khi trang đang cuộn vẫn nằm trọn khung nhìn\" (tiêu chí còn thiếu). KHÔNG gỡ observer/interval (chưa có số đo cho thấy cần; rủi ro hồi quy). | P08: ĐO (evidence/p08_hm18_do.json, scripts/hm18_measure.js): observer+interval khi nhàn rỗi 10 s ≈ 0 ms; lượt duyệt 7 trang ≈ 0,2 s trong đó ~144 ms là việc khởi tạo trang thật do router gọi, không phải chi phí observer ⇒ KHÔNG gỡ (không lợi ích đo được, có rủi ro hồi quy). Không làm thêm theo số đo (trạng thái giữ DAT_MOT_PHAN). | P09: tìm ra thủ phạm thật của chậm khi đổi DOM/bấm/phím là anyModalOpen (quét mọi div + getComputedStyle, vòng vô tác dụng) — đã gỡ; sửa body.modal-open (trước đây không bao giờ bật).",
+   "zip": ""
+  },
+  {
+   "id": "HM-19",
+   "ten": "Giao diện điện thoại",
+   "dot": 3,
+   "uu_tien": "P3",
+   "effort": "M",
+   "pham_vi": "Topbar xếp dọc ~350 px ở 390 px; bảng → thẻ; thanh điều hướng dưới 5 mục.",
+   "tieu_chi_nghiem_thu": [
+    "Ở 390×844 không tràn ngang; thao tác chính trong 1 chạm",
+    "Ảnh chụp V3 ở 390 và 1366 không hồi quy"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-17"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Ở 390×844 không tràn ngang; thao tác chính trong 1 chạm",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node hm19_test.js",
+    "pass": 24,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm19_result.md",
+     "evidence/hm19_e2e.txt",
+     "evidence/hm19_regression.txt",
+     "evidence/shots/hm19_390_qltd_blur.png",
+     "evidence/shots/hm19_390_dashboard_blur.png"
+    ]
+   },
+   "nguyen_nhan_goc": "Dien thoai: thanh nhac no chiem ~215px, topbar 110-142px, bang Du no phai cuon ngang (khong thay Ten KH + Du no cung luc), khong co dieu huong nhanh.",
+   "ghi_chu_ban_giao": "Thanh duoi 5 muc + nhac no gap + preset Dien thoai (TD.cols) cho 3 bang Du no/NH/TD. Chua: bang -> the (card), cac bang khac (Den han, Lai dong, TSBD, Gia dat) van cuon ngang; nut sua/xoa trong bang nho; chua thu may that/Safari iOS. P06: topbar 1 hang 58px (chi bieu tuong), the KPI 2x2 dau Bang dieu khien; bam dong -> ngan chi tiet toan be ngang (chua doi bang thanh the that).",
+   "zip": ""
+  },
+  {
+   "id": "HM-20",
+   "ten": "Tách nguồn src/ và công cụ build ra 1 tệp HTML",
+   "dot": 4,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Thư mục src/core, src/modules, vendor/, tools/build.mjs, tools/check-vendor.mjs, tools/scan-pii.mjs; tệp phát hành vẫn mở bằng file://.",
+   "tieu_chi_nghiem_thu": [
+    "Build từ src cho tệp chạy giống bản trước (bộ test V3 đạt)",
+    "check-vendor và scan-pii chạy trong build"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-12",
+    "HM-18"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình: thay đổi cách làm việc; cần người dùng đồng ý.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "ghi khi mở phiên",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Build từ src cho tệp chạy giống bản trước (bộ test V3 đạt)",
+   "trang_thai": "DAT_MOT_PHAN",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node tools/build.mjs --verify app/<tep>; node tests/src.test.js <app>; node tests/run.js",
+    "pass": 8,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm20_result.md",
+     "src/README.md",
+     "tests/src.test.js"
+    ]
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "Giai doan A xong: src/ (169 doan) + tools/build|check-vendor|scan-pii; build ra GIONG HET app (SHA-256). Giai doan B (go lop va, module hoa, gop CSS) = HM-21 chua lam.",
+   "zip": ""
+  },
+  {
+   "id": "HM-21",
+   "ten": "Chuyển dần mã sang module và gỡ lớp vá",
+   "dot": 4,
+   "uu_tien": "P2",
+   "effort": "M",
+   "pham_vi": "Đưa logic từ ~40 lớp vá (desktop-patch, tdup1–5, td15, rootfix v6…) vào module tương ứng; xoá mã chết (TD_BACKUP trong template in, qcamco placeholder).",
+   "tieu_chi_nghiem_thu": [
+    "Không còn gán lại window.* để vá",
+    "Số khối <script> trong tệp phát hành giảm ≥ 50%",
+    "Bộ test hồi quy đạt"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-20"
+   ],
+   "model_effort_recommended": "high",
+   "rui_ro": "Trung bình.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "ghi khi mở phiên",
+   "model_effort_actual": null,
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": null,
+   "hanh_vi_mong_doi": "Không còn gán lại window.* để vá",
+   "trang_thai": "DAT_MOT_PHAN",
+   "bac_kiem_chung_dat": null,
+   "bang_chung": {
+    "lenh": "",
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "artifact": []
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": " P04d (pham vi nho theo quyet dinh): HM-13b + gop CSS trung bang tools/css-dedupe.mjs (xoa 23 quy tac thua, bo 140 khai bao bi de; Chromium xac nhan; gia tri CSS tinh ra cua 61.637 phan tu x 26 trang x 2 do rong: 0 khac). Chua lam: go ~320 lop va window.X, module hoa (ngoai pham vi da duyet). Phat hien loi CSS nen: chu thich MOBILE RESPONSIVE khong dong nuot @media(max-width:768px) => ~45 quy tac di dong ap moi do rong, nut hamburger hien tren may tinh - can quyet dinh. P05: nguoi dung chon KHONG lam phan con lai (go ~320 lop va window.X, module hoa) - dung o pham vi P04d. | P08 (người dùng yêu cầu thực thi): phân tích — 80/80 khối <script> đều xen kẽ HTML trang ⇒ gộp khối đổi thứ tự nạp; tiêu chí ≥50% cần viết lại cấu trúc (rủi ro cao); mã *_OLD còn lại thuộc cơ chế bảo vệ L/S (HM-03). KHÔNG đổi mã; giữ DAT_MOT_PHAN.",
+   "zip": ""
+  },
+  {
+   "id": "HM-22",
+   "ten": "Bộ kiểm thử hồi quy Node + Playwright",
+   "dot": 4,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "tests/unit (num, date, metrics, importer, giadat), tests/e2e (nhập 3 loại tệp, 1920/1366/390), fixtures ẩn danh.",
+   "tieu_chi_nghiem_thu": [
+    "Chạy 1 lệnh, báo pass/fail",
+    "Bao các lỗi P0 đã sửa (test thất bại với mã cũ)"
+   ],
+   "kiem_chung_du_kien": "V2+V3",
+   "phu_thuoc": [
+    "HM-20"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "ghi khi mở phiên",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Chạy 1 lệnh, báo pass/fail",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node tests/run.js --mutation",
+    "pass": 22,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/p04_result.md",
+     "evidence/p04b_result.md",
+     "evidence/p04b_run_full.txt",
+     "tests/fixtures/make_tsbd_fixture.py",
+     "tests/fixtures/make_xls_fixture.py",
+     "evidence/p04c_result.md"
+    ]
+   },
+   "nguyen_nhan_goc": "",
+   "ghi_chu_ban_giao": "Da: node tests/run.js (6 tang; e2e 57; 14 dot bien). P04: dot bien HM-02..05, e2e HM-03 manh hon, CI .github/workflows/qltdpro-tests.yml (chua chay tren GitHub). P04b: fixture .XLS (BIFF8) + sao ke TSBD an danh 39 cot theo dinh dang that (e2e buoc X/Y, dot bien HM-10). P04c: CI xanh tren GitHub (run #1, #2 success). Hoan tat. P04d: 16 dot bien (them HM-28, HM-13b); e2e 61.",
+   "zip": ""
+  },
+  {
+   "id": "HM-23",
+   "ten": "Trung tâm nhập dữ liệu (wizard nhiều tệp)",
+   "dot": 5,
+   "uu_tien": "P2",
+   "effort": "M",
+   "pham_vi": "Kéo thả nhiều tệp; tự nhận dư nợ/TSBĐ/giá đất và ngày; kiểm tra quy tắc; so với kỳ trước; nhật ký nhập (người, giờ, checksum).",
+   "tieu_chi_nghiem_thu": [
+    "Nhập đồng thời 20.10.2026.XLS + Sao kê TSBĐ 20.10 thành công",
+    "Báo đúng các cảnh báo chất lượng dữ liệu đã biết"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-12"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Nhập đồng thời 20.10.2026.XLS + Sao kê TSBĐ 20.10 thành công",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_hub.test.js; node hm23_test.js (15 tep that)",
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm23_result.md",
+     "evidence/hm23_unit.txt",
+     "evidence/hm23_e2e.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Nhap tung tep qua nhieu hop thoai, de sai thu tu; khong co nhat ky/checksum.",
+   "ghi_chu_ban_giao": "Nhan dang loai theo TEN tep (khong doc tieu de cot); moi tep du no THAY du lieu hien hanh den tep moi nhat; khong co buoc xem truoc/loai dong trong che do hang loat. P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md). P06: them nut Hoan tac lan nhap (du no) - trong bo nho den khi tai lai; moc luu tru/TSBD khong hoan tac. P07: nhận dạng loại tệp theo TIÊU ĐỀ cột (TD.hub.sniffKind: clno + clcustno/plgcustno ⇒ TSBĐ) — sao kê TSBĐ tên không có từ khoá không còn bị nhập nhầm thành dư nợ (vốn THAY dữ liệu hiện hành). Chưa: xem trước/loại dòng khi nhập hàng loạt. | P08: thêm ô \"Nhập\" (loại từng tệp khỏi lần nhập) + \"👁 Xem trước\" (tiêu đề + 5 dòng đầu, chỉ đọc, escape). +2 ca unit (td_hub) +1 e2e +2 đột biến.",
+   "zip": ""
+  },
+  {
+   "id": "HM-24",
+   "ten": "Xu hướng nhiều kỳ",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "S",
+   "pham_vi": "Biểu đồ và bảng so sánh các mốc đã nhập (11 kỳ 12/2025–10/2026): dư nợ, KH, khoản, nhóm nợ, theo phòng/CBTD.",
+   "tieu_chi_nghiem_thu": [
+    "Số từng kỳ khớp tổng tệp gốc tương ứng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-09"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Số từng kỳ khớp tổng tệp gốc tương ứng",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_trend.test.js; node hm24_test.js (11 tep that); python3 trend_indep.py",
+    "pass": 32,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm24_result.md",
+     "evidence/hm24_unit.txt",
+     "evidence/hm24_e2e.txt",
+     "evidence/hm24_indep_python.json",
+     "evidence/shots/hm24_tong.png",
+     "evidence/shots/hm24_nhom.png"
+    ]
+   },
+   "nguyen_nhan_goc": "Khong co noi xem bien dong du no/KH/khoan qua cac moc da nhap; phai mo tung tep.",
+   "ghi_chu_ban_giao": "Trang Xu huong (SVG, khong thu vien): chi tieu x chia theo Tong/Nhom/Phong/CBTD/Loai vay; CSV; khop Python tren 11 ky that. Cac ky nam tren truc theo thu tu moc (khong chia deu theo ngay). P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md).",
+   "zip": ""
+  },
+  {
+   "id": "HM-25",
+   "ten": "Cảnh báo sớm",
+   "dot": 5,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "Đến hạn 7/15/30 ngày theo ngày dữ liệu, chuyển nhóm 2, lãi suất bất thường, TSBĐ hết hạn/định giá cũ, KH chưa có TSBĐ.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi cảnh báo có quy tắc công khai và đếm khớp lọc thủ công"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-07",
+    "HM-10"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Mỗi cảnh báo có quy tắc công khai và đếm khớp lọc thủ công",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_warn.test.js; node hm25_test.js; python3 warn_indep.py",
+    "pass": 31,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm25_result.md",
+     "evidence/hm25_unit.txt",
+     "evidence/hm25_e2e.txt",
+     "evidence/hm25_indep_python.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Khong co noi tong hop viec can xu ly; thong bao no chi co den han/qua han (theo hom nay truoc HM-07).",
+   "ghi_chu_ban_giao": "9 muc canh bao, tinh theo ngay du lieu; khop Python doc lap tren du lieu that (20/10 + mốc 30/09 + TSBD 20/10). Nguong LS 4-13% va 36 thang dinh gia la mac dinh cung; so TS het han/dinh gia cu rat lon (can can bo cho nguong). P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md). P04d: nguoi dung GIU nguong (LS 4-13%, dinh gia cu >36 thang, TS het han); clholdcd N = dang giu (nhan thong ke TSBD).",
+   "zip": ""
+  },
+  {
+   "id": "HM-26",
+   "ten": "Hồ sơ khách hàng 360°",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "M",
+   "pham_vi": "Gộp khoản vay, TSBĐ, giá đất, hồ sơ vay, lịch sử 11 kỳ, ghi chú theo mã KH; mở từ ô tìm kiếm Ctrl K.",
+   "tieu_chi_nghiem_thu": [
+    "Số liệu trên trang khớp các màn hình gốc"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-09",
+    "HM-10"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Số liệu trên trang khớp các màn hình gốc",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_kh360.test.js; node hm26_test.js (5 ky + TSBD that); python3 kh360_indep.py",
+    "pass": 29,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm26_result.md",
+     "evidence/hm26_unit.txt",
+     "evidence/hm26_e2e.txt",
+     "evidence/hm26_indep_python.json",
+     "evidence/hm26_regression.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Thong tin 1 khach hang nam rai rac o Du no/TSBD/HSVV/luu tru; Ctrl+K chi loc o tim kiem trang Du no.",
+   "ghi_chu_ban_giao": "Trang KH 360 (the, 5 tab, ghi chu theo ma KH) + Ctrl+K mo thang; khop Python (du no/khoan/HDTD/HMTD/TSBD/lich su 5 ky). Tab Ho so vay chi kiem nhanh \"chua lien ket\" (khong co HSVV mau); khong co muc Gia dat theo KH. P04c: hoi quy du lieu that tren ban P04b dat (evidence/p04c_result.md).",
+   "zip": ""
+  },
+  {
+   "id": "HM-27",
+   "ten": "Chế độ có mạng (tuỳ chọn)",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "S",
+   "pham_vi": "Khi có mạng: kiểm tra bản mới, tải thư viện dự phòng từ CDN nếu bản nhúng lỗi, AI (tuỳ chọn, người dùng tự nhập khoá); offline vẫn đủ chức năng lõi.",
+   "tieu_chi_nghiem_thu": [
+    "Tắt mạng: mọi chức năng lõi chạy",
+    "Bật mạng: không gửi dữ liệu KH ra ngoài nếu chưa bật rõ ràng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-20"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Trung bình: dữ liệu khách hàng không được rời máy nếu chưa đồng ý.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "ghi khi mở phiên",
+   "model_effort_actual": "high",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 5,
+   "hanh_vi_mong_doi": "Tắt mạng: mọi chức năng lõi chạy",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_net.test.js; node hm27_test.js <app>; node tests/run.js --mutation",
+    "pass": 30,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm27_result.md",
+     "evidence/hm27_run_full.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "App khong co dia chi mang ngoai; can giu dieu do bang co che trinh duyet thuc thi va them tinh nang mang tuy chon.",
+   "ghi_chu_ban_giao": "Da: CSP chan ket noi ngoai mac dinh; bat: kiem tra ban moi (GET), thu vien du phong SRI (docx, JSZip, P04: PizZip 3.1.4 - ban nhung trung goi npm, SRI tinh tu goi npm; nhap PL02 goi ensureLib('PizZip')), AI (khoa nguoi dung, chi so tong hop, xem truoc + dong y). Khong lam duoc SRI: SheetJS 0.20.3 (khong co tren npm, cdn.sheetjs.com bi chan trong moi truong P04), docxtemplater (ban dung webpack rieng, khong co tren CDN), mammoth (khong khop ban npm nao 1.4.x-1.13). Chua thu voi AI/may chu cap nhat that. | P08: SRI SheetJS 0.20.3 vẫn KHÔNG làm được: cdn.sheetjs.com và jsDelivr trả 403 qua proxy; npm chỉ có xlsx ≤0.18.5. Không tạo băm giả (entry không có sri ⇒ không bao giờ tải).",
+   "zip": ""
+  },
+  {
+   "id": "HM-28",
+   "ten": "Mẫu báo cáo chuẩn xuất Word/Excel",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "M",
+   "pham_vi": "Mẫu báo cáo dư nợ theo kỳ, theo CBTD/phòng, biên bản đối soát; dùng TD.metrics.",
+   "tieu_chi_nghiem_thu": [
+    "Số trong báo cáo xuất = số trên màn hình = tệp gốc"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-09",
+    "HM-12"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 10,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Số trong báo cáo xuất = số trên màn hình = tệp gốc",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_report.test.js; node hm28_test.js; python3 report_check.py",
+    "pass": 23,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm28_result.md",
+     "evidence/hm28_unit.txt",
+     "evidence/hm28_check_xlsx.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Khong co mau bao cao chuan dung chung nguon so.",
+   "ghi_chu_ban_giao": "Hoan tat qua HM-28b (Word, ky tuy chon, dinh dang). Excel khong co kieu o (SheetJS ban cong dong). P04d: TD.xlsx tu dung .xlsx CO dinh dang (tieu de, hang tieu de navy, dong TONG dam, #,##0/0.0%, KHOP/LECH mau, co dinh hang tieu de) bang JSZip nhung - khong them thu vien; td_xlsx.test 15/15 (openpyxl doc lai), du lieu that 15/15.",
+   "zip": ""
+  },
+  {
+   "id": "HM-28b",
+   "ten": "Bao cao Word (.docx) + ky tuy chon + dinh dang",
+   "dot": 5,
+   "uu_tien": "P3",
+   "effort": "S",
+   "pham_vi": "Xuat Word theo mau .docx (bien ban doi soat, bao cao du no theo ky), chon ky bat ky trong cac moc, dinh dang tieu de/mau.",
+   "tieu_chi_nghiem_thu": [
+    "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+    "Cố ý làm lệch 1 chỉ tiêu ⇒ dải chuyển vàng"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-28"
+   ],
+   "model_effort_recommended": "medium",
+   "rui_ro": "Thấp.",
+   "chi_phi_uoc_tinh_pct": 6,
+   "model_version": "claude-sonnet-5-5",
+   "model_effort_actual": "medium",
+   "model_effort_reason": "Theo Phụ lục E.2: dữ liệu/lưu trữ/nhiều module ⇒ high; UI cục bộ đã rõ ⇒ medium.",
+   "effort_change_reason": "",
+   "chi_phi_thuc_te_pct": 4,
+   "hanh_vi_mong_doi": "Mỗi chỉ tiêu hiển thị app / tệp / chênh lệch",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node td_reportdocx.test.js; node hm28b_real.js <app>; python3 hm28b_check.py",
+    "pass": 27,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm28b_result.md",
+     "evidence/hm28b_unit.txt",
+     "evidence/hm28b_e2e.txt",
+     "evidence/hm28b_check.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Chi co Excel khong dinh dang, chi ky hien hanh.",
+   "ghi_chu_ban_giao": "Da: Word (docx 9.0.2 nhung san), chon ky bat ky trong cac moc da luu, dinh dang, chu ky tuy chon. Chua: mau .docx chuan cua co quan (can gui mau); Excel khong co kieu o.",
+   "zip": ""
+  },
+  {
+   "id": "HM-16c",
+   "ten": "Giao dien thong nhat: token, toast, tab, go che do toi",
+   "dot": 3,
+   "uu_tien": "P2",
+   "effort": "M",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "chi_phi_thuc_te_pct": 5,
+   "model_effort_actual": "high",
+   "tieu_chi_nghiem_thu": [
+    "1 khoi token",
+    "1 he toast",
+    "tab <=2 kieu chuan",
+    "che do toi go"
+   ],
+   "nguyen_nhan_goc": "10 khoi :root, 5 he toast + 2 showToast, ~12 kieu tab, che do toi do dang.",
+   "ghi_chu_ban_giao": "Thay doi nhin thay toan app - can nguoi dung duyet (mau tab dang chon, vi tri toast, khong con nut Theme).",
+   "bang_chung": {
+    "lenh": "node tests/run.js --mutation; node hm16c_test.js <cu> <moi>; node hm16c_toast_test.js <moi>",
+    "pass": 63,
+    "fail": 0,
+    "skip": 0,
+    "artifact": [
+     "evidence/hm16c_result.md",
+     "evidence/hm16c_run_full.txt",
+     "evidence/shots/hm16c_toast.png"
+    ]
+   }
+  },
+  {
+   "id": "P05-CSS",
+   "ten": "Loi CSS nen: chu thich khong dong nuot quy tac; menu ben co dinh tren man rong",
+   "dot": 4,
+   "uu_tien": "P2",
+   "effort": "S",
+   "pham_vi": "src/css/009-td-perfa-content-vis.css (5 chu thich khong dong + 1 khoi khai bao mat bo chon; khoi responsive), 093 (tu dong ngan keo <1440px), tests (e2e CSS + dot bien).",
+   "tieu_chi_nghiem_thu": [
+    ">=1440px: menu ben co dinh, khong nut ☰, noi dung khong bi che",
+    "<1440px: ngan keo ☰ nhu cu; 390px giong het ban cu (topbar/menu)",
+    "Bang Chuyen HM/TSBD/Gia dat 'Gon' khong tran ngang o 1366px (du lieu that)",
+    "Bo test + dot bien dat"
+   ],
+   "kiem_chung_du_kien": "V3",
+   "phu_thuoc": [
+    "HM-15",
+    "HM-19"
+   ],
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "bang_chung": {
+    "lenh": "node tests/run.js --mutation; node evidence/scripts/p05_css_diff.js <cu> <moi> <ra>; hm17c_real.js",
+    "artifact": [
+     "evidence/p05_result.md",
+     "evidence/p05_css_diff.txt",
+     "evidence/p05_anh/",
+     "evidence/p05_run_full.txt"
+    ]
+   },
+   "nguyen_nhan_goc": "Chu thich /* ═══ ... khong dong nuot dong @media(max-width:768px){ => quy tac dien thoai ap moi do rong; them 4 chu thich khong dong khac (HSVV, GD2, PRO-TIP, THONG BAO NO, PAGE-FHS) va 1 khoi khai bao khong bo chon.",
+   "ghi_chu_ban_giao": "P05: quyet dinh nguoi dung: sua; menu co dinh tu >=1440px (o 1366 bang 'Gon' tran neu co dinh). Topbar gon HM-15 giu cho moi do rong. Giao dien may tinh >=1440 thay doi ro (menu hien san); HSVV co khung nen + le theo quy tac goc; FHS hang nhan-o nhap nam ngang tren may tinh."
+  },
+  {
+   "id": "P05-RASOAT",
+   "ten": "Ra soat de an Muc 8-15: sua 4 loi moi + breadcrumb; do zoom 125%/ban phim",
+   "dot": 4,
+   "uu_tien": "P2",
+   "effort": "S",
+   "trang_thai": "DAT_V3",
+   "bac_kiem_chung_dat": "V3",
+   "pham_vi": "Xem evidence/p05_result.md muc 4 va handover/BAO_CAO_RA_SOAT_DE_AN_P05.docx",
+   "tieu_chi_nghiem_thu": [
+    "Bang Du no khong tran o 1920/1600/1366",
+    "Khong phan tu topbar bi che",
+    "Du lieu nhap chua the HTML khong thuc thi",
+    "Topbar co breadcrumb"
+   ],
+   "bang_chung": {
+    "lenh": "node tests/run.js --mutation",
+    "artifact": [
+     "evidence/p05_result.md",
+     "evidence/p05_run_full.txt",
+     "handover/BAO_CAO_RA_SOAT_DE_AN_P05.docx"
+    ]
+   },
+   "ghi_chu_ban_giao": "P06 (sau phe duyet toan bo): DA LAM dai bieu tuong 64px + nhom menu thu/mo; the KPI + luoi 2 cot + tabular-nums; topbar 1 hang + KPI 2x2 dien thoai; ngan chi tiet 380px; hoan tac lan nhap (du no); escape ten moc luu tru + e2e bao mat; ban phim: bay Tab hop thoai; khong quet bang khi tab an. CON LAI: ghim cot Ten KH mac dinh; bang->the that; ngan chi tiet trong KH360/TSBD; hoan tac TSBD/moc; nhan loai tep theo tieu de cot + xem truoc; go 8 observer; 'Tat ca' dung dan; escape ho so vay; Edge/Windows/iPhone that. Nhanh ccr-266ec07a-kxmt78 van con (chua duoc phep xoa)."
+  }
+ ],
+ "quyet_dinh_da_chot": [
+  "Man hinh muc tieu: 1920x1080, 1366x768, dien thoai (nguoi dung xac nhan 21/10/2026)",
+  "Chay offline file HTML, van can tinh nang khi co mang",
+  "De an chi gui file, khong commit repo Land-gis",
+  "Khong dong goi tep HTML goc va du lieu Excel vao ZIP (PII)",
+  "Nguoi dung duyet de an v1.0 ngay 21/10/2026, bat dau HM-01",
+  "Nguoi dung cho phep chay tu dong den het phien, dong goi ZIP gom ca app ban giao phien sau (21/10/2026)",
+  "HM-05: giu DATA.macb va danh sach phan cong CBTD (can cho bao cao); go seed khach hang",
+  "Nguoi dung xac nhan HM-04, HM-05; GIU danh sach can bo (DATA.macb) (21/10/2026)",
+  "Nguoi dung yeu cau phien sau tiep tuc TU DONG thuc thi (21/10/2026)",
+  "Den han/qua han theo ngay du lieu (mac dinh, co nut chuyen sang hom nay) - ap dung de xuat, nguoi dung co the doi",
+  "Tach nguon (Dot 4): hoi lai truoc HM-20",
+  "HM-06 duoc xem la da ban giao (nguoi dung tiep tuc phien 2 khong bao loi)",
+  "P03: 1a - lam trong thu muc qltdpro/ cua repo Land-gis, nhanh ccr-266ec07a-kxmt78 (22/10/2026)",
+  "P03: dung quyet dinh mac dinh: nguong LS 4-13%/dinh gia cu 36 thang giu nguyen; PL02 chi liet ke; HM-20 khong lam (sau do nguoi dung duyet lam giai doan A); thu tu HM-09b,11b,16b,17b,28b",
+  "P03: HM-16c go che do toi (khong hoan thien duoc) - nguoi dung chua xem giao dien, CAN DUYET",
+  "P03: HM-20 giai doan A (tach co hoc, build == app) - nguoi dung dong y 22/10/2026",
+  "P03: HM-27 lam doc lap (khong cho HM-20)",
+  "P03: DATA.macb van GIU (quyet dinh 21/10) - xem lai neu chia se ra ngoai chi nhanh",
+  "P04 (22/10/2026): lam viec tren nhanh ccr-45c0b8ef-riyvtt, thu muc qltdpro/ (nhap tu ZIP P03, khong co lich su chua du lieu that).",
+  "P04b (22/10/2026): nguoi dung gui lai du lieu that (11 ky du no, TSBD 30/09+20/10, PL01/PL02/NQ38) - de o /tmp/claude-0/real/data ngoai repo.",
+  "P04d (22/10/2026, hop hoi trong phien): su co git = xoa han nhanh; HM-21 = pham vi nho (HM-13b + gop CSS trung); HM-16c = on, gop not; HM-09 = them dong Chua phan CBTD; HM-11 = OCR NQ38; HM-28 = Excel co dinh dang; HM-25 = giu nguong, clholdcd N = dang giu.",
+  "P05 (23/10/2026, hoi trong phien vi PROMPT de trong): loi CSS nen = SUA, menu ben CO DINH tu >=1440px (<1440 dung ngan keo ☰); HM-21 = KHONG lam tiep; HM-09 = KHONG khoi phuc trang KHKD, go ma mo coi bckh*; su co nhanh ccr-266ec07a-kxmt78 = khong chon => khong dung (nhanh VAN CON tren GitHub).",
+  "P06 (23/10/2026): nguoi dung 'Phe duyet toan bo, thuc thi an toan toi uu' cho cac viec giao dien (dai bieu tuong, the KPI + luoi, KPI 2x2 dien thoai, ngan chi tiet) va ky thuat; KHONG xoa nhanh ccr-266ec07a-kxmt78 (khong dao nguoc, chua duoc cho phep ro rang).",
+  "P10: cho phep xoa nhanh ccr-266ec07a-kxmt78 (chi nhanh nay; khong force-push)",
+  "P10: lam T1→T10 theo thu tu; giu nguyen HM-11/HM-27/mau .docx/Past Due/SRI SheetJS",
+  "P10 (T5): GIU ban sao localStorage (duong phuc hoi HM-04) — khong doi muc an toan",
+  "P10 (25/10/2026): go DATA.macb, lam sach lich su (gop commit cuc bo chua push) roi push len repo 'No'"
+ ],
+ "quyet_dinh_cho_chot": [
+  "SU CO git: nhanh ccr-266ec07a-kxmt78 (commit 649fdb2, du lieu khach hang that) VAN CON tren GitHub. P10: nguoi dung DA CHO PHEP xoa nhung add_repo Land-gis bi bo phan loai quyen cua phien tu choi => chua xoa. Lam: tu xoa (GitHub > Land-gis > Branches) HOAC cho phep cong cu add_repo roi mo phien moi; sau do nho GitHub Support don commit mo coi + cache.",
+  "HM-11: gui tep Phu luc I cua NQ38 (bang gia dat o tai do thi) de bo sung gia theo ten duong cho 54 khoa trung.",
+  "HM-27: thu voi khoa AI that; nha cung cap AI khac?",
+  "Tep bo sung: mau .docx cua co quan (HM-28b), Past Due that (TDUP5).",
+  "Giao dien P06 (menu 64px/252px, the KPI, luoi 2 cot, ngan chi tiet, topbar dien thoai): on hay chinh? Ghim cot Ten KH mac dinh: bat/khong?",
+  "P10: go index.html + hsv-react-phien16.zip (ho ten nguoi that) khoi lich su repo cong khai 'No' (force-push)?"
+ ],
+ "loi_nen_ngoai_pham_vi": [
+  "PDF NQ38 la anh scan, chua OCR",
+  "So KH co du no>0 tep 20/10 la 1.865 (mockup ghi 1.871 = so KH khac nhau ke ca du no 0) - sua o de an v1.1"
+ ],
+ "loi_da_sua_P07": [
+  "SEC: ngày thế chấp/hết hạn bảng TSBĐ chưa escape (tệp nhập chứa thẻ HTML chạy được)",
+  "SEC: danh sách hồ sơ vay (tên KH, số HĐ, mã KH, loại vay, LS, nhóm nợ, ngày đến hạn, ghi chú, id), ô tìm kiếm/tô sáng, so sánh 2 hồ sơ (nhãn trường, tuỳ chọn), gợi ý Mã KH chưa escape — hồ sơ nhập từ JSON có thể chạy mã"
+ ],
+ "loi_da_sua_P08": [
+  "Không có lỗi mới. Việc kỹ thuật: ghim cột Chuyển HM/TSBĐ (HM-17), xem evidence/p08_result.md"
+ ],
+ "loi_da_sua_P09": [
+  "PERF Phí DV không phân trang (7 s layout)",
+  "PERF saveData nén kép x3 (4,8 s)",
+  "PERF đọc TSBĐ 6,7→2,3 s (dense+cellText:false)",
+  "PERF TD_SXCB.rank/norm (1.000→171 ms)",
+  "PERF TD.trend.build nhớ tóm tắt mốc",
+  "BUG body.modal-open không bao giờ bật + vòng quét vô tác dụng",
+  "BUG lỗi Promise chưa bắt khi IndexedDB bị chặn (Web Vitals, TSBĐ)"
+ ],
+ "ton_dong_P09": [
+  "T1 Dashboard 1,4 s (2.229 hàng/8 bảng)",
+  "T2 Trả nợ 1,4 s (1.093 hàng không phân trang)",
+  "T3 Web Worker cho đọc Excel + nén (longtask ≤3,9 s khi nhập)",
+  "T4 bật dense cho parseXLS_legacy sau khi viết lại nhánh cứu lãi suất",
+  "T5 saveToLS bản sao localStorage 1,4 MB mỗi lần lưu + saveData x3",
+  "T6 ROSTER cán bộ nhúng cứng (037) — chuyển thành cấu hình",
+  "T7 tiêu chí HM-15 ≤6 nút lệch (7)",
+  "T8 bộ kịch bản cũ phụ thuộc môi trường",
+  "T9 DOM 150.000 nút sau khi duyệt hết trang",
+  "T10 Trung tâm nhập đọc mỗi tệp 2 lần"
+ ],
+ "loi_da_sua_P10": [
+  "T1 Dashboard phân trang Bảng IV/VI/VIII (864→277 ms, DOM 26.929→2.055)",
+  "T2 Trả nợ phân trang + xuất Excel đủ dòng (741→238 ms)",
+  "BUG exportTableExcel bảng đã phân trang chỉ xuất trang đang xem (Đến hạn/Lãi đọng/Phí DV)",
+  "T3 Web Worker blob: đọc IPCAS/TSBĐ/tiêu đề/xem trước + nén trước (nhập 11 kỳ: longtask 1.301→328 ms, nén luồng chính 8,4 s→0)",
+  "T4 dense + nhánh cứu lãi suất theo mảng (11/11 kỳ thật giống hệt); BUG ô lãi suất lẻ định dạng ngày mất thập phân",
+  "T5 lưu 1 lần/đợt nhập (12→1), bỏ lưu tự động thừa; giữ bản sao localStorage (HM-04)",
+  "T6 bỏ tên cán bộ nhúng cứng (ROSTER, BCKH_PHONG, bí danh, mặc định) → cấu hình người dùng + tự học từ dữ liệu",
+  "T7 tiêu chí HM-15 ≤7 nút (gồm ↶/↷)",
+  "T8 tools/real-run.mjs: 1 lệnh, 12/12 kịch bản dữ liệu thật",
+  "T9 gỡ bảng trang nặng không hoạt động (DOM 56.206→38.297)",
+  "T10 Trung tâm nhập đọc mỗi tệp 1 lần (6→2 lần/2 tệp)",
+  "PII: go DATA.macb (49 ho so can bo), che ten KH/can bo that con sot (quet theo du lieu that), pii-allow 107→10, lam mo manh 2 anh"
+ ],
+ "ton_dong_P09_trang_thai": "T1–T10 ĐÃ LÀM ở P10 (evidence/p10_result.md)",
+ "ton_dong_P10": [
+  "U1 nhánh ccr-266ec07a-kxmt78 (dữ liệu thật) vẫn còn — add_repo Land-gis bị từ chối quyền trong phiên P10",
+  "U2 index.html + hsv-react-phien16.zip (co san tren remote cong khai 'No', khong thuoc P10) chua ho ten nguoi that — go khoi lich su can force-push",
+  "U3 _prevDunoSnap ghi localStorage mỗi kỳ nhập",
+  "U4 longtask ≤532 ms khi nhập (dựng lại giao diện sau mỗi kỳ)",
+  "U5 hành vi T6: 2 cán bộ đổi nhóm phòng theo IPCAS; không còn chọn sẵn cán bộ mặc định"
+ ],
+ "app_hien_hanh": {
+  "tep": "app/QLTD_PRO_v2026-10-25_v22.3-P10.html",
+  "ghi_chu": "SHA-256 xem handover/HANDOVER.md (dau tep)"
+ }
+}

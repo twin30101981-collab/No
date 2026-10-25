@@ -1,0 +1,7 @@
+Đo bằng Chromium headless 1920x1080, dữ liệu thật 20.10.2026.XLS (3.848 dòng dư nợ), file:// — thời gian từ showPage() đến sau 2 khung hình (ms; hai lần đo mỗi trang khi có)
+TRƯỚC (bản HM-15): dashboard 883/1239 · qltd 1163/402 · kd 369 · td 266 · denhan 195 · laidong 369 · tsbd 102 · giadat 99 · baocao 93
+SAU   (bản HM-18): dashboard 530/638 · qltd 243/277 · kd 200 · td 392(1 lần đo nhiễu) · denhan 117 · laidong 155 · tsbd 78 · giadat 90 · baocao 101
+Nhàn rỗi 12 giây trên trang Dư nợ: công việc của setInterval 106 ms → 1 ms; MutationObserver 131 ms → 6 ms (11 → 10 lần gọi); tác vụ dài (>50 ms) [631, 50] → [56, 153] (một lần tải lại dữ liệu sau nhập).
+Profiler CDP khi vào Dashboard: getBoundingClientRect trong updateTheadHeight 455–643 ms → 0 (nay còn ~370–490 ms là bố cục layout thật của Dashboard, không phải mã dư thừa). Vào Dư nợ: markTotalRows 112 ms → <5 ms; viCmp 89 ms → ~0.
+Cuộn 60 khung: 1.065 ms → 1.050 ms (không đổi; khung chậm nhất 36 → 34–42 ms).
+Biến thiên giữa các lần đo lớn (GC): tin tưởng chiều hướng, không tin con số tuyệt đối.

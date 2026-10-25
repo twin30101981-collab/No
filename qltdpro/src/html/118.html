@@ -1,0 +1,24 @@
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TD UPGRADE PACK v3 — PERF HARDENING (Lovable, 2026-06-11)
+     Giai đoạn 3 theo lộ trình còn lại trong PHASE2_PROGRESS.md / tài liệu.
+     Phụ thêm cuối <body>. KHÔNG sửa code cũ. Tất cả opt-in / an toàn.
+     Prefix CSS/DOM: `tdup3-` · Namespace: window.TDUP3
+     Gồm:
+       - Web Worker helper (off-thread) + SHA-1 / gzip / aggregate trong worker
+       - Sao lưu NÉN (gzip) + Phục hồi  (giảm 60–80% dung lượng)
+       - KV store IndexedDB + migrate localStorage → IndexedDB
+       - Web Vitals đầy đủ (LCP/CLS/INP/TTFB) — overlay khi ?dev=1
+       - content-visibility:auto cho section ngoài viewport (bật/tắt)
+       - Filter chip + quick preset cho bảng đã nâng cấp (Pack v2)
+       - Inspector panel (Alt+Click 1 dòng) tái dùng TDUP2.drawer
+       - Tích hợp Command Palette (Ctrl+K) + nút trên dock
+     Tắt nhanh: thêm ?tdup3=off vào URL.
+ ═══════════════════════════════════════════════════════════════ -->
+
+
+<div id="tdup3-vitals" aria-live="polite"></div>
+

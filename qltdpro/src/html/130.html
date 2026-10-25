@@ -1,0 +1,34 @@
+
+<!-- TDCMP-V2-END -->
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     PATCH v13.9.1 (2026-06-19) — TD_PASTDUE
+     Khắc phục: Bảng VII & Lịch trả nợ bỏ sót KH chỉ Quá hạn LÃI (gốc HĐ chưa
+     đến hạn — IPCAS inpd01 báo có nhưng msit80 không có cột Lãi QH).
+     ════════════════════════════════════════════════════════════════════════ -->
+
+
+<div id="td-pd-modal" role="dialog" aria-labelledby="td-pd-title">
+  <div class="box">
+    <div class="hd">
+      <h3 id="td-pd-title">📥 Nhập danh sách Past Due IPCAS (inpd01)</h3>
+      <button onclick="TD_PASTDUE.close()" aria-label="Đóng">✕</button>
+    </div>
+    <div class="bd">
+      <div style="font-size:12px;color:#57534e;margin-bottom:8px">
+        Trên IPCAS, vào <b>Tín dụng → Search Past Due (inpd01)</b>, bôi đen toàn bộ kết quả tìm kiếm, Ctrl+C rồi dán vào ô bên dưới.
+        Hệ thống nhận đủ 11 cột: <i>Số KH · Tên KH · Mã CBTD · Tên CBTD · Số HĐ · Số CT · Số ngày QH · Loại CV · Kiểu QH · Dư nợ QH · Lãi QH</i>.
+      </div>
+      <textarea id="td-pd-input" placeholder="Dán danh sách từ IPCAS vào đây (tab/space-separated)…"></textarea>
+      <div class="stats" id="td-pd-stats">Hiện đang lưu: <b id="td-pd-count">0</b> khoản · Chốt ngày: <b id="td-pd-asof">—</b></div>
+      <div id="td-pd-preview"></div>
+    </div>
+    <div class="ft">
+      <button class="danger" onclick="TD_PASTDUE.clearAll()">🗑️ Xoá Past Due đã nhập</button>
+      <div style="flex:1"></div>
+      <button onclick="TD_PASTDUE.close()">Đóng</button>
+      <button class="primary" onclick="TD_PASTDUE.parseAndSave()">💾 Lưu &amp; áp dụng</button>
+    </div>
+  </div>
+</div>
+

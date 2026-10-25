@@ -1,0 +1,9 @@
+Khoản có lãi suất khác nhau giữa 30/06 và 20/10 (cùng số khoản vay): 6/1649
+before inSession dòng 3848 | sai so với tệp 20/10:    0 
+before reload1   dòng 3848 | sai so với tệp 20/10:   23 {(8.5, 9.0): 5, (8, 9.0): 4, (9.5, 9.2): 4}
+before reload2   dòng 3848 | sai so với tệp 20/10:   23 | sửa tay giữ được 0/5 {(8.5, 9.0): 5, (8, 9.0): 4, (9.5, 9.2): 4}
+before reload3   dòng 3848 | sai so với tệp 20/10:   23 | sửa tay giữ được 0/5 {(8.5, 9.0): 5, (8, 9.0): 4, (9.5, 9.2): 4}
+after  inSession dòng 3848 | sai so với tệp 20/10:    0 
+after  reload1   dòng 3848 | sai so với tệp 20/10:    0 
+after  reload2   dòng 3848 | sai so với tệp 20/10:    0 | sửa tay giữ được 5/5 
+after  reload3   dòng 3848 | sai so với tệp 20/10:    0 | sửa tay giữ được 5/5 

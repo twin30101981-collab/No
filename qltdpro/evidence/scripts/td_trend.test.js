@@ -1,0 +1,25 @@
+const TD=require('./td_numdate.js');require('./td_metrics.js');require('./td_trend.js');const T=TD.trend;let p=0,f=0;const ok=(n,c,x)=>{if(c)p++;else{f++;console.log('FAIL',n,x)}};
+const R=(ma,ten,dn,cb,pb,nh)=>[ma,ten,'H','','',0,'','',9,'','',dn,cb,'Vay ngắn hạn','',' ',0,pb,nh];
+const s1={dayKey:'31/05/2026',reportData:[R('1','A',100,'X','Hội Sở','Nhóm 1'),R('2','B',200,'Y','PGD Số 2','Nhóm 1')]};
+const s2={dayKey:'30/06/2026',reportData:[R('1','A',150,'X','Hội Sở','Nhóm 1'),R('2','B',250,'Y','PGD Số 2','Nhóm 2'),R('3','C',50,'Z','Hội Sở','Nhóm 1')]};
+const s0={dayKey:'31/12/2025',reportData:[R('1','A',90,'X','Hội Sở','Nhóm 1')]};
+const dup={dayKey:'30/06/2026',reportData:[R('1','A',999,'X','Hội Sở','Nhóm 1')]};
+const bad={dayKey:'abc',reportData:[R('1','A',1,'X','Hội Sở','Nhóm 1')]};const empty={dayKey:'01/07/2026',reportData:[]};
+const P=T.build([s2,s1,s0,bad,empty],TD.metrics.summarize);
+ok('3 kỳ, sắp theo ngày, bỏ ngày lạ và kỳ rỗng',P.length===3&&P.map(x=>x.key).join()==='31/12/2025,31/05/2026,30/06/2026',P.map(x=>x.key));
+ok('tổng dư nợ/KH/khoản kỳ 30/06',P[2].totals.duno===450&&P[2].totals.kh===3&&P[2].totals.hs===3,P[2].totals);
+ok('trùng ngày giữ bản cuối',T.build([s2,dup],TD.metrics.summarize).find(x=>x.key==='30/06/2026').totals.duno===999);
+const S=T.seriesFor(P,'total','duno');ok('chuỗi tổng',JSON.stringify(S.series[0].values)==='[90,300,450]',S);
+const N=T.seriesFor(P,'nhom','duno');ok('theo nhóm nợ: Nhóm 1 & Nhóm 2 (kỳ không có ⇒ 0)',N.series.length===2&&N.series.find(s=>s.name==='Nhóm 2').values.join()==='0,0,250',N.series);
+const B=T.seriesFor(P,'cbtd','kh',2);ok('top 2 CBTD theo dư nợ kỳ cuối + Khác',B.series.length===3&&B.series[0].name==='Y'&&/^Khác/.test(B.series[2].name),B.series.map(s=>s.name));
+ok('Σ chuỗi theo phòng ban = tổng mỗi kỳ',(()=>{const x=T.seriesFor(P,'pb','duno');return P.every((p,i)=>x.series.reduce((a,s)=>a+s.values[i],0)===p.totals.duno)})());
+ok('delta & pct',JSON.stringify(T.delta([90,300,450]))==='[null,210,150]'&&T.pct([0,300,450])[1]===null&&Math.abs(T.pct([100,150])[1]-0.5)<1e-9);
+ok('csv',T.csv(S).split('\n').length===4&&T.csv(S).startsWith('Kỳ,Tổng'));
+ok('ticks',T.ticks(450,4).join()==='0,200,400,600'&&T.ticks(0).join()==='0',T.ticks(450,4));
+{let calls=0;const sm=(rows,o)=>{calls++;return TD.metrics.summarize(rows,o)};
+const snaps=[JSON.parse(JSON.stringify(s2)),JSON.parse(JSON.stringify(s1))];
+T.build(snaps,sm);const c1=calls;T.build(snaps,sm);ok('P09 mốc không đổi ⇒ lần build thứ 2 không tóm tắt lại',c1>=2&&calls===c1,{c1,calls});
+snaps[0].reportData[0][11]=(+snaps[0].reportData[0][11]||0)+5;const d0=T.build(snaps,sm);ok('P09 sửa tại chỗ dư nợ 1 dòng ⇒ tính lại đúng (không dùng bản cũ)',calls===c1+1&&d0.some(x=>x.key===snaps[0].dayKey),{calls,c1});
+snaps[0].reportData[0][18]='Nhóm 5';const c2=calls;T.build(snaps,sm);ok('P09 sửa tại chỗ nhóm nợ ⇒ tính lại',calls===c2+1,{calls,c2});
+const sm2=(rows,o)=>{calls++;return TD.metrics.summarize(rows,o)};const c3=calls;T.build(snaps,sm2);ok('P09 đổi hàm summarize ⇒ tính lại',calls>c3,{calls,c3});}
+console.log('PASS',p,'FAIL',f);process.exit(f?1:0);

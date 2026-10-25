@@ -1,0 +1,29 @@
+{
+ "file": "Sao ke tai san bao dam 20.10.2026.xlsx",
+ "rows": 145,
+ "unique": 135,
+ "dupRows": 10,
+ "vnd": 250650000000,
+ "fx": {
+  "USD": [
+   3,
+   33000
+  ],
+  "EUR": [
+   2,
+   27000
+  ]
+ },
+ "hold": {
+  "(trống)": 38,
+  "N": 107
+ },
+ "status": {
+  "con": 140,
+  "kct": 5
+ },
+ "thirdParty": 5,
+ "khCon": 120,
+ "khCoTS": 110,
+ "khKhongTS": 10
+}

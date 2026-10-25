@@ -1,0 +1,8 @@
+quy tắc CSS có z-index: 126 ; phần tử DOM có z-index số: 2444 ; còn literal ≥3 chữ số: 72 → 0
+giá trị z-index ≥100 phân biệt sau: 36
+PASS CSS: 125 mục, 7750 cặp, thứ tự trên/dưới/bằng giữ nguyên
+PASS DOM: phần tử có z-index số giữ thứ tự
+PASS token --z-8 có trong :root
+PASS không còn literal z-index ≥100 trong DOM
+PASS không pageerror
+PASS 5 FAIL 0

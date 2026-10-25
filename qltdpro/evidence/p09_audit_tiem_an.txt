@@ -1,0 +1,15 @@
+  ✔ BAD-1 — Tệp hỏng/sai định dạng: dữ liệu hiện có KHÔNG bị thay đổi :: {"xlsx_cắt_nửa.xlsx":true,"rỗng.xlsx":true,"văn_bản_đổi_đuôi.xlsx":true,"pdf_đổi_đuôi.xls":true,"xls_cắt_nửa.XLS":true,"csv_sai_cột.csv":true}
+  ✔ BAD-2 — Tệp hỏng/sai định dạng: không nạp được dòng nào vào hàng chờ nhập (không nhập nhầm rác) :: {"xlsx_cắt_nửa.xlsx":0,"rỗng.xlsx":0,"văn_bản_đổi_đuôi.xlsx":0,"pdf_đổi_đuôi.xls":0,"xls_cắt_nửa.XLS":0,"csv_sai_cột.csv":0}
+  ✔ BAD-3 — Tệp hỏng/sai định dạng: có thông báo cho người dùng (hộp thoại/toast), không im lặng :: {"xlsx_cắt_nửa.xlsx":"alert:Lỗi đọc file: Bad compressed size: 0 != 353","rỗng.xlsx":"alert:File không có dữ liệu","văn_bản_đổi_đuôi.xlsx":"alert:Lỗi đọc file: File không có cột brcd/custnm.","pdf_đổi_đuôi.xls":"alert:Lỗi đọc file: File không có cột brcd/custnm.","xls_cắt_nửa.XLS":"alert:Lỗi đọc file: File .xls không c
+  ✔ BAD-4 — Tệp hỏng/sai định dạng: không có lỗi JS chưa bắt (pageerror) :: {"xlsx_cắt_nửa.xlsx":0,"rỗng.xlsx":0,"văn_bản_đổi_đuôi.xlsx":0,"pdf_đổi_đuôi.xls":0,"xls_cắt_nửa.XLS":0,"csv_sai_cột.csv":0}
+  ✔ DUP-1 — Nhập lại đúng tệp đã nhập: số dòng và dữ liệu không đổi, mốc lưu trữ không nhân đôi :: {"base":{"n":3848,"h":-1960252222,"arch":1},"again":{"n":3848,"h":-1960252222,"arch":1}}
+  ✔ RACE-1 — Bấm Nhập/Lưu mốc 2 lần liên tiếp: không nhân đôi dòng, không lỗi JS :: {"rc":{"n":3860,"h":1415837681,"arch":1},"err":[]}
+  ✔ TZ-20102026 — Múi giờ: nhập 20.10.2026.XLS cho dữ liệu GIỐNG HỆT ở 4 múi giờ (VN, UTC, Los Angeles, UTC+14) :: {"Asia/Ho_Chi_Minh":"3848:1510351338","UTC":"3848:1510351338","America/Los_Angeles":"3848:1510351338","Pacific/Kiritimati":"3848:1510351338"}
+  ✔ TZ-31122025 — Múi giờ: nhập 31.12.2025.xlsx cho dữ liệu GIỐNG HỆT ở 4 múi giờ (VN, UTC, Los Angeles, UTC+14) :: {"Asia/Ho_Chi_Minh":"3671:2066069104","UTC":"3671:2066069104","America/Los_Angeles":"3671:2066069104","Pacific/Kiritimati":"3671:2066069104"}
+  ✔ IDB-1 — IndexedDB bị chặn: app vẫn nhập và hiển thị dữ liệu, không văng lỗi chưa bắt :: {"idb":"undefined","n":3860,"err":[]}
+  ✔ IDB-2 — IndexedDB bị chặn: người dùng được báo rõ (không im lặng mất dữ liệu khi đóng tab) :: {"toast":"Không lưu được"}
+  ✔ CLK-2902 — Đồng hồ hệ thống 29/02/2028: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN :: {"err":[],"bad":0}
+  ✔ CLK-3112 — Đồng hồ hệ thống 31/12/2026 23:59:30: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN :: {"err":[],"bad":0}
+  ✔ CLK-0101 — Đồng hồ hệ thống 01/01/2027 00:00:10: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN :: {"err":[],"bad":0}
+
+TỔNG: 13/13 đạt; 0 phát hiện

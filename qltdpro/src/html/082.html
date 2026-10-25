@@ -1,0 +1,150 @@
+
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FORM HỒ SƠ MODULE — Overlay Panel
+     ═══════════════════════════════════════════════════════════════ -->
+<!-- [PATCH GĐ-D M5] lazy: https://cdnjs.cloudflare.com/ajax/libs/docx/9.0.2/docx.umd.min.js -->
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: FORM HỒ SƠ (page-fhs) — FHS panel nhúng full page
+     Tái dụng toàn bộ FHS engine: loại chips, sub-chips, body, footer
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-fhs">
+  <div id="fhs-panel-page">
+    <!-- Header -->
+    <div id="fhs-header-page" style="background:linear-gradient(135deg,#0D2137 0%,#1E4A77 100%);padding:10px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;position:relative">
+      <div style="flex-shrink:0">
+        <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:.3px" id="fhs-page-title">FORM HỒ SƠ</div>
+        <div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:2px">Chọn loại hồ sơ → Nhập → Xuất Word</div>
+      </div>
+      <!-- Inline KH Search Bar -->
+      <div id="fhs-inline-search-wrap" style="flex:1;max-width:420px;position:relative">
+        <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1.5px solid rgba(99,190,255,.35);border-radius:8px;padding:6px 11px;transition:.15s"
+             onfocusin="this.style.borderColor='rgba(99,190,255,.8)';this.style.background='rgba(255,255,255,.16)'"
+             onfocusout="this.style.borderColor='rgba(99,190,255,.35)';this.style.background='rgba(255,255,255,.1)'">
+          <span style="color:#7FC6FF;font-size:13px;flex-shrink:0">🔍</span>
+          <input id="fhs-inline-search-input" type="text" autocomplete="off"
+            placeholder="Tra cứu khách hàng (tên / mã KH)…"
+            oninput="fhsInlineSearchDebounce(this.value)"
+            onkeydown="fhsInlineSearchKey(event)"
+            style="border:none;outline:none;flex:1;font-size:12.5px;color:#fff;background:transparent;font-family:inherit"
+            onfocus="fhsInlineSearchFocus(this)"
+            onblur="setTimeout(fhsInlineSearchClose, 180)"
+          />
+          <span id="fhs-inline-search-count" style="font-size:10px;color:rgba(147,197,253,.8);white-space:nowrap;flex-shrink:0"></span>
+          <button id="fhs-inline-search-clear" onclick="fhsInlineSearchClear()"
+            style="display:none;border:none;background:none;cursor:pointer;color:#7FC6FF;font-size:14px;line-height:1;padding:0;flex-shrink:0">✕</button>
+        </div>
+        <!-- Dropdown results -->
+        <div id="fhs-inline-results" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.28);z-index:calc(var(--z-5,9900) + 6);max-height:340px;overflow-y:auto;border:1.5px solid #E5EAF0"></div>
+      </div>
+    </div>
+    <!-- Sync bar -->
+    <div id="fhs-page-sync-bar" style="display:none;padding:6px 20px;font-size:11px;align-items:center;gap:8px;border-bottom:1px solid #E8EDF4;min-height:32px;background:#fffbe6"></div>
+    <!-- Loại chips (HMTD / TIÊU DÙNG / CẦM CỐ) -->
+    <div id="fhs-page-loai-chips" style="display:flex;gap:0;border-bottom:2px solid #E8EDF4;background:#F7F9FC;flex-shrink:0">
+      <div class="fhs-loai-chip" data-loai="HMTD" onclick="fhsPageSelectLoai('HMTD')" style="flex:1;text-align:center;padding:11px 8px;cursor:pointer;font-size:12px;font-weight:700;color:#5A7080;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap">🏦 HẠN MỨC TÍN DỤNG</div>
+      <div class="fhs-loai-chip" data-loai="TD"   onclick="fhsPageSelectLoai('TD')"   style="flex:1;text-align:center;padding:11px 8px;cursor:pointer;font-size:12px;font-weight:700;color:#5A7080;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap">🛒 TIÊU DÙNG</div>
+      <div class="fhs-loai-chip" data-loai="CC"   onclick="fhsPageSelectLoai('CC')"   style="flex:1;text-align:center;padding:11px 8px;cursor:pointer;font-size:12px;font-weight:700;color:#5A7080;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap">🔒 CẦM CỐ</div>
+    </div>
+    <!-- Sub-chips (Thông tin chung / Nhận nợ / TSBD) -->
+    <div id="fhs-page-sub-chips" style="display:none;gap:6px;padding:8px 18px 7px;border-bottom:1px solid #E8EDF4;background:#fff;flex-shrink:0;flex-wrap:wrap"></div>
+    <!-- Search bar -->
+    <div id="fhs-page-search-bar" style="display:none;padding:8px 22px 0;background:#F7F9FC;border-bottom:1px solid #E8EDF4;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #D3DCE8;border-radius:6px;padding:6px 10px">
+        <span style="color:#B0BCC8;font-size:13px">🔍</span>
+        <input id="fhs-page-search-input" type="text" placeholder="Tìm nhanh placeholder…"
+          oninput="fhsPageFilterFields(this.value)"
+          style="border:none;outline:none;flex:1;font-size:12.5px;color:#1a2535;background:transparent"/>
+        <span id="fhs-page-search-count" style="font-size:10px;color:#B0BCC8;white-space:nowrap"></span>
+        <button onclick="document.getElementById('fhs-page-search-input').value='';fhsPageFilterFields('')"
+          style="border:none;background:none;cursor:pointer;color:#B0BCC8;font-size:14px;line-height:1">✕</button>
+      </div>
+    </div>
+    <!-- Body: fields -->
+    <div id="fhs-page-body" style="flex:1;overflow-y:auto;padding:0;scroll-behavior:smooth;min-height:0">
+      <div class="fhs-empty">📋 Chọn loại hồ sơ để bắt đầu</div>
+    </div>
+    <!-- Footer -->
+    <div style="border-top:2px solid #E8EDF4;padding:10px 20px;background:#F7F9FC;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div id="fhs-page-info" style="font-size:11px;color:#8A9AB0;font-style:italic">Điền thông tin rồi xuất Word</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="fhs-btn fhs-btn-danger" onclick="fhsPageResetAll()" title="Xóa sạch TOÀN BỘ dữ liệu đã lưu">🔴 Reset sạch</button>
+        <button class="fhs-btn fhs-btn-save" onclick="fhsPageSaveAll()" title="Lưu dữ liệu">💾 Lưu</button>
+        <button class="fhs-btn fhs-btn-secondary" onclick="fhsPageClearForm()">🗑 Xóa tab</button>
+        <button class="fhs-btn" onclick="fhsImportOpen()" style="background:#7B3FBE;color:#fff;border:none" title="Import từ file Excel hoặc Word">📥 Import file</button>
+        <button class="fhs-btn" onclick="fhsExportViaEC()" style="background:#154360;color:#fff;border:none" title="Xuất hồ sơ bằng template .docx">📄⬇️ Xuất Template</button>
+        <button class="fhs-btn fhs-btn-primary" onclick="fhsExportDocx()">📄 Xuất Word</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="fhs-overlay" onclick="fhsOverlayClick(event)">
+  <div id="fhs-panel">
+    <div id="fhs-header">
+      <div>
+        <div id="fhs-title">FORM HỒ SƠ</div>
+        <div id="fhs-subtitle">Chọn loại hồ sơ → Nhập → Xuất Word</div>
+      </div>
+      <button onclick="fhsOpenKhSearch()" title="Tra cứu KH từ QLTD → tự điền Form Hồ Sơ"
+        style="background:rgba(99,190,255,.18);border:1.5px solid rgba(99,190,255,.4);color:#7FC6FF;
+               border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:700;cursor:pointer;
+               white-space:nowrap;transition:.15s;margin-right:4px"
+        onmouseover="this.style.background='rgba(99,190,255,.32)'"
+        onmouseout="this.style.background='rgba(99,190,255,.18)'">🔍 Tra cứu KH</button>
+      <button id="fhs-close" onclick="closeFhsForm()">✕</button>
+    </div>
+    <!-- Sync bar — hiển thị khi đã chọn loại hồ sơ -->
+    <div id="fhs-sync-bar" style="display:none;padding:6px 16px;font-size:11px;align-items:center;gap:8px;border-bottom:1px solid #E8EDF4;min-height:32px"></div>
+    <!-- Row 1: Loại chips -->
+    <div id="fhs-loai-chips">
+      <div class="fhs-loai-chip" data-loai="HMTD" onclick="fhsSelectLoai('HMTD')">🏦 HẠN MỨC TÍN DỤNG</div>
+      <div class="fhs-loai-chip" data-loai="TD"   onclick="fhsSelectLoai('TD')">🛒 TIÊU DÙNG</div>
+      <div class="fhs-loai-chip" data-loai="CC"   onclick="fhsSelectLoai('CC')">🔒 CẦM CỐ</div>
+    </div>
+    <!-- Row 2: Sub-chips (Thông tin chung / Nhận nợ / TSBD…) -->
+    <div id="fhs-sub-chips" style="display:none"></div>
+    <!-- Search bar -->
+    <div id="fhs-search-bar" style="display:none;padding:8px 22px 0;background:#F7F9FC;border-bottom:1px solid #E8EDF4">
+      <div style="display:flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #D3DCE8;border-radius:6px;padding:6px 10px">
+        <span style="color:#B0BCC8;font-size:13px">🔍</span>
+        <input id="fhs-search-input" type="text" placeholder="Tìm nhanh placeholder…"
+          oninput="fhsFilterFields(this.value)"
+          style="border:none;outline:none;flex:1;font-size:12.5px;color:#1a2535;background:transparent" />
+        <span id="fhs-search-count" style="font-size:10px;color:#B0BCC8;white-space:nowrap"></span>
+        <button onclick="document.getElementById('fhs-search-input').value='';fhsFilterFields('')"
+          style="border:none;background:none;cursor:pointer;color:#B0BCC8;font-size:14px;line-height:1">✕</button>
+      </div>
+    </div>
+    <!-- Body: fields as rows -->
+    <div id="fhs-body"><div class="fhs-empty">📋 Chọn loại hồ sơ để bắt đầu</div></div>
+    <!-- Step navigation bar -->
+    <div id="fhs-step-nav">
+      <button class="fhs-step-btn" id="fhs-btn-prev" onclick="fhsStepNav(-1)" disabled>← Quay lại</button>
+      <div id="fhs-step-indicator"></div>
+      <button class="fhs-step-btn primary" id="fhs-btn-next" onclick="fhsStepNav(1)">Tiếp theo →</button>
+    </div>
+    <div id="fhs-footer">
+      <div id="fhs-info">Điền thông tin rồi xuất Word</div>
+      <div class="fhs-btn-group">
+        <button class="fhs-btn fhs-btn-danger" onclick="fhsResetAll()" title="Xóa sạch TOÀN BỘ dữ liệu đã lưu">🔴 Reset sạch</button>
+        <button class="fhs-btn fhs-btn-save" onclick="fhsSaveAll()" title="Lưu dữ liệu vào bộ nhớ trình duyệt">💾 Lưu</button>
+        <button class="fhs-btn fhs-btn-secondary" onclick="fhsClearForm()">🗑 Xóa tab</button>
+        <button class="fhs-btn" onclick="fhsImportOpen()"
+          style="background:#7B3FBE;color:#fff;border:none"
+          title="Import dữ liệu từ file Excel hoặc Word (.docx) → tự điền form">📥 Import file</button>
+        <button class="fhs-btn" onclick="fhsExportViaEC()"
+          style="background:#154360;color:#fff;border:none"
+          title="Xuất hồ sơ bằng file template .docx (HMTD / Tài sản / Giải ngân)">📄⬇️ Xuất Template</button>
+        <button class="fhs-btn fhs-btn-primary" onclick="fhsExportDocx()">📄 Xuất Word</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page Fullscreen hint bar -->
+<div id="page-fs-hint" onclick="pageCloseFS()">⛶ Đang xem toàn màn hình — Nhấn vào đây hoặc nhấn <strong>Esc</strong> để thu nhỏ</div>
+

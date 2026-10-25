@@ -1,0 +1,1 @@
+light {"dashboard":{"n":17797,"bad":28,"pct":"0.2%"},"qltd":{"n":1795,"bad":5,"pct":"0.3%"},"tsbd":{"n":51,"bad":0,"pct":"0.0%"},"giadat":{"n":875,"bad":1,"pct":"0.1%"},"doisoat":{"n":78,"bad":0,"pct":"0.0%"}}

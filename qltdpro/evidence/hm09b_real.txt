@@ -1,0 +1,25 @@
+{
+ "rows": 3848,
+ "cmpRows": 3848,
+ "cmpSum": 2160375016661,
+ "indepSum": 2160375016661,
+ "dropped": 0,
+ "recon": "✅ Khớp: So sánh kỳ 2.160.375.016.661 · Tệp/Dashboard 2.160.375.016.661 · chênh lệch 0 đ",
+ "audit": [
+  "[Đối soát D1] Dashboard · Tổng:2160375016661/2160375016661",
+  "[Đối soát D2] Dashboard · Σ dò:2160375016661/2160375016661",
+  "[Đối soát D3] Dashboard · Σ th:2160375016661/2160375016661",
+  "[Đối soát D4] Dashboard · Σ th:2160375016661/2160375016661",
+  "[Đối soát D5] Dashboard · Số k:1865/1865",
+  "[Đối soát S1] Mốc hàng ngày 20:2160375016661/2160375016661",
+  "[Đối soát S2] Mốc hàng ngày · :1865/1865",
+  "[Đối soát T1] TSBĐ · KH còn dư:null/1865",
+  "[Đối soát B1] Báo cáo theo CBT:2160375016661/2160375016661",
+  "[Đối soát L1] Lãi suất · tỷ lệ:0/null"
+ ],
+ "issues": [],
+ "up5": 0,
+ "kh": 1865,
+ "pd": 0
+}
+errs []

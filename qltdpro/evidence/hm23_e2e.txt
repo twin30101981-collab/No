@@ -1,0 +1,17 @@
+nhập xong sau 61 s
+PASS trang mở, nút nhập bị khoá khi chưa chọn tệp
+PASS kế hoạch: 12 tệp, đúng thứ tự ngày tăng (dư nợ) rồi TSBĐ mới nhất
+PASS bỏ qua 3: trùng ngày, pdf, TSBĐ cũ
+PASS 12 tệp ✅, 3 tệp "Bỏ qua", không lỗi
+PASS dữ liệu hiện hành = tệp mới nhất (20/10/2026: 3.848 dòng dư nợ>0… tổng 2.160.375.016.661)
+PASS 11 mốc lưu trữ, đủ 11 ngày
+PASS TSBĐ nạp: 19.133 dòng, tệp 20.10
+PASS nhật ký 12 dòng
+PASS SHA-256 trong nhật ký = SHA-256 tính độc lập (Python hashlib) cho cả 12 tệp
+PASS nhật ký có giờ, loại, ngày, kết quả; dư nợ kỳ sau có "so …"
+PASS kỳ 31/12/2025 (đầu tiên) chưa có "so kỳ trước"
+PASS Xu hướng thấy đủ 11 kỳ sau nhập hàng loạt
+PASS Đối soát sau nhập hàng loạt: 10/10 khớp
+PASS CSV nhật ký: tiêu đề + 12 dòng
+PASS không pageerror
+PASS 15 FAIL 0

@@ -1,0 +1,170 @@
+{
+ "app": "QLTD_PRO_v2026-10-23_v22.3-P08.html",
+ "at": "2026-10-24T13:08:41.326Z",
+ "total": 13,
+ "fail": 0,
+ "findings": [
+  {
+   "id": "BAD-1",
+   "area": "Tệp hỏng/sai định dạng: dữ liệu hiện có KHÔNG bị thay đổi",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "xlsx_cắt_nửa.xlsx": true,
+    "rỗng.xlsx": true,
+    "văn_bản_đổi_đuôi.xlsx": true,
+    "pdf_đổi_đuôi.xls": true,
+    "xls_cắt_nửa.XLS": true,
+    "csv_sai_cột.csv": true
+   }
+  },
+  {
+   "id": "BAD-2",
+   "area": "Tệp hỏng/sai định dạng: không nạp được dòng nào vào hàng chờ nhập (không nhập nhầm rác)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "xlsx_cắt_nửa.xlsx": 0,
+    "rỗng.xlsx": 0,
+    "văn_bản_đổi_đuôi.xlsx": 0,
+    "pdf_đổi_đuôi.xls": 0,
+    "xls_cắt_nửa.XLS": 0,
+    "csv_sai_cột.csv": 0
+   }
+  },
+  {
+   "id": "BAD-3",
+   "area": "Tệp hỏng/sai định dạng: có thông báo cho người dùng (hộp thoại/toast), không im lặng",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "xlsx_cắt_nửa.xlsx": "alert:Lỗi đọc file: Bad compressed size: 0 != 353",
+    "rỗng.xlsx": "alert:File không có dữ liệu",
+    "văn_bản_đổi_đuôi.xlsx": "alert:Lỗi đọc file: File không có cột brcd/custnm.",
+    "pdf_đổi_đuôi.xls": "alert:Lỗi đọc file: File không có cột brcd/custnm.",
+    "xls_cắt_nửa.XLS": "alert:Lỗi đọc file: File .xls không có sheet nào",
+    "csv_sai_cột.csv": "alert:Lỗi đọc file: File không có cột brcd/custnm."
+   }
+  },
+  {
+   "id": "BAD-4",
+   "area": "Tệp hỏng/sai định dạng: không có lỗi JS chưa bắt (pageerror)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "xlsx_cắt_nửa.xlsx": 0,
+    "rỗng.xlsx": 0,
+    "văn_bản_đổi_đuôi.xlsx": 0,
+    "pdf_đổi_đuôi.xls": 0,
+    "xls_cắt_nửa.XLS": 0,
+    "csv_sai_cột.csv": 0
+   }
+  },
+  {
+   "id": "DUP-1",
+   "area": "Nhập lại đúng tệp đã nhập: số dòng và dữ liệu không đổi, mốc lưu trữ không nhân đôi",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "base": {
+     "n": 3848,
+     "h": -1960252222,
+     "arch": 1
+    },
+    "again": {
+     "n": 3848,
+     "h": -1960252222,
+     "arch": 1
+    }
+   }
+  },
+  {
+   "id": "RACE-1",
+   "area": "Bấm Nhập/Lưu mốc 2 lần liên tiếp: không nhân đôi dòng, không lỗi JS",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "rc": {
+     "n": 3860,
+     "h": 1415837681,
+     "arch": 1
+    },
+    "err": []
+   }
+  },
+  {
+   "id": "TZ-20102026",
+   "area": "Múi giờ: nhập 20.10.2026.XLS cho dữ liệu GIỐNG HỆT ở 4 múi giờ (VN, UTC, Los Angeles, UTC+14)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "Asia/Ho_Chi_Minh": "3848:1510351338",
+    "UTC": "3848:1510351338",
+    "America/Los_Angeles": "3848:1510351338",
+    "Pacific/Kiritimati": "3848:1510351338"
+   }
+  },
+  {
+   "id": "TZ-31122025",
+   "area": "Múi giờ: nhập 31.12.2025.xlsx cho dữ liệu GIỐNG HỆT ở 4 múi giờ (VN, UTC, Los Angeles, UTC+14)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "Asia/Ho_Chi_Minh": "3671:2066069104",
+    "UTC": "3671:2066069104",
+    "America/Los_Angeles": "3671:2066069104",
+    "Pacific/Kiritimati": "3671:2066069104"
+   }
+  },
+  {
+   "id": "IDB-1",
+   "area": "IndexedDB bị chặn: app vẫn nhập và hiển thị dữ liệu, không văng lỗi chưa bắt",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "idb": "undefined",
+    "n": 3860,
+    "err": []
+   }
+  },
+  {
+   "id": "IDB-2",
+   "area": "IndexedDB bị chặn: người dùng được báo rõ (không im lặng mất dữ liệu khi đóng tab)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "toast": "Không lưu được"
+   }
+  },
+  {
+   "id": "CLK-2902",
+   "area": "Đồng hồ hệ thống 29/02/2028: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "err": [],
+    "bad": 0
+   }
+  },
+  {
+   "id": "CLK-3112",
+   "area": "Đồng hồ hệ thống 31/12/2026 23:59:30: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "err": [],
+    "bad": 0
+   }
+  },
+  {
+   "id": "CLK-0101",
+   "area": "Đồng hồ hệ thống 01/01/2027 00:00:10: nhập + mở Dashboard/Đến hạn/Cảnh báo/Đối soát không lỗi, không NaN",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "err": [],
+    "bad": 0
+   }
+  }
+ ]
+}

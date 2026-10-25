@@ -1,0 +1,14 @@
+before sheetjs  synthetic.xlsx     dòng app     3/tệp     3 | sai LS     3 | sai dư nợ   2 | sai ngày GN/ĐH    0 | Σ app 1,500,000,000 vs tệp 1,500,149,999 {(19, 8.5): 1, (19, 5.0): 1}
+before sheetjs  31.05.2026.xlsx    dòng app  3642/tệp  3642 | sai LS  3642 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,009,209,975,285 vs tệp 2,009,209,975,285 {(19, 9.0): 1322, (19, 8.5): 750}
+before sheetjs  31.12.2025.xlsx    dòng app  3684/tệp  3684 | sai LS  3684 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,992,328,798,064 vs tệp 1,992,328,798,064 {(19, 7.0): 426, (19, 6.5): 423}
+before sheetjs  20.10.2026.XLS     dòng app  3918/tệp  3918 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,160,375,016,661 vs tệp 2,160,375,016,661 
+before fallback synthetic.xlsx     dòng app     3/tệp     3 | sai LS     3 | sai dư nợ   2 | sai ngày GN/ĐH    0 | Σ app 1,500,000,000 vs tệp 1,500,149,999 {(19, 8.5): 1, (19, 5.0): 1}
+before fallback 31.05.2026.xlsx    dòng app  3642/tệp  3642 | sai LS  3642 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,009,209,975,285 vs tệp 2,009,209,975,285 {(19, 9.0): 1322, (19, 8.5): 750}
+before fallback 31.12.2025.xlsx    dòng app  3684/tệp  3684 | sai LS  3684 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,992,328,798,064 vs tệp 1,992,328,798,064 {(19, 7.0): 426, (19, 6.5): 423}
+after  sheetjs  synthetic.xlsx     dòng app     3/tệp     3 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,500,149,999 vs tệp 1,500,149,999 
+after  sheetjs  31.05.2026.xlsx    dòng app  3642/tệp  3642 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,009,209,975,285 vs tệp 2,009,209,975,285 
+after  sheetjs  31.12.2025.xlsx    dòng app  3684/tệp  3684 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,992,328,798,064 vs tệp 1,992,328,798,064 
+after  sheetjs  20.10.2026.XLS     dòng app  3918/tệp  3918 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,160,375,016,661 vs tệp 2,160,375,016,661 
+after  fallback synthetic.xlsx     dòng app     3/tệp     3 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,500,149,999 vs tệp 1,500,149,999 
+after  fallback 31.05.2026.xlsx    dòng app  3642/tệp  3642 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 2,009,209,975,285 vs tệp 2,009,209,975,285 
+after  fallback 31.12.2025.xlsx    dòng app  3684/tệp  3684 | sai LS     0 | sai dư nợ   0 | sai ngày GN/ĐH    0 | Σ app 1,992,328,798,064 vs tệp 1,992,328,798,064 

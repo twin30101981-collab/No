@@ -1,0 +1,25 @@
+PASS thanh dưới hiện, 5 mục, cao ≥56, sát đáy
+PASS chạm "qltd" ⇒ mở trang, hash #/du-no, mục sáng
+PASS chạm "denhan" ⇒ mở trang, hash #/lich-tra-no, mục sáng
+PASS chạm "tsbd" ⇒ mở trang, hash #/tai-san, mục sáng
+PASS chạm "dashboard" ⇒ mở trang, hash #/tong-quan, mục sáng
+PASS thanh nhắc nợ gập một dòng (≤48px)
+PASS chạm mở rộng các nhắc nợ
+PASS bảng Dư nợ: preset Điện thoại, 4 cột, không cuộn ngang trong khung
+PASS dashboard · không tràn ngang trang
+PASS qltd · không tràn ngang trang
+PASS kd · không tràn ngang trang
+PASS td · không tràn ngang trang
+PASS denhan · không tràn ngang trang
+PASS laidong · không tràn ngang trang
+PASS tsbd · không tràn ngang trang
+PASS giadat · không tràn ngang trang
+PASS doisoat · không tràn ngang trang
+PASS hsvv · không tràn ngang trang
+PASS archive · không tràn ngang trang
+PASS baocao · không tràn ngang trang
+PASS topbar ≤150px, nút chính cao ≥36px
+PASS nút Menu mở thanh bên
+PASS không pageerror
+PASS 1366: thanh dưới ẩn, không đệm đáy
+PASS 24 FAIL 0

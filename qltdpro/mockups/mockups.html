@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>QLTD PRO mockups</title>
+<style>
+:root{
+  --bg:#f4f6f8; --surface:#fff; --line:#e3e7ec; --line2:#cfd6de;
+  --ink:#1b2430; --ink2:#4a5666; --muted:#7b8796;
+  --brand:#0f5132; --brand2:#146c43; --brand-pale:#e8f3ec;
+  --navy:#16324f; --accent:#a4262c; --amber:#b7791f; --amber-pale:#fdf4e3;
+  --good:#1e7b4a; --warn:#b7791f; --bad:#b42318; --info:#1f5fa8; --info-pale:#e9f1fb;
+  --r:8px; --sb:240px; --top:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,"Noto Sans",sans-serif;color:var(--ink);background:#d9dee4;font-size:13px;font-feature-settings:"tnum" 1}
+.frame{position:relative;overflow:hidden;background:var(--bg);margin:20px}
+.num{font-feature-settings:"tnum" 1;text-align:right;white-space:nowrap}
+/* shell */
+.shell{display:grid;grid-template-columns:var(--sb) 1fr;grid-template-rows:var(--top) 1fr;height:100%}
+.shell.collapsed{--sb:64px}
+.top{grid-column:1/3;display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px}
+.logo{display:flex;align-items:center;gap:10px;width:calc(var(--sb) - 16px);font-weight:700;color:var(--brand)}
+.logo i{width:30px;height:30px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800}
+.logo small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.crumb{color:var(--ink2);font-size:13px}.crumb b{color:var(--ink)}
+.search{flex:0 1 420px;margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;color:var(--muted);background:#fafbfc}
+.search kbd,.kbd{margin-left:auto;font:11px "JetBrains Mono";border:1px solid var(--line2);border-radius:4px;padding:1px 5px;color:var(--ink2);background:#fff}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:999px;padding:5px 11px;font-size:12px;background:#fff;white-space:nowrap}
+.chip.date{border-color:#9fc5ae;background:var(--brand-pale);color:var(--brand);font-weight:600}
+.chip.ok{border-color:#a7d7bb;color:var(--good)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:7px;padding:7px 12px;background:#fff;font-weight:600;font-size:12.5px;color:var(--ink);white-space:nowrap}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{padding:4px 9px;font-size:12px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:10px 8px;overflow:hidden;display:flex;flex-direction:column}
+.grp{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);padding:12px 10px 4px;text-transform:uppercase}
+.it{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;color:var(--ink2);font-weight:500;white-space:nowrap}
+.it .ic{width:18px;height:18px;border-radius:4px;border:1.6px solid currentColor;flex:none;opacity:.8}
+.it.on{background:var(--brand-pale);color:var(--brand);font-weight:700}
+.it .bd{margin-left:auto;font-size:11px;border-radius:999px;padding:0 7px;background:#eef1f4;color:var(--ink2)}
+.it .bd.r{background:#fde8e7;color:var(--bad)}
+.it.sub{padding-left:38px;font-size:12.5px}
+.collapsed .grp,.collapsed .it span,.collapsed .it .bd,.collapsed .sidefoot,.collapsed .it.sub{display:none}
+.collapsed .grp-sep{display:block;height:1px;background:var(--line);margin:8px 6px}
+.grp-sep{display:none}
+.sidefoot{margin-top:auto;border-top:1px solid var(--line);padding:10px;color:var(--muted);font-size:11px}
+.main{overflow:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.ph{display:flex;align-items:flex-end;gap:12px}
+.ph h1{font-size:20px;font-weight:700}
+.ph p{color:var(--muted);font-size:12px;margin-top:2px}
+.ph .act{margin-left:auto;display:flex;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.card h3{font-size:13px;font-weight:700;padding:12px 14px 0;display:flex;align-items:center;gap:8px}
+.card h3 small{font-weight:500;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kpi{padding:12px 14px}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:22px;font-weight:700;margin-top:4px}
+.kpi .v small{font-size:13px;font-weight:600;color:var(--ink2)}
+.kpi .d{font-size:11.5px;margin-top:3px;color:var(--ink2)}
+.up{color:var(--good)}.dn{color:var(--bad)}
+.banner{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;font-size:12.5px}
+.banner.ok{background:var(--brand-pale);border:1px solid #b8dcc6;color:#174d33}
+.banner.warn{background:var(--amber-pale);border:1px solid #f0d49c;color:#6b4a12}
+.banner.info{background:var(--info-pale);border:1px solid #bcd3ef;color:#1d3f6b}
+.g{display:grid;gap:14px}
+table.t{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
+.t th{position:sticky;top:0;background:#f1f4f7;color:var(--ink2);font-weight:700;font-size:11.5px;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.t td{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.t tr.rsel td{background:#eef6f1}
+.t .pin{position:sticky;left:0;background:#fff;box-shadow:1px 0 0 var(--line2)}
+.t th.pin{background:#f1f4f7}
+.t tfoot td{font-weight:700;background:#f7f9fb;border-top:1px solid var(--line2)}
+.tag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600}
+.tag.g1{background:#e6f4ec;color:var(--good)}.tag.g2{background:#fff3dc;color:#8a5a0b}.tag.g3{background:#fde8e7;color:var(--bad)}
+.tag.i{background:var(--info-pale);color:var(--info)}.tag.m{background:#eef1f4;color:var(--ink2)}
+.bar{height:8px;border-radius:4px;background:#eef1f4;overflow:hidden}.bar i{display:block;height:100%;background:var(--brand2);border-radius:4px}
+.toolbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.inp{border:1px solid var(--line2);border-radius:7px;padding:6px 10px;color:var(--muted);background:#fff;font-size:12.5px;white-space:nowrap}
+.sel{border:1px solid var(--line2);border-radius:7px;padding:6px 26px 6px 10px;background:#fff;font-size:12.5px;position:relative;white-space:nowrap}
+.sel:after{content:"▾";position:absolute;right:9px;color:var(--muted)}
+.fchip{display:inline-flex;gap:6px;align-items:center;background:var(--brand-pale);color:var(--brand);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.drawer{background:var(--surface);border-left:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:12px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 10px;font-size:12.5px}.kv dt{color:var(--muted)}.kv dd{font-weight:600}
+.note{position:absolute;background:#fff7c2;border:1px solid #e3cf5a;color:#4a3d00;font-size:12px;padding:6px 9px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.12);max-width:240px;line-height:1.35;z-index:5}
+.note b{color:#7a2e00}
+.badge-n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#7a2e00;color:#fff;font-weight:700;font-size:11px;margin-right:4px}
+.steps{display:flex;gap:0;margin:4px 0 6px}
+.step{flex:1;display:flex;align-items:center;gap:8px;font-weight:600;color:var(--muted);font-size:12.5px}
+.step i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line2);font-style:normal;font-size:12px}
+.step.done{color:var(--good)}.step.done i{background:var(--good);border-color:var(--good);color:#fff}
+.step.cur{color:var(--ink)}.step.cur i{border-color:var(--brand);color:var(--brand)}
+.step:after{content:"";flex:1;height:2px;background:var(--line2);margin:0 10px}.step:last-child:after{display:none}
+.ok-i{color:var(--good);font-weight:700}.bad-i{color:var(--bad);font-weight:700}.warn-i{color:var(--warn);font-weight:700}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 12px}
+.tab{padding:9px 12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;font-size:12.5px}
+.tab.on{color:var(--brand);border-color:var(--brand)}
+/* diagrams */
+.dg{background:#fff;padding:28px 32px;font-size:14px}
+.dg h2{font-size:20px;margin-bottom:4px}.dg .sub{color:var(--muted);margin-bottom:18px}
+.tree{font:13px/1.65 "JetBrains Mono",monospace;white-space:pre;color:var(--ink)}
+.tree .x{color:var(--bad);font-weight:700}.tree .n{color:var(--good);font-weight:700}.tree .c{color:var(--muted)}.tree .w{color:var(--warn);font-weight:700}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.box{border:1.5px solid var(--line2);border-radius:10px;padding:14px 16px}
+.box.bad{border-color:#e7a29c;background:#fff8f7}.box.good{border-color:#9fc5ae;background:#f6fbf8}
+.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:nowrap}
+.node{border:1.5px solid var(--line2);border-radius:8px;padding:9px 11px;background:#fff;font-size:12.5px;min-width:0}
+.node b{display:block;font-size:13px;margin-bottom:2px}
+.node.bad{border-color:#e7a29c;background:#fff4f3}.node.good{border-color:#8fc0a3;background:#f1f9f4}.node.core{border-color:var(--brand);background:var(--brand);color:#fff}
+.arrow{align-self:center;color:var(--muted);font-weight:700}
+.gantt{display:grid;grid-template-columns:260px repeat(8,1fr);font-size:12.5px;border-top:1px solid var(--line)}
+.gantt div{border-bottom:1px solid var(--line);padding:7px 8px;min-height:32px}
+.gantt .h{font-weight:700;color:var(--ink2);background:#f4f6f8}
+.gb{border-radius:5px;color:#fff;font-weight:600;font-size:11.5px;padding:3px 8px;white-space:nowrap;overflow:hidden}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-top:12px}.legend span i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+.mob{width:390px;height:844px;background:var(--bg);display:flex;flex-direction:column;position:relative}
+.mtop{height:52px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px}
+.mnav{position:absolute;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);font-size:10.5px;text-align:center;color:var(--muted);font-weight:600}
+.mnav div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.mnav i{width:20px;height:20px;border:1.8px solid currentColor;border-radius:5px}
+.mnav .on{color:var(--brand)}
+</style></head><body>
+
+<!-- ============ F1: 1920 Dashboard ============ -->
+<div class="frame" id="m_dash1920" style="width:1920px;height:1080px">
+<div class="shell">
+  <div class="top">
+    <div class="logo"><i>Q</i><div>QLTD PRO<small>Agribank CN Thiên Trường · Phòng KHKD</small></div></div>
+    <div class="crumb">Tổng quan › <b>Bảng điều khiển</b></div>
+    <div class="search">⌕ Tìm khách hàng, số HĐTD, CBTD, lệnh…<kbd>Ctrl K</kbd></div>
+    <span class="chip date">● Ngày dữ liệu: 20/10/2026 ▾</span>
+    <span class="chip ok">✓ Đã lưu 08:42</span>
+    <button class="btn pri">⇪ Nhập dữ liệu</button>
+    <button class="btn ghost">⋯</button><div class="avatar">TW</div>
+  </div>
+  <div class="side">
+    <div class="grp">Tổng quan</div>
+    <div class="it on"><i class="ic"></i><span>Bảng điều khiển</span></div>
+    <div class="it"><i class="ic"></i><span>Chỉ tiêu kế hoạch</span></div>
+    <div class="it"><i class="ic"></i><span>Cảnh báo sớm</span><b class="bd r">12</b></div>
+    <div class="grp">Danh mục tín dụng</div>
+    <div class="it"><i class="ic"></i><span>Dư nợ</span><b class="bd">3.918</b></div>
+    <div class="it sub"><span>Ngắn hạn</span></div><div class="it sub"><span>Trung – dài hạn</span></div>
+    <div class="it"><i class="ic"></i><span>Đến hạn &amp; quá hạn</span><b class="bd r">27</b></div>
+    <div class="it"><i class="ic"></i><span>Lãi đọng</span></div>
+    <div class="it"><i class="ic"></i><span>Chuyển hạn mức</span></div>
+    <div class="it"><i class="ic"></i><span>Giải ngân &amp; phí</span></div>
+    <div class="grp">Khách hàng &amp; tài sản</div>
+    <div class="it"><i class="ic"></i><span>Khách hàng 360°</span></div>
+    <div class="it"><i class="ic"></i><span>Khách hàng mới</span></div>
+    <div class="it"><i class="ic"></i><span>Tài sản bảo đảm</span></div>
+    <div class="it"><i class="ic"></i><span>Giá đất &amp; hệ số K, H</span></div>
+    <div class="grp">Hồ sơ vay</div>
+    <div class="it"><i class="ic"></i><span>Lập hồ sơ vay (HSVV)</span></div>
+    <div class="it"><i class="ic"></i><span>Mẫu biểu HMTD · TD · CC</span></div>
+    <div class="grp">Báo cáo &amp; dữ liệu</div>
+    <div class="it"><i class="ic"></i><span>Báo cáo IPCAS</span></div>
+    <div class="it"><i class="ic"></i><span>Đối soát số liệu</span></div>
+    <div class="it"><i class="ic"></i><span>Trung tâm dữ liệu</span></div>
+    <div class="sidefoot">v23.0 · Bản offline · Dữ liệu cục bộ<br>⚙ Cài đặt · ? Hướng dẫn</div>
+  </div>
+  <div class="main">
+    <div class="ph"><div><h1>Bảng điều khiển</h1><p>Số liệu tại ngày dữ liệu 20/10/2026 · nguồn 20.10.2026.XLS (IPCAS) · đơn vị: tỷ đồng</p></div>
+      <div class="act"><span class="sel">Tất cả phòng</span><span class="sel">Tất cả CBTD</span><span class="sel">So với: 30/09/2026</span><button class="btn">⎙ Xuất báo cáo</button></div></div>
+    <div class="banner ok">✓ <b>Đối soát khớp tệp gốc:</b> 3.918 dòng · Σ dư nợ 2.160.375.016.661 đ · 1.871 khách hàng (theo mã KH) · 0 dòng loại bỏ ngoài quy tắc &nbsp; <span style="margin-left:auto">Xem bảng đối soát ›</span></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="l">Tổng dư nợ</div><div class="v">2.160,4 <small>tỷ</small></div><div class="d dn">▼ 19,9 tỷ so với 30/09</div></div>
+      <div class="card kpi"><div class="l">Khách hàng có dư nợ</div><div class="v">1.871</div><div class="d dn">▼ 9 KH</div></div>
+      <div class="card kpi"><div class="l">Khoản vay</div><div class="v">3.918</div><div class="d up">▲ 37 khoản</div></div>
+      <div class="card kpi"><div class="l">Nợ nhóm 2–5</div><div class="v">4 <small>khoản</small></div><div class="d">Tỷ lệ 0,0x% · chi tiết ›</div></div>
+      <div class="card kpi"><div class="l">Đến hạn 30 ngày tới</div><div class="v">27 <small>khoản</small></div><div class="d">Tính theo ngày dữ liệu</div></div>
+      <div class="card kpi"><div class="l">KH có TSBĐ</div><div class="v">97,6<small>%</small></div><div class="d">1.826 / 1.871 KH</div></div>
+    </div>
+    <div class="g" style="grid-template-columns:1.6fr 1fr">
+      <div class="card"><h3>Dư nợ 11 kỳ gần nhất <small>tỷ đồng · tổng hợp từ 11 tệp IPCAS</small></h3>
+        <svg width="100%" height="270" viewBox="0 0 980 270" font-family="Inter" font-size="11">
+          <g stroke="#e3e7ec"><line x1="50" y1="40" x2="960" y2="40"/><line x1="50" y1="100" x2="960" y2="100"/><line x1="50" y1="160" x2="960" y2="160"/><line x1="50" y1="220" x2="960" y2="220"/></g>
+          <g fill="#7b8796" text-anchor="end"><text x="44" y="44">2.200</text><text x="44" y="104">2.100</text><text x="44" y="164">2.000</text><text x="44" y="224">1.900</text></g>
+          <polyline fill="none" stroke="#146c43" stroke-width="2" points="70,173 159,172 248,191 337,152 426,166 515,163 604,129 693,116 782,80 871,60 960,72"/>
+          <g fill="#146c43" stroke="#fff" stroke-width="2"><circle cx="70" cy="173" r="4"/><circle cx="159" cy="172" r="4"/><circle cx="248" cy="191" r="4"/><circle cx="337" cy="152" r="4"/><circle cx="426" cy="166" r="4"/><circle cx="515" cy="163" r="4"/><circle cx="604" cy="129" r="4"/><circle cx="693" cy="116" r="4"/><circle cx="782" cy="80" r="4"/><circle cx="871" cy="60" r="5"/><circle cx="960" cy="72" r="5"/></g>
+          <g fill="#7b8796" text-anchor="middle"><text x="70" y="244">12/25</text><text x="159" y="244">01/26</text><text x="248" y="244">02</text><text x="337" y="244">03</text><text x="426" y="244">04</text><text x="515" y="244">05</text><text x="604" y="244">06</text><text x="693" y="244">07</text><text x="782" y="244">08</text><text x="871" y="244">09</text><text x="960" y="244">20/10</text></g>
+          <line x1="871" y1="40" x2="871" y2="220" stroke="#4a5666" stroke-dasharray="3 3"/>
+          <rect x="740" y="14" width="200" height="40" rx="6" fill="#1b2430"/><text x="752" y="31" fill="#fff" font-weight="700">30/09/2026 · 2.180,3 tỷ</text><text x="752" y="46" fill="#cfd6de">+32,6 tỷ so với 31/08</text>
+          <text x="960" y="64" text-anchor="end" fill="#1b2430" font-weight="700">2.160,4</text>
+        </svg></div>
+      <div class="card"><h3>Theo phòng giao dịch <small>tỷ đồng · 20/10/2026</small></h3>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:14px">
+          <div><div style="display:flex"><span>Hội Sở</span><b class="num" style="margin-left:auto">1.160,2</b></div><div class="bar"><i style="width:100%"></i></div></div>
+          <div><div style="display:flex"><span>PGD Hai Bà Trưng</span><b class="num" style="margin-left:auto">585,7</b></div><div class="bar"><i style="width:50%"></i></div></div>
+          <div><div style="display:flex"><span>PGD Số 2</span><b class="num" style="margin-left:auto">414,5</b></div><div class="bar"><i style="width:36%"></i></div></div>
+          <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;color:var(--ink2)"><span>Chưa phân phòng</span><b class="num" style="margin-left:auto">0,0</b></div>
+        </div></div>
+    </div>
+    <div class="g" style="grid-template-columns:1fr 1fr 1.2fr">
+      <div class="card"><h3>Theo loại vay</h3><table class="t" style="margin-top:8px"><thead><tr><th>Loại vay</th><th class="num">Số KH</th><th class="num">Dư nợ</th><th class="num">Tỷ trọng</th></tr></thead>
+        <tbody><tr><td>Ngắn hạn (TK211)</td><td class="num">1.104</td><td class="num">1.203,6</td><td class="num">55,7%</td></tr><tr><td>Trung hạn (TK212)</td><td class="num">512</td><td class="num">601,9</td><td class="num">27,9%</td></tr><tr><td>Dài hạn (TK213)</td><td class="num">298</td><td class="num">342,1</td><td class="num">15,8%</td></tr><tr><td>Thấu chi</td><td class="num">61</td><td class="num">12,8</td><td class="num">0,6%</td></tr></tbody>
+        <tfoot><tr><td>Tổng (khớp KPI)</td><td class="num">1.871*</td><td class="num">2.160,4</td><td class="num">100%</td></tr></tfoot></table></div>
+      <div class="card"><h3>Theo nhóm nợ</h3><table class="t" style="margin-top:8px"><thead><tr><th>Nhóm</th><th class="num">Khoản</th><th class="num">Dư nợ</th></tr></thead>
+        <tbody><tr><td><span class="tag g1">Nhóm 1</span></td><td class="num">3.914</td><td class="num">2.158,9</td></tr><tr><td><span class="tag g2">Nhóm 2</span></td><td class="num">4</td><td class="num">1,5</td></tr><tr><td><span class="tag g3">Nhóm 3–5</span></td><td class="num">0</td><td class="num">0,0</td></tr><tr><td><span class="tag m">Không rõ nhóm</span></td><td class="num">0</td><td class="num">0,0</td></tr></tbody></table></div>
+      <div class="card"><h3>Cảnh báo sớm <small>theo ngày dữ liệu</small></h3><table class="t" style="margin-top:8px"><tbody>
+        <tr><td><span class="tag g3">Quá hạn</span></td><td>KH Mẫu 014 · HĐ …0231</td><td class="num">1,20 tỷ</td></tr>
+        <tr><td><span class="tag g2">≤ 7 ngày</span></td><td>KH Mẫu 102 · HĐ …8810</td><td class="num">0,85 tỷ</td></tr>
+        <tr><td><span class="tag g2">≤ 7 ngày</span></td><td>KH Mẫu 077 · HĐ …1192</td><td class="num">2,40 tỷ</td></tr>
+        <tr><td><span class="tag i">TSBĐ hết hạn</span></td><td>KH Mẫu 205 · GCN …</td><td class="num">—</td></tr>
+        <tr><td><span class="tag m">Lãi suất bất thường</span></td><td>3 khoản ≥ 15%/năm</td><td class="num">xem ›</td></tr></tbody></table></div>
+    </div>
+  </div>
+</div>
+<div class="note" style="left:1236px;top:58px"><span class="badge-n">1</span><b>Ngày dữ liệu</b> là nguồn sự thật: đến hạn/quá hạn tính theo ngày này, không theo đồng hồ máy.</div>
+<div class="note" style="left:280px;top:850px;max-width:330px"><span class="badge-n">2</span><b>Dải đối soát</b> luôn hiển thị: tổng app = tổng tệp gốc; lệch → chuyển vàng/đỏ.</div>
+<div class="note" style="left:12px;top:850px;max-width:210px"><span class="badge-n">3</span><b>Menu 6 nhóm</b>: HSVV, mẫu biểu, đối soát, trung tâm dữ liệu đã có lối vào.</div>
+</div>
+
+<!-- ============ F2: 1366 Dư nợ table ============ -->
+<div class="frame" id="m_duno1366" style="width:1366px;height:768px">
+<div class="shell collapsed">
+  <div class="top">
+    <div class="logo" style="width:48px"><i>Q</i></div>
+    <div class="crumb">Danh mục tín dụng › <b>Dư nợ</b></div>
+    <div class="search" style="flex-basis:300px">⌕ Tìm nhanh…<kbd>Ctrl K</kbd></div>
+    <span class="chip date">● 20/10/2026 ▾</span>
+    <button class="btn pri">⇪ Nhập dữ liệu</button><button class="btn ghost">⋯</button><div class="avatar">TW</div>
+  </div>
+  <div class="side">
+    <div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="grp-sep"></div>
+    <div class="it on"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="grp-sep"></div>
+    <div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="grp-sep"></div>
+    <div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div><div class="grp-sep"></div><div class="it"><i class="ic"></i></div><div class="it"><i class="ic"></i></div>
+  </div>
+  <div class="main" style="padding:12px 14px;gap:10px">
+    <div class="ph"><div><h1 style="font-size:18px">Dư nợ</h1><p>3.918 khoản · 1.871 KH · Σ 2.160.375.016.661 đ</p></div>
+      <div class="act"><button class="btn sm">⚙ Cột (9/20)</button><button class="btn sm">⇩ Xuất Excel</button><button class="btn sm">⎙ In</button></div></div>
+    <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <div class="toolbar"><span class="inp" style="width:260px">⌕ Tên, mã KH, số HĐTD…</span><span class="sel">CBTD</span><span class="sel">Phòng</span><span class="sel">Loại vay</span><span class="sel">Nhóm nợ</span>
+        <span class="fchip">Phòng: Hội Sở ✕</span><span class="fchip">Nhóm 1 ✕</span><span style="margin-left:auto;color:var(--muted)">Bố cục: <b style="color:var(--ink)">Gọn 1366</b> ▾</span></div>
+      <div style="overflow:hidden;flex:1"><table class="t">
+        <thead><tr><th class="pin">Khách hàng</th><th>Số HĐTD</th><th>CBTD</th><th>Loại vay</th><th class="num">Dư nợ (đ)</th><th class="num">Lãi suất</th><th>Đến hạn</th><th>Nhóm</th><th>TSBĐ</th></tr></thead>
+        <tbody id="rows1366"></tbody>
+        <tfoot><tr><td class="pin">Tổng theo bộ lọc (1.042 khoản)</td><td></td><td></td><td></td><td class="num">1.160.218.004.512</td><td class="num">8,94%*</td><td></td><td></td><td></td></tr></tfoot>
+      </table></div>
+      <div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0;color:var(--muted)">Hiển thị 1–16 / 1.042 · cuộn ảo · <span style="margin-left:auto">* lãi suất bình quân gia quyền theo dư nợ</span></div>
+    </div>
+  </div>
+</div>
+<div class="note" style="left:70px;top:690px;max-width:230px"><span class="badge-n">1</span><b>Sidebar thu gọn</b> 64px ở 1366 (rê chuột để mở), nhường 1.300px cho bảng.</div>
+<div class="note" style="left:1060px;top:58px;max-width:230px"><span class="badge-n">2</span><b>Preset cột</b> “Gọn 1366” 9 cột vừa màn; “Đầy đủ 1920” 14 cột; tùy chọn cột lưu theo người dùng.</div>
+<div class="note" style="left:560px;top:700px;max-width:300px"><span class="badge-n">3</span>Một hệ bảng duy nhất: <b>cột KH ghim trái</b>, tiêu đề dính, dòng tổng theo bộ lọc.</div>
+</div>
+
+<!-- ============ F3: Mobile ============ -->
+<div class="frame" id="m_mobile" style="width:390px;height:844px">
+<div class="mob">
+  <div class="mtop"><div class="logo" style="width:auto"><i>Q</i></div><b>Tổng quan</b><span class="chip date" style="margin-left:auto;padding:4px 9px">20/10 ▾</span></div>
+  <div style="padding:12px;display:flex;flex-direction:column;gap:10px">
+    <div class="banner ok" style="font-size:12px">✓ Khớp tệp gốc · 3.918 dòng</div>
+    <div class="g" style="grid-template-columns:1fr 1fr;gap:10px">
+      <div class="card kpi"><div class="l">Tổng dư nợ</div><div class="v" style="font-size:19px">2.160,4<small> tỷ</small></div><div class="d dn">▼ 19,9 tỷ</div></div>
+      <div class="card kpi"><div class="l">Khách hàng</div><div class="v" style="font-size:19px">1.871</div><div class="d dn">▼ 9</div></div>
+      <div class="card kpi"><div class="l">Nhóm 2–5</div><div class="v" style="font-size:19px">4</div><div class="d">khoản</div></div>
+      <div class="card kpi"><div class="l">Đến hạn 30 ngày</div><div class="v" style="font-size:19px">27</div><div class="d">khoản</div></div>
+    </div>
+    <div class="card"><h3>Cần xử lý hôm nay</h3>
+      <div style="padding:8px 14px 12px;display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;gap:8px"><span class="tag g3">Quá hạn</span><span>KH Mẫu 014</span><b class="num" style="margin-left:auto">1,20 tỷ</b></div>
+        <div style="display:flex;gap:8px"><span class="tag g2">≤7 ngày</span><span>KH Mẫu 102</span><b class="num" style="margin-left:auto">0,85 tỷ</b></div>
+        <div style="display:flex;gap:8px"><span class="tag g2">≤7 ngày</span><span>KH Mẫu 077</span><b class="num" style="margin-left:auto">2,40 tỷ</b></div>
+      </div></div>
+    <div class="card"><h3>Theo phòng</h3><div style="padding:10px 14px;display:flex;flex-direction:column;gap:10px">
+      <div><div style="display:flex"><span>Hội Sở</span><b class="num" style="margin-left:auto">1.160,2</b></div><div class="bar"><i style="width:100%"></i></div></div>
+      <div><div style="display:flex"><span>PGD HBT</span><b class="num" style="margin-left:auto">585,7</b></div><div class="bar"><i style="width:50%"></i></div></div>
+      <div><div style="display:flex"><span>PGD Số 2</span><b class="num" style="margin-left:auto">414,5</b></div><div class="bar"><i style="width:36%"></i></div></div></div></div>
+  </div>
+  <div class="mnav"><div class="on"><i></i>Tổng quan</div><div><i></i>Dư nợ</div><div><i></i>Cảnh báo</div><div><i></i>Tra cứu</div><div><i></i>Thêm</div></div>
+</div></div>
+
+<!-- ============ F4: Import wizard ============ -->
+<div class="frame" id="m_import" style="width:1600px;height:900px;background:#8e98a3">
+<div style="position:absolute;inset:50px 160px;background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.3);display:flex;flex-direction:column">
+  <div style="padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center"><div><h2 style="font-size:18px">Trung tâm nhập dữ liệu</h2><p style="color:var(--muted);font-size:12px">Kéo thả nhiều tệp cùng lúc · app tự nhận dạng loại tệp và ngày dữ liệu</p></div><span style="margin-left:auto;color:var(--muted);font-size:18px">✕</span></div>
+  <div style="padding:14px 24px 0"><div class="steps"><div class="step done"><i>✓</i>Chọn tệp</div><div class="step done"><i>✓</i>Nhận dạng</div><div class="step cur"><i>3</i>Kiểm tra &amp; đối soát</div><div class="step"><i>4</i>Ghi dữ liệu</div></div></div>
+  <div style="padding:10px 24px;flex:1;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+    <table class="t"><thead><tr><th>Tệp</th><th>Loại nhận dạng</th><th>Ngày dữ liệu</th><th class="num">Dòng</th><th class="num">Σ tệp gốc</th><th class="num">Σ sau chuẩn hóa</th><th>Kết quả</th></tr></thead><tbody>
+      <tr><td>20.10.2026.XLS</td><td><span class="tag i">Dư nợ IPCAS · 87 cột</span></td><td>20/10/2026 <span class="tag m">tên tệp</span></td><td class="num">3.918</td><td class="num">2.160.375.016.661</td><td class="num">2.160.375.016.661</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Sao ke tai san bao dam 20.10.2026.XLS</td><td><span class="tag i">Sao kê TSBĐ · 39 cột</span></td><td>20/10/2026</td><td class="num">19.133</td><td class="num">20.879.074.485.436</td><td class="num">5.902.311.000.000*</td><td class="warn-i">⚠ Lọc 13.211 dòng</td></tr>
+      <tr><td>2. PL02_ Thành Phố Nam Định (cũ).docx</td><td><span class="tag i">Bảng giá đất · 8 phường</span></td><td>2026</td><td class="num">1.007</td><td class="num">—</td><td class="num">—</td><td class="warn-i">⚠ 40 ô “#DIV/0!/Chưa hoàn thiện”</td></tr>
+    </tbody></table>
+    <div class="g" style="grid-template-columns:1fr 1fr">
+      <div class="card"><h3>Kiểm tra dư nợ 20.10.2026 <small>quy tắc chuẩn hóa</small></h3><table class="t" style="margin-top:6px"><tbody>
+        <tr><td class="ok-i">✓</td><td>Đủ 87 cột bắt buộc (dsbsbal, sprd, AQCCDFIN, dsbsseq…)</td><td class="num">87/87</td></tr>
+        <tr><td class="ok-i">✓</td><td>Ô ngày nhận theo định dạng ô (không đoán theo giá trị số)</td><td class="num">8 cột</td></tr>
+        <tr><td class="ok-i">✓</td><td>Lãi suất trong khoảng 0–30%/năm</td><td class="num">3.918</td></tr>
+        <tr><td class="warn-i">⚠</td><td>Dư nợ = 0 (giữ trong lưu trữ, ẩn ở KPI)</td><td class="num">12</td></tr>
+        <tr><td class="warn-i">⚠</td><td>Ngày giải ngân sau ngày dữ liệu</td><td class="num">0</td></tr>
+        <tr><td class="warn-i">⚠</td><td>Lãi dự thu âm (acramt &lt; 0)</td><td class="num">31</td></tr>
+        <tr><td class="ok-i">✓</td><td>Số hiệu khoản vay (dsbsseq) không trùng</td><td class="num">0 trùng</td></tr></tbody></table></div>
+      <div class="card"><h3>Thay đổi so với kỳ trước (30/09/2026)</h3><table class="t" style="margin-top:6px"><tbody>
+        <tr><td>Khoản vay mới</td><td class="num">+412</td></tr><tr><td>Khoản vay tất toán</td><td class="num">−375</td></tr>
+        <tr><td>Thay đổi lãi suất</td><td class="num">58 khoản</td></tr><tr><td>Chuyển nhóm nợ</td><td class="num">3 khoản</td></tr>
+        <tr><td>Σ dư nợ</td><td class="num">−19.935.945.397 đ</td></tr><tr><td>Dữ liệu sửa tay sẽ được giữ</td><td class="num">6 trường</td></tr></tbody></table>
+        <div class="banner info" style="margin:10px 14px">ℹ Bản hiện tại sẽ được lưu thành mốc 30/09/2026 trước khi ghi (hoàn tác được).</div></div>
+    </div>
+  </div>
+  <div style="padding:14px 24px;border-top:1px solid var(--line);display:flex;gap:10px"><button class="btn">‹ Quay lại</button><span style="margin-left:auto;color:var(--muted);align-self:center">Nhật ký nhập sẽ ghi: người nhập, giờ, checksum tệp</span><button class="btn pri">Ghi 2 tệp hợp lệ ›</button></div>
+</div></div>
+
+<!-- ============ F5: Đối soát ============ -->
+<div class="frame" id="m_doisoat" style="width:1600px;height:900px">
+<div class="shell" style="--sb:220px">
+  <div class="top"><div class="logo"><i>Q</i><div>QLTD PRO</div></div><div class="crumb">Báo cáo &amp; dữ liệu › <b>Đối soát số liệu</b></div><span class="chip date" style="margin-left:auto">● 20/10/2026 ▾</span><button class="btn pri">⇪ Nhập dữ liệu</button><div class="avatar">TW</div></div>
+  <div class="side"><div class="grp">Báo cáo &amp; dữ liệu</div><div class="it"><i class="ic"></i><span>Báo cáo IPCAS</span></div><div class="it on"><i class="ic"></i><span>Đối soát số liệu</span></div><div class="it"><i class="ic"></i><span>Xu hướng 11 kỳ</span></div><div class="it"><i class="ic"></i><span>Trung tâm dữ liệu</span></div></div>
+  <div class="main">
+    <div class="ph"><div><h1>Đối soát số liệu</h1><p>Mỗi con số trên màn hình được tính lại độc lập từ tệp gốc và so sánh · một engine KPI dùng chung</p></div><div class="act"><button class="btn">⇩ Xuất biên bản đối soát</button></div></div>
+    <div class="banner warn">⚠ 1 chỉ tiêu lệch: “Báo cáo IPCAS – tổng theo CBTD” thấp hơn tổng dư nợ 12,4 tỷ do 1 CBTD chưa ánh xạ → đã đưa vào dòng “Chưa phân CBTD”.</div>
+    <div class="card"><table class="t"><thead><tr><th>Chỉ tiêu</th><th>Màn hình</th><th class="num">Giá trị app</th><th class="num">Giá trị tệp gốc</th><th class="num">Chênh lệch</th><th>Trạng thái</th></tr></thead><tbody>
+      <tr><td>Tổng dư nợ</td><td>Bảng điều khiển</td><td class="num">2.160.375.016.661</td><td class="num">2.160.375.016.661</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Tổng dư nợ</td><td>Báo cáo IPCAS</td><td class="num">2.160.375.016.661</td><td class="num">2.160.375.016.661</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Số khách hàng (theo mã KH)</td><td>Bảng điều khiển · Báo cáo · Lưu trữ</td><td class="num">1.871</td><td class="num">1.871</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Σ theo phòng (3 phòng + chưa phân)</td><td>Bảng III</td><td class="num">2.160.375.016.661</td><td class="num">2.160.375.016.661</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Σ theo CBTD</td><td>Báo cáo IPCAS</td><td class="num">2.147.975.016.661</td><td class="num">2.160.375.016.661</td><td class="num">−12.400.000.000</td><td class="warn-i">⚠ CBTD chưa ánh xạ</td></tr>
+      <tr><td>Σ theo nhóm nợ (gồm “không rõ”)</td><td>Bảng II</td><td class="num">2.160.375.016.661</td><td class="num">2.160.375.016.661</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Lãi suất bình quân gia quyền</td><td>Dư nợ</td><td class="num">8,96%</td><td class="num">8,96%</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Số khoản lãi suất ngoài 0–30%</td><td>Kiểm tra dữ liệu</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="ok-i">✓</td></tr>
+      <tr><td>Số khoản quá hạn (theo ngày dữ liệu)</td><td>Đến hạn &amp; quá hạn</td><td class="num">3</td><td class="num">3</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+      <tr><td>Σ giá trị TSBĐ còn hiệu lực (VND, khử trùng clno)</td><td>Tài sản bảo đảm</td><td class="num">5.902.311.000.000</td><td class="num">5.902.311.000.000</td><td class="num">0</td><td class="ok-i">✓ Khớp</td></tr>
+    </tbody></table></div>
+    <div class="g" style="grid-template-columns:1fr 1fr"><div class="card"><h3>Lịch sử đối soát</h3><table class="t" style="margin-top:6px"><tbody><tr><td>20/10/2026 08:41</td><td>20.10.2026.XLS</td><td class="warn-i">1 cảnh báo</td></tr><tr><td>01/10/2026 09:02</td><td>30.09.2026.XLS</td><td class="ok-i">Khớp</td></tr><tr><td>01/09/2026 08:55</td><td>31.08.2026.XLS</td><td class="ok-i">Khớp</td></tr></tbody></table></div>
+    <div class="card"><h3>Quy tắc tính (công khai)</h3><div style="padding:10px 14px;color:var(--ink2);line-height:1.6">• Khách hàng = mã KH (cột IPCAS “brcd”), không theo tên.<br>• Dư nợ thực tế = dsbsbal &gt; 0; dòng 0 giữ trong lưu trữ.<br>• Nhóm nợ trống → “Không rõ nhóm”, không tự gán Nhóm 1.<br>• Đến hạn/quá hạn so với <b>ngày dữ liệu</b>.</div></div></div>
+  </div>
+</div></div>
+
+<!-- ============ F6: TSBĐ ============ -->
+<div class="frame" id="m_tsbd" style="width:1600px;height:900px">
+<div class="shell" style="--sb:220px">
+  <div class="top"><div class="logo"><i>Q</i><div>QLTD PRO</div></div><div class="crumb">Khách hàng &amp; tài sản › <b>Tài sản bảo đảm</b></div><span class="chip date" style="margin-left:auto">● Sao kê TSBĐ 20/10/2026 ▾</span><button class="btn pri">⇪ Nhập dữ liệu</button><div class="avatar">TW</div></div>
+  <div class="side"><div class="grp">Khách hàng &amp; tài sản</div><div class="it"><i class="ic"></i><span>Khách hàng 360°</span></div><div class="it on"><i class="ic"></i><span>Tài sản bảo đảm</span></div><div class="it"><i class="ic"></i><span>Giá đất &amp; hệ số K, H</span></div></div>
+  <div class="main">
+    <div class="ph"><div><h1>Tài sản bảo đảm</h1><p>Nguồn: Sao kê 20/10/2026 · phạm vi: CBTD của phòng · chỉ TS đang nắm giữ</p></div></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="l">TS đang nắm giữ</div><div class="v">2.281</div><div class="d">đã loại 3.647 giải chấp</div></div>
+      <div class="card kpi"><div class="l">Giá trị TS (VND)</div><div class="v">5.902,3<small> tỷ</small></div><div class="d">khử trùng 66 TS nhiều HĐ</div></div>
+      <div class="card kpi"><div class="l">KH vay có TSBĐ</div><div class="v">1.826</div><div class="d">/ 1.871 KH (97,6%)</div></div>
+      <div class="card kpi"><div class="l">Dư nợ chưa có TS</div><div class="v">18,7<small> tỷ</small></div><div class="d">45 KH · chủ yếu thấu chi</div></div>
+      <div class="card kpi"><div class="l">TS hết hạn định giá</div><div class="v">37</div><div class="d warn-i">cần định giá lại</div></div>
+      <div class="card kpi"><div class="l">Ngoại tệ</div><div class="v">0</div><div class="d">USD/EUR quy đổi theo tỷ giá nhập</div></div>
+    </div>
+    <div class="card" style="flex:1;overflow:hidden"><div class="tabs"><div class="tab on">Theo khách hàng</div><div class="tab">Danh sách tài sản</div><div class="tab">So sánh mốc</div><div class="tab">Chất lượng dữ liệu (14)</div></div>
+      <table class="t"><thead><tr><th>Khách hàng</th><th class="num">Dư nợ</th><th class="num">Số TS</th><th class="num">Giá trị TS</th><th class="num">TS / Dư nợ</th><th>Loại TS chính</th><th>Cảnh báo</th></tr></thead><tbody>
+      <tr><td>KH Mẫu 001</td><td class="num">4.200.000.000</td><td class="num">2</td><td class="num">9.850.000.000</td><td class="num">2,35×</td><td>QSDĐ + tài sản gắn liền</td><td>—</td></tr>
+      <tr><td>KH Mẫu 002</td><td class="num">1.150.000.000</td><td class="num">1</td><td class="num">1.300.000.000</td><td class="num">1,13×</td><td>QSDĐ</td><td class="warn-i">Tỷ lệ thấp</td></tr>
+      <tr><td>KH Mẫu 003</td><td class="num">620.000.000</td><td class="num">1</td><td class="num">700.000.000</td><td class="num">1,13×</td><td>Sổ tiền gửi</td><td>—</td></tr>
+      <tr><td>KH Mẫu 004</td><td class="num">3.000.000.000</td><td class="num">3</td><td class="num">5.100.000.000</td><td class="num">1,70×</td><td>QSDĐ · bên thứ 3</td><td><span class="tag i">Bên thứ 3</span></td></tr>
+      <tr><td>KH Mẫu 005</td><td class="num">250.000.000</td><td class="num">0</td><td class="num">0</td><td class="num">—</td><td>—</td><td class="bad-i">Chưa có TS</td></tr>
+      <tr><td>KH Mẫu 006</td><td class="num">2.400.000.000</td><td class="num">1</td><td class="num">3.900.000.000</td><td class="num">1,63×</td><td>QSDĐ</td><td class="warn-i">Định giá &gt; 5 năm</td></tr>
+      </tbody></table></div>
+  </div>
+</div>
+<div class="note" style="left:640px;top:120px;max-width:330px"><span class="badge-n">1</span>Ghép theo <b>khách hàng</b> (clcustno/plgcustno = mã KH), dư nợ tính <b>1 lần/KH</b>, không cộng lặp theo từng tài sản. Không còn seed 18/08 nhúng sẵn.</div>
+</div>
+
+<!-- ============ F7: Giá đất ============ -->
+<div class="frame" id="m_giadat" style="width:1600px;height:640px">
+<div class="shell" style="--sb:220px">
+  <div class="top"><div class="logo"><i>Q</i><div>QLTD PRO</div></div><div class="crumb">Khách hàng &amp; tài sản › <b>Giá đất &amp; hệ số K, H</b></div><span class="chip" style="margin-left:auto">Bảng giá: PL02 – TP Nam Định (cũ) · NQ 38/2025 HĐND Ninh Bình</span><div class="avatar">TW</div></div>
+  <div class="side"><div class="grp">Khách hàng &amp; tài sản</div><div class="it"><i class="ic"></i><span>Khách hàng 360°</span></div><div class="it"><i class="ic"></i><span>Tài sản bảo đảm</span></div><div class="it on"><i class="ic"></i><span>Giá đất &amp; hệ số K, H</span></div></div>
+  <div class="main">
+    <div class="tabs" style="background:#fff;border:1px solid var(--line);border-radius:8px"><div class="tab on">Tính giá thửa đất</div><div class="tab">Tra bảng giá (985 đoạn)</div><div class="tab">Vị trí đất</div><div class="tab">Đất nông nghiệp</div><div class="tab">Quy định PL01</div><div class="tab">Lỗi dữ liệu bảng giá (95)</div></div>
+    <div class="g" style="grid-template-columns:1.1fr 1fr">
+      <div class="card"><h3>1 · Chọn đoạn đường</h3><div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <span class="sel">Phường: Nam Định</span><span class="inp">⌕ Trần Hưng Đạo</span>
+        <span class="sel" style="grid-column:1/3">Đoạn: Ngõ Hai Bà Trưng → Ngã tư Quang Trung</span>
+        <span class="sel">Vị trí: VT1 (mặt đường)</span><span class="inp" style="color:var(--ink)">Diện tích: 85,0 m²</span></div>
+        <table class="t"><thead><tr><th>VT1</th><th class="num">Cao nhất</th><th class="num">Thấp nhất</th><th class="num">Trung bình</th><th class="num">Giá NQ38</th></tr></thead><tbody><tr><td>đ/m²</td><td class="num">250.000.000</td><td class="num">200.000.000</td><td class="num">225.000.000</td><td class="num">—</td></tr></tbody></table>
+        <div class="banner info" style="margin:10px 14px">ℹ Khóa tra cứu gồm <b>phường + tên đường + từ + đến</b> (bản cũ thiếu tên đường → 54 khóa trùng).</div>
+        <h3>2 · Hệ số điều chỉnh (PL01)</h3><table class="t" style="margin-top:6px"><tbody>
+        <tr><td>K1 Số mặt tiền</td><td>1 mặt đường</td><td class="num">1,00</td></tr><tr><td>K2 Diện tích đất ở</td><td>&lt; 100 m²</td><td class="num">1,00</td></tr>
+        <tr><td>K4 Chiều rộng mặt tiền</td><td>4–6 m</td><td class="num">1,00</td></tr><tr><td>K5 Hình dáng</td><td>Nở hậu</td><td class="num">1,02</td></tr>
+        <tr><td>H1 Lợi thế</td><td>≤ 300 m chợ/trường</td><td class="num">≤ 1,20 → chọn 1,10</td></tr><tr><td>H2 Bất lợi</td><td>Không</td><td class="num">1,00</td></tr></tbody></table></div>
+      <div class="card"><h3>3 · Kết quả</h3><div style="padding:14px;display:flex;flex-direction:column;gap:12px">
+        <div class="kv"><dt>Đơn giá lựa chọn</dt><dd class="num" style="text-align:left">225.000.000 đ/m² (TB VT1)</dd><dt>Tích hệ số</dt><dd>1,00 × 1,00 × 1,00 × 1,02 × 1,10 × 1,00 = <b>1,122</b></dd><dt>Đơn giá điều chỉnh</dt><dd>252.450.000 đ/m²</dd><dt>Diện tích</dt><dd>85,0 m²</dd></div>
+        <div style="background:var(--brand-pale);border-radius:8px;padding:14px"><div style="color:var(--brand);font-weight:600">Giá trị quyền sử dụng đất</div><div style="font-size:28px;font-weight:800;margin-top:4px">21.458.250.000 đ</div><div style="color:var(--ink2);font-size:12px">Làm tròn đến nghìn đồng · quy tắc: không vượt hệ số tối đa</div></div>
+        <div class="banner warn">⚠ Hệ số H1 vượt 1,00: ghi rõ căn cứ trong tờ trình định giá.</div>
+        <div style="display:flex;gap:8px"><button class="btn pri">→ Đưa vào hồ sơ vay (HSVV)</button><button class="btn">⎙ In phiếu tính giá</button></div>
+      </div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ F8: KH 360 ============ -->
+<div class="frame" id="m_kh360" style="width:1600px;height:620px">
+<div class="shell" style="--sb:220px;grid-template-columns:var(--sb) 1fr 380px">
+  <div class="top" style="grid-column:1/4"><div class="logo"><i>Q</i><div>QLTD PRO</div></div><div class="crumb">Khách hàng › <b>Khách hàng 360°</b></div><div class="search" style="flex-basis:380px">⌕ KH Mẫu 004<kbd>Ctrl K</kbd></div><span class="chip date">● 20/10/2026</span><div class="avatar">TW</div></div>
+  <div class="side"><div class="grp">Khách hàng &amp; tài sản</div><div class="it on"><i class="ic"></i><span>Khách hàng 360°</span></div><div class="it"><i class="ic"></i><span>Khách hàng mới</span></div><div class="it"><i class="ic"></i><span>Tài sản bảo đảm</span></div></div>
+  <div class="main">
+    <div class="ph"><div><h1>KH Mẫu 004</h1><p>Mã KH 3201xxxxxxxxx · Cá nhân · CBTD 07 · Hội Sở</p></div><div class="act"><button class="btn">✉ Tin nhắn nhắc nợ</button><button class="btn pri">+ Lập hồ sơ vay</button></div></div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)"><div class="card kpi"><div class="l">Dư nợ</div><div class="v">3,00<small> tỷ</small></div><div class="d">3 khoản · 2 HĐTD</div></div><div class="card kpi"><div class="l">Hạn mức</div><div class="v">4,50<small> tỷ</small></div><div class="d">dùng 66,7%</div></div><div class="card kpi"><div class="l">TSBĐ</div><div class="v">5,10<small> tỷ</small></div><div class="d">1,70× dư nợ</div></div><div class="card kpi"><div class="l">Nhóm nợ</div><div class="v" style="font-size:18px"><span class="tag g1">Nhóm 1</span></div><div class="d">11/11 kỳ nhóm 1</div></div></div>
+    <div class="card"><div class="tabs"><div class="tab on">Khoản vay</div><div class="tab">Tài sản bảo đảm</div><div class="tab">Lịch sử 11 kỳ</div><div class="tab">Hồ sơ vay</div><div class="tab">Ghi chú</div></div>
+      <table class="t"><thead><tr><th>Số khoản vay</th><th>Loại</th><th class="num">Dư nợ</th><th class="num">Lãi suất</th><th>Giải ngân</th><th>Đến hạn</th><th>Trạng thái</th></tr></thead><tbody>
+      <tr class="rsel"><td>…LDS…0451</td><td>Ngắn hạn</td><td class="num">1.500.000.000</td><td class="num">8,50%</td><td>02/04/2026</td><td>02/01/2027</td><td><span class="tag g1">Bình thường</span></td></tr>
+      <tr><td>…LDS…0718</td><td>Ngắn hạn</td><td class="num">900.000.000</td><td class="num">8,50%</td><td>15/06/2026</td><td>15/12/2026</td><td><span class="tag g2">Đến hạn ≤ 60 ngày</span></td></tr>
+      <tr><td>…LDS…0110</td><td>Trung hạn</td><td class="num">600.000.000</td><td class="num">9,20%</td><td>10/01/2025</td><td>10/01/2028</td><td><span class="tag g1">Bình thường</span></td></tr></tbody></table></div>
+    <div class="card"><h3>Dư nợ của khách hàng qua 11 kỳ <small>tỷ đồng</small></h3>
+      <svg width="100%" height="150" viewBox="0 0 1000 150" font-family="Inter" font-size="11"><g stroke="#e3e7ec"><line x1="40" y1="20" x2="980" y2="20"/><line x1="40" y1="70" x2="980" y2="70"/><line x1="40" y1="120" x2="980" y2="120"/></g><g fill="#7b8796" text-anchor="end"><text x="34" y="24">3,0</text><text x="34" y="74">2,0</text><text x="34" y="124">1,0</text></g>
+      <g fill="#146c43"><rect x="60" y="45" width="56" height="75" rx="4"/><rect x="146" y="45" width="56" height="75" rx="4"/><rect x="232" y="45" width="56" height="75" rx="4"/><rect x="318" y="30" width="56" height="90" rx="4"/><rect x="404" y="30" width="56" height="90" rx="4"/><rect x="490" y="30" width="56" height="90" rx="4"/><rect x="576" y="20" width="56" height="100" rx="4"/><rect x="662" y="20" width="56" height="100" rx="4"/><rect x="748" y="20" width="56" height="100" rx="4"/><rect x="834" y="20" width="56" height="100" rx="4"/><rect x="920" y="20" width="56" height="100" rx="4"/></g>
+      <g fill="#7b8796" text-anchor="middle"><text x="88" y="140">12/25</text><text x="518" y="140">05/26</text><text x="948" y="140">20/10</text></g></svg></div>
+  </div>
+  <div class="drawer"><b style="font-size:14px">Chi tiết khoản …0451</b><dl class="kv"><dt>HĐTD</dt><dd>…LAV…0233</dd><dt>Hạn mức</dt><dd>3.000.000.000</dd><dt>Dư nợ</dt><dd>1.500.000.000</dd><dt>Lãi suất</dt><dd>8,50% (IPCAS 20/10)</dd><dt>Lãi dự thu</dt><dd>3.493.150</dd><dt>Kỳ trả lãi kế</dt><dd>25/10/2026</dd><dt>Bảo đảm</dt><dd>Có · không giới hạn</dd><dt>Nguồn</dt><dd>20.10.2026.XLS · dòng 1.204</dd></dl>
+    <div class="banner info">ℹ Lãi suất lấy từ tệp nhập gần nhất; sửa tay sẽ được đánh dấu và không bị ghi đè khi tải lại.</div>
+    <div style="display:flex;gap:8px"><button class="btn sm">Sửa</button><button class="btn sm">Lịch sử thay đổi</button></div></div>
+</div></div>
+
+<!-- ============ D1: menu tree ============ -->
+<div class="frame dg" id="d_menu" style="width:1600px;height:730px">
+<h2>Cây điều hướng: hiện tại → đề xuất</h2><div class="sub">Đỏ = trang không có lối vào / trùng lặp; vàng = nhãn lệch tiêu đề; xanh = mới hoặc được đưa vào menu</div>
+<div class="col2">
+<div class="box bad"><b>HIỆN TẠI (v22.3)</b><div class="tree" style="margin-top:8px">TỔNG HỢP
+├─ Tổng quan                 <span class="c">→ “Dashboard – Tổng quan”</span>
+└─ Chỉ tiêu kế hoạch
+HỒ SƠ VAY                    <span class="w">← không chứa hồ sơ vay</span>
+├─ Dư nợ                     <span class="w">→ “QUẢN LÝ TÍN DỤNG”</span>
+│  ├─ Ngắn hạn               <span class="w">→ “QUẢN LÝ HẠN MỨC”</span>
+│  └─ Trung-dài hạn          <span class="w">→ “QUẢN LÝ TIÊU DÙNG”</span>
+├─ Nợ đến hạn                <span class="w">→ “LỊCH TRẢ NỢ”</span>
+├─ Lãi đọng · Chuyển hạn mức
+├─ Trả nợ/Xuất tài sản
+└─ Tài sản bảo đảm
+NGHIỆP VỤ
+├─ Giải ngân                 <span class="w">→ “PHÍ GIẢI NGÂN”</span>
+├─ Khách hàng mới
+└─ Báo cáo IPCAS             <span class="x">×2 lối vào</span>
+DỮ LIỆU THAM CHIẾU
+├─ Giá đất &amp; hệ số K,H
+├─ Lưu trữ file              <span class="x">×6 lối vào</span>
+├─ Auto-Sync IPCAS (modal)   <span class="x">×3 lối vào</span>
+└─ Thông báo nợ (modal)
+<span class="x">KHÔNG CÓ LỐI VÀO:</span>
+<span class="x">  hsvv (560 KB, lõi) · fhs · hmtd</span>
+<span class="x">  tieudung · camco · qcamco (🚧)</span>
+<span class="x">  Hướng dẫn HDSD (chỉ mở từ hsvv)</span>
+Topbar: 15 nút + Tiện ích(12 mục)
+Phiên bản: v1.7 / v19 / v22.3</div></div>
+<div class="box good"><b>ĐỀ XUẤT (v23)</b><div class="tree" style="margin-top:8px">TỔNG QUAN
+├─ Bảng điều khiển
+├─ Chỉ tiêu kế hoạch
+└─ <span class="n">Cảnh báo sớm</span>             <span class="c">(đến hạn, nhóm 2, TSBĐ)</span>
+DANH MỤC TÍN DỤNG
+├─ Dư nợ ▸ Ngắn hạn · Trung–dài hạn
+├─ Đến hạn &amp; quá hạn       <span class="c">(theo ngày dữ liệu)</span>
+├─ Lãi đọng · Chuyển hạn mức
+├─ Giải ngân &amp; phí
+└─ Trả nợ / Xuất tài sản
+KHÁCH HÀNG &amp; TÀI SẢN
+├─ <span class="n">Khách hàng 360°</span>
+├─ Khách hàng mới
+├─ Tài sản bảo đảm
+└─ Giá đất &amp; hệ số K, H
+HỒ SƠ VAY
+├─ <span class="n">Lập hồ sơ vay (HSVV)</span>
+└─ <span class="n">Mẫu biểu: HMTD · Tiêu dùng · Cầm cố</span>
+BÁO CÁO &amp; DỮ LIỆU
+├─ Báo cáo IPCAS
+├─ <span class="n">Đối soát số liệu</span> · <span class="n">Xu hướng 11 kỳ</span>
+└─ <span class="n">Trung tâm dữ liệu</span>
+   ├─ Nhập dữ liệu (wizard) · Auto-Sync
+   └─ Lưu trữ &amp; mốc · Sao lưu/Khôi phục
+Chân menu: Cài đặt · Hướng dẫn · v23.0
+Topbar: Tìm (Ctrl K) · Ngày dữ liệu · Nhập</div></div>
+</div></div>
+
+<!-- ============ D2: data flow ============ -->
+<div class="frame dg" id="d_flow" style="width:1600px;height:430px">
+<h2>Luồng dữ liệu: hiện tại → đề xuất</h2><div class="sub">Số liệu báo cáo lệch vì nhiều đường tính song song và dữ liệu cứng chen vào giữa</div>
+<div class="box bad" style="margin-bottom:22px"><b>HIỆN TẠI</b>
+<div class="flow" style="margin-top:12px">
+ <div class="node"><b>Tệp IPCAS</b>.xlsx / .xls / .csv</div><div class="arrow">→</div>
+ <div class="node bad"><b>3 bộ đọc khác nhau</b>parseXLSX tự viết (số → ngày: LS 19%)<br>SheetJS hỏng (XLS lỗi)<br>CSV: Number(x)||0</div><div class="arrow">→</div>
+ <div class="node bad"><b>Chuẩn hóa rời rạc</b>3× parseVNDate · 2× parseNum<br>nhóm trống → “Nhóm 1”</div><div class="arrow">→</div>
+ <div class="node bad"><b>Lưu IndexedDB</b>chunk lỗi → [] rồi lưu đè<br>mất cờ _rateManual</div><div class="arrow">→</div>
+ <div class="node bad"><b>Khởi động</b>ghi đè LS theo bảng 04/06<br>seed quá hạn 23/06<br>seed TSBĐ 18/08</div><div class="arrow">→</div>
+ <div class="node bad"><b>≥ 6 nơi tính KPI</b>Dashboard · Báo cáo · TDCMP<br>Snapshot · TDUP5 (đọc DOM) · Audit<br>KH theo tên vs theo mã</div>
+</div></div>
+<div class="box good"><b>ĐỀ XUẤT</b>
+<div class="flow" style="margin-top:12px">
+ <div class="node"><b>Tệp IPCAS / TSBĐ / Giá đất</b>kéo thả nhiều tệp</div><div class="arrow">→</div>
+ <div class="node good"><b>Bộ đọc thống nhất</b>SheetJS (bản sửa) cho mọi định dạng<br>nhận ngày theo định dạng ô</div><div class="arrow">→</div>
+ <div class="node good"><b>Schema &amp; kiểm tra</b>TD.num · TD.date dùng chung<br>từ điển cột IPCAS 87 cột<br>báo lỗi, không mặc định âm thầm</div><div class="arrow">→</div>
+ <div class="node good"><b>Kho dữ liệu có phiên bản</b>mốc theo ngày dữ liệu<br>sửa tay lưu riêng (overlay)<br>ghi atomic + checksum</div><div class="arrow">→</div>
+ <div class="node core"><b>TD.metrics (1 engine)</b>KPI · nhóm · phòng · CBTD<br>đến hạn theo ngày dữ liệu</div><div class="arrow">→</div>
+ <div class="node good"><b>Mọi màn hình + Đối soát</b>Dashboard · Báo cáo · Xuất<br>so với tổng tệp gốc</div>
+</div></div>
+</div>
+
+<!-- ============ D3: folder tree ============ -->
+<div class="frame dg" id="d_folder" style="width:1600px;height:660px">
+<h2>Cây thư mục mã nguồn đề xuất (đầu ra vẫn là 1 tệp HTML chạy offline)</h2><div class="sub">Hiện tại: 1 tệp 13 MB, 74 khối script, ~40 lớp vá chồng · Đề xuất: sửa trong src/, chạy build để gộp ra dist/QLTD_PRO.html</div>
+<div class="col2"><div class="tree">qltd-pro/
+├─ src/
+│  ├─ index.html            <span class="c"># khung trang, không chứa logic</span>
+│  ├─ styles/
+│  │  ├─ tokens.css         <span class="c"># 1 bộ màu/khoảng cách/chữ (sáng+tối)</span>
+│  │  ├─ layout.css         <span class="c"># shell: topbar, sidebar, vùng nội dung</span>
+│  │  ├─ components.css     <span class="c"># nút, thẻ, bảng, tab, toast, modal</span>
+│  │  └─ print.css
+│  ├─ core/
+│  │  ├─ router.js          <span class="c"># 1 router, hash, onPageEnter</span>
+│  │  ├─ store.js           <span class="c"># IndexedDB có phiên bản + migrate</span>
+│  │  ├─ num.js · date.js   <span class="c"># chuẩn hóa số/ngày duy nhất</span>
+│  │  ├─ schema-ipcas.js    <span class="c"># từ điển 87 cột + 39 cột TSBĐ</span>
+│  │  ├─ importer.js        <span class="c"># đọc, kiểm tra, nhật ký nhập</span>
+│  │  ├─ metrics.js         <span class="c"># engine KPI duy nhất</span>
+│  │  └─ ui/ (table.js, toast.js, palette.js, modal.js)
+│  ├─ modules/
+│  │  ├─ dashboard/ · ctkh/ · duno/ · denhan/
+│  │  ├─ laidong/ · chlm/ · giaingan/ · tranop/
+│  │  ├─ khachhang360/ · khmoi/ · tsbd/ · giadat/
+│  │  ├─ hsvv/ · fhs/ · baocao/ · doisoat/
+│  │  └─ dulieu/ (import, archive, backup, autosync)
+│  └─ data/
+│     ├─ giadat-pl02-2026.json   <span class="c"># bảng giá công khai</span>
+│     └─ sample-demo.json        <span class="c"># dữ liệu mẫu ẨN DANH</span>
+</div><div class="tree">├─ vendor/                    <span class="c"># ghim phiên bản</span>
+│  ├─ xlsx.full.min.js (0.20.3)
+│  ├─ docx · docxtemplater · pizzip · jszip
+│  └─ mammoth · filesaver
+├─ tests/
+│  ├─ unit/                   <span class="c"># Node: num, date, metrics,</span>
+│  │                          <span class="c">#  importer, giadat</span>
+│  ├─ fixtures/               <span class="c"># tệp IPCAS giả, ẩn danh</span>
+│  └─ e2e/                    <span class="c"># Playwright 1920/1366/390</span>
+├─ tools/
+│  ├─ build.mjs               <span class="c"># gộp src+vendor → 1 HTML</span>
+│  ├─ check-vendor.mjs        <span class="c"># parse từng script</span>
+│  └─ scan-pii.mjs            <span class="c"># chặn dữ liệu thật trong dist</span>
+├─ dist/
+│  └─ QLTD_PRO_v23.0.html     <span class="c"># tệp phát hành duy nhất</span>
+├─ docs/ (HDSD, CHANGELOG, de-an/)
+└─ package.json
+
+<b>Lợi ích</b>
+• Mỗi lần sửa chạm đúng 1 module, có test.
+• Không còn monkey-patch chồng lớp.
+• Build tự kiểm vendor parse được (bắt
+  lỗi kiểu SheetJS hỏng trước khi phát hành).
+• Người dùng vẫn mở 1 tệp HTML như cũ.</div></div></div>
+
+<!-- ============ D4: Gantt ============ -->
+<div class="frame dg" id="d_gantt" style="width:1600px;height:540px">
+<h2>Lộ trình nâng cấp theo đợt và phiên làm việc (ước tính, không phải cam kết)</h2><div class="sub">Mỗi hạng mục giao 1 ZIP và hỏi duyệt trước khi sang hạng mục kế tiếp · P = phiên Claude</div>
+<div class="gantt">
+<div class="h">Đợt / hạng mục</div><div class="h">S0</div><div class="h">P1</div><div class="h">P2</div><div class="h">P3</div><div class="h">P4</div><div class="h">P5</div><div class="h">P6</div><div class="h">P7</div>
+<div>Khảo sát + đề án (S0)</div><div><div class="gb" style="background:#4a5666">Đề án v1.0</div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+<div><b>Đợt 1</b> Ổn định dữ liệu (HM-01…05)</div><div></div><div style="grid-column:span 2"><div class="gb" style="background:#a4262c">P0: SheetJS · xlsx · lãi suất · IndexedDB · seed/PII</div></div><div></div><div></div><div></div><div></div><div></div>
+<div><b>Đợt 2</b> Đồng nhất số liệu (HM-06…11)</div><div></div><div></div><div></div><div style="grid-column:span 2"><div class="gb" style="background:#b7791f">num/date · ngày DL · metrics · TSBĐ · đối soát</div></div><div></div><div></div><div></div>
+<div><b>Đợt 3</b> UI &amp; điều hướng (HM-12…18)</div><div></div><div></div><div></div><div></div><div></div><div style="grid-column:span 2"><div class="gb" style="background:#1f5fa8">router · menu · topbar · tokens · bảng · mobile</div></div><div></div>
+<div><b>Đợt 4</b> Kiến trúc &amp; test (HM-19…20)</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div><div class="gb" style="background:#16324f">src/ + build</div></div>
+<div><b>Đợt 5</b> Tính năng mới (HM-21…26)</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div><div class="gb" style="background:#146c43">P8+ theo duyệt</div></div>
+<div>Mốc dùng được</div><div></div><div></div><div><b>M1</b> số liệu đúng</div><div></div><div><b>M2</b> báo cáo khớp</div><div></div><div><b>M3</b> giao diện mới</div><div><b>M4</b></div>
+</div>
+<div class="legend"><span><i style="background:#a4262c"></i>P0 dữ liệu</span><span><i style="background:#b7791f"></i>P1 đồng nhất</span><span><i style="background:#1f5fa8"></i>P1/P2 UI</span><span><i style="background:#16324f"></i>Nền kỹ thuật</span><span><i style="background:#146c43"></i>Tính năng mới</span></div>
+<div class="banner info" style="margin-top:16px">Có thể dừng sau mốc M1 hoặc M2 và vẫn dùng bản đã sửa: mỗi đợt phát hành một tệp HTML hoàn chỉnh.</div>
+</div>
+
+<!-- ============ D5: layout grid ============ -->
+<div class="frame dg" id="d_grid" style="width:1600px;height:660px">
+<h2>Lưới bố cục theo kích thước màn hình</h2><div class="sub">Một shell duy nhất, 3 điểm ngắt · không còn density bar/dock/nút Desktop chồng lên topbar</div>
+<div style="display:grid;grid-template-columns:1.45fr 1.05fr .5fr;gap:28px;align-items:start">
+ <div><b>≥ 1600 px (1920×1080)</b>
+  <div style="margin-top:8px;border:1.5px solid var(--line2);border-radius:8px;height:330px;display:grid;grid-template-columns:120px 1fr 150px;grid-template-rows:30px 1fr;font-size:12px">
+   <div style="grid-column:1/4;background:#e8f3ec;border-bottom:1px solid var(--line2);padding:6px">Topbar 52px: logo · breadcrumb · Tìm (Ctrl K) · Ngày dữ liệu · Nhập · ⋯</div>
+   <div style="background:#f4f6f8;border-right:1px solid var(--line2);padding:6px">Sidebar 240px<br>6 nhóm<br>luôn mở</div>
+   <div style="padding:6px">Nội dung: lưới 12 cột, gutter 16px<br>KPI 6 ô · bảng “Đầy đủ” 14 cột</div>
+   <div style="background:#f4f6f8;border-left:1px solid var(--line2);padding:6px">Ngăn chi tiết 380px (mở khi chọn dòng)</div></div></div>
+ <div><b>1280–1599 px (1366×768)</b>
+  <div style="margin-top:8px;border:1.5px solid var(--line2);border-radius:8px;height:250px;display:grid;grid-template-columns:40px 1fr;grid-template-rows:30px 1fr;font-size:12px">
+   <div style="grid-column:1/3;background:#e8f3ec;border-bottom:1px solid var(--line2);padding:6px">Topbar 48px (nút gom vào ⋯)</div>
+   <div style="background:#f4f6f8;border-right:1px solid var(--line2);padding:4px;font-size:10px">64px icon</div>
+   <div style="padding:6px">Nội dung · KPI 3×2 · bảng “Gọn” 9 cột<br>Ngăn chi tiết = lớp phủ bên phải</div></div></div>
+ <div><b>&lt; 768 px (390×844)</b>
+  <div style="margin-top:8px;border:1.5px solid var(--line2);border-radius:14px;height:330px;display:grid;grid-template-rows:30px 1fr 36px;font-size:11px">
+   <div style="background:#e8f3ec;border-bottom:1px solid var(--line2);padding:6px">Tiêu đề · ngày</div>
+   <div style="padding:6px">Thẻ KPI 2×2<br>Danh sách dạng thẻ thay cho bảng</div>
+   <div style="background:#f4f6f8;border-top:1px solid var(--line2);padding:6px">Thanh 5 mục dưới</div></div></div>
+</div>
+<table class="t" style="margin-top:26px;font-size:13px"><thead><tr><th>Thành phần</th><th>Hiện tại (đo bằng Playwright)</th><th>Đề xuất</th></tr></thead><tbody>
+<tr><td>Topbar</td><td>14 nút; ở 1366 xuống 2 hàng, thanh Compact/Normal/Comfortable đè lên nút; ở 390 dàn dọc ~350px</td><td>≤ 5 thành phần; còn lại trong ⋯ và bảng lệnh Ctrl K</td></tr>
+<tr><td>Sidebar</td><td>Ẩn sau ☰ ngay cả ở 1920; menu là div (không Tab được)</td><td>Mở sẵn ≥1600, thu 64px ở 1366, thanh dưới ở mobile; phần tử &lt;a&gt; có href #/trang</td></tr>
+<tr><td>Bảng Dư nợ</td><td>Rộng 2.123 px → cuộn ngang ở cả 1366 và 1920</td><td>Preset cột theo màn, ghim cột KH, chọn cột</td></tr>
+<tr><td>Dashboard</td><td>Bảng chỉ dùng ~40% bề ngang 1920</td><td>Lưới 12 cột, KPI + biểu đồ + bảng song song</td></tr>
+</tbody></table>
+</div>
+
+<script>
+const tb=document.getElementById('rows1366');const cb=['CBTD 03','CBTD 07','CBTD 11','CBTD 02','CBTD 05'];const lv=['Ngắn hạn','Trung hạn','Dài hạn','Thấu chi'];
+const ls=['8,50%','9,00%','9,50%','8,00%','10,00%','8,80%'];let h='';
+for(let i=0;i<16;i++){const n=String(i+21).padStart(3,'0');const dn=((i*7919)%4800+120)*1000000;
+h+=`<tr${i==3?' class="rsel"':''}><td class="pin">KH Mẫu ${n}</td><td>…LAV…${(1000+i*37)}</td><td>${cb[i%5]}</td><td>${lv[i%4]}</td><td class="num">${dn.toLocaleString('vi-VN')}</td><td class="num">${ls[i%6]}</td><td>${String(i%28+1).padStart(2,'0')}/${String(i%12+1).padStart(2,'0')}/2027</td><td><span class="tag ${i==9?'g2':'g1'}">${i==9?'Nhóm 2':'Nhóm 1'}</span></td><td>${i%5==4?'<span class="tag m">Không</span>':'Có'}</td></tr>`}
+tb.innerHTML=h;
+</script>
+</body></html>

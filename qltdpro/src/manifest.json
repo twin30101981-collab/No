@@ -1,0 +1,767 @@
+{
+ "format": 1,
+ "release": "QLTD_PRO_v2026-10-25_v22.3-P10.html",
+ "source_sha256": "f984b3015274e93821be913a9e206f6b42f7ff4cf8d301e982ae10ae5237937d",
+ "segments": [
+  {
+   "kind": "html",
+   "file": "html/000.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/001-td-net-guard.js",
+   "attrs": " id=\"td-net-guard\" data-tag=\"HM-27\""
+  },
+  {
+   "kind": "html",
+   "file": "html/002.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/003-td-root-cause-fixes-v14-3-2.js",
+   "attrs": " id=\"td-root-cause-fixes-v14_3_2\" data-tag=\"TD_ROOT_CAUSE_FIXES_v14_3_2\""
+  },
+  {
+   "kind": "html",
+   "file": "html/004.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/005-td-boot-safeguard.js",
+   "attrs": " id=\"td-boot-safeguard\" data-tag=\"TD_BOOT_SAFEGUARD_v1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/006.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/007-td-perfa-bootstrap.js",
+   "attrs": " id=\"td-perfA-bootstrap\""
+  },
+  {
+   "kind": "html",
+   "file": "html/008.html"
+  },
+  {
+   "kind": "style",
+   "file": "css/009-td-perfa-content-vis.css",
+   "attrs": " id=\"td-perfA-content-vis\""
+  },
+  {
+   "kind": "html",
+   "file": "html/010.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/011-td-perfa-visibility-class.js",
+   "attrs": " id=\"td-perfA-visibility-class\""
+  },
+  {
+   "kind": "html",
+   "file": "html/012.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/pizzip.js",
+   "attrs": " id=\"td-vendor-pizzip\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/014.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/jszip.js",
+   "attrs": " id=\"td-vendor-jszip\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/016.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/docxtemplater.js",
+   "attrs": " id=\"td-vendor-docxtemplater\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/018.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/filesaver.js",
+   "attrs": " id=\"td-vendor-filesaver\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/020.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/docx-umd.js",
+   "attrs": " id=\"td-vendor-docx-umd\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/022.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/xlsx.js",
+   "attrs": " id=\"td-vendor-xlsx\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/024.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/025-bcn-snapshot-resolver-dong-bo-pipeline-v.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/026.html"
+  },
+  {
+   "kind": "script",
+   "file": "vendor/mammoth.js",
+   "attrs": " id=\"td-vendor-mammoth\" type=\"application/x-td-deferred\" data-vendor=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/028.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/029-patch-b5-b6-g2-safe-localstorage-global-.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/030.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/031-td-v2-perf-js.js",
+   "attrs": " id=\"td-v2-perf-js\""
+  },
+  {
+   "kind": "html",
+   "file": "html/032.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/033-td-keys.js",
+   "attrs": " id=\"td-keys\""
+  },
+  {
+   "kind": "html",
+   "file": "html/034.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/035-qa-opt-debounce-dung-chung-cho-cac-o-tim.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/036.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/037-td-sxcb-standard.js",
+   "attrs": " id=\"td-sxcb-standard\""
+  },
+  {
+   "kind": "html",
+   "file": "html/038.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/039-toggleutilmenu.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/040.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/041-patab.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/042.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/043-dinh-dang-so-tien-viet-nam-1-234-567-890.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/044.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/045-sample-qltd.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/046.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/047-hien-thi-ma-kh-dang-xxxx-xxxxxxxxx-ipcas.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/048.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/049-denhan-amt-data.js",
+   "attrs": " id=\"denhan-amt-data\" type=\"application/json\""
+  },
+  {
+   "kind": "html",
+   "file": "html/050.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/051-row-layout-for-data-qltd.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/052.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/053-fix-v25-bo-loc-getdenhanamt-r-0-vi-denha.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/054.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/055-editingidx.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/056.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/057-bgdat-scripts.js",
+   "attrs": " id=\"bgdat-scripts\" type=\"application/x-td-deferred\" data-bgdat=\"1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/058.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/059-css-cho-column-filter-row-them-vao-sau-k.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/060.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/061-trang-thai-modal.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/062.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/063-read-state-store-localstorage-theo-ngay.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/064.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/065-patab.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/066.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/067-state.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/068.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/069-template-data-du-lieu-mau-tu-bo-ho-so-kh.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/070.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/071-import-file-module-v1-0.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/072.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/073-so-sanh-2-ho-so.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/074.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/075-tra-cuu-kh-functions.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/076.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/077-fhs-data.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/078.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/079-mapping-ten-field-fhs-pattern-cot-data-q.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/080.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/081-mo-dong-modal.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/082.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/083-highlight-tu-khoa-trong-text-tra-ve-html.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/084.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/085-hang-so-config.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/086.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/087-units.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/088.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/089-template-catalog-theo-loai-ho-so-gd2.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/090.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/091-mobile-tab-switch.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/092.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/093-page-fullscreen-toggle-cho-6-menu-duoc-c.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/094.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/095-12-chi-tieu.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/096.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/097-td-print-normalize.js",
+   "attrs": " id=\"td-print-normalize\""
+  },
+  {
+   "kind": "html",
+   "file": "html/098.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/099-fix-goc-re-tieu-de-lay-tu-menu-card-luon.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/100.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/101-lay-tieu-de-menu-dang-active.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/102.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/103-thu-thap-tat-ca-table-hien-thi-trong-pag.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/104.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/105-desktop-patch-js.js",
+   "attrs": " id=\"desktop-patch-js\""
+  },
+  {
+   "kind": "html",
+   "file": "html/106.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/107-toast-helper.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/108.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/109-desktop-ux-patch-v10-js.js",
+   "attrs": " id=\"desktop-ux-patch-v10-js\""
+  },
+  {
+   "kind": "html",
+   "file": "html/110.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/111-filter-bar-collapse-toggle-js.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/112.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/113-v13-9-8-fix-desktop-toggle-in-dock.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/114.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/115-td-upgrade-v1.js",
+   "attrs": " id=\"td-upgrade-v1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/116.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/117-td-upgrade-v2.js",
+   "attrs": " id=\"td-upgrade-v2\""
+  },
+  {
+   "kind": "html",
+   "file": "html/118.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/119-td-upgrade-pack-v3-perf-hardening.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/120.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/121-tdup4-script.js",
+   "attrs": " id=\"tdup4-script\""
+  },
+  {
+   "kind": "html",
+   "file": "html/122.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/123-tdup5-script.js",
+   "attrs": " id=\"tdup5-script\""
+  },
+  {
+   "kind": "html",
+   "file": "html/124.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/125-td-phanky-chip-fix.js",
+   "attrs": " id=\"td-phanky-chip-fix\""
+  },
+  {
+   "kind": "html",
+   "file": "html/126.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/127-tdcmp-module.js",
+   "attrs": " id=\"tdcmp-module\""
+  },
+  {
+   "kind": "html",
+   "file": "html/128.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/129-tdcmp-v2-patch.js",
+   "attrs": " id=\"tdcmp-v2-patch\""
+  },
+  {
+   "kind": "html",
+   "file": "html/130.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/131-td-pastdue-script.js",
+   "attrs": " id=\"td-pastdue-script\""
+  },
+  {
+   "kind": "html",
+   "file": "html/132.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/133-td-audit-engine.js",
+   "attrs": " id=\"td-audit-engine\" data-tag=\"TD_AUDIT_ENGINE_v1\""
+  },
+  {
+   "kind": "html",
+   "file": "html/134.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/135-td-v1397-dock-help-shim.js",
+   "attrs": " id=\"td-v1397-dock-help-shim\""
+  },
+  {
+   "kind": "html",
+   "file": "html/136.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/137-td-perfa-lazy-vendor-loader.js",
+   "attrs": " id=\"td-perfA-lazy-vendor-loader\""
+  },
+  {
+   "kind": "html",
+   "file": "html/138.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/139-v13-9-11-modal-observer.js",
+   "attrs": " id=\"v13_9_11-modal-observer\""
+  },
+  {
+   "kind": "html",
+   "file": "html/140.html"
+  },
+  {
+   "kind": "style",
+   "file": "css/141-khmoi-v14-style.css",
+   "attrs": " id=\"khmoi-v14-style\""
+  },
+  {
+   "kind": "html",
+   "file": "html/142.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/143-khmoi-v14.js",
+   "attrs": " id=\"khmoi-v14\""
+  },
+  {
+   "kind": "html",
+   "file": "html/144.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/145-td-v1440-export-upgrade.js",
+   "attrs": " id=\"td-v1440-export-upgrade\""
+  },
+  {
+   "kind": "html",
+   "file": "html/146.html"
+  },
+  {
+   "kind": "style",
+   "file": "css/147-td15-styles.css",
+   "attrs": " id=\"td15-styles\""
+  },
+  {
+   "kind": "html",
+   "file": "html/148.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/149-td15-core.js",
+   "attrs": " id=\"td15-core\""
+  },
+  {
+   "kind": "html",
+   "file": "html/150.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/151-tsbd-seed-data.js",
+   "attrs": " id=\"tsbd-seed-data\" type=\"application/json\" data-src=\"\" data-at=\"\""
+  },
+  {
+   "kind": "html",
+   "file": "html/152.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/153-tsbd-module.js",
+   "attrs": " id=\"tsbd-module\""
+  },
+  {
+   "kind": "html",
+   "file": "html/154.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/155-chuan-hoa-1-phan-khoa-bo-moi-ky-tu-khong.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/156.html"
+  },
+  {
+   "kind": "style",
+   "file": "css/157-tsbd-sync-detail-css.css",
+   "attrs": " id=\"tsbd-sync-detail-css\""
+  },
+  {
+   "kind": "html",
+   "file": "html/158.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/159-td-rootfix-v6.js",
+   "attrs": " id=\"td-rootfix-v6\""
+  },
+  {
+   "kind": "html",
+   "file": "html/160.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/161-td-std-toolbar.js",
+   "attrs": " id=\"td-std-toolbar\""
+  },
+  {
+   "kind": "html",
+   "file": "html/162.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/163-nhan-cot-qltd-khop-dung-thu-tu-r-0-20-du.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/164.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/165-mark.js",
+   "attrs": ""
+  },
+  {
+   "kind": "html",
+   "file": "html/166.html"
+  },
+  {
+   "kind": "script",
+   "file": "js/167-td-router.js",
+   "attrs": " id=\"td-router\""
+  },
+  {
+   "kind": "html",
+   "file": "html/168.html"
+  }
+ ]
+}

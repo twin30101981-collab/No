@@ -1,0 +1,29 @@
+
+
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TD UPGRADE PACK v1 (Lovable, 2026-06-10)
+     Phụ thêm cuối <body>. KHÔNG sửa code cũ. Tất cả tính năng opt-in
+     và sử dụng prefix `tdup-` / `td-upgrade-` để tránh xung đột.
+     Gồm:
+       - Tokens mở rộng + dark/density mode (CSS variables)
+       - Theme & density toggle (góc dưới-phải)
+       - Command Palette (Ctrl+K) quét menu/tab/button có nhãn
+       - Phím tắt: Ctrl+K, Ctrl+/, Ctrl+E (Export), Esc, Ctrl+S
+       - Helper: TDUP.debounce / throttle / toast / sha1 / idle
+       - Web Vitals khi ?dev=1
+       - Sticky header bảng (.tdup-grid)
+═══════════════════════════════════════════════════════════════ -->
+
+
+<div id="tdup-dock" role="toolbar" aria-label="TD Upgrade controls">
+  <button type="button" data-tdup-act="palette" title="Command Palette (Ctrl+K)">⌘K</button>
+  <span class="tdup-sep"></span>
+  <button type="button" data-tdup-act="desktop" title="Bật/Tắt Desktop Mode">🖥️ Desktop</button>
+  <button type="button" data-tdup-act="density" title="Đổi mật độ (Compact/Comfortable/Spacious)">Density</button>
+  <span class="tdup-sep"></span>
+  <button type="button" data-tdup-act="help" title="Phím tắt (Ctrl+/)">?</button>
+</div>

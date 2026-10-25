@@ -1,0 +1,16 @@
+const TD=require('./td_numdate.js');require('./td_metrics.js');require('./td_doisoat.js');require('./td_report.js');const R=TD.report;let p=0,f=0;const ok=(n,c,x)=>{if(c)p++;else{f++;console.log('FAIL',n,x)}};
+const Rw=(ma,ten,dn,cb,pb,nh,loai)=>[ma,ten,'H','','',0,'','',9,'','',dn,cb,loai,'',' ','',pb,nh];
+const rows=[Rw('1','A',100,'X','Hội Sở','Nhóm 1','Vay ngắn hạn (TK 211)'),Rw('1','A',50,'X','Hội Sở','Nhóm 1','Vay trung hạn (TK 212)'),Rw('2','B',200,'Y','PGD Số 2','Nhóm 2','Thấu chi'),Rw('3','C',30,'Y','PGD Số 2','','Lạ')];
+const S=TD.metrics.summarize(rows,{today:new Date(2026,9,20)});
+const chk=TD.doisoat.checks({dataDate:'20/10/2026',rows:{hs:4,duno:380,kh:3},dash:{duno:380,kh:3,sumLoai:380,sumNhom:380,sumPB:380},snap:null,tsbd:null,bckh:null,ls:{high:0,total:4}});
+const sh=R.sheets({dataDate:'20/10/2026',summary:S,checks:chk,periods:[{key:'a',totals:{duno:1,kh:1,hs:1}},{key:'b',totals:{duno:3,kh:2,hs:2}}],warn:[{title:'x',count:2,kh:1,duno:5}],at:'t',by:'u'});
+ok('6 trang tính',sh.map(s=>s.name).join('|')==='Tổng hợp|Theo phòng ban|Theo CBTD|Biên bản đối soát|Xu hướng các kỳ|Cảnh báo sớm',sh.map(s=>s.name));
+const tong=sh[0].rows.find(r=>r[0]==='TỔNG CỘNG');ok('tổng cộng: 3 KH, 4 khoản, 380',tong[1]===3&&tong[2]===4&&tong[3]===380,tong);
+const loai=sh[0].rows.filter(r=>/^Vay|^Thấu|^Khác/.test(String(r[0]))&&typeof r[3]==='number');ok('Σ theo loại = tổng (kể cả Khác)',loai.reduce((s,r)=>s+r[3],0)===380&&loai.some(r=>/^Khác/.test(r[0])),loai);
+const nh=sh[0].rows.filter(r=>/^Nhóm|^Không rõ/.test(String(r[0]))&&typeof r[3]==='number');ok('Σ theo nhóm = tổng (kể cả Không rõ nhóm)',nh.reduce((s,r)=>s+r[3],0)===380,nh);
+const pb=sh[1].rows.filter(r=>r[0]!=='TỔNG CỘNG'&&typeof r[3]==='number'&&r[0]!=='Phòng ban');ok('Σ theo phòng = tổng',pb.reduce((s,r)=>s+r[3],0)===380,pb);
+const cb=sh[2].rows.filter(r=>r[0]&&typeof r[6]==='number'&&r[0]!=='TỔNG CỘNG');ok('Σ theo CBTD = tổng; NH+TDH theo CBTD X: 100 + 50',cb.reduce((s,r)=>s+r[6],0)===380&&cb.find(r=>r[0]==='X')[4]===100&&cb.find(r=>r[0]==='X')[5]===50,cb);
+ok('đối soát: 10 dòng chỉ tiêu, có KHỚP',sh[3].rows.slice(4).length===chk.length&&sh[3].rows[4][5]==='KHỚP');
+ok('xu hướng: 2 kỳ, thay đổi +2',sh[4].rows[4][4]===2);
+const sh2=R.sheets({dataDate:'',summary:S,checks:null,periods:[],warn:null});ok('thiếu nguồn ⇒ chỉ 3 trang',sh2.length===3);
+console.log('PASS',p,'FAIL',f);process.exit(f?1:0);

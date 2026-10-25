@@ -1,0 +1,2 @@
+THẬT {"rows":985,"nhomTrung":54,"dongTrung":162,"anhHuongUBND":143,"tbLech":2,"ubndCaoHonThap":15,"khongUBND":78,"khongGia":0}
+PASS 21 FAIL 0

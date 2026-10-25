@@ -1,0 +1,15 @@
+PASS 6 trang tính
+PASS ngày dữ liệu 20/10/2026
+PASS TỔNG: KH, khoản, dư nợ khớp tính độc lập
+PASS Theo loại vay: dư nợ/KH/khoản từng loại khớp (4 loại có số liệu)
+PASS Σ loại vay = tổng
+PASS Theo nhóm nợ khớp (Nhóm 1/2) và Σ = tổng
+PASS % tổng = 100%
+PASS Theo phòng ban khớp từng phòng
+PASS Theo CBTD: dư nợ/KH/khoản từng CBTD khớp
+PASS Theo CBTD: cột ngắn hạn+thấu chi / trung-dài khớp
+PASS Biên bản đối soát: 10 chỉ tiêu, tất cả KHỚP
+PASS Xu hướng: 2 kỳ (30/09, 20/10) đúng dư nợ & thay đổi
+PASS Cảnh báo sớm: 9 mục
+PASS định dạng số #,##0 / %
+PASS 14 FAIL 0

@@ -1,0 +1,16 @@
+thời gian dựng một trang tệ nhất (ms): 62
+dựng Tất cả: 5343 ms
+PASS CŨ: 2 cơ chế cùng hiện, "Trang x/y" không phản ánh 3848 dòng
+PASS qltd: 1 thanh trang, không dòng ẩn, không pager cũ, hiện đúng tổng 3848
+PASS kd: 1 thanh trang, không dòng ẩn, không pager cũ, hiện đúng tổng 3162
+PASS td: 1 thanh trang, không dòng ẩn, không pager cũ, hiện đúng tổng 686
+PASS duyệt 39 trang ⇒ tổng số dòng hiển thị = 3848
+PASS dựng 1 trang < 1,5 s
+PASS sắp xếp theo DƯ NỢ: vẫn 1 thanh trang, đủ tổng
+PASS lọc: về trang 1 và tổng = số dòng đã lọc
+PASS 500/trang ⇒ 500 dòng
+PASS Tất cả ⇒ 3848 dòng, không virtual-scroll chồng
+PASS dòng tổng vẫn chứa Σ dư nợ 2.160.375.016.661
+PASS nhớ cỡ trang 250 sau tải lại
+PASS không pageerror
+PASS 13 FAIL 0

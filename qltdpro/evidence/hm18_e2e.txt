@@ -1,0 +1,28 @@
+PASS qltd · cùng số dòng
+PASS qltd · thứ tự 400 dòng đầu y hệt bản cũ
+PASS qltd · dòng có tabindex (quét bảng) như cũ
+PASS qltd · tay nắm đổi cột như cũ
+PASS qltd · dòng Tổng + thanh cuộn ngang trên (phần tử hiệu lực) như cũ
+PASS kd · cùng số dòng
+PASS kd · thứ tự 400 dòng đầu y hệt bản cũ
+PASS kd · dòng có tabindex (quét bảng) như cũ
+PASS kd · tay nắm đổi cột như cũ
+PASS kd · dòng Tổng + thanh cuộn ngang trên (phần tử hiệu lực) như cũ
+PASS td · cùng số dòng
+PASS td · thứ tự 400 dòng đầu y hệt bản cũ
+PASS td · dòng có tabindex (quét bảng) như cũ
+PASS td · tay nắm đổi cột như cũ
+PASS td · dòng Tổng + thanh cuộn ngang trên (phần tử hiệu lực) như cũ
+PASS denhan · cùng số dòng
+PASS denhan · thứ tự 400 dòng đầu y hệt bản cũ
+PASS denhan · dòng có tabindex (quét bảng) như cũ
+PASS denhan · tay nắm đổi cột như cũ
+PASS denhan · dòng Tổng + thanh cuộn ngang trên (phần tử hiệu lực) như cũ
+PASS laidong · cùng số dòng
+PASS laidong · thứ tự 400 dòng đầu y hệt bản cũ
+PASS laidong · dòng có tabindex (quét bảng) như cũ
+PASS laidong · tay nắm đổi cột như cũ
+PASS laidong · dòng Tổng + thanh cuộn ngang trên (phần tử hiệu lực) như cũ
+PASS lọc xong vẫn quét dòng mới (tabindex) như cũ
+PASS không pageerror
+PASS 27 FAIL 0

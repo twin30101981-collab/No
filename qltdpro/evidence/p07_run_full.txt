@@ -1,0 +1,70 @@
+App: app/QLTD_PRO_v2026-10-23_v22.3-P07.html
+
+Tầng 0 — src/ dựng ra đúng tệp phát hành (HM-20) và các cổng build bắt được lỗi
+  ✔ src → build == app: 8 phép kiểm đạt, 0 lỗi
+
+Tầng 1 — biên dịch mọi khối <script>
+  ✔ check_scripts: 78 khối, 0 lỗi
+
+Tầng 2 — kiểm thử đơn vị (module td_*.js)
+  ✔ td_cols: 26 ca đạt, 0 lỗi
+  ✔ td_datadate: 26 ca đạt, 0 lỗi
+  ✔ td_doisoat: 7 ca đạt, 0 lỗi
+  ✔ td_giadat: 21 ca đạt, 0 lỗi
+  ✔ td_hub: 12 ca đạt, 0 lỗi
+  ✔ td_keys: 14 ca đạt, 0 lỗi
+  ✔ td_kh360: 11 ca đạt, 0 lỗi
+  ✔ td_metrics: 18 ca đạt, 0 lỗi
+  ✔ td_net: 12 ca đạt, 0 lỗi
+  ✔ td_numdate: 71 ca đạt, 0 lỗi
+  … td_pl02.test.js bỏ qua (cần PL02 .docx thật: --real)
+  ✔ td_report: 9 ca đạt, 0 lỗi
+  ✔ td_reportdocx: 12 ca đạt, 0 lỗi
+  ✔ td_router: 34 ca đạt, 0 lỗi
+  ✔ td_trend: 10 ca đạt, 0 lỗi
+  ✔ td_tsbd: 13 ca đạt, 0 lỗi
+  ✔ td_warn: 14 ca đạt, 0 lỗi
+  ✔ td_xlsx: 15 ca đạt, 0 lỗi
+
+Tầng 3 — module nhúng trong app = tệp nguồn
+  ✔ 18 module nguồn đều nhúng nguyên văn trong app
+
+Tầng 4 — e2e (Playwright + Chromium, fixture ẩn danh)
+  ✔ e2e: 86/86 phép kiểm đạt (34 nhóm HM)
+
+Tầng 5 — đột biến (bộ test phải thất bại với mã lỗi)
+  ✔ HM-01 — chèn xuống dòng vào chuỗi SheetJS (script vendor không biên dịch) → phát hiện: SheetJS nạp được (XLSX.version) và ghi/đọc lại .xlsx
+  ✔ HM-02 — bỏ SheetJS, bộ đọc .xlsx tự viết đổi MỌI số 1<x<100000 thành ngày (lỗi gốc) → phát hiện: nhập .xlsx: 244 khoản còn dư nợ (bỏ dòng dư nợ 0), lãi suất & dư nợ TỪ
+  ✔ HM-03 — cổng ghi đè L/S cho phép sửa tự động đè cả giá trị hợp lệ → phát hiện: hàm "tự chữa" L/S không đè lãi suất hợp lệ dù có nguồn tham chiếu khác
+  ✔ HM-04 — chunk hỏng bị bỏ qua im lặng, nạp phần còn lại như dữ liệu đầy đủ → phát hiện: chunk hỏng ⇒ báo hỏng (banner/cờ), không coi là dữ liệu đầy đủ
+  ✔ HM-05 — nhúng lại seed Past Due (dữ liệu cứng) tự ghi vào trình duyệt khi mở → phát hiện: trang mới không có dữ liệu cứng (dư nợ/TSBĐ/mốc lưu/Past Due = 0)
+  ✔ HM-08 — đếm khách hàng theo số dòng thay vì theo mã → phát hiện: Dashboard: tổng dư nợ = 141.940.949.969 và 120 KH (theo mã)
+  ✔ HM-09 — báo cáo theo CBTD bỏ im lặng phần chưa phân → phát hiện: TD_AUDIT (đối chiếu với tệp) không có vấn đề
+  ✔ HM-17b — bật lại pager desktop-patch chồng lên bảng dữ liệu → phát hiện: chỉ MỘT cơ chế phân trang (không pager ẩn dòng/nút "Hiển thị thêm" chồ
+  ✔ HM-17b — chọn cột: không đặt lại colspan tiêu đề gộp ô (lệch cột) → phát hiện: Giá đất "Chỉ giá UBND": 8 cột, hết tràn ngang ở 1366, tiêu đề gộp ô vẫ
+  ✔ HM-10 — TSBĐ: bỏ khử trùng clno (một TS thế chấp qua 2 HĐ bị cộng 2 lần) → phát hiện: TSBĐ: 145 dòng, 135 TS sau khử trùng clno (10 dòng trùng), Σ VND = tệp
+  ✔ HM-28 — báo cáo Excel quay về SheetJS trơn (mất định dạng) → phát hiện: Excel có định dạng: hàng tiêu đề nền navy chữ đậm, dòng TỔNG đậm, cố đ
+  ✔ HM-13b — showPage không chạy sổ hook (mất khởi tạo trang Hồ sơ/FHS/…) → phát hiện: một showPage duy nhất (không lớp bọc) + sổ hook ≥ 8; hook chạy mỗi lần
+  ✔ HM-16b — thêm z-index literal ≥100 ngoài thang token → phát hiện: không còn z-index literal ≥100 (dùng token --z-N)
+  ✔ HM-16c — thêm lại một kiểu tab riêng lệch chuẩn → phát hiện: tab kiểu A (gạch chân: Khách hàng, KH mới, Đồng bộ, Máy tính lãi, mục 
+  ✔ HM-16c — thêm lại một khối :root rời → phát hiện: token: đúng MỘT khối :root cấp cao nhất
+  ✔ CSS — mất dòng mở @media ngăn kéo (lỗi gốc: quy tắc ngăn kéo áp mọi độ rộng, menu bên ẩn trên máy tính) → phát hiện: 1366px: menu bên là DẢI BIỂU TƯỢNG 64px (không ☰), nội dung lùi 64px
+  ✔ HM-17 — bảng Dư nợ mặc định không còn tự lùi mẫu cột (tràn ngang ở 1920 với menu cố định — lỗi P05) → phát hiện: 1920px (menu bên cố định): bảng Dư nợ mặc định KHÔNG tràn ngang (tự lù
+  ✔ CSS — nút ↶/↷ định vị cố định đè lên topbar (lỗi cũ) → phát hiện: 1920px: không phần tử nào trên topbar bị che bởi phần tử khác (↶/↷ nằm
+  ✔ SEC — bỏ escape tên khách hàng khi dựng bảng Dư nợ (chèn mã qua dữ liệu nhập) → phát hiện: dữ liệu nhập chứa thẻ HTML (tên KH, CBTD, phòng, …) KHÔNG được thực th
+  ✔ HM-19 — thẻ KPI tổng dư nợ đếm số hồ sơ thay vì cộng dư nợ (lệch engine) → phát hiện: 390px: thẻ KPI 2×2 (5 thẻ), số khớp tổng dư nợ/số KH của engine; topba
+  ✔ CSS — ngăn chi tiết không mở khi bấm dòng → phát hiện: ngăn chi tiết: bấm dòng Dư nợ mở ngăn bên phải 380px, liệt kê ≥15 trườ
+  ✔ HM-23 — hoàn tác lần nhập không khôi phục dữ liệu → phát hiện: Trung tâm nhập: nhập 1 tệp rồi "Hoàn tác lần nhập" đưa dư nợ về trước 
+  ✔ SEC — bỏ escape tên mốc lưu trữ ở danh sách Lưu trữ (tên tệp chứa thẻ HTML) → phát hiện: tên mốc lưu trữ (lấy từ tên tệp/nhãn người dùng) chứa thẻ HTML KHÔNG đ
+  ✔ CSS — bỏ bẫy bàn phím của hộp thoại (Tab chui ra menu phía sau) → phát hiện: hộp thoại Thêm mới: Tab/Shift+Tab xoay vòng TRONG hộp thoại (0/40 lần 
+  ✔ SEC — bỏ escape ngày thế chấp/hết hạn ở bảng TSBĐ (ngày lấy từ tệp nhập) → phát hiện: TSBĐ (145 dòng) + hồ sơ vay (danh sách, tìm kiếm, so sánh) chứa thẻ HT
+  ✔ SEC — bỏ escape ghi chú/tên ở danh sách hồ sơ vay (hồ sơ nhập từ JSON chứa thẻ HTML) → phát hiện: TSBĐ (145 dòng) + hồ sơ vay (danh sách, tìm kiếm, so sánh) chứa thẻ HT
+  ✔ HM-17 — ghim cột Tên KH không còn bật mặc định → phát hiện: bảng Dư nợ ≥1280 px: ghim cột đến Tên KH BẬT mặc định (khi chưa chọn g
+  ✔ HM-23 — Trung tâm nhập bỏ nhận dạng theo tiêu đề cột (TSBĐ tên lạ bị nhập thành dư nợ) → phát hiện: Trung tâm nhập: sao kê TSBĐ tên tệp không có từ khoá vẫn nhận là TSBĐ 
+  ✔ HM-27 — bỏ thẻ CSP chặn mạng (dữ liệu có thể gửi ra ngoài) → phát hiện: chế độ có mạng TẮT mặc định; có thẻ CSP chặn kết nối ngoài (connect-sr
+  
+  ✔ bộ test phát hiện mọi đột biến
+
+════════════════════════════════════════════════════════════
+TỔNG: 22/22 nhóm đạt — TẤT CẢ ĐẠT
+EXIT 0

@@ -1,0 +1,34 @@
+
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     PATCH: FIX ĐỒNG BỘ TSBĐ ↔ HSVV LIÊN KẾT (additive — không sửa hàm gốc)
+     Ngày vá: 2026-08-19
+
+     NGUYÊN NHÂN GỐC RỄ (root cause):
+     Khi mở "Sửa hồ sơ", trường "Mã KH (brcd)" trên form được điền bằng
+     fmtMaKH(r[0]) — hàm này CHÈN dấu "-" vào Mã KH 13 số để hiển thị đẹp
+     (vd dữ liệu thô "3201000000000" → hiển thị "3201-000000000").
+     Trong khi đó, khi lưu 1 hồ sơ HSVV, hàm hsvvAutoLink()/hsvvQltdKey()
+     lại lưu khoá liên kết (localStorage key "hsvv_qltd_links_v1") bằng
+     Mã KH THÔ, KHÔNG dấu gạch ngang: "3201000000000|3201LAV000000000".
+
+     Khi bấm nút "🔄 Đồng bộ TSBĐ từ hồ sơ HSVV liên kết", hàm gốc
+     syncTSBDFromHsvv() đọc thẳng value đã format (có dấu "-") từ DOM rồi
+     đưa cho tsbdFromLinkedHoso() để so khớp CHUỖI TUYỆT ĐỐI với khoá đã
+     lưu. Vì "3201-000000000" ≠ "3201000000000" nên so khớp luôn thất bại
+     → hiện cảnh báo "⚠️ Không tìm thấy hồ sơ HSVV liên kết có dữ liệu
+     TSBĐ" NGAY CẢ KHI hồ sơ HSVV liên kết thực sự tồn tại và có dữ liệu
+     tài sản (đây chính là lỗi trong ảnh chụp màn hình của hồ sơ
+     "(đã ẩn)").
+
+     Lưu ý: đường link "🔗" khi bấm THẲNG vào tên KH trong bảng KHÔNG bị
+     lỗi này vì nó dùng r[0] thô (không qua fmtMaKH). Lỗi chỉ xảy ra ở
+     luồng modal "Sửa hồ sơ" → nút Đồng bộ TSBĐ.
+
+     FIX TRIỆT ĐỂ: viết lại tsbdFromLinkedHoso() để CHUẨN HOÁ (bỏ dấu
+     gạch ngang / khoảng trắng, viết hoa) cả khoá đã lưu lẫn giá trị
+     đang tra cứu trước khi so khớp. Nhờ vậy hàm hoạt động đúng bất kể
+     Mã KH truyền vào có dấu "-" hay không, chữ hoa/thường của Số HĐTD
+     khác nhau, hay có khoảng trắng thừa — xử lý tận gốc thay vì chỉ vá
+     một điểm gọi.
+     ══════════════════════════════════════════════════════════════════════ -->

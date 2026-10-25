@@ -1,0 +1,1363 @@
+
+</div>
+
+
+
+<div id="pa-sxkd-wrapper" style="display:none; margin-top:0; padding:0 16px 20px;">
+  <div class="sxkd-card">
+
+    <!-- fs-hint (fullscreen bar) -->
+    <div id="sxkd-fs-hint" onclick="sxkdExitFS()" title="Nhấn để thoát toàn màn hình (Esc)">
+      ⛶ Đang ở chế độ Toàn màn hình — Nhấn vào đây hoặc Esc để thu nhỏ
+    </div>
+
+    <!-- ── HEADER ─────────────────────────────────────── -->
+    <div class="sxkd-header">
+      <div class="sxkd-title">📊 BẢNG TÍNH PHƯƠNG ÁN SẢN XUẤT KINH DOANH</div>
+      <div class="sxkd-header-btns">
+        <span class="sxkd-tag red">🔴 Ô đỏ = Công thức</span>
+        <span class="sxkd-tag white">⬜ Ô trắng = Nhập dữ liệu</span>
+        <label class="sxkd-import-btn" title="Kéo thả hoặc click để import file Excel">
+          📂 Kéo thả / Import Excel
+          <input type="file" id="xl-file-inp" accept=".xlsx,.xls" style="display:none" onchange="xlImportFile(event)">
+        </label>
+        <button id="sxkd-fs-btn" onclick="sxkdToggleFS()" title="Toàn màn hình (Esc)">⛶ Toàn màn hình</button>
+        <button class="sxkd-close-btn" onclick="sxkdClosePanel()" title="Đóng bảng tính">✕</button>
+      </div>
+    </div>
+
+    <!-- ── LEGEND ─────────────────────────────────────── -->
+    <div class="sxkd-legend">
+      🟡 <strong>Nền vàng</strong> = công thức quan trọng &nbsp;|&nbsp;
+      🔴 <strong>Nền đỏ</strong> = công thức tính tự động &nbsp;|&nbsp;
+      ⬜ <strong>Nền trắng</strong> = ô nhập liệu &nbsp;|&nbsp;
+      📂 Kéo thả hoặc bấm <strong>Import Excel</strong> để nhập dữ liệu
+    </div>
+
+    <!-- ── FORMULA BAR ─────────────────────────────────── -->
+    <div id="hsvv-xl-formula-bar" class="sxkd-fxbar">
+      <div id="hsvv-xl-cell-ref" class="sxkd-cellref">—</div>
+      <div class="sxkd-fxlabel">fx</div>
+      <input id="hsvv-xl-formula-input" class="sxkd-fxinput"
+        placeholder="Chọn ô rồi nhập công thức, ví dụ: =SUM(D2:D10)*1.1"
+        autocomplete="off" spellcheck="false"
+        oninput="xlFxInput(this.value)"
+        onkeydown="xlFxKeyDown(event)"
+        onfocus="xlFxFocus()">
+      <button class="sxkd-fxok"  onclick="xlFxCommit()" title="Xác nhận (Enter)">✓</button>
+      <button class="sxkd-fxcancel" onclick="xlFxCancel()" title="Hủy (Esc)">✕</button>
+      <span id="hsvv-xl-fx-info" class="sxkd-fxinfo"></span>
+    </div>
+
+    <!-- ── TOOLBAR ────────────────────────────────────── -->
+    <div id="hsvv-xl-toolbar" class="sxkd-toolbar">
+      <button class="sxkd-tbtn" onclick="xlAutoFitAll()" title="Tự động co giãn cột">↔ Auto-fit</button>
+      <div class="sxkd-tbtn-sep"></div>
+      <button class="sxkd-tbtn" id="hsvv-xl-sel-btn" onclick="xlToggleSelectMode()" title="Chọn vùng để copy">⬛ Chọn vùng</button>
+      <button class="sxkd-tbtn" onclick="xlCopySelection()" title="Copy vùng đã chọn">📋 Copy</button>
+      <button class="sxkd-tbtn" onclick="xlCopyAll()">📋 Copy tất cả</button>
+      <div class="sxkd-tbtn-sep"></div>
+      <button class="sxkd-tbtn" onclick="xlResetColWidths()">↺ Reset cột</button>
+      <button class="sxkd-tbtn" onclick="xlToggleVisPanel(event)" title="Ẩn/hiện dòng cột">Ẩn/Hiện</button>
+      <button class="sxkd-tbtn" onclick="xlShowAllRowsCols()">🔓 Hiện tất cả</button>
+      <button class="sxkd-tbtn" id="s4-border-btn" onclick="s4BorderOpen(event)" title="Kẻ viền ô">⬛ Kẻ viền</button>
+      <div class="sxkd-tbtn-sep"></div>
+      <span id="hsvv-xl-sel-info" class="sxkd-status">Chọn ô → nhập công thức trên thanh fx</span>
+    </div>
+
+    <!-- ── DROP ZONE ───────────────────────────────────── -->
+    <div id="hsvv-xl-drop-zone" class="sxkd-dropzone">
+      <div style="font-size:40px;">📊</div>
+      <div style="font-size:15px;font-weight:700;color:#1a2540;">Thả file Excel vào đây để nhập dữ liệu</div>
+    </div>
+
+    <!-- ── TABLE AREA ──────────────────────────────────── -->
+    <div style="overflow-x:auto;position:relative;" id="hsvv-xl-table-wrap"
+         ondragover="xlDragOver(event)" ondragleave="xlDragLeave(event)" ondrop="xlDrop(event)">
+
+      <table id="hsvv-xl-main-table" style="border-collapse:collapse;font-size:11.5px;min-width:900px;">
+        <colgroup>
+  <col style="width:30px">
+  <col id="xl-col-1" style="width:35px">
+  <col id="xl-col-2" style="width:185px">
+  <col id="xl-col-3" style="width:65px">
+  <col id="xl-col-4" style="width:95px">
+  <col id="xl-col-5" style="width:95px">
+  <col id="xl-col-6" style="width:130px">
+  <col id="xl-col-7" style="width:60px">
+  <col id="xl-col-8" style="width:210px">
+  <col id="xl-col-9" style="width:130px">
+  <col id="xl-col-10" style="width:115px">
+  <col id="xl-col-11" style="width:110px">
+</colgroup>
+        <thead>
+          <tr class="xl-col-header xl-row-header"><th></th><th id="xl-th-1"><div class="xl-th-inner">A<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột A"><input type="checkbox" onchange="xlToggleColWrap(1,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="1" onmousedown="xlResizeStart(event,1)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(1)" title="Ẩn cột A">▼</button></div></th><th id="xl-th-2"><div class="xl-th-inner">B<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột B"><input type="checkbox" onchange="xlToggleColWrap(2,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="2" onmousedown="xlResizeStart(event,2)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(2)" title="Ẩn cột B">▼</button></div></th><th id="xl-th-3"><div class="xl-th-inner">C<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột C"><input type="checkbox" onchange="xlToggleColWrap(3,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="3" onmousedown="xlResizeStart(event,3)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(3)" title="Ẩn cột C">▼</button></div></th><th id="xl-th-4"><div class="xl-th-inner">D<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột D"><input type="checkbox" onchange="xlToggleColWrap(4,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="4" onmousedown="xlResizeStart(event,4)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(4)" title="Ẩn cột D">▼</button></div></th><th id="xl-th-5"><div class="xl-th-inner">E<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột E"><input type="checkbox" onchange="xlToggleColWrap(5,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="5" onmousedown="xlResizeStart(event,5)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(5)" title="Ẩn cột E">▼</button></div></th><th id="xl-th-6"><div class="xl-th-inner">F<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột F"><input type="checkbox" onchange="xlToggleColWrap(6,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="6" onmousedown="xlResizeStart(event,6)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(6)" title="Ẩn cột F">▼</button></div></th><th id="xl-th-7"><div class="xl-th-inner">G<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột G"><input type="checkbox" onchange="xlToggleColWrap(7,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="7" onmousedown="xlResizeStart(event,7)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(7)" title="Ẩn cột G">▼</button></div></th><th id="xl-th-8"><div class="xl-th-inner">H<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột H"><input type="checkbox" onchange="xlToggleColWrap(8,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="8" onmousedown="xlResizeStart(event,8)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(8)" title="Ẩn cột H">▼</button></div></th><th id="xl-th-9"><div class="xl-th-inner">I<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột I"><input type="checkbox" onchange="xlToggleColWrap(9,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="9" onmousedown="xlResizeStart(event,9)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(9)" title="Ẩn cột I">▼</button></div></th><th id="xl-th-10"><div class="xl-th-inner">J<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột J"><input type="checkbox" onchange="xlToggleColWrap(10,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="10" onmousedown="xlResizeStart(event,10)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(10)" title="Ẩn cột J">▼</button></div></th><th id="xl-th-11"><div class="xl-th-inner">K<label class="xl-wrap-chk" title="Bật/tắt tự động giãn dòng cột K"><input type="checkbox" onchange="xlToggleColWrap(11,this.checked)"><span title="Giãn dòng">⇕</span></label><div class="xl-resize-handle" data-col="11" onmousedown="xlResizeStart(event,11)"></div><button class="xl-col-vis-btn" onclick="xlHideCol(11)" title="Ẩn cột K">▼</button></div></th></tr>
+        </thead>
+        <tbody>
+<tr class="xl-header-row"><td class="xl-rownum">1</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Loại</td><td class="xl-label" style="text-align:right;">Đơn vị</td><td class="xl-label" style="text-align:right;">Số lượng</td><td class="xl-label" style="text-align:right;">Đơn giá</td><td class="xl-label" style="text-align:right;">Thành tiền</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+</tbody>
+<tbody id="hsvv-xl-r1-body">
+<!-- Rendered by JS xlRenderR1() -->
+</tbody>
+<!-- Region 1 add-row toolbar -->
+<tbody id="xl-r1-add-row">
+<tr class="xl-add-row-tr">
+  <td colspan="12" style="padding:4px 8px; border:none; background:#f0f6ff;">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:10.5px;color:#667;font-weight:700;">📦 BẢNG CHI PHÍ (Vật tư mua vào):</span>
+      <button class="xl-region-btn xl-region-add" onclick="xlR1Add(-1)" title="Thêm dòng mới vào cuối">＋ Thêm dòng</button>
+      <button class="xl-region-btn xl-region-del" onclick="xlR1DelLast()" title="Xóa dòng cuối cùng">－ Xóa dòng cuối</button>
+      <button class="xl-region-btn xl-region-rst" onclick="xlR1Reset()" title="Phục hồi dữ liệu gốc">↺ Phục hồi gốc</button>
+      <span id="hsvv-xl-r1-count" style="font-size:10px;color:#889;font-style:italic;"></span>
+    </div>
+  </td>
+</tr>
+</tbody>
+<tbody id="xl-static-mid">
+<tr><td class="xl-rownum">22</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-formula" id="xl_22_6" style="text-align:right;font-weight:700;" title="=SUM_F2_F21"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_22_7" value="110.500.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">23</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Lãi</td><td class="xl-empty"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_23_4" value="6.000.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_23_5" value="8" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-formula" id="xl_23_6" style="text-align:right;font-weight:700;" title="=D23*E23/100"></td><td class="xl-formula" id="xl_23_7" style="text-align:right;" title="=G21+G22"></td><td class="xl-label" style="text-align:left;">Chi phí vật tư</td><td class="xl-formula xl-yellow" id="xl_23_9" style="text-align:right;" title="=F22"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">24</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Lương</td><td class="xl-empty"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_24_4" value="4" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_24_5" value="4.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_24_6" value="264.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_24_7" value="2" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-label" style="text-align:left;">Chi phí khác</td><td class="xl-formula xl-yellow" id="xl_24_9" style="text-align:right;" title="=F23+F24+F25+F26+F27"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">25</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Khác</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_25_6" value="85.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">26</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Khấu hao</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_26_6" value="0" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-label" style="text-align:center;">*</td><td class="xl-label" style="text-align:left;font-weight:700;">Tổng giá trị tài sản hiện có (ước tính)</td><td class="xl-formula xl-yellow" id="xl_26_9" style="text-align:right;font-weight:700;" title="=SUM_I27_I32_minus_I33"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">27</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;">Thuế</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_27_6" value="10.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;"> + Giá trị nhà đất</td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_27_9" value="10.785.200.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_27_10" value="1.395.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_27_11" value="6.840.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td></tr>
+<tr><td class="xl-rownum">28</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;font-weight:700;">Tổng chi phí</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-formula" id="xl_28_6" style="text-align:right;font-weight:700;" title="=F22+F23+F24+F25+F26+F27"></td><td class="xl-formula" id="xl_28_7" style="text-align:right;" title="=I21"></td><td class="xl-label" style="text-align:left;"> + Giá trị lao động</td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_28_9" value="140.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_28_10" value="2.978.720.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">29</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-formula" id="xl_29_7" style="text-align:right;" title="=G28-F28"></td><td class="xl-label" style="text-align:left;"> + Tài sản khác (tủ quầy, xe máy, đồ dùng)</td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_29_9" value="3.000.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-formula" id="xl_29_10" style="text-align:right;" title="=J27+J28"></td><td class="xl-empty"></td></tr>
+</tbody>
+<tbody>
+<tr class="xl-header-row"><td class="xl-rownum">30</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;font-weight:700;">Loại</td><td class="xl-label" style="text-align:center;font-weight:700;">Đơn vị</td><td class="xl-label" style="text-align:right;font-weight:700;">Số lượng</td><td class="xl-label" style="text-align:right;font-weight:700;">Đơn giá</td><td class="xl-label" style="text-align:right;font-weight:700;">Thành tiền</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;"> + Hàng hoá các loại</td><td class="xl-input-wrap"><input class="xl-num" type="text" inputmode="numeric" id="xl_30_9" value="1.200.000.000" onfocus="xlOnFocus(this)" onblur="xlOnBlur(this)" oninput="xlOnInput(this)" autocomplete="off" style="text-align:right;"></td><td class="xl-label" style="text-align:left;font-weight:700;">Vốn đối ứng</td><td class="xl-formula xl-yellow" id="xl_30_11" style="text-align:right;" title="=I3"></td></tr>
+</tbody>
+<tbody id="hsvv-xl-r2-body">
+<!-- Rendered by JS xlRenderR2() -->
+</tbody>
+<!-- Region 2 add-row toolbar -->
+<tbody id="xl-r2-add-row">
+<tr class="xl-add-row-tr">
+  <td colspan="12" style="padding:4px 8px; border:none; background:#f0fff0;">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:10.5px;color:#145;font-weight:700;">💰 BẢNG DOANH THU (Vật tư bán ra):</span>
+      <button class="xl-region-btn xl-region-add" onclick="xlR2Add(-1)">＋ Thêm dòng</button>
+      <button class="xl-region-btn xl-region-del" onclick="xlR2DelLast()">－ Xóa dòng cuối</button>
+      <button class="xl-region-btn xl-region-rst" onclick="xlR2Reset()">↺ Phục hồi gốc</button>
+      <span id="hsvv-xl-r2-count" style="font-size:10px;color:#889;font-style:italic;"></span>
+    </div>
+  </td>
+</tr>
+</tbody>
+<tbody id="xl-static-end">
+<tr><td class="xl-rownum">51</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-formula" id="xl_51_6" style="text-align:right;font-weight:700;" title="=SUM_F31_F50"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">52</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-formula" id="xl_52_6" style="text-align:right;font-weight:700;" title="=F51-F28"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr><td class="xl-rownum">53</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+<tr class="xl-header-row"><td class="xl-rownum">54</td><td class="xl-empty"></td><td class="xl-label" style="text-align:left;font-weight:700;">Loại</td><td class="xl-empty"></td><td class="xl-label" style="text-align:right;font-weight:700;">Số lượng</td><td class="xl-label" style="text-align:right;font-weight:700;">Đơn giá</td><td class="xl-label" style="text-align:right;font-weight:700;">Thành tiền</td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td><td class="xl-empty"></td></tr>
+</tbody>
+      </table>
+    </div>
+
+  </div>
+</div><!-- /wrapper -->
+
+</main>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-l">
+    <button class="btn ol" onclick="saveJSON()">💾 Lưu JSON</button>
+    <button class="btn ol" onclick="loadJSON()">📂 Mở JSON</button>
+  </div>
+  <div class="footer-r">
+    <button class="btn pr" onclick="exportExcel()">📊 Excel</button>
+    <button class="btn pr" onclick="exportWord()">📝 Word</button>
+    <button class="btn pr" onclick="exportAPC()">📋 APC</button>
+    <button class="btn gd" onclick="window.print()">🖨️ In/PDF</button>
+    <button class="btn gr" onclick="validateSubmit()">✅ Hoàn tất</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="hsvv-modalOv">
+  <div class="modal-box">
+    <div class="modal-title" id="mTitle">Thông báo</div>
+    <div id="mBody"></div>
+    <div class="modal-actions">
+      <button class="btn ol" onclick="apcCloseModal()">Đóng</button>
+      <button class="btn gr" id="mOk" onclick="apcCloseModal()">OK</button>
+    </div>
+  </div>
+</div>
+<div id="hsvv-xl-resize-line"></div>
+<div id="hsvv-xl-copy-flash">✅ Đã copy vào clipboard!</div>
+<input type="file" id="hsvv-fi" accept=".json" style="display:none" onchange="handleLoad(event)">
+
+<!-- Toast notification -->
+
+<!-- TEMPLATE LOADER MODAL -->
+<div class="modal-ov" id="templateModal" style="display:none;align-items:center;justify-content:center;">
+  <div class="modal-box" style="max-width:480px;width:95%;max-height:80vh;overflow-y:auto;">
+    <div class="modal-title">🎨 Chọn Template Hồ Sơ Mẫu</div>
+    <div style="padding:12px 0;">
+      <div class="template-item" style="margin-bottom:10px;padding:10px 14px;border:1.5px solid #D3DCE8;border-radius:8px;cursor:pointer;"
+           onclick="document.getElementById('tpl-mau-cap-von').checked=true;this.parentElement.querySelectorAll('.template-item').forEach(x=>x.style.borderColor='#D3DCE8');this.style.borderColor='#1A7F4B';">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+          <input type="radio" name="template" id="tpl-mau-cap-von" value="mau-cap-von">
+          <span>
+            <strong>Khách hàng mẫu - Cấp vốn 2024</strong>
+            <div style="font-size:11px;color:#5A7080;margin-top:2px;">Hạn mức 500 triệu · 24 tháng · 6.5%/năm</div>
+          </span>
+        </label>
+      </div>
+    </div>
+    <div id="loaderProgress" style="display:none;text-align:center;padding:8px;color:#1A7F4B;font-size:12px;font-weight:600;">⏳ Đang tải...</div>
+    <div class="modal-actions">
+      <button class="btn ol" onclick="closeTemplateModal()">Hủy</button>
+      <button class="btn gr" id="loadBtn" onclick="loadSelectedTemplate()">✅ Nạp template</button>
+    </div>
+  </div>
+</div>
+</div><!-- /.hsvv-wrap -->
+</div><!-- /#page-hsvv -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 11: GIA DAT & HE SO K, H
+     ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: TÀI SẢN BẢO ĐẢM (TSBĐ) — tích hợp IPCAS TS.XLS  (v2026-08-19)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-nhap">
+  <div class="card" style="padding:14px">
+    <div id="hub-drop" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="tdHubDrop(event)" onclick="document.getElementById('hub-file').click()" style="border:2px dashed #94a3b8;border-radius:12px;padding:22px;text-align:center;cursor:pointer;background:#f8fafc">
+      <div style="font-size:1.1rem;font-weight:700">📥 Kéo thả hoặc bấm để chọn NHIỀU tệp</div>
+      <div style="font-size:.85rem;color:#566579;margin-top:4px">Dư nợ msit80 (.xls/.xlsx/.csv — tên tệp có ngày, vd 31.05.2026.xlsx) và Sao kê tài sản bảo đảm (tên có "tai san bao dam"). Tệp được nhận dạng theo tên, xếp theo ngày; tệp lạ/trùng bị bỏ qua.</div>
+      <input id="hub-file" type="file" multiple accept=".xls,.xlsx,.xlsm,.csv" style="display:none" onchange="tdHubAdd(this.files); this.value=''">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button id="hub-run" class="btn btn-green" onclick="tdHubRun()" disabled>▶ Nhập tất cả theo thứ tự ngày</button><button id="hub-undo" class="btn btn-outline" onclick="tdHubUndoRun()" disabled>↩ Hoàn tác lần nhập (dư nợ)</button><button class="btn btn-ghost" onclick="tdHubClear()">Xoá danh sách</button></div>
+    <div id="hub-plan"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><b>📜 Nhật ký nhập (lưu trên máy này)</b><button class="btn btn-ghost btn-sm" onclick="tdHubLogCsv()">📄 Xuất CSV</button></div>
+    <div id="hub-log" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<div class="page" id="page-khachhang">
+  <div class="card" style="padding:14px">
+    <div style="position:relative;max-width:560px">
+      <input id="kh360-q" type="search" placeholder="🔍 Tên KH, mã KH hoặc số HĐTD…" oninput="tdKh360Search(this.value)" autocomplete="off" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px">
+      <div id="kh360-res" style="position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #e2e8f0;border-radius:8px;z-index:20;max-height:320px;overflow:auto"></div>
+    </div>
+    <div id="kh360-view" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<div class="page" id="page-xuhuong">
+  <div class="card" style="padding:14px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <label style="font-size:.85rem">Chỉ tiêu <select id="trend-metric" onchange="tdTrendRun()"><option value="duno">Dư nợ</option><option value="kh">Số khách hàng</option><option value="hs">Số khoản (hồ sơ)</option></select></label>
+      <label style="font-size:.85rem">Chia theo <select id="trend-by" onchange="tdTrendRun()"><option value="total">Tổng</option><option value="nhom">Nhóm nợ</option><option value="pb">Phòng ban</option><option value="cbtd">CBTD (top 8)</option><option value="loai">Loại vay</option></select></label>
+      <button class="btn btn-green btn-sm" onclick="tdTrendRun()">🔄 Vẽ lại</button>
+      <button class="btn btn-ghost btn-sm" onclick="tdTrendCsv()">📄 Xuất CSV</button>
+    </div>
+    <div id="trend-body" style="margin-top:10px">Đang tính…</div>
+  </div>
+</div>
+
+<div class="page" id="page-canhbao">
+  <div class="card" style="padding:14px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-green" onclick="tdWarnRun()">🔄 Tính lại</button>
+      <span style="font-size:.82rem;color:#555">Tính theo ngày dữ liệu của tệp (chip 📅 trên đầu trang); không sửa số liệu.</span>
+    </div>
+    <div id="warn-body" style="margin-top:10px">Đang tính…</div>
+  </div>
+</div>
+
+<div class="page" id="page-doisoat">
+  <div class="card" style="padding:14px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-green" onclick="tdDoiSoatRun()">🔄 Chạy đối soát</button>
+      <button class="btn btn-ghost" onclick="tdDoiSoatExport()">📄 Xuất biên bản (.txt)</button>
+      <button class="btn btn-ghost" onclick="tdReportExport()">📊 Báo cáo chuẩn (Excel)</button>
+      <button class="btn btn-ghost" onclick="tdReportDialog()">📝 Báo cáo Word / chọn kỳ…</button>
+      <span style="font-size:.82rem;color:#555">Tính lại độc lập từ dữ liệu đang nạp rồi so với Dashboard, mốc hàng ngày, TSBĐ, báo cáo theo CBTD. Không sửa số liệu.</span>
+    </div>
+    <div id="doisoat-body" style="margin-top:10px">Bấm “Chạy đối soát”.</div>
+  </div>
+</div>
+
+<div class="page" id="page-tsbd">
+  <div class="card">
+    <div class="card-head">
+      <span>🏠 DANH MỤC TÀI SẢN BẢO ĐẢM — đối chiếu trạng thái dư nợ khách hàng</span>
+      <span id="tsbd-src" class="tsbd-src">—</span>
+    </div>
+
+    <div class="tab-bar tsbd-tabbar">
+      <button class="btn btn-sm tsbd-tab active" data-tab="ds" onclick="tsbdSwitchTab('ds')">📋 DANH SÁCH TÀI SẢN</button>
+      <button class="btn btn-sm tsbd-tab" data-tab="th" onclick="tsbdSwitchTab('th')">📊 TỔNG HỢP</button>
+      <button class="btn btn-sm tsbd-tab" data-tab="snap" onclick="tsbdSwitchTab('snap')">🗂️ SNAPSHOT &amp; SO SÁNH MỐC</button>
+      <button class="btn btn-sm tsbd-tab" data-tab="qc" onclick="tsbdSwitchTab('qc')">⚠️ CHẤT LƯỢNG DỮ LIỆU</button>
+    </div>
+
+    <!-- ══ TAB 1: DANH SÁCH ══ -->
+    <div id="tsbd-pane-ds" class="tsbd-pane">
+      <div class="table-toolbar" style="flex-wrap:wrap;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('tsbd-file').click()">📂 Nhập TS từ IPCAS</button>
+        <input type="file" id="tsbd-file" accept=".xls,.xlsx,.xlsm,.csv" style="display:none" onchange="tsbdImportFile(this)">
+        <button class="btn btn-outline btn-sm" onclick="tsbdReconcile(true)">🔄 Đối chiếu lại dư nợ</button>
+        <button class="btn btn-outline btn-sm" onclick="tsbdExportExcel()">📊 Xuất Excel đối chiếu</button>
+        <button class="btn btn-outline btn-sm" onclick="printActivePage()" title="In bảng TSBĐ khổ A4">🖨️ In bảng A4</button>
+        <span class="tsbd-sep"></span>
+        <input type="text" id="tsbd-q" class="tsbd-inp" placeholder="🔍 Mã KH / Tên KH / Số GCN / Địa chỉ..." oninput="tsbdRender()">
+        <select id="tsbd-f-tt" class="tsbd-inp" onchange="tsbdRender()">
+          <option value="">— Trạng thái dư nợ —</option>
+          <option value="con">Còn dư nợ</option>
+          <option value="tt">Đã tất toán (dư nợ = 0)</option>
+          <option value="kct">Không có hồ sơ trong DATA</option>
+        </select>
+        <select id="tsbd-f-loai" class="tsbd-inp" onchange="tsbdRender()"><option value="">— Loại TS —</option></select>
+        <select id="tsbd-f-cbtd" class="tsbd-inp" onchange="tsbdRender()"><option value="">— CBTD —</option></select>
+        <label class="tsbd-chk"><input type="checkbox" id="tsbd-f-b3" onchange="tsbdRender()"> Bên thứ 3</label>
+        <label class="tsbd-chk"><input type="checkbox" id="tsbd-f-exp" onchange="tsbdRender()"> Sắp hết hạn ≤60 ngày</label>
+      </div>
+
+      <div class="tsbd-kpis" id="tsbd-kpis"></div>
+
+      <div class="table-wrap" style="max-height:calc(100vh - 400px)">
+        <table class="tsbd-table" id="tsbd-table">
+          <thead>
+            <tr>
+              <th style="min-width:34px">#</th>
+              <th onclick="tsbdSort('maKH')" style="min-width:112px">MÃ KH <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('tenKH')" style="min-width:170px">TÊN KH <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('tenChuTS')" style="min-width:170px">TÊN CHỦ TS <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('maChuTS')" style="min-width:112px">MÃ KH CHỦ TS <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('loaiTS')" style="min-width:110px">LOẠI TS <span class="sort-icon">↕</span></th>
+              <th style="min-width:210px">ĐỊA CHỈ / MÔ TẢ</th>
+              <th onclick="tsbdSort('giaTriTS')" style="min-width:110px;text-align:right">GIÁ TRỊ TS <span class="sort-icon">↕</span></th>
+              <th style="min-width:70px;text-align:right">TỶ LỆ %</th>
+              <th style="min-width:120px">SỐ GCN</th>
+              <th onclick="tsbdSort('ngayTheChap')" style="min-width:92px">NGÀY TC <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('ngayHetHan')" style="min-width:92px">HẾT HẠN <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('cbtd')" style="min-width:130px">CBTD <span class="sort-icon">↕</span></th>
+              <th onclick="tsbdSort('duNoHienTai')" style="min-width:115px;text-align:right">DƯ NỢ KH <span class="sort-icon">↕</span></th>
+              <th style="min-width:140px">TRẠNG THÁI</th>
+            </tr>
+          </thead>
+          <tbody id="tsbd-tbody"></tbody>
+        </table>
+      </div>
+      <div class="tsbd-pager" id="tsbd-pager"></div>
+    </div>
+
+    <!-- ══ TAB 2: TỔNG HỢP ══ -->
+    <div id="tsbd-pane-th" class="tsbd-pane" style="display:none">
+      <div id="tsbd-sum"></div>
+    </div>
+
+    <!-- ══ TAB 3: SNAPSHOT ══ -->
+    <div id="tsbd-pane-snap" class="tsbd-pane" style="display:none">
+      <div class="table-toolbar" style="flex-wrap:wrap;gap:8px">
+        <select id="tsbd-snap-kieu" class="tsbd-inp">
+          <option value="thang">Mốc THÁNG</option>
+          <option value="quy">Mốc QUÝ</option>
+          <option value="nam">Mốc NĂM</option>
+          <option value="khac">Mốc tuỳ chọn</option>
+        </select>
+        <input type="text" id="tsbd-snap-label" class="tsbd-inp" placeholder="Nhãn mốc, VD: 08/2026 hoặc Q3/2026">
+        <button class="btn btn-primary btn-sm" onclick="tsbdSaveSnapshot()">💾 Lưu snapshot hiện tại</button>
+        <span class="tsbd-sep"></span>
+        <select id="tsbd-snap-cmp" class="tsbd-inp" onchange="tsbdCompare()"><option value="">— So sánh hiện tại với mốc —</option></select>
+      </div>
+      <div class="tsbd-note">Snapshot lưu trong IndexedDB <b>QLTDProTSBD</b> (độc lập với DB dư nợ), gồm số lượng TS, tổng giá trị, phân bố trạng thái và danh sách khoá TS để đối chiếu biến động giữa các mốc.</div>
+      <div class="table-wrap" style="max-height:320px">
+        <table class="tsbd-table"><thead><tr>
+          <th>MỐC</th><th>KIỂU</th><th>NGÀY LƯU</th><th style="text-align:right">SỐ TS</th>
+          <th style="text-align:right">TỔNG GIÁ TRỊ (tr.đ)</th><th style="text-align:right">CÒN DƯ NỢ</th>
+          <th style="text-align:right">ĐÃ TẤT TOÁN</th><th style="text-align:right">BÊN THỨ 3</th><th></th>
+        </tr></thead><tbody id="tsbd-snap-tbody"></tbody></table>
+      </div>
+      <div id="tsbd-cmp"></div>
+    </div>
+
+    <!-- ══ TAB 4: CHẤT LƯỢNG DỮ LIỆU ══ -->
+    <div id="tsbd-pane-qc" class="tsbd-pane" style="display:none">
+      <div id="tsbd-qc"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-giadat">
+<div class="bgdat-frame">
+
+<!-- SUB-NAV -->
+<div class="bgd-subnav">
+  <button class="bgd-snav-btn active" onclick="bgd_showSection('gia-o',this)">🏘️ ĐẤT Ở TP NAM ĐỊNH</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('he-so',this)">🧮 TÍNH &amp; TRA HỆ SỐ K, H</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('vi-tri',this)">📍 VỊ TRÍ ĐẤT</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('gia-nn',this)">🌾 ĐẤT NÔNG NGHIỆP</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('tinh-gia',this)">🔢 TÍNH GIÁ CŨ</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('quy-dinh',this)">📋 QUY ĐỊNH</button>
+  <button class="bgd-snav-btn" onclick="bgd_showSection('loi-du-lieu',this)">⚠️ LỖI DỮ LIỆU BẢNG GIÁ</button>
+</div>
+
+<main>
+
+<!-- ===== SECTION 1: GIÁ ĐẤT NÔNG NGHIỆP ===== -->
+<div id="gia-nn" class="section">
+  <div class="section-title">Bảng Giá Đất Nông Nghiệp</div>
+  <div class="section-sub">Tỉnh Ninh Bình · Áp dụng từ 01/01/2026 · NQ 38/2025/NQ-HĐND</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-green">🌾</div><div><h2>Đất Trồng Cây Hàng Năm & Nuôi Trồng Thủy Sản</h2><p>Điều 5, Khoản 1</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Khu vực</th><th>Giá đất (đồng/m²)</th></tr></thead>
+    <tbody><tr><td>Các phường (đô thị)</td><td class="num num-red" contenteditable="true">80.000</td></tr>
+    <tr><td>Các xã (nông thôn)</td><td class="num num-gold" contenteditable="true">75.000</td></tr></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-gold">🌳</div><div><h2>Đất Trồng Cây Lâu Năm</h2><p>Điều 5, Khoản 2</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Khu vực</th><th>Giá đất (đồng/m²)</th></tr></thead>
+    <tbody><tr><td>Các phường (đô thị)</td><td class="num num-red" contenteditable="true">85.000</td></tr>
+    <tr><td>Các xã (nông thôn)</td><td class="num num-gold" contenteditable="true">80.000</td></tr></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-blue">🌊</div><div><h2>Các Loại Đất Nông Nghiệp Đặc Biệt</h2><p>Điều 5, Khoản 3–9</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Loại đất</th><th>Khu vực / Chi tiết</th><th>Giá (đồng/m²)</th></tr></thead>
+    <tbody>
+    <tr><td>Đất lâm nghiệp</td><td>Toàn tỉnh</td><td class="num num-green" contenteditable="true">30.000</td></tr>
+    <tr><td>Đất chăn nuôi tập trung</td><td>Bằng giá cây lâu năm cùng khu vực</td><td class="num">Theo CL năm</td></tr>
+    <tr><td>Đất làm muối</td><td>Toàn tỉnh</td><td class="num num-green" contenteditable="true">70.000</td></tr>
+    <tr><td>Đất nông nghiệp khác</td><td>Bằng giá cây lâu năm cùng khu vực</td><td class="num">Theo CL năm</td></tr>
+    <tr><td>Đất NN cùng thửa với đất ở</td><td>Các phường</td><td class="num num-red" contenteditable="true">110.000</td></tr>
+    <tr><td>Đất NN cùng thửa với đất ở</td><td>Các xã</td><td class="num num-gold" contenteditable="true">100.000</td></tr>
+    <tr><td>Đất bãi bồi ven sông</td><td>Ven sông Hồng, sông Ninh Cơ, sông Đáy</td><td class="num num-green" contenteditable="true">30.000</td></tr>
+    <tr><td>Đất bãi bồi ven sông</td><td>Ven các sông khác</td><td class="num" contenteditable="true">25.000</td></tr>
+    <tr><td>Đất bãi bồi ven biển</td><td>Khai thác/nuôi trồng thủy hải sản</td><td class="num num-green" contenteditable="true">40.000</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: GIÁ ĐẤT Ở ===== -->
+<div id="gia-o" class="section active">
+  <div class="section-title">Bảng Giá Đất Ở – TP Nam Định</div>
+  <div class="section-sub">Phụ lục 02 – 8 Phường · Cột UBND theo NQ 38/2025 · Giá CV theo Công văn 39/2026</div>
+
+  <div class="alert alert-info">
+    💡 <div>Đơn vị: <strong>đồng/m²</strong>. Cột <strong style="color:#2D5016;">UBND (NQ38)</strong> = giá gốc theo NQ38/2025. Cột Cao/Thấp = giá điều chỉnh theo CV 39/2026.</div>
+  </div>
+
+  <div class="card" style="padding:16px 20px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+      <span style="font-weight:700;font-family:'Courier New',Courier,monospace;font-size:.78rem;color:var(--navy);">CHỌN PHƯỜNG:</span>
+    </div>
+    <div class="ward-tabs" id="ward-tabs"></div>
+    <div class="stats-bar" id="stats-bar"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <div class="search-wrap" style="flex:1;min-width:200px;margin-bottom:0;">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-duong" placeholder="Tìm tên đường / khu vực..." oninput="qaDebounce('bgdFilter', bgd_filterAndRender, 220)">
+      </div>
+      <div class="range-filter">
+        <label>Giá VT1 từ:</label>
+        <input type="number" id="price-min" placeholder="Min" oninput="qaDebounce('bgdFilter', bgd_filterAndRender, 220)" style="width:80px;">
+        <label>đến:</label>
+        <input type="number" id="price-max" placeholder="Max" oninput="qaDebounce('bgdFilter', bgd_filterAndRender, 220)" style="width:80px;">
+        <label style="color:#666;">(đồng)</label>
+      </div>
+    </div>
+    <div class="filter-pills">
+      <button class="pill active-pill" onclick="bgd_setVT(this,'all')">Tất cả VT</button>
+      <button class="pill" onclick="bgd_setVT(this,'vt1')">VT1</button>
+      <button class="pill" onclick="bgd_setVT(this,'vt2')">VT2</button>
+      <button class="pill" onclick="bgd_setVT(this,'vt3')">VT3</button>
+      <button class="pill" onclick="bgd_setVT(this,'vt4')">VT4</button>
+    </div>
+    <div class="table-wrap">
+      <table id="main-table">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: VỊ TRÍ ===== -->
+<div id="vi-tri" class="section">
+  <div class="section-title">Xác Định Vị Trí Đất</div>
+  <div class="section-sub">Chương II – Điều 3 & 4, NQ 38/2025</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-blue">🏙️</div><div><h2>Đất Ở Tại Đô Thị – 4 Vị Trí</h2><p>Gắn với từng đường, đoạn đường, phố trên địa bàn phường</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Vị trí</th><th>Điều kiện áp dụng</th><th>Ngõ tính từ chỉ giới hè đường</th></tr></thead>
+    <tbody>
+    <tr><td><span class="tag tag-red">VT 1</span></td><td>Thửa đất có ít nhất 1 cạnh giáp với đường/phố có tên trong Bảng giá</td><td>–</td></tr>
+    <tr><td><span class="tag tag-gold">VT 2</span></td><td>Thửa đất có ít nhất 1 cạnh giáp ngõ (từ chỉ giới hè đường đến mốc giới đầu tiên thửa đất)</td><td class="num">≥ 3,5 m</td></tr>
+    <tr><td><span class="tag tag-blue">VT 3</span></td><td>Tương tự VT2</td><td class="num">2 m – &lt; 3,5 m</td></tr>
+    <tr><td><span class="tag tag-green">VT 4</span></td><td>Tương tự VT2, ngõ hẹp nhất</td><td class="num">&lt; 2 m</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-green">🌳</div><div><h2>Đất Ở Tại Nông Thôn – 3 Vị Trí</h2><p>Gắn với từng đường, đoạn đường trên địa bàn xã</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Vị trí</th><th>Điều kiện</th><th>Mặt cắt ngõ/đường</th></tr></thead>
+    <tbody>
+    <tr><td><span class="tag tag-red">VT 1</span></td><td>Giáp với đường/ngõ có tên trong Bảng giá</td><td>–</td></tr>
+    <tr><td><span class="tag tag-gold">VT 2</span></td><td>Giáp đường, ngõ có mặt cắt từ chỉ giới hè đến mốc giới đầu tiên thửa đất</td><td class="num">≥ 5 m</td></tr>
+    <tr><td><span class="tag tag-blue">VT 3</span></td><td>Tương tự VT2, nhỏ hơn</td><td class="num">&lt; 5 m</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-purple">⚖️</div><div><h2>Quy Tắc Đặc Biệt</h2></div></div>
+    <div class="step"><div class="step-num">A</div><div class="step-content"><strong>Thửa tiếp giáp 2 trục đường</strong><p>Áp dụng giá đất tại trục đường có giá cao hơn.</p></div></div>
+    <div class="step"><div class="step-num">B</div><div class="step-content"><strong>Đất kết nối bằng đường gom</strong><p>Xác định giá theo vị trí thấp hơn 01 vị trí so với thửa kết nối trực tiếp.</p></div></div>
+    <div class="step"><div class="step-num">C</div><div class="step-content"><strong>Khu vực giáp ranh 200m</strong><p>Chia bậc ~20m/bậc, chênh lệch 10% so với phần chênh giữa 2 khu vực.</p></div></div>
+    <div class="step"><div class="step-num">D</div><div class="step-content"><strong>Thửa bị chắn bởi thửa khác</strong><p>Phần bị chắn áp vị trí thấp hơn 01 vị trí so với phần không bị chắn.</p></div></div>
+  </div>
+</div>
+
+<!-- ===== SECTION 4: HỆ SỐ K, H – ENHANCED ===== -->
+<div id="he-so" class="section">
+  <div class="section-title">Tính &amp; Tra Hệ Số Điều Chỉnh K, H</div>
+  <div class="section-sub">Phụ lục 01 · NQ 38/2025/NQ-HĐND · Cập nhật CV 39/0304/2026/CNBGĐ-BT</div>
+
+  <!-- CALCULATOR PANEL -->
+  <div class="kh-calc-panel">
+    <div class="kh-calc-header">
+      <span style="font-size:24px;line-height:1">🧮</span>
+      <div>
+        <div class="kh-calc-title">Công Cụ Tính Đơn Giá Đất Theo Hệ Số K, H</div>
+        <div class="kh-calc-sub">Tự động tra hệ số · Kết quả tức thì · Theo NQ38/2025 &amp; CV39/2026</div>
+      </div>
+    </div>
+    <div class="kh-formula-banner">
+      G = Đơn giá × <span>K1</span> × <span>K2/K3</span> × <span>K4</span> × <span>K5</span> × <span>H1</span> × <span>H2</span>
+    </div>
+    <div class="kh-inputs">
+      <div class="kh-group kh-full">
+        <label><span class="kh-badge">ĐƠN GIÁ</span> Đơn giá tra từ bảng (đồng/m²)</label>
+        <input type="number" id="kh-dongia" placeholder="VD: 15000000  — tra bảng phường bên tab 'Đất Ở'" min="0" step="500000" oninput="kh_liveCalc()">
+        <span class="kh-hint">Chọn tab "Đất Ở TP Nam Định" → chọn phường → tìm đường → copy giá VT1/VT2/VT3/VT4</span>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-k">K1</span> Số mặt tiếp giáp đường/ngõ</label>
+        <select id="kh-k1" onchange="kh_liveCalc()">
+          <option value="1.0">Mặc định – không có lợi thế đặc biệt (1,00)</option>
+          <option value="1.3">≥ 4 cạnh giáp đường có tên (1,30)</option>
+          <option value="1.25">3 cạnh giáp đường có tên (1,25)</option>
+          <option value="1.2">2 mặt tiền trước-sau, khác phía (1,20)</option>
+          <option value="1.15">1 mặt đường + ngõ ≥ 5m (1,15)</option>
+          <option value="1.1">1 mặt đường + ngõ 3–5m (1,10)</option>
+          <option value="1.05">1 mặt đường + ngõ &lt;3m / 2 mặt ngõ (1,05)</option>
+        </select>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-k">K2/K3</span> Loại đất &amp; Diện tích (tự động tra)</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="kh-loaidat" style="flex:1;" onchange="kh_liveCalc()">
+            <option value="o">Đất ở → dùng K2</option>
+            <option value="nn">Đất nông nghiệp → dùng K3</option>
+          </select>
+          <input type="number" id="kh-dientich" placeholder="m²" min="0" step="1" style="width:85px;" oninput="kh_liveCalc()">
+        </div>
+        <div id="kh-k23-badge" class="kh-auto-badge">K2 = 1,00 · (chưa nhập diện tích)</div>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-k">K4</span> Kích thước mặt tiền chính</label>
+        <select id="kh-k4" onchange="kh_liveCalc()">
+          <option value="0.9">K4.1 – Mặt tiền &lt; 4m (0,90)</option>
+          <option value="1.0" selected>K4.2 – 4m ≤ mặt tiền &lt; 6m (1,00)</option>
+          <option value="1.1">K4.3 – 6m ≤ mặt tiền &lt; 10m (1,10)</option>
+          <option value="1.2">K4.4 – Mặt tiền ≥ 10m (1,20)</option>
+        </select>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-k">K5</span> Hình dáng thửa đất</label>
+        <select id="kh-k5" onchange="kh_liveCalc()">
+          <option value="1.0">Vuông vức / tương đối vuông vức (1,00)</option>
+          <option value="1.02">Nở hậu (1,02)</option>
+          <option value="0.7">Đa giác / thắt giữa / che khuất (0,70)</option>
+        </select>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-h">H1</span> Điểm có lợi xung quanh</label>
+        <select id="kh-h1" onchange="kh_liveCalc()">
+          <option value="1.0">Không có lợi thế đặc biệt (1,00)</option>
+          <option value="1.2">&lt;300m đến TTTM/chợ/trường/BV/TT HC (1,20)</option>
+          <option value="1.1">Bám/View hồ, sông, suối, công viên (1,10)</option>
+        </select>
+      </div>
+      <div class="kh-group">
+        <label><span class="kh-badge kh-badge-h">H2</span> Điểm bất lợi xung quanh</label>
+        <select id="kh-h2" onchange="kh_liveCalc()">
+          <option value="1.0">Không có điểm bất lợi (1,00)</option>
+          <option value="0.8">Cạnh/&lt;50m là đình, chùa, nghĩa trang... (0,80)</option>
+          <option value="0.85">Đường đâm nhà, cột điện, bãi rác... (0,85)</option>
+        </select>
+      </div>
+    </div>
+    <div class="kh-preview-bar">
+      <span class="kh-preview-label">TỔNG HỆ SỐ:</span>
+      <span class="kh-preview-hs" id="kh-preview-hs">1,0000</span>
+      <span class="kh-preview-sep">→</span>
+      <span class="kh-preview-label">ĐƠN GIÁ TẠM TÍNH:</span>
+      <span class="kh-preview-val" id="kh-preview-val">— (chưa nhập đơn giá)</span>
+    </div>
+    <div class="kh-actions">
+      <button class="btn btn-green" onclick="kh_tinhGia()">🧮 Tính Đơn Giá Chính Xác</button>
+      <button class="btn btn-outline" onclick="kh_reset()">↺ Làm lại</button>
+    </div>
+    <div class="kh-result" id="kh-result">
+      <div class="kh-result-title">ĐƠN GIÁ ĐẤT SAU ĐIỀU CHỈNH HỆ SỐ K, H</div>
+      <div class="kh-result-value" id="kh-result-value">—</div>
+      <div class="kh-result-unit">đồng / m²</div>
+      <div class="kh-breakdown" id="kh-breakdown"></div>
+      <div class="kh-note">⚠️ Kết quả mang tính tham khảo. Cán bộ thẩm định quyết định cuối cùng theo NQ38/2025.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">⚠️ <div>Hệ số K, H là <strong>cận trên/cận dưới</strong>. Cán bộ áp dụng linh động trong khoảng từ 1 đến hệ số tối đa. Không được vượt quá hệ số tối đa.</div></div>
+  <div class="alert alert-info" style="border-left-color:#C0392B;background:#FDECEA;">🔄 <div><strong>CV số 39/0304/2026/CNBGĐ-BT ngày 03/04/2026</strong> — Mã K3 (Diện tích đất NN) từ K2.1–K2.6 → <strong>K3.1–K3.6</strong>; K4 (Mặt tiền) từ K3.1–K3.4 → <strong>K4.1–K4.4</strong>. Giá trị hệ số giữ nguyên.</div></div>
+
+  <div style="font-size:12px;font-weight:700;color:var(--navy);margin:16px 0 10px;letter-spacing:.3px;">📋 BẢNG TRA HỆ SỐ CHI TIẾT</div>
+  <div class="kh-coeff-grid">
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Số mặt tiếp giáp đường</span><span class="kh-code">K1</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">≥ 4 cạnh giáp đường có tên</div><div class="kh-coeff-val kh-up">1,30</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">3 cạnh giáp đường có tên</div><div class="kh-coeff-val kh-up">1,25</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">2 mặt tiền trước-sau (khác phía)</div><div class="kh-coeff-val kh-up">1,20</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">1 mặt đường + ngõ ≥ 5m</div><div class="kh-coeff-val kh-up">1,15</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">1 mặt đường + ngõ 3–5m</div><div class="kh-coeff-val kh-up">1,10</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">1 mặt đường + ngõ &lt; 3m</div><div class="kh-coeff-val kh-up">1,05</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">2 mặt tiếp giáp ngõ</div><div class="kh-coeff-val kh-up">1,05</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Diện tích đất ở</span><span class="kh-code">K2</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">DT &lt; 100 m²</div><div class="kh-coeff-val kh-neutral">1,00</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">100 m² ≤ DT &lt; 300 m²</div><div class="kh-coeff-val kh-down">0,90</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">300 m² ≤ DT &lt; 500 m²</div><div class="kh-coeff-val kh-down">0,80</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">500 m² ≤ DT &lt; 1.000 m²</div><div class="kh-coeff-val kh-down">0,70</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">DT ≥ 1.000 m²</div><div class="kh-coeff-val kh-down">0,50</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Diện tích đất nông nghiệp</span><span class="kh-code">K3</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.1</span> DT &lt; 200 m²</div><div class="kh-coeff-val kh-neutral">1,00</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.2</span> 200 m² ≤ DT &lt; 500 m²</div><div class="kh-coeff-val kh-down">0,95</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.3</span> 500 m² ≤ DT &lt; 2.000 m²</div><div class="kh-coeff-val kh-down">0,90</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.4</span> 2.000 m² ≤ DT &lt; 5.000 m²</div><div class="kh-coeff-val kh-down">0,80</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.5</span> 5.000 m² ≤ DT &lt; 10.000 m²</div><div class="kh-coeff-val kh-down">0,70</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K3.6</span> DT ≥ 10.000 m²</div><div class="kh-coeff-val kh-down">0,50</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Kích thước mặt tiền chính</span><span class="kh-code">K4</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K4.1</span> Mặt tiền &lt; 4 m</div><div class="kh-coeff-val kh-down">0,90</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K4.2</span> 4 m ≤ mặt tiền &lt; 6 m</div><div class="kh-coeff-val kh-neutral">1,00</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K4.3</span> 6 m ≤ mặt tiền &lt; 10 m</div><div class="kh-coeff-val kh-up">1,10</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc"><span class="kh-sub-tag">K4.4</span> Mặt tiền ≥ 10 m</div><div class="kh-coeff-val kh-up">1,20</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Hình dáng thửa đất</span><span class="kh-code">K5</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Vuông vức / tương đối vuông vức</div><div class="kh-coeff-val kh-neutral">1,00</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Hình dáng nở hậu</div><div class="kh-coeff-val kh-up">1,02</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Đa giác, bị thắt giữa, che khuất</div><div class="kh-coeff-val kh-down">0,70</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Điểm có lợi xung quanh</span><span class="kh-code">H1</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">&lt;300m đến TTTM/chợ/trường/BV/TT hành chính</div><div class="kh-coeff-val kh-up">1,20</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Bám/View hồ, sông, suối, công viên, thung lũng</div><div class="kh-coeff-val kh-up">1,10</div></div>
+    </div>
+    <div class="kh-coeff-card">
+      <div class="kh-coeff-hd"><span>Điểm bất lợi xung quanh</span><span class="kh-code">H2</span></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Cạnh/&lt;50m là đình, chùa, miếu, nghĩa trang, nhà tang lễ</div><div class="kh-coeff-val kh-down">0,80</div></div>
+      <div class="kh-coeff-row"><div class="kh-coeff-desc">Đường đâm nhà, cột điện, TBA, Viba, bãi rác, hố gas</div><div class="kh-coeff-val kh-down">0,85</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HM-11: LỖI DỮ LIỆU BẢNG GIÁ ===== -->
+<div id="loi-du-lieu" class="section">
+  <div class="section-title">Lỗi dữ liệu bảng giá đất</div>
+  <div class="section-sub">Phát hiện từ chính bảng giá đang nạp + quét tệp PL02 .docx — chỉ liệt kê, KHÔNG tự sửa số liệu</div>
+  <div class="card" style="margin:10px 0;padding:10px 12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <b>📂 Nhập PL02 .docx mới</b>
+    <input type="file" id="bgd-pl02-file" accept=".docx" onchange="bgd_importPL02(this.files[0]); this.value=''">
+    <span id="bgd-pl02-status" style="font-size:.85rem;color:#555">Đọc ngay trong trình duyệt, không gửi đi đâu; chỉ đối chiếu với bảng đang nạp, không sửa bảng giá.</span>
+  </div>
+  <div id="bgd-audit-body" style="margin-top:12px">Đang tính…</div>
+</div>
+
+<!-- ===== SECTION 5: TÍNH GIÁ ===== -->
+<div id="tinh-gia" class="section">
+  <div class="section-title">Tính Giá Đất Theo Hệ Số</div>
+  <div class="section-sub">Tính toán tự động theo hệ số K, H – Phụ lục 01</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-blue">🧮</div><div><h2>Nhập Thông Tin Thửa Đất</h2></div></div>
+    <div class="formula-box" style="font-size:.95rem;margin-bottom:20px;">G = Đơn giá × <span>K1</span> × <span>K2</span> × <span>K4</span> × <span>K5</span> × <span>H1</span> × <span>H2</span></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Đơn giá lựa chọn (đồng/m²)</label>
+        <input type="number" id="inp-dongia" placeholder="VD: 150000000" min="0" step="1000000">
+        <span class="hint">Tra bảng vị trí tương ứng (VT1, VT2...) — đơn vị đồng/m²</span>
+      </div>
+      <div class="form-group">
+        <label>K1 – Số lượng mặt tiếp giáp</label>
+        <select id="inp-k1">
+          <option value="1">Không áp dụng / Mặc định (1,00)</option>
+          <option value="1.3">≥ 4 mặt đường có tên (1,30)</option>
+          <option value="1.25">3 mặt đường có tên (1,25)</option>
+          <option value="1.2">2 mặt tiền trước-sau (1,20)</option>
+          <option value="1.15">1 mặt đường + ngõ ≥ 5m (1,15)</option>
+          <option value="1.1">1 mặt đường + ngõ 3–5m (1,10)</option>
+          <option value="1.05">1 mặt đường + ngõ &lt; 3m / 2 mặt ngõ (1,05)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Loại đất & Diện tích (m²)</label>
+        <div style="display:flex;gap:8px;">
+          <select id="inp-loaidat" style="flex:1;">
+            <option value="o">Đất ở</option>
+            <option value="nn">Đất nông nghiệp</option>
+          </select>
+          <input type="number" id="inp-dientich" placeholder="m²" min="0" style="width:90px;">
+        </div>
+        <span class="hint">Nhập diện tích để tự động tính K2</span>
+      </div>
+      <div class="form-group">
+        <label>K4 – Kích thước mặt tiền chính (m)</label>
+        <select id="inp-k4">
+          <option value="1">Không áp dụng (1,00)</option>
+          <option value="0.9">Mặt tiền &lt; 4m (0,90)</option>
+          <option value="1" selected>4m ≤ mặt tiền &lt; 6m (1,00)</option>
+          <option value="1.1">6m ≤ mặt tiền &lt; 10m (1,10)</option>
+          <option value="1.2">Mặt tiền ≥ 10m (1,20)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>K5 – Hình dáng thửa đất</label>
+        <select id="inp-k5">
+          <option value="1">Vuông vức / tương đối vuông vức (1,00)</option>
+          <option value="1.02">Nở hậu (1,02)</option>
+          <option value="0.7">Đa giác / bị thắt giữa / che khuất (0,70)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>H1 – Điểm có lợi</label>
+        <select id="inp-h1">
+          <option value="1">Không có lợi thế đặc biệt (1,00)</option>
+          <option value="1.2">&lt; 300m đến TTTM/chợ/trường/BV (1,20)</option>
+          <option value="1.1">View/Bám hồ, sông, suối, công viên (1,10)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>H2 – Điểm bất lợi</label>
+        <select id="inp-h2">
+          <option value="1">Không có điểm bất lợi (1,00)</option>
+          <option value="0.8">Cạnh &lt; 50m là đình/chùa/nghĩa trang (0,80)</option>
+          <option value="0.85">Đường đâm nhà / cột điện / bãi rác (0,85)</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="bgd_tinhGia()">🧮 Tính Đơn Giá</button>
+      <button class="btn btn-ghost" onclick="bgd_resetForm()">↺ Làm lại</button>
+    </div>
+    <div class="result-box" id="result-box">
+      <div class="result-title">ĐƠN GIÁ ĐẤT SAU ĐIỀU CHỈNH</div>
+      <div class="result-value" id="result-value">—</div>
+      <div class="result-unit">đồng/m²</div>
+      <div class="result-breakdown" id="result-breakdown"></div>
+      <div style="margin-top:16px;opacity:.75;font-size:.82rem;line-height:1.5;"><strong>Lưu ý:</strong> Kết quả mang tính tham khảo. Cán bộ thẩm định quyết định cuối cùng.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 6: QUY ĐỊNH ===== -->
+<div id="quy-dinh" class="section">
+  <div class="section-title">Tóm Tắt Quy Định</div>
+  <div class="section-sub">NQ 38/2025/NQ-HĐND ngày 09/12/2025 – HĐND tỉnh Ninh Bình · Đã cập nhật theo CV 39/0304/2026/CNBGĐ-BT ngày 03/04/2026</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-red">📋</div><div><h2>Thông Tin Nghị Quyết</h2></div></div>
+    <div class="table-wrap"><table><tbody>
+    <tr><td style="width:40%;font-weight:700;">Số NQ</td><td>38/2025/NQ-HĐND</td></tr>
+    <tr><td style="font-weight:700;">Ngày ban hành</td><td>09 tháng 12 năm 2025</td></tr>
+    <tr><td style="font-weight:700;">Cơ quan ban hành</td><td>HĐND tỉnh Ninh Bình – Khóa XV, Kỳ họp thứ 6</td></tr>
+    <tr><td style="font-weight:700;">Hiệu lực thi hành</td><td class="num num-red">Từ 01/01/2026</td></tr>
+    <tr><td style="font-weight:700;">Chủ tịch ký</td><td>Lê Quốc Chính</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-gold">💡</div><div><h2>Giá Đất Phi Nông Nghiệp – Trường Hợp Đặc Biệt</h2><p>Điều 6, Khoản 7–15</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Loại đất</th><th>Cách xác định giá</th></tr></thead>
+    <tbody>
+    <tr><td>Đất mục đích công cộng <strong>có kinh doanh</strong></td><td>= Giá đất thương mại dịch vụ cùng vị trí</td></tr>
+    <tr><td>Đất mục đích công cộng <strong>không kinh doanh</strong></td><td>= Giá đất ở cùng vị trí</td></tr>
+    <tr><td>Đất công trình sự nghiệp (có thời hạn SD)</td><td>= Giá đất thương mại dịch vụ cùng vị trí</td></tr>
+    <tr><td>Đất tôn giáo, tín ngưỡng</td><td>= Giá đất ở cùng vị trí</td></tr>
+    <tr><td>Đất nghĩa trang, nhà tang lễ, hỏa táng, lưu trữ tro cốt</td><td>= Giá đất TM-DV cùng vị trí</td></tr>
+    <tr><td>Đất sông, kênh, rạch dùng nuôi trồng thủy sản</td><td>= Giá nuôi trồng thủy sản cùng vị trí</td></tr>
+    <tr><td>Đất xây dựng trụ sở cơ quan, CTSS an ninh QP (dài hạn)</td><td>= Giá đất ở cùng vị trí</td></tr>
+    <tr><td>Đất phi nông nghiệp khác</td><td>= Giá đất CSSX phi NN cùng vị trí</td></tr>
+    <tr><td>Đất chưa sử dụng</td><td>= Giá của loại đất đưa vào sử dụng cùng vị trí</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon icon-purple">📁</div><div><h2>Danh Sách Phụ Lục</h2></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Phụ lục</th><th>Nội dung</th></tr></thead>
+    <tbody>
+    <tr><td><span class="tag tag-red">PL I</span></td><td>Bảng giá đất ở tại đô thị</td></tr>
+    <tr><td><span class="tag tag-gold">PL II</span></td><td>Bảng giá đất ở tại nông thôn</td></tr>
+    <tr><td><span class="tag tag-blue">PL III</span></td><td>Bảng giá đất TM-DV, đất CSSX phi NN tại đô thị</td></tr>
+    <tr><td><span class="tag tag-green">PL IV</span></td><td>Bảng giá đất TM-DV, đất CSSX phi NN tại nông thôn</td></tr>
+    <tr><td><span class="tag tag-red">PL V</span></td><td>Bảng giá đất khu công nghiệp, cụm công nghiệp</td></tr>
+    <tr><td><span class="tag tag-gold">PL VI</span></td><td>Bảng giá đất sử dụng cho hoạt động khoáng sản</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 12: CAN BO / LUONG
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-archive">
+  <!-- Archive Tabs -->
+  <div style="display:flex; gap:10px; margin-bottom:16px; border-bottom:2px solid var(--gray-200)">
+    <button class="btn" id="tab-data-archive" onclick="archiveSwitchTab('data')" style="border:none; background:transparent; border-bottom:3px solid var(--green-main); border-radius:0; padding:10px 20px; font-weight:700; color:var(--green-main)">📊 Lưu trữ Dữ liệu</button>
+    <button class="btn" id="tab-report-archive" onclick="archiveSwitchTab('report')" style="border:none; background:transparent; border-bottom:3px solid transparent; border-radius:0; padding:10px 20px; font-weight:700; color:var(--gray-500); transition:all .15s">📈 Lưu trữ Báo cáo</button>
+    <button class="btn" id="tab-daily-archive" onclick="archiveSwitchTab('daily')" style="border:none; background:transparent; border-bottom:3px solid transparent; border-radius:0; padding:10px 20px; font-weight:700; color:var(--gray-500); transition:all .15s">📅 Lưu trữ Hàng ngày</button>
+  </div>
+
+  <!-- Data Archive Tab -->
+  <div id="archive-data-pane">
+    <div class="card">
+      <div class="card-header">
+        <h3>💾 Lưu trữ Dữ liệu</h3>
+        <span class="sub">Snapshot đầy đủ dữ liệu hệ thống (menus, tables, data)</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center">
+          <button class="btn btn-green" onclick="archiveSaveData()">💾 Lưu trữ Dữ liệu Ngay</button>
+          <button class="btn btn-outline" onclick="archiveExportData()">⬇️ Tải File</button>
+          <button class="btn btn-outline" onclick="archiveImportData()">⬆️ Khôi phục</button>
+          <div style="margin-left:auto; display:flex; gap:6px; align-items:center">
+            <button class="btn btn-red" id="btn-delete-selected-data" onclick="archiveDeleteSelectedData()" style="display:none">
+              🗑️ Xóa đã chọn (<span id="data-sel-count">0</span>)
+            </button>
+            <button class="btn btn-red" onclick="archiveDeleteAllData()" style="background:#7f1d1d">
+              🗑️ Xóa tất cả
+            </button>
+          </div>
+        </div>
+
+        <div style="background:var(--green-pale); border-left:3px solid var(--green-main); padding:10px 12px; border-radius:6px; margin-bottom:14px; font-size:11px">
+          <strong>💡 Cách dùng:</strong> Click "Lưu trữ" để backup toàn bộ dữ liệu. Dữ liệu được lưu vào LocalStorage + tải về .xlsx + JSON.
+        </div>
+
+        <div style="border:1px solid var(--gray-200); border-radius:8px; overflow:hidden">
+          <table style="width:100%; border-collapse:collapse; font-size:11px">
+            <thead style="background:var(--navy); color:#fff">
+              <tr>
+                <th style="padding:8px; text-align:center; width:38px">
+                  <input type="checkbox" id="data-chk-all" onchange="archiveToggleAllData(this.checked)"
+                    style="width:14px;height:14px;cursor:pointer;accent-color:var(--green-accent)">
+                </th>
+                <th style="padding:8px; text-align:left">📄 Tên File</th>
+                <th style="padding:8px; text-align:center">📅 Ngày</th>
+                <th style="padding:8px; text-align:right">💾 Kích thước</th>
+                <th style="padding:8px; text-align:center">📊 Số dòng</th>
+                <th style="padding:8px; text-align:center">⚙️ Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="archive-data-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Archive Tab -->
+  <div id="archive-report-pane" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <h3>📈 Lưu trữ Báo cáo</h3>
+        <span class="sub">Snapshot báo cáo để so sánh theo thời gian</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center">
+          <button class="btn btn-green" onclick="archiveSaveReport()">💾 Lưu Báo cáo Ngay</button>
+          <button class="btn btn-outline" onclick="archiveExportReport()">⬇️ Tải File</button>
+          <button class="btn btn-outline" onclick="archiveComparisons()">📊 So sánh</button>
+          <div style="margin-left:auto; display:flex; gap:6px; align-items:center">
+            <button class="btn btn-red" id="btn-delete-selected-reports" onclick="archiveDeleteSelectedReports()" style="display:none">
+              🗑️ Xóa đã chọn (<span id="rpt-sel-count">0</span>)
+            </button>
+            <button class="btn btn-red" onclick="archiveDeleteAllReports()" style="background:#7f1d1d">
+              🗑️ Xóa tất cả
+            </button>
+          </div>
+        </div>
+
+        <div style="background:var(--blue-pale); border-left:3px solid var(--blue); padding:10px 12px; border-radius:6px; margin-bottom:14px; font-size:11px">
+          <strong>💡 Cách dùng:</strong> Lưu báo cáo tại các mốc thời gian để tạo checkpoint so sánh. Tích checkbox để chọn nhiều bản và xóa cùng lúc.<br>
+          <strong>🏷️ Mốc so sánh:</strong> Gắn nhãn cho từng snapshot (Đầu năm / Đầu quý / Đầu tháng) để các bảng BÁO CÁO tự động so sánh. Nhãn được hệ thống gợi ý dựa trên ngày của file, có thể chỉnh tay.
+        </div>
+
+        <!-- ═══ MỐC SO SÁNH HIỆN TẠI ═══ -->
+        <div id="archive-tag-status" style="margin-bottom:14px"></div>
+        <!-- /Mốc so sánh -->
+
+        <div style="border:1px solid var(--gray-200); border-radius:8px; overflow:hidden">
+          <table style="width:100%; border-collapse:collapse; font-size:11px">
+            <thead style="background:var(--navy); color:#fff">
+              <tr>
+                <th style="padding:8px; text-align:center; width:38px">
+                  <input type="checkbox" id="rpt-chk-all" onchange="archiveToggleAllReports(this.checked)"
+                    style="width:14px;height:14px;cursor:pointer;accent-color:var(--green-accent)">
+                </th>
+                <th style="padding:8px; text-align:left">📄 Tên Báo cáo</th>
+                <th style="padding:8px; text-align:center; min-width:160px">🏷️ Mốc so sánh</th>
+                <th style="padding:8px; text-align:center">📅 Thời điểm</th>
+                <th style="padding:8px; text-align:center">📊 KH/TK</th>
+                <th style="padding:8px; text-align:center">⚙️ Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="archive-report-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Archive Tab -->
+  <div id="archive-daily-pane" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <h3>📅 Lưu trữ Hàng ngày</h3>
+        <span class="sub">Theo dõi biến động số dư nợ theo ngày, dựa trên các snapshot Báo cáo đã lưu</span>
+      </div>
+      <div class="card-body">
+        <div style="background:var(--gray-50); border-left:3px solid var(--gray-400); padding:10px 12px; border-radius:6px; margin-bottom:14px; font-size:11px">
+          <strong>💡 Cách dùng:</strong> Tab này không tạo snapshot riêng — dùng lại các bản đã lưu ở "Lưu trữ Báo cáo". Các ngày đã trùng mốc so sánh (31/12, cuối quý, cuối tháng) được ẩn khỏi danh sách bên dưới để tránh trùng lặp dữ liệu; ngày trùng với dữ liệu hiện tại vẫn luôn hiển thị.
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:end">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:var(--navy);display:block;margin-bottom:4px">🔎 Tìm snapshot gần nhất với ngày báo cáo</label>
+            <input type="date" id="daily-target-date" style="padding:7px 10px;border:1.5px solid var(--gray-300);border-radius:6px;font-size:12px">
+          </div>
+          <button class="btn btn-blue btn-sm" onclick="archiveFindNearestDaily()">🔎 Tìm gần nhất</button>
+        </div>
+        <div id="daily-nearest-result" style="margin-bottom:14px"></div>
+
+        <div style="border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; margin-bottom:16px">
+          <table style="width:100%; border-collapse:collapse; font-size:11px">
+            <thead style="background:var(--navy); color:#fff">
+              <tr>
+                <th style="padding:8px; text-align:left">📄 Snapshot</th>
+                <th style="padding:8px; text-align:center">📅 Ngày</th>
+                <th style="padding:8px; text-align:center">🏷️ Trạng thái</th>
+                <th style="padding:8px; text-align:center">⚙️ Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="archive-daily-list"></tbody>
+          </table>
+        </div>
+
+        <div id="daily-diff-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL: THEM / SUA HO SO
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal wide">
+    <div class="modal-header">
+      <h2 id="modal-title">➕ Thêm hồ sơ mới</h2>
+      <button class="modal-close" onclick="closeModal('modal-edit')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid" id="modal-form"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-edit')">Hủy</button>
+      <button class="btn btn-green" onclick="saveRecord()">💾 Lưu hồ sơ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUICK VIEW: Xem nhanh hồ sơ khi click tên KH ═══ -->
+<div class="modal-overlay" id="modal-quickview">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h2 id="qv-title">👤 Xem nhanh</h2>
+      <button class="modal-close" onclick="closeModal('modal-quickview')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="qv-body" style="font-size:12.5px; line-height:1.9"></div>
+    </div>
+    <div class="modal-footer" id="qv-footer" style="flex-wrap:wrap; gap:6px"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL: NHAP FILE IPCAS + KIỂM TRA ĐỒNG BỘ
+     ═══════════════════════════════════════════════════════════════ -->
+
+
+<div class="modal-overlay" id="modal-import">
+  <div class="modal wide" style="max-width:1000px">
+    <div class="modal-header">
+      <h2>📂 Nhập File Nguồn IPCAS</h2>
+      <button class="modal-close" onclick="closeModal('modal-import')">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:calc(100vh - 140px);overflow-y:auto">
+
+      <!-- Hướng dẫn -->
+      <div style="background:var(--green-pale);border-left:4px solid var(--green-main);padding:11px 16px;border-radius:8px;margin-bottom:14px">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:4px">💡 Hướng dẫn</div>
+        <div style="font-size:11px;color:var(--gray-700);line-height:1.6">
+          • Chọn file <b>msit80.xlsx / .xls / .xlsm / .csv</b> từ IPCAS.<br>
+          • Cột bắt buộc: <code>brcd, custnm, apprseq, apprdt, appramt, dsbsbal, intamt, ofcnm, lntpcd, trctnm, AQCCDFIN</code>.<br>
+          • Hệ thống sẽ tự phân tích và đề xuất lọc các bản ghi <b>dư nợ = 0</b> và <b>thấu chi về 0</b> trước khi nhập.
+        </div>
+      </div>
+
+      <!-- Drop zone -->
+      <div style="border:2.5px dashed var(--gray-300);border-radius:10px;padding:30px 20px;text-align:center;transition:border .2s"
+           id="import-dropzone"
+           ondragover="event.preventDefault();this.style.borderColor='var(--green-main)';this.style.background='var(--green-pale)'"
+           ondragleave="this.style.borderColor='var(--gray-300)';this.style.background='transparent'"
+           ondrop="handleDropImport(event)">
+        <div style="font-size:36px;margin-bottom:8px">📁</div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">Kéo thả file vào đây</div>
+        <div style="font-size:11px;color:var(--gray-500);margin-bottom:12px">hoặc</div>
+        <input type="file" id="import-file" accept=".xlsx,.xlsm,.xls,.csv" onchange="handleImportFile(event)" style="display:none">
+        <button class="btn btn-green" onclick="document.getElementById('import-file').click()">📂 Chọn file...</button>
+        <div id="import-file-info" style="margin-top:10px;font-size:11px;color:var(--gray-500)"></div>
+      </div>
+
+      <!-- ════════════════ SYNC CHECK PANEL ════════════════ -->
+      <div id="import-sync-panel">
+
+        <!-- KPI tổng quan -->
+        <div id="sync-kpi-row" class="sync-summary-grid" style="margin-top:14px"></div>
+
+        <!-- Tabs -->
+        <div class="sync-tabs">
+          <button class="sync-tab active" id="stab-all"     onclick="syncSwitchTab('all')">📋 TẤT CẢ <span class="tc" id="stc-all">0</span></button>
+          <button class="sync-tab"        id="stab-active"  onclick="syncSwitchTab('active')">✅ CÓ DƯ NỢ <span class="tc" id="stc-active">0</span></button>
+          <button class="sync-tab"        id="stab-zero"    onclick="syncSwitchTab('zero')">⚪ DƯ NỢ = 0 <span class="tc warn" id="stc-zero">0</span></button>
+          <button class="sync-tab"        id="stab-thauchiZ" onclick="syncSwitchTab('thauchiZ')">🔵 THẤU CHI = 0 <span class="tc warn" id="stc-thauchiZ">0</span></button>
+          <button class="sync-tab"        id="stab-neg"     onclick="syncSwitchTab('neg')">🔴 ÂM / LỖI <span class="tc red" id="stc-neg">0</span></button>
+          <button class="sync-tab"        id="stab-dup"     onclick="syncSwitchTab('dup')">🔁 TRÙNG HĐTD <span class="tc red" id="stc-dup">0</span></button>
+        </div>
+
+        <!-- Ghi chú theo tab -->
+        <div id="sync-tab-note" class="sync-note" style="display:none"></div>
+
+        <!-- Filter row -->
+        <div class="sync-filter-row">
+          <input type="text" id="sync-search" placeholder="🔍 Tìm tên KH, mã KH, HĐTD..." oninput="qaDebounce('syncRender', syncRenderTable, 220)" style="flex:1;min-width:200px">
+          <select id="sync-filter-cbtd" onchange="syncRenderTable()"><option value="">— Tất cả CBTD —</option></select>
+          <select id="sync-filter-loaivay" onchange="syncRenderTable()">
+            <option value="">Tất cả loại vay</option>
+            <option value="ngắn hạn">Ngắn hạn</option>
+            <option value="trung hạn">Trung hạn</option>
+            <option value="thấu chi">Thấu chi</option>
+          </select>
+          <span id="sync-count-label" style="font-size:11px;color:var(--gray-700);font-weight:700;margin-left:auto"></span>
+        </div>
+
+        <!-- Table -->
+        <div class="sync-tbl-wrap">
+          <table class="sync-tbl">
+            <thead>
+              <tr>
+                <th style="width:32px"><input type="checkbox" id="sync-chk-all" onchange="syncToggleAll(this)" title="Chọn/bỏ tất cả"></th>
+                <th style="min-width:130px;text-align:left;padding-left:10px">TÊN KH</th>
+                <th style="min-width:95px">MÃ KH</th>
+                <th style="min-width:120px">SỐ HĐTD</th>
+                <th style="min-width:130px">LOẠI VAY</th>
+                <th style="min-width:130px">DƯ NỢ (đ)</th>
+                <th style="min-width:110px">TIỀN LÃI (đ)</th>
+                <th style="min-width:100px">NGÀY ĐH</th>
+                <th style="min-width:120px">CBTD</th>
+                <th style="min-width:80px">NHÓM NỢ</th>
+              </tr>
+            </thead>
+            <tbody id="sync-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Action row -->
+        <div class="sync-action-row">
+          <button class="btn btn-red btn-sm" onclick="syncExcludeChecked()" id="btn-sync-exclude">🗑️ Loại bỏ bản ghi đã chọn</button>
+          <button class="btn btn-outline btn-sm" onclick="syncExcludeTab()" id="btn-sync-exclude-tab">⚡ Loại hết tab này</button>
+          <button class="btn btn-outline btn-sm" onclick="syncExcludeZeroAll()">🧹 Loại tất cả dư nợ = 0</button>
+          <button class="btn btn-outline btn-sm" onclick="syncRestoreAll()">↺ Khôi phục tất cả</button>
+          <span id="sync-excluded-info" style="font-size:11px;color:var(--red);font-weight:700;margin-left:auto"></span>
+        </div>
+
+        <!-- Preview & stats -->
+        <div id="import-preview" style="margin-top:10px;display:none">
+          <div id="import-stats" style="font-size:11.5px;color:var(--gray-700);background:var(--gray-100);padding:10px 14px;border-radius:7px"></div>
+        </div>
+
+      </div><!-- /sync-panel -->
+    </div><!-- /modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-import')">Hủy</button>
+      <button class="btn btn-green" id="btn-do-import" onclick="doImport()" disabled style="opacity:.5">✅ Xác nhận nhập</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL: MÁY TÍNH LÃI 365 NGÀY
+     Nguồn: Thông tư 14/2017/TT-NHNN, Điều 4
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-laicalc">
+  <div class="modal wide">
+    <div class="modal-header">
+      <h2 style="display:flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--green-main)"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><rect x="7" y="5" width="10" height="3" rx="0.5" fill="#d5f5e3" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/><circle cx="8" cy="19" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/><circle cx="16" cy="19" r="1" fill="currentColor"/></svg>Máy Tính Lãi — Cơ Sở 365 Ngày</h2>
+      <button class="modal-close" onclick="closeModal('modal-laicalc')">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:calc(100vh - 150px);overflow-y:auto">
+      <!-- Formula banner -->
+      <div style="background:linear-gradient(135deg,#e8f5ec,#eef4ff);border-left:4px solid var(--green-main);padding:10px 14px;border-radius:7px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:3px">📘 CÔNG THỨC CHUẨN (Thông tư 14/2017/TT-NHNN, Điều 4)</div>
+        <div style="font-family:'Courier New',monospace;font-size:13px;color:var(--green-dark);font-weight:700;text-align:center;padding:4px 0">
+          Tiền lãi = Dư nợ gốc × LS năm × Số ngày ÷ 365
+        </div>
+        <div style="font-size:10.5px;color:var(--gray-700);text-align:center">
+          Số ngày = (Ngày chốt tính lãi) − (Ngày đã thu lãi đến)
+        </div>
+      </div>
+
+      <!-- TAB SWITCHER: Customer search vs manual calc -->
+      <div style="display:flex;gap:4px;margin-bottom:12px;border-bottom:2px solid var(--gray-200);padding-bottom:0">
+        <button id="laitab-kh" class="laicalc-tab active" onclick="switchLaiTab('kh')">👤 TRA CỨU KH TỪ HỆ THỐNG</button>
+        <button id="laitab-manual" class="laicalc-tab" onclick="switchLaiTab('manual')">🖩 TÍNH TAY (NHẬP TỰ DO)</button>
+      </div>
+
+      <!-- ═══════════════ TAB 1: CUSTOMER LOOKUP ═══════════════ -->
+      <div id="laitab-kh-panel">
+        <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:250px">
+            <label style="font-size:10.5px;font-weight:700;color:var(--navy);display:block;margin-bottom:4px">🔍 TÌM KHÁCH HÀNG (tên, mã, số HĐTD)</label>
+            <input type="text" id="laikh-search" placeholder="Gõ ít nhất 2 ký tự..." oninput="qaDebounce('laikhSearch', laikhSearch, 220)" style="width:100%;padding:8px 12px;border:2px solid var(--green-main);border-radius:6px;font-size:13px;font-weight:600">
+          </div>
+          <div>
+            <label style="font-size:10.5px;font-weight:700;color:var(--navy);display:block;margin-bottom:4px">📅 CHỐT LÃI ĐẾN NGÀY</label>
+            <input type="text" id="laikh-ngaychot" class="date-input-vn" placeholder="dd/mm/yyyy" oninput="laikhRenderTable()" onblur="normalizeDateInput(this); laikhRenderTable()" style="min-width:140px;padding:8px 12px;border:1px solid var(--gray-300);border-radius:6px;font-weight:600">
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="$('laikh-ngaychot').value=fmtVNDate(new Date()); markDateInputState($('laikh-ngaychot'),true); laikhRenderTable()">📆 Hôm nay</button>
+        </div>
+
+        <!-- Search results dropdown -->
+        <div id="laikh-results" style="display:none;max-height:180px;overflow-y:auto;border:1px solid var(--gray-300);border-radius:6px;margin-bottom:10px;background:#fff"></div>
+
+        <!-- Selected customer info -->
+        <div id="laikh-selected" style="display:none;background:var(--navy);color:#fff;padding:10px 14px;border-radius:7px;margin-bottom:10px"></div>
+
+        <!-- Excel-style loan table -->
+        <div id="laikh-table-wrap" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span>📋 BẢNG CÁC KHOẢN VAY — TẤT CẢ DÒNG TỪ FILE NGUỒN IPCAS</span>
+            <span style="font-weight:500;color:var(--gray-700)">Tick khoản cần tính + nhập SỐ TIỀN TRẢ GỐC nếu có</span>
+            <span style="margin-left:auto;font-size:10px;background:var(--blue-pale);color:var(--blue);padding:3px 9px;border-radius:5px;font-weight:600;border:1px solid var(--blue)">
+              🔗 NGÀY GN ← <code>dsbsdt</code> &nbsp;|&nbsp; ĐÃ THU LÃI ĐẾN ← <code>lstintchrgprd</code>
+            </span>
+          </div>
+          <div class="table-wrap" style="max-height:320px">
+            <table id="laikh-table" style="font-size:11.5px">
+              <thead>
+                <tr>
+                  <th style="width:42px;text-align:center"><input type="checkbox" id="laikh-tick-all" onchange="laikhTickAll(this)"></th>
+                  <th style="min-width:140px;text-align:left;padding-left:10px">TÊN KH</th>
+                  <th style="min-width:110px">SỐ HĐTD</th>
+                  <th style="min-width:115px;background:#1a3a5c" title="Nguồn: cột lstintchrgprd từ file IPCAS — Ngày đã thu lãi đến gần nhất">ĐÃ THU LÃI ĐẾN<br><span style="font-size:8.5px;font-weight:400;opacity:.7;font-family:monospace">← lstintchrgprd</span></th>
+                  <th style="min-width:105px;background:#1c3a60" title="Nguồn: cột dsbsdt từ file IPCAS — Ngày giải ngân. Dùng làm mốc tính lãi khi lstintchrgprd trống.">NGÀY GN<br><span style="font-size:8.5px;font-weight:400;opacity:.7;font-family:monospace">← dsbsdt</span></th>
+                  <th style="min-width:115px;background:#1a4a7a" title="Nguồn: cột apprmatdt từ QLTD — Ngày đến hạn hợp đồng. Dùng để phân tách lãi trong hạn / quá hạn.">NGÀY ĐẾN HẠN<br><span style="font-size:8.5px;font-weight:400;opacity:.7;font-family:monospace">← apprmatdt</span></th>
+                  <th style="min-width:130px;background:#0d5c1e">SỐ TIỀN TRẢ GỐC</th>
+                  <th style="min-width:130px">DƯ NỢ</th>
+                  <th style="min-width:70px">L/S %</th>
+                  <th style="min-width:80px">SỐ NGÀY</th>
+                  <th style="min-width:160px;background:#0d5c1e">LÃI TRONG HẠN</th>
+                  <th style="min-width:80px;background:#7a1a1a;color:#ffd5d5">SỐ NGÀY QH</th>
+                  <th style="min-width:160px;background:#7a1a1a;color:#ffd5d5">LÃI QUÁ HẠN<br><span style="font-size:8.5px;font-weight:400;opacity:.7">(4.25%/năm)</span></th>
+                  <th style="min-width:160px;background:#1a3a1a;color:#c8ffd5">TỔNG LÃI PHẢI THU</th>
+                </tr>
+              </thead>
+              <tbody id="laikh-tbody"></tbody>
+              <tfoot id="laikh-tfoot"></tfoot>
+            </table>
+          </div>
+
+          <!-- Summary total -->
+          <div style="margin-top:12px;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:14px 18px;border-radius:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+            <div>
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px">Số khoản đã tick</div>
+              <div style="font-size:20px;font-weight:800;color:#fff" id="laikh-count">0</div>
+            </div>
+            <div>
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px">Tổng trả gốc</div>
+              <div style="font-size:16px;font-weight:700;color:#7ef5a0" id="laikh-total-goc">0 đồng</div>
+            </div>
+            <div style="background:rgba(255,255,255,.08);border-radius:6px;padding:6px 12px;margin:-6px">
+              <div style="font-size:9.5px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px">TỔNG LÃI PHẢI THU</div>
+              <div style="font-size:22px;font-weight:800;color:var(--gold-light);font-variant-numeric:tabular-nums" id="laikh-total-lai">0 đồng</div>
+            </div>
+            <div>
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px">TỔNG THU</div>
+              <div style="font-size:18px;font-weight:800;color:#fff" id="laikh-total-thu">0 đồng</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="laikh-empty" style="text-align:center;padding:28px 20px;color:var(--gray-500);background:var(--gray-50);border-radius:8px;font-size:12px">
+          👆 Gõ tên / mã / số HĐTD của khách hàng vào ô tìm kiếm phía trên để xem các khoản vay còn dư nợ của họ.
+        </div>
+      </div>
+
+
+
+      <!-- ═══════════════ TAB 2: MANUAL CALC (nâng cấp v23 — hỗ trợ quá hạn IPCAS) ═══════════════ -->
+      <div id="laitab-manual-panel" style="display:none">
+        <!-- Chế độ tính -->
+        <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span style="font-size:10.5px;font-weight:700;color:var(--gray-600);text-transform:uppercase">Chế độ:</span>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;font-weight:600">
+            <input type="radio" name="lai-mode" value="normal" checked onchange="laiCalcLive()" style="accent-color:var(--navy)">
+            Trong hạn
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;font-weight:700;color:var(--red)">
+            <input type="radio" name="lai-mode" value="quahan" onchange="laiCalcLive()" style="accent-color:var(--red)">
+            ⚠️ Quá hạn (IPCAS)
+          </label>
+        </div>
+        <!-- Inputs -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label>💰 Dư nợ gốc (đồng)</label>
+            <input type="text" id="lai-goc" placeholder="VD: 980000000" oninput="laiCalcLive()" onkeydown="if(event.key==='Enter') laiCalcLive()">
+            <span id="lai-goc-fmt" style="font-size:10px;color:var(--gray-500);font-weight:600;margin-top:2px"></span>
+          </div>
+          <div class="form-group">
+            <label>📊 Lãi suất năm (%)</label>
+            <input type="number" id="lai-ls" step="0.01" placeholder="VD: 8.5" oninput="laiCalcLive()">
+          </div>
+          <div class="form-group">
+            <label>📅 Ngày đã thu lãi đến (lstintchrgprd)</label>
+            <input type="text" id="lai-gn" class="date-input-vn" placeholder="dd/mm/yyyy" oninput="laiCalcLive()" onblur="normalizeDateInput(this); laiCalcLive()">
+            <span style="font-size:9.5px;color:var(--gray-500)">Ngày bắt đầu tính lãi (thường = ngày đáo hạn cuối hoặc ngày GN)</span>
+          </div>
+          <div class="form-group" id="lai-denhan-group" style="display:none">
+            <label style="color:var(--red);font-weight:700">📅 Ngày đáo hạn (đến hạn trả gốc)</label>
+            <input type="text" id="lai-denhan" class="date-input-vn" placeholder="dd/mm/yyyy" oninput="laiCalcLive()" onblur="normalizeDateInput(this); laiCalcLive()" style="border-color:var(--red)">
+            <span style="font-size:9.5px;color:var(--red)">Từ ngày này trở đi tính thêm lãi quá hạn 150%</span>
+          </div>
+          <div class="form-group">
+            <label>📅 Ngày trả nợ / tất toán</label>
+            <input type="text" id="lai-tra" class="date-input-vn" placeholder="dd/mm/yyyy" oninput="laiCalcLive()" onblur="normalizeDateInput(this); laiCalcLive()">
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:10px;color:var(--gray-500);font-weight:700;text-transform:uppercase">Dùng nhanh:</span>
+          <button class="btn btn-outline btn-sm" onclick="laiCalcPreset('cert')">📄 Ví dụ trong hạn</button>
+          <button class="btn btn-outline btn-sm" onclick="laiCalcPreset('quahan')" style="border-color:var(--red);color:var(--red)">⚠️ Ví dụ quá hạn IPCAS</button>
+          <button class="btn btn-outline btn-sm" onclick="laiCalcPreset('today')">📆 Từ hôm nay</button>
+          <button class="btn btn-outline btn-sm" onclick="laiCalcReset()">↺ Xoá</button>
+        </div>
+        <!-- Result box -->
+        <div id="lai-result" style="display:none;margin-top:18px;background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:18px 20px;border-radius:10px;color:#fff">
+          <div style="font-size:10px;letter-spacing:1.2px;color:rgba(255,255,255,.55);text-transform:uppercase;margin-bottom:4px" id="lai-result-label">TIỀN LÃI PHẢI THU</div>
+          <div style="font-size:30px;font-weight:800;color:var(--gold-light);font-variant-numeric:tabular-nums" id="lai-result-value">0 đ</div>
+          <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,.65);margin-top:6px" id="lai-result-formula"></div>
+          <!-- Grid chi tiết -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.12)">
+            <div style="background:rgba(255,255,255,.07);border-radius:7px;padding:8px 11px">
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase">Gốc</div>
+              <div style="font-size:13px;font-weight:700;color:#fff" id="lai-bd-goc">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:7px;padding:8px 11px">
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase">Số ngày</div>
+              <div style="font-size:13px;font-weight:700;color:#fff" id="lai-bd-ngay">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:7px;padding:8px 11px">
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase">LS năm</div>
+              <div style="font-size:13px;font-weight:700;color:#fff" id="lai-bd-ls">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:7px;padding:8px 11px">
+              <div style="font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase">Tổng thu</div>
+              <div style="font-size:13px;font-weight:800;color:#7ef5a0" id="lai-bd-tong">—</div>
+            </div>
+          </div>
+          <!-- Breakdown quá hạn (chỉ hiện khi mode=quahan) -->
+          <div id="lai-qh-breakdown" style="display:none;margin-top:14px;border-top:1px solid rgba(255,255,255,.18);padding-top:14px">
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:8px">Chi tiết tính lãi (cách IPCAS tính)</div>
+            <div style="display:grid;gap:8px">
+              <div style="background:rgba(100,200,100,.12);border-radius:6px;padding:9px 12px">
+                <div style="font-size:9.5px;color:#7ef5a0;font-weight:700;text-transform:uppercase;margin-bottom:2px">① Lãi trong hạn</div>
+                <div style="font-size:13px;font-weight:700;color:#fff" id="lai-qh-trongh-val">—</div>
+                <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.5);margin-top:2px" id="lai-qh-trongh-ct">—</div>
+              </div>
+              <div style="background:rgba(255,80,80,.15);border-radius:6px;padding:9px 12px">
+                <div style="font-size:9.5px;color:#ffaaaa;font-weight:700;text-transform:uppercase;margin-bottom:2px">② Lãi quá hạn (150% LS)</div>
+                <div style="font-size:13px;font-weight:700;color:#fff" id="lai-qh-quah-val">—</div>
+                <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.5);margin-top:2px" id="lai-qh-quah-ct">—</div>
+              </div>
+              <div style="background:rgba(255,200,50,.15);border-radius:6px;padding:9px 12px">
+                <div style="font-size:9.5px;color:var(--gold-light);font-weight:700;text-transform:uppercase;margin-bottom:2px">③ Tổng lãi = ① + ②</div>
+                <div style="font-size:14px;font-weight:800;color:var(--gold-light)" id="lai-qh-tong-lai">—</div>
+              </div>
+              <div style="background:rgba(50,200,100,.2);border-radius:6px;padding:9px 12px;border:1.5px solid rgba(126,245,160,.4)">
+                <div style="font-size:9.5px;color:#7ef5a0;font-weight:800;text-transform:uppercase;margin-bottom:2px">🏦 TỔNG THU (Gốc + Lãi) — TẤT TOÁN</div>
+                <div style="font-size:17px;font-weight:900;color:#7ef5a0" id="lai-qh-tong-thu">—</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px" id="lai-qh-note"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--navy);padding:6px 0">📖 Các công thức liên quan (click để mở)</summary>
+        <div style="padding:12px;background:var(--gray-50);border-radius:7px;margin-top:6px;font-size:11.5px;line-height:1.6">
+          <div style="margin-bottom:10px">
+            <strong style="color:var(--green-dark)">1. Lãi trong hạn</strong><br>
+            <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Lãi = Gốc × LS%/năm × Số_ngày ÷ 365</code>
+          </div>
+          <div style="margin-bottom:10px">
+            <strong style="color:var(--red)">2. Lãi quá hạn (150%)</strong><br>
+            <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Lãi_QH = Gốc × (LS%/năm × 1.5) × Số_ngày ÷ 365</code>
+          </div>
+          <div style="margin-bottom:10px">
+            <strong style="color:var(--orange)">3. Lãi chậm trả lãi (10%/năm)</strong><br>
+            <code style="background:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Lãi_cham = Lãi_chưa_trả × 10%/năm × Số_ngày_chậm ÷ 365</code>
+          </div>
+          <div style="background:#fff8e1;padding:10px;border-radius:6px;border-left:3px solid var(--gold);margin-top:10px">
+            <strong>✅ Kiểm chứng trong hạn:</strong><br>
+            <span style="font-family:monospace;font-size:11px">500.000.000 × 8%/năm × 2 ngày ÷ 365 = 219.178 đ ✓</span><br>
+            <span style="color:var(--gray-700);font-size:10.5px">(KH KH mẫu — HĐTD 3201-LAV-000000000)</span>
+          </div>
+          <div style="background:#fff0f0;padding:10px;border-radius:6px;border-left:3px solid var(--red);margin-top:8px">
+            <strong style="color:var(--red)">✅ Kiểm chứng quá hạn IPCAS ((đã ẩn) — 980tr):</strong><br>
+            <span style="font-family:monospace;font-size:10.5px;color:#555">Lãi TH: 980tr × 8.5% × 5 ngày ÷ 365 = <strong>1.141.096 đ</strong></span><br>
+            <span style="font-family:monospace;font-size:10.5px;color:#555">Lãi QH: 980tr × 4.25% × 5 ngày ÷ 365 = <strong>570.548 đ</strong> (tính song song)</span><br>
+            <span style="font-family:monospace;font-size:10.5px;color:var(--red);font-weight:700">Tổng lãi IPCAS = 1.711.644 đ | Tổng thu = 981.711.644 đ ✓</span><br>
+            <span style="color:var(--gray-600);font-size:10px">⚡ Nguyên tắc: LS quá hạn penalty = LS_gốc × 50% (tính thêm, không thay thế)</span>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-laicalc')">Đóng</button>
+      <button class="btn btn-gold btn-sm" onclick="laikhResetTable()" id="laikh-reset-btn" style="display:none">↺ Reset bảng</button>
+      <button class="btn btn-green" onclick="copyLaiResult()">📋 Copy kết quả</button>
+  </div>
+</div>
+
+</div><!-- /#main -->

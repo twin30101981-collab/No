@@ -1,0 +1,18 @@
+PASS trang mở khi chưa có dữ liệu
+PASS chỉ 1 kỳ ⇒ chuyển nhóm "chưa có mốc kỳ trước"
+PASS khớp tính độc lập (Python) · over = 1
+PASS khớp tính độc lập (Python) · d7 = 50
+PASS khớp tính độc lập (Python) · d15 = 47
+PASS khớp tính độc lập (Python) · d30 = 164
+PASS khớp tính độc lập (Python) · ls = 11
+PASS khớp tính độc lập (Python) · nhom = 1
+PASS khớp tính độc lập (Python) · tsHet = 1261
+PASS khớp tính độc lập (Python) · tsCu = 2249
+PASS khớp tính độc lập (Python) · tsKhong = 7
+PASS mốc kỳ trước = 30/09/2026
+PASS trang có 9 mục (details)
+PASS dải Dashboard hiện tổng + quá hạn/đến hạn/LS/TSBĐ
+PASS chuyển "hôm nay" 22/10 ⇒ quá hạn nhiều hơn theo ngày dữ liệu
+PASS CSV đến hạn ≤7 ngày: 50 dòng + tiêu đề
+PASS không pageerror
+PASS 17 FAIL 0

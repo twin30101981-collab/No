@@ -1,0 +1,25 @@
+
+
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     PATCH ROOT-FIX v6 — 2026-08-19
+     (1) ĐỊNH DẠNG SỐ CÓ DẤU CHẤM NGHÌN TRONG MODAL THÊM/SỬA HỒ SƠ
+         Nguyên nhân gốc: buildEditForm() render các ô tiền bằng
+         <input type="number">. Chuẩn HTML cấm dấu phân cách nhóm trong
+         input số → trình duyệt BUỘC phải hiển thị "600000000".
+         Fix: đổi các ô tiền sang type="text" inputmode="numeric", tự chèn
+         dấu "." theo nhóm 3 khi gõ, và bóc dấu "." trước khi saveRecord()
+         đọc giá trị (nên Number() vẫn đúng, không đụng logic lưu).
+
+     (2) ĐỒNG BỘ TSBĐ LẤY THẲNG TỪ MENU "TÀI SẢN BẢO ĐẢM"
+         Nguyên nhân gốc: syncTSBDFromHsvv() cũ chỉ tra bảng liên kết HSVV
+         (localStorage hsvv_qltd_links_v1) — chỉ tồn tại khi người dùng đã
+         tự tạo hồ sơ HSVV VÀ nhập tay TSBĐ trong hồ sơ đó. Nó KHÔNG hề
+         đọc kho dữ liệu TS.XLS của menu TSBĐ (window.TSBD.rows /
+         IndexedDB QLTDProTSBD / #tsbd-seed-data) → hầu hết KH đều báo
+         "Chưa có HSVV liên kết" dù menu TSBĐ có đầy đủ tài sản.
+         Phụ: TSBD.rows chỉ nạp sau DOMContentLoaded+1200ms nên tra sớm rỗng.
+         Fix: tra thẳng kho TSBĐ, khớp Mã KH đã chuẩn hoá 13 số (plgcustno
+         → maKH, dự phòng clcustno → maChuTS), tổng theo cột plgamt
+         (giaTriTC), có fallback đọc seed đồng bộ nếu kho chưa nạp xong.
+     ══════════════════════════════════════════════════════════════════════ -->

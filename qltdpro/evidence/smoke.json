@@ -1,0 +1,140 @@
+{
+ "390": {
+  "tLoad": 568,
+  "info": {
+   "XLSX": "undefined",
+   "TD_BACKUP": "undefined",
+   "docWidth": 390,
+   "vw": 390,
+   "topbarScroll": 489,
+   "topbarClient": 390,
+   "topbarBtns": 11,
+   "btnOutside": 1,
+   "domNodes": 62114
+  },
+  "pages": {
+   "dashboard": {
+    "tableW": 700,
+    "docW": 390,
+    "title": "Dashboard – Tổng quan"
+   },
+   "qltd": {
+    "tableW": 2043,
+    "docW": 390,
+    "title": "QUẢN LÝ TÍN DỤNG – Dữ liệu IPCAS"
+   },
+   "tsbd": {
+    "tableW": 2240,
+    "docW": 390,
+    "title": "TÀI SẢN BẢO ĐẢM"
+   },
+   "giadat": {
+    "tableW": 0,
+    "docW": 390,
+    "title": "GIÁ ĐẤT & HỆ SỐ K, H"
+   },
+   "baocao": {
+    "tableW": 1141,
+    "docW": 390,
+    "title": "BÁO CÁO IPCAS"
+   }
+  },
+  "switch10ms": 58,
+  "errs": [
+   "console: [TD15][JS-RUNTIME] SyntaxError: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token\n    at http://127.0.0.1:8765/index.html:56348:27\n    at new Promise (<anonymous>)\n    at http://1",
+   "pageerror: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token"
+  ]
+ },
+ "1366": {
+  "tLoad": 615,
+  "info": {
+   "XLSX": "undefined",
+   "TD_BACKUP": "undefined",
+   "docWidth": 1366,
+   "vw": 1366,
+   "topbarScroll": 1366,
+   "topbarClient": 1366,
+   "topbarBtns": 14,
+   "btnOutside": 0,
+   "domNodes": 62479
+  },
+  "pages": {
+   "dashboard": {
+    "tableW": 723,
+    "docW": 1366,
+    "title": "Dashboard – Tổng quan"
+   },
+   "qltd": {
+    "tableW": 2123,
+    "docW": 1366,
+    "title": "QUẢN LÝ TÍN DỤNG – Dữ liệu IPCAS"
+   },
+   "tsbd": {
+    "tableW": 2211,
+    "docW": 1366,
+    "title": "TÀI SẢN BẢO ĐẢM"
+   },
+   "giadat": {
+    "tableW": 0,
+    "docW": 1366,
+    "title": "GIÁ ĐẤT & HỆ SỐ K, H"
+   },
+   "baocao": {
+    "tableW": 1186,
+    "docW": 1366,
+    "title": "BÁO CÁO IPCAS"
+   }
+  },
+  "switch10ms": 62,
+  "errs": [
+   "console: [TD15][JS-RUNTIME] SyntaxError: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token\n    at http://127.0.0.1:8765/index.html:56348:27\n    at new Promise (<anonymous>)\n    at http://1",
+   "pageerror: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token"
+  ]
+ },
+ "1920": {
+  "tLoad": 1625,
+  "info": {
+   "XLSX": "undefined",
+   "TD_BACKUP": "undefined",
+   "docWidth": 1920,
+   "vw": 1920,
+   "topbarScroll": 1920,
+   "topbarClient": 1920,
+   "topbarBtns": 14,
+   "btnOutside": 0,
+   "domNodes": 62479
+  },
+  "pages": {
+   "dashboard": {
+    "tableW": 723,
+    "docW": 1920,
+    "title": "Dashboard – Tổng quan"
+   },
+   "qltd": {
+    "tableW": 2123,
+    "docW": 1920,
+    "title": "QUẢN LÝ TÍN DỤNG – Dữ liệu IPCAS"
+   },
+   "tsbd": {
+    "tableW": 2211,
+    "docW": 1920,
+    "title": "TÀI SẢN BẢO ĐẢM"
+   },
+   "giadat": {
+    "tableW": 0,
+    "docW": 1920,
+    "title": "GIÁ ĐẤT & HỆ SỐ K, H"
+   },
+   "baocao": {
+    "tableW": 1186,
+    "docW": 1920,
+    "title": "BÁO CÁO IPCAS"
+   }
+  },
+  "switch10ms": 71,
+  "errs": [
+   "console: [TD15][JS-RUNTIME] SyntaxError: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token\n    at http://127.0.0.1:8765/index.html:56348:27\n    at new Promise (<anonymous>)\n    at http://1",
+   "pageerror: Failed to execute 'appendChild' on 'Node': Invalid or unexpected token"
+  ]
+ }
+}

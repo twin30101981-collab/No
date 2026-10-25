@@ -1,0 +1,1 @@
+{"unique": 19067, "sumClamtVND": 20817381187868, "dupRows": 66, "raw": 20879074485436, "khCon": 1865, "khKhongTS": 7, "khCoTS": 1858, "tyLePhu": 3.5503644610786234, "duoi100": 9}

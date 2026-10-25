@@ -1,0 +1,5 @@
+WARNING *** file size (9062319) not 512 + multiple of sector size (512)
+WARNING *** OLE2 inconsistency: SSCS size is 0 but SSAT size is non-zero
+Quét 3 kỳ dư nợ (31/12/2025, 31/05/2026, 20/10/2026): 1868 tên KH khác nhau (>=10 ký tự), 11056 mã KH/số khoản vay.
+Mã KH / số khoản vay còn trong app: 0
+Tên trùng còn lại (ngoài DATA.macb): 28 — gồm tên cán bộ trong danh sách phân công CBTD, tên đường phố bảng giá đất, tên trong chú thích/ghi chú.

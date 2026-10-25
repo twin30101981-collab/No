@@ -1,0 +1,15 @@
+{
+ "ghi_chu": "Băm SHA-256 của các chuỗi giống dữ liệu cá nhân ĐÃ ĐƯỢC DUYỆT (chỉ placeholder/ví dụ/hằng số — P10 25/10/2026 đã gỡ DATA.macb theo quyết định người dùng). Không chứa giá trị gốc. LƯU Ý: băm số ngắn có thể đảo ngược — KHÔNG duyệt số thật.",
+ "approved": [
+  "21584e82cdc513d1dcae8602a181ad008bc5dbe75d9dd16fc9cb5eafd2cdecf9",
+  "252543cce35d93a8132365eb9060e5fb765f0fe850034d733606b8a900306438",
+  "51d783c3cddd17d5b2292bcababbffe7ae6cbde395c80382eec5d481c17fd5b0",
+  "8b7ed2f7cca786d47652628b2b0d823ae47bbc81605755d3d02d0359c8b746f0",
+  "adc005860eb5a29520452ea04a114aa933f4fea56dea248797d3724271f36e52",
+  "ca67c6761c5685b2c0b9e240f1b4eb36afdab0f0ded9139ecac138c2867da100",
+  "cebc1c34a5fa184c4d5253f99e9ba47d9feb99f85e7634c2af38fc1aa48d6a00",
+  "d3494c8013bb1314ce978520760356ca40f1c7a781ec8efe7d94aeb0df97ea13",
+  "e8d4b6ce8d1512923b9cbbb5920e7a684735c422cc9fac33d2ffbb493383bfa6",
+  "f46c2fadded154de2f5a689db254d3bcbb83783f635a35576ebc71ff1c026fb5"
+ ]
+}

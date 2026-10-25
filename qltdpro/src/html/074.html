@@ -1,0 +1,52 @@
+
+
+<!-- ══ MODAL VALIDATION TRƯỚC KHI XUẤT WORD ══ -->
+<div class="modal-overlay" id="modal-validate-export" onclick="if(event.target===this)closeModal('modal-validate-export')">
+  <div style="background:#fff;border-radius:12px;width:min(480px,94vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid #E5EAF0;display:flex;align-items:center;justify-content:space-between;background:#FFFBEB">
+      <div>
+        <div style="font-weight:700;font-size:15px;color:#1A2B3C">⚠️ Kiểm tra trước khi xuất</div>
+        <div style="font-size:11.5px;color:#6B7280;margin-top:2px">Một số trường chưa điền — hãy xem xét trước khi xuất</div>
+      </div>
+      <button onclick="closeModal('modal-validate-export')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#6B7280;padding:4px">✕</button>
+    </div>
+    <div id="modal-validate-body" style="padding:16px 20px;overflow-y:auto;flex:1;font-family:'Be Vietnam Pro',sans-serif;font-size:13px;color:#1A2B3C"></div>
+    <div style="padding:14px 20px;border-top:1px solid #E5EAF0;display:flex;gap:10px;justify-content:flex-end;background:#F8FAFC">
+      <button onclick="closeModal('modal-validate-export')" style="padding:8px 18px;border-radius:7px;border:1.5px solid #D3DCE8;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer">← Quay lại điền</button>
+      <button id="modal-validate-proceed" onclick="hosoValidateProceed()" style="padding:8px 18px;border-radius:7px;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer">⚡ Xuất dù thiếu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: TRA CỨU KH TỪ QLTD ══ -->
+<div class="modal-overlay" id="modal-kh-search" style="display:none;z-index:calc(var(--z-1,100) + 3)" onclick="if(event.target===this)closeKhSearchModal()">
+  <div style="background:#fff;border-radius:14px;width:min(700px,96vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden">
+    <div style="padding:16px 20px;background:linear-gradient(135deg,#0D2137,#1E4A77);display:flex;align-items:center;gap:12px;flex-shrink:0">
+      <span style="font-size:20px">🔍</span>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:15px;color:#fff">Tra cứu Khách hàng từ QLTD</div>
+        <div style="font-size:11px;color:#93C5FD;margin-top:1px">Tìm kiếm theo tên / mã KH — click kết quả để tự điền form HSVV</div>
+      </div>
+      <span id="kh-search-record-badge" style="font-size:10px;color:#93C5FD;white-space:nowrap;margin-right:4px"></span>
+      <button onclick="closeKhSearchModal()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div style="padding:14px 20px;border-bottom:1px solid #E5EAF0;flex-shrink:0;background:#F8FAFC">
+      <div style="position:relative">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:15px;color:#9CA3AF;pointer-events:none">🔍</span>
+        <input type="text" id="kh-search-input"
+          placeholder="Nhập tên hoặc mã khách hàng..."
+          style="width:100%;padding:9px 12px 9px 34px;border:1.5px solid #D1D5DB;border-radius:8px;font-size:13px;font-family:'Be Vietnam Pro',sans-serif;outline:none;box-sizing:border-box;transition:.15s"
+          oninput="khSearchFilter()"
+          onkeydown="khSearchKey(event)"
+          onfocus="this.style.borderColor='#0369A1'"
+          onblur="this.style.borderColor='#D1D5DB'">
+      </div>
+      <div style="margin-top:7px;font-size:11px;color:#6B7280" id="kh-search-hint">Nhập ít nhất 2 ký tự để tìm kiếm</div>
+    </div>
+    <div id="kh-search-results" style="overflow-y:auto;flex:1;padding:8px 12px;min-height:80px"></div>
+    <div style="padding:10px 20px;border-top:1px solid #E5EAF0;background:#F8FAFC;font-size:11px;color:#9CA3AF;flex-shrink:0">
+      💡 Click vào kết quả để điền thông tin vào form · <kbd style="background:#E5EAF0;padding:1px 5px;border-radius:3px;font-size:10px">Esc</kbd> để đóng
+    </div>
+  </div>
+</div>
+

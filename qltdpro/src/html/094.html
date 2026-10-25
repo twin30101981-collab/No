@@ -1,0 +1,218 @@
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HỒ SƠ VAY — GD2 v39
+     Layout: 3 cột Danh sách | Form | Preview
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-hmtd">
+  <div class="hsv-topbar">
+    <div>
+      <div class="hsv-topbar-title">📃 HẠN MỨC TÍN DỤNG</div>
+      <div class="hsv-topbar-sub">Quản lý hồ sơ vay hạn mức tín dụng</div>
+    </div>
+    <div class="hsv-topbar-spacer"></div>
+    <button class="hsv-topbar-btn hsv-btn-sec" onclick="hsvInitPage('hmtd')" title="Làm mới">🔄</button>
+    <button class="hsv-topbar-btn hsv-btn-new" onclick="hsvNewRecord('hmtd')">+ Tạo mới</button>
+    <button class="hsv-topbar-btn hsv-btn-save" onclick="hsvSaveCurrent('hmtd')">💾 Lưu</button>
+  </div>
+  <div class="hsv-mob-tabs">
+    <div class="hsv-mob-tab active" onclick="hsvMobTab('hmtd','list',this)">📋 DANH SÁCH</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('hmtd','form',this)">📝 FORM</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('hmtd','prev',this)">👁 PREVIEW</div>
+  </div>
+  <div class="hsv-layout">
+    <div class="hsv-col-list mob-active">
+      <div class="hsv-list-hdr">
+        <span class="hsv-list-hdr-title">📋 Danh sách hồ sơ</span>
+        <span class="hsv-list-count">0 hồ sơ</span>
+      </div>
+      <div class="hsv-list-search">
+        <input type="text" placeholder="🔍 Tìm theo tên, mã KH..." oninput="hsvRenderList('hmtd')">
+      </div>
+      <div class="hsv-list-body">
+        <div class="hsv-list-empty"><div class="ico">📭</div><div>Nhấn + Tạo mới để bắt đầu</div></div>
+      </div>
+    </div>
+    <div class="hsv-col-form">
+      <div class="hsv-form-empty">
+        <div class="ico">📃</div>
+        <div class="msg">Chưa chọn hồ sơ</div>
+        <div class="sub">Chọn hồ sơ từ danh sách bên trái<br>hoặc nhấn <b>+ Tạo mới</b></div>
+      </div>
+    </div>
+    <div class="hsv-col-preview">
+      <div class="hsv-prev-hdr">
+        <span class="hsv-prev-hdr-title">👁 Xem trước hồ sơ</span>
+        <div class="hsv-prev-actions" id="hsv-prev-actions-hmtd">
+          <button class="hsv-prev-btn" onclick="hsvTplModalOpen('hmtd')" title="Xuất Word">📄 Word</button>
+          <button class="hsv-prev-btn green" onclick="hsvCloneRecord('hmtd')" title="Nhân bản hồ sơ">⧉ Clone</button>
+        </div>
+      </div>
+      <div class="hsv-prev-body">
+        <div class="hsv-prev-empty">Chọn hồ sơ để xem trước</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-tieudung">
+  <div class="hsv-topbar">
+    <div>
+      <div class="hsv-topbar-title">💳 TIÊU DÙNG</div>
+      <div class="hsv-topbar-sub">Quản lý hồ sơ vay tiêu dùng cá nhân</div>
+    </div>
+    <div class="hsv-topbar-spacer"></div>
+    <button class="hsv-topbar-btn hsv-btn-sec" onclick="hsvInitPage('tieudung')" title="Làm mới">🔄</button>
+    <button class="hsv-topbar-btn hsv-btn-new" onclick="hsvNewRecord('tieudung')">+ Tạo mới</button>
+    <button class="hsv-topbar-btn hsv-btn-save" onclick="hsvSaveCurrent('tieudung')">💾 Lưu</button>
+  </div>
+  <div class="hsv-mob-tabs">
+    <div class="hsv-mob-tab active" onclick="hsvMobTab('tieudung','list',this)">📋 DANH SÁCH</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('tieudung','form',this)">📝 FORM</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('tieudung','prev',this)">👁 PREVIEW</div>
+  </div>
+  <div class="hsv-layout">
+    <div class="hsv-col-list mob-active">
+      <div class="hsv-list-hdr">
+        <span class="hsv-list-hdr-title">📋 Danh sách hồ sơ</span>
+        <span class="hsv-list-count">0 hồ sơ</span>
+      </div>
+      <div class="hsv-list-search">
+        <input type="text" placeholder="🔍 Tìm theo tên, mã KH..." oninput="hsvRenderList('tieudung')">
+      </div>
+      <div class="hsv-list-body">
+        <div class="hsv-list-empty"><div class="ico">📭</div><div>Nhấn + Tạo mới để bắt đầu</div></div>
+      </div>
+    </div>
+    <div class="hsv-col-form">
+      <div class="hsv-form-empty">
+        <div class="ico">💳</div>
+        <div class="msg">Chưa chọn hồ sơ</div>
+        <div class="sub">Chọn hồ sơ từ danh sách bên trái<br>hoặc nhấn <b>+ Tạo mới</b></div>
+      </div>
+    </div>
+    <div class="hsv-col-preview">
+      <div class="hsv-prev-hdr">
+        <span class="hsv-prev-hdr-title">👁 Xem trước hồ sơ</span>
+        <div class="hsv-prev-actions" id="hsv-prev-actions-tieudung">
+          <button class="hsv-prev-btn" onclick="hsvTplModalOpen('tieudung')" title="Xuất Word">📄 Word</button>
+          <button class="hsv-prev-btn green" onclick="hsvCloneRecord('tieudung')" title="Nhân bản hồ sơ">⧉ Clone</button>
+        </div>
+      </div>
+      <div class="hsv-prev-body">
+        <div class="hsv-prev-empty">Chọn hồ sơ để xem trước</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-camco">
+  <div class="hsv-topbar">
+    <div>
+      <div class="hsv-topbar-title">🔐 CẦM CỐ</div>
+      <div class="hsv-topbar-sub">Quản lý hồ sơ vay cầm cố sổ tiết kiệm</div>
+    </div>
+    <div class="hsv-topbar-spacer"></div>
+    <button class="hsv-topbar-btn hsv-btn-sec" onclick="hsvInitPage('camco')" title="Làm mới">🔄</button>
+    <button class="hsv-topbar-btn hsv-btn-new" onclick="hsvNewRecord('camco')">+ Tạo mới</button>
+    <button class="hsv-topbar-btn hsv-btn-save" onclick="hsvSaveCurrent('camco')">💾 Lưu</button>
+  </div>
+  <div class="hsv-mob-tabs">
+    <div class="hsv-mob-tab active" onclick="hsvMobTab('camco','list',this)">📋 DANH SÁCH</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('camco','form',this)">📝 FORM</div>
+    <div class="hsv-mob-tab"       onclick="hsvMobTab('camco','prev',this)">👁 PREVIEW</div>
+  </div>
+  <div class="hsv-layout">
+    <div class="hsv-col-list mob-active">
+      <div class="hsv-list-hdr">
+        <span class="hsv-list-hdr-title">📋 Danh sách hồ sơ</span>
+        <span class="hsv-list-count">0 hồ sơ</span>
+      </div>
+      <div class="hsv-list-search">
+        <input type="text" placeholder="🔍 Tìm theo tên, mã KH..." oninput="hsvRenderList('camco')">
+      </div>
+      <div class="hsv-list-body">
+        <div class="hsv-list-empty"><div class="ico">📭</div><div>Nhấn + Tạo mới để bắt đầu</div></div>
+      </div>
+    </div>
+    <div class="hsv-col-form">
+      <div class="hsv-form-empty">
+        <div class="ico">🔐</div>
+        <div class="msg">Chưa chọn hồ sơ</div>
+        <div class="sub">Chọn hồ sơ từ danh sách bên trái<br>hoặc nhấn <b>+ Tạo mới</b></div>
+      </div>
+    </div>
+    <div class="hsv-col-preview">
+      <div class="hsv-prev-hdr">
+        <span class="hsv-prev-hdr-title">👁 Xem trước hồ sơ</span>
+        <div class="hsv-prev-actions" id="hsv-prev-actions-camco">
+          <button class="hsv-prev-btn" onclick="hsvTplModalOpen('camco')" title="Xuất Word">📄 Word</button>
+          <button class="hsv-prev-btn green" onclick="hsvCloneRecord('camco')" title="Nhân bản hồ sơ">⧉ Clone</button>
+        </div>
+      </div>
+      <div class="hsv-prev-body">
+        <div class="hsv-prev-empty">Chọn hồ sơ để xem trước</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     GIAI ĐOẠN 4 — TEMPLATE PICKER MODAL
+     ══════════════════════════════════════════════════════ -->
+<div class="hsv-tpl-modal-bg" id="hsv-tpl-modal-bg" onclick="if(event.target===this)hsvTplModalClose()">
+  <div class="hsv-tpl-modal">
+    <div class="hsv-tpl-modal-hdr">
+      <span style="font-size:18px">📄</span>
+      <span class="hsv-tpl-modal-title" id="hsv-tpl-modal-title">Chọn template xuất Word</span>
+      <button class="hsv-tpl-modal-close" onclick="hsvTplModalClose()">✕</button>
+    </div>
+    <div class="hsv-tpl-modal-body" id="hsv-tpl-modal-body">
+      <div style="color:#94A3B8;text-align:center;padding:32px">Đang tải danh sách template…</div>
+    </div>
+    <div class="hsv-tpl-modal-footer">
+      <label style="font-size:11px;color:#5A7080;display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="hsv-tpl-chk-all" onchange="hsvTplToggleAll(this.checked)">
+        Chọn tất cả
+      </label>
+      <span id="hsv-tpl-sel-count" style="font-size:11px;color:#2563EB;font-weight:700;flex:1"></span>
+      <button class="hsv-prev-btn" onclick="hsvTplModalClose()">Hủy</button>
+      <button class="hsv-prev-btn green" id="hsv-tpl-export-btn" onclick="hsvTplExport()">📥 Xuất Word</button>
+      <button class="hsv-prev-btn orange" id="hsv-tpl-batch-btn" onclick="hsvTplBatchExport()" style="display:none">📦 Xuất nhiều hồ sơ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Batch progress toast -->
+<div class="hsv-batch-progress" id="hsv-batch-progress">
+  <div class="hsv-batch-prog-title" id="hsv-batch-prog-title">⏳ Đang xuất…</div>
+  <div class="hsv-batch-prog-bar"><div class="hsv-batch-prog-fill" id="hsv-batch-prog-fill" style="width:0%"></div></div>
+  <div class="hsv-batch-prog-lbl" id="hsv-batch-prog-lbl">Chuẩn bị…</div>
+</div>
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div class="page" id="page-qcamco">
+  <div style="padding:32px 24px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <span style="font-size:28px">🔐</span>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:var(--navy);letter-spacing:.3px">QUẢN LÝ CẦM CỐ</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">Dữ liệu vay cầm cố từ IPCAS — đang phát triển</div>
+      </div>
+    </div>
+    <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px dashed #4ade80;border-radius:12px;padding:32px;text-align:center;color:#15803d">
+      <div style="font-size:36px;margin-bottom:12px">🚧</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px">Đang xây dựng</div>
+      <div style="font-size:12px;opacity:.75">Module Quản lý Cầm cố sẽ được phát triển trong giai đoạn tiếp theo</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CTKH MODULE v2 — CHỈ TIÊU KẾ HOẠCH ĐA CẤP
+     12 chỉ tiêu × {Chi nhánh / Phòng / CBTD} × {NH/TH/DH/Thấu chi}
+     × 5 mốc so sánh (Đầu năm/Quý/Tháng/Cùng kỳ/KH giao)
+     ═══════════════════════════════════════════════════════════════ -->

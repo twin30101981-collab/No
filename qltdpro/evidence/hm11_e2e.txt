@@ -1,0 +1,9 @@
+PASS trang giá đất nạp (Phường Nam Định 373 dòng)
+PASS 143 dòng khoá trùng có giá NQ38 bị ẩn (không gán nhầm)
+PASS trang Lỗi dữ liệu hiển thị
+PASS bảng khoá trùng 54, ô lỗi 40, dòng thiếu 28
+PASS ví dụ tính tay khớp app
+PASS kh_getCoeff ≡ bgd_getK2
+PASS đưa G0 sang hồ sơ vay
+PASS không pageerror
+PASS 8 FAIL 0

@@ -1,0 +1,46 @@
+nhập dữ liệu lần đầu…
+hồ sơ: 3848 mốc: 11
+
+== phidv : tới khung hình 10316 ms ; mẫu CPU 14565 ms
+    6923 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:25480   | wraps.forEach(wrap => { // pha đọc
+    1425 ms  renderPhiDV @QLTD_PRO_v2026-10-23_v22.3-P08.html:29531   | function renderPhiDV() {
+     315 ms  querySelectorAll @:0
+     240 ms  pushState @:0
+      96 ms  fmtNum @QLTD_PRO_v2026-10-23_v22.3-P08.html:23401   | const fmtNum = n => {
+      82 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:52168   | document.querySelectorAll('table').forEach(function(tbl){
+
+== dashboard : tới khung hình 1749 ms ; mẫu CPU 5460 ms
+     689 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:25480   | wraps.forEach(wrap => { // pha đọc
+     228 ms  querySelectorAll @:0
+     175 ms  M.customerKey @QLTD_PRO_v2026-10-23_v22.3-P08.html:23933   | M.customerKey = function (r) {
+     111 ms  pushState @:0
+     109 ms  renderDashboard @QLTD_PRO_v2026-10-23_v22.3-P08.html:30822   | function renderDashboard() {
+      99 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:23962   | rows.forEach(function (r) {
+      40 ms  date.parse @QLTD_PRO_v2026-10-23_v22.3-P08.html:23780   | date.parse = function (s) {
+
+== tsbd : tới khung hình 1304 ms ; mẫu CPU 5010 ms
+     417 ms  querySelectorAll @:0
+     341 ms  rank @QLTD_PRO_v2026-10-23_v22.3-P08.html:11914   | function rank(pb) {
+     110 ms  pushState @:0
+     107 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:25480   | wraps.forEach(wrap => { // pha đọc
+      75 ms  norm @QLTD_PRO_v2026-10-23_v22.3-P08.html:11869   | function norm(s) {
+      64 ms  cmp @QLTD_PRO_v2026-10-23_v22.3-P08.html:11931   | function cmp(pbA, cbA, pbB, cbB) {
+
+== doisoat : tới khung hình 1322 ms ; mẫu CPU 5025 ms
+     365 ms  querySelectorAll @:0
+     244 ms  M.customerKey @QLTD_PRO_v2026-10-23_v22.3-P08.html:23933   | M.customerKey = function (r) {
+     142 ms  pushState @:0
+     116 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:23962   | rows.forEach(function (r) {
+     107 ms  renderDashboard @QLTD_PRO_v2026-10-23_v22.3-P08.html:30822   | function renderDashboard() {
+      45 ms  date.parse @QLTD_PRO_v2026-10-23_v22.3-P08.html:23780   | date.parse = function (s) {
+      40 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:31170   | $('tbody-db-lai').innerHTML = topLai.length ? topLai.map((r, i) => `
+
+== tranop : tới khung hình 1862 ms ; mẫu CPU 5504 ms
+     534 ms  (anon) @QLTD_PRO_v2026-10-23_v22.3-P08.html:25480   | wraps.forEach(wrap => { // pha đọc
+     448 ms  querySelectorAll @:0
+     126 ms  pushState @:0
+      77 ms  renderTranop @QLTD_PRO_v2026-10-23_v22.3-P08.html:29873   | function renderTranop() {
+      41 ms  fmtMoney @QLTD_PRO_v2026-10-23_v22.3-P08.html:23405   | const fmtMoney = n => fmtNum(n);
+      35 ms  fmtNum @QLTD_PRO_v2026-10-23_v22.3-P08.html:23401   | const fmtNum = n => {
+      34 ms  group @QLTD_PRO_v2026-10-23_v22.3-P08.html:23960   | function group(rows, keyFn, init) {
+ALLDONE

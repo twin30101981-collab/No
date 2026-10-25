@@ -1,0 +1,212 @@
+
+
+
+<!-- Border Tool Panel -->
+<div id="s4-border-panel" onclick="event.stopPropagation()">
+  <h4>🖊 Kẻ viền ô
+    <button onclick="s4BorderClose()" style="background:none;border:none;cursor:pointer;font-size:14px;color:#889;">✕</button>
+  </h4>
+
+  <!-- Preset buttons -->
+  <div class="s4-border-section">
+    <label>Kiểu viền nhanh</label>
+    <div class="s4-border-presets">
+      <button class="s4-bpbtn" data-preset="all" title="Tất cả viền" onclick="s4BorderPreset('all',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18"/><line x1="12" y1="3" x2="12" y2="21"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="outer" title="Viền ngoài" onclick="s4BorderPreset('outer',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2.5">
+          <rect x="3" y="3" width="18" height="18"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="inner" title="Viền trong" onclick="s4BorderPreset('inner',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2">
+          <line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="none" title="Xóa tất cả viền" onclick="s4BorderPreset('none',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-dasharray="2 2">
+          <rect x="3" y="3" width="18" height="18"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="top" title="Viền trên" onclick="s4BorderPreset('top',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2.5">
+          <line x1="3" y1="4" x2="21" y2="4"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="bottom" title="Viền dưới" onclick="s4BorderPreset('bottom',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2.5">
+          <line x1="3" y1="20" x2="21" y2="20"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="left" title="Viền trái" onclick="s4BorderPreset('left',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2.5">
+          <line x1="4" y1="3" x2="4" y2="21"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="right" title="Viền phải" onclick="s4BorderPreset('right',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="2.5">
+          <line x1="20" y1="3" x2="20" y2="21"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="thick_outer" title="Viền ngoài dày" onclick="s4BorderPreset('thick_outer',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="4">
+          <rect x="4" y="4" width="16" height="16"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="double" title="Viền đôi" onclick="s4BorderPreset('double',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20"/><rect x="5" y="5" width="14" height="14"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="thick_bottom" title="Viền dưới dày" onclick="s4BorderPreset('thick_bottom',this)">
+        <svg viewBox="0 0 24 24" fill="none">
+          <line x1="3" y1="20" x2="21" y2="20" stroke="#1a2540" stroke-width="4"/>
+        </svg>
+      </button>
+      <button class="s4-bpbtn" data-preset="dashed" title="Viền đứt nét" onclick="s4BorderPreset('dashed',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a2540" stroke-width="1.5" stroke-dasharray="3 2">
+          <rect x="3" y="3" width="18" height="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Style, thickness, color -->
+  <div class="s4-border-section">
+    <label>Kiểu nét &amp; màu</label>
+    <div class="s4-border-row">
+      <select class="s4-border-style-sel" id="s4-border-style" onchange="s4BorderUpdatePreview()">
+        <option value="solid">━ Nét liền</option>
+        <option value="dashed">╌ Nét đứt</option>
+        <option value="dotted">┄ Chấm</option>
+        <option value="double">══ Đôi</option>
+      </select>
+      <select class="s4-border-thick-sel" id="s4-border-thick" onchange="s4BorderUpdatePreview()">
+        <option value="1">1px Mỏng</option>
+        <option value="2" selected>2px</option>
+        <option value="3">3px</option>
+        <option value="4">4px Dày</option>
+      </select>
+      <input type="color" id="s4-border-color-inp" value="#1a2540" title="Màu viền" onchange="s4BorderUpdatePreview()">
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="s4-border-section">
+    <label>Xem trước</label>
+    <div id="s4-border-preview">
+      <table id="s4-preview-table">
+        <tr><td id="pv-tl">A</td><td id="pv-tm">B</td><td id="pv-tr">C</td></tr>
+        <tr><td id="pv-ml">D</td><td id="pv-mm">E</td><td id="pv-mr">F</td></tr>
+        <tr><td id="pv-bl">G</td><td id="pv-bm">H</td><td id="pv-br">I</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="s4-border-actions">
+    <button class="s4-border-apply apply" onclick="s4BorderApply()">✓ Áp dụng</button>
+    <button class="s4-border-apply clear" onclick="s4BorderClear()">✕ Xóa viền</button>
+  </div>
+
+  <div style="margin-top:8px;font-size:10px;color:#889;text-align:center;">
+    Chọn vùng ô → Bấm "Chọn vùng" → Kéo chọn → Áp dụng
+  </div>
+</div>
+
+
+<div id="sxkd-fs-overlay" onclick="sxkdExitFS()"></div>
+<div id="ufs-backdrop" onclick="ufsClose()"></div>
+
+<!-- ═══ IMPORT FILE MODAL ═══ -->
+<div id="import-modal-ov" onclick="if(event.target===this)importModalClose()">
+  <div id="import-modal-box">
+    <div id="import-modal-hdr">
+      <div>
+        <h3>📥 Import dữ liệu từ file</h3>
+        <div class="im-sub">Tự động điền form từ file Excel hoặc Word (.docx)</div>
+      </div>
+      <button id="import-modal-close" onclick="importModalClose()">✕</button>
+    </div>
+    <div id="import-modal-body">
+      <div class="im-tabs">
+        <div class="im-tab active" onclick="imSwitchTab('excel',this)">📊 EXCEL (.XLSX/.XLS)</div>
+        <div class="im-tab" onclick="imSwitchTab('word',this)">📄 WORD (.DOCX)</div>
+      </div>
+
+      <!-- ═══ TAB EXCEL ═══ -->
+      <div class="im-tab-pane active" id="im-pane-excel">
+        <div class="im-tpl-note">
+          💡 <strong>Cách dùng:</strong> Tải template Excel mẫu → Gửi cho KH điền thông tin → KH gửi lại → Upload vào đây.<br>
+          Hệ thống sẽ tự động nhận diện các trường và điền vào form.
+        </div>
+        <button class="im-tpl-btn" onclick="importDownloadTemplate()">⬇️ Tải template Excel mẫu</button>
+        <div class="im-or">hoặc upload file Excel đã điền</div>
+        <div class="im-dropzone" id="im-dz-excel"
+          ondrop="imHandleDrop(event,'excel')" ondragover="imDragOver(event)" ondragleave="imDragLeave(event)"
+          onclick="document.getElementById('im-fi-excel').click()">
+          <div class="dz-ico">📊</div>
+          <div class="dz-title">Kéo thả file Excel vào đây</div>
+          <div class="dz-sub">Hỗ trợ .xlsx, .xls — Click để chọn file</div>
+          <input type="file" id="im-fi-excel" accept=".xlsx,.xls" onchange="imHandleFileInput(event,'excel')">
+        </div>
+      </div>
+
+      <!-- ═══ TAB WORD ═══ -->
+      <div class="im-tab-pane" id="im-pane-word">
+        <div class="im-ai-note">
+          📄 <strong>Mammoth.js Extract:</strong> Upload file Word (.docx) → Tự động đọc toàn bộ nội dung → Nhận diện và điền các trường: Tên KH, CCCD, ngày sinh, địa chỉ, số điện thoại, số tiền vay...<br>
+          <span style="color:#155724">✅ Xử lý hoàn toàn cục bộ — không cần API key, không gửi dữ liệu ra ngoài</span>
+        </div>
+        <div class="im-dropzone" id="im-dz-word"
+          ondrop="imHandleDrop(event,'word')" ondragover="imDragOver(event)" ondragleave="imDragLeave(event)"
+          onclick="document.getElementById('im-fi-word').click()">
+          <div class="dz-ico">📄</div>
+          <div class="dz-title">Kéo thả file Word vào đây</div>
+          <div class="dz-sub">Hỗ trợ .docx — Click để chọn file</div>
+          <input type="file" id="im-fi-word" accept=".docx" onchange="imHandleFileInput(event,'word')">
+        </div>
+      </div>
+
+      <!-- ═══ TRẠNG THÁI XỬ LÝ ═══ -->
+      <div class="im-progress" id="im-progress">
+        <div class="spinner"></div>
+        <p id="im-progress-msg">Đang xử lý file...</p>
+        <small id="im-progress-sub">Vui lòng chờ</small>
+      </div>
+      <div class="im-error" id="im-error"></div>
+
+      <!-- ═══ PREVIEW KẾT QUẢ ═══ -->
+      <div class="im-preview" id="im-preview">
+        <div class="im-preview-title">
+          ✅ <span id="im-preview-title-text">Đã trích xuất dữ liệu</span>
+        </div>
+        <div class="im-check-all-row">
+          <input type="checkbox" id="im-chk-all" checked onchange="imToggleAll(this.checked)">
+          <label for="im-chk-all">Chọn tất cả trường để điền</label>
+        </div>
+        <table class="im-preview-table">
+          <thead><tr>
+            <th class="pv-chk">✓</th>
+            <th>Trường</th>
+            <th>Giá trị đã trích xuất</th>
+          </tr></thead>
+          <tbody id="im-preview-tbody"></tbody>
+        </table>
+        <div class="im-apply-bar">
+          <div class="im-stat">Tìm thấy <strong id="im-found-count">0</strong> trường có dữ liệu</div>
+          <div style="display:flex;gap:8px">
+            <button class="im-btn-cancel" onclick="importModalClose()">Huỷ</button>
+            <button class="im-btn-apply" onclick="imApplyFields()">✅ Điền vào form (<span id="im-apply-count">0</span> trường)</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

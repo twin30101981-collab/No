@@ -1,0 +1,11 @@
+thời gian đọc 274 ms ✅ Đã đọc 1.007 dòng · 40 ô lỗi · 28 dòng chưa có trong bảng đang nạp
+PASS có ô chọn tệp + hàm nhập
+PASS đọc 1.007 dòng, 40 ô lỗi, 28 dòng thiếu
+PASS nguồn = tên tệp mới
+PASS bảng đối chiếu theo phường hiện, 8 phường chênh ✅ hoặc ⚠️ rõ
+PASS đã lưu localStorage
+PASS cố ý bớt 1 dòng bảng nạp ⇒ phường Mỹ Lộc từ ✅ 0 sang ⚠️ -1
+PASS tệp hỏng ⇒ báo lỗi, không đổi dữ liệu
+PASS tải lại trang vẫn giữ kết quả nhập
+PASS không pageerror
+PASS 9 FAIL 0

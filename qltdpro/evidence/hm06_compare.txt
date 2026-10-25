@@ -1,0 +1,6 @@
+So sánh kết quả nhập (mọi cột ngày, lãi suất, dư nợ, nhóm nợ) giữa bản HM-05 và bản HM-06 trên tệp thật:
+  31.05.2026.xlsx    dòng 3642/3642 | ô khác nhau: 0 
+  31.12.2025.xlsx    dòng 3684/3684 | ô khác nhau: 0 
+  20.10.2026.XLS     dòng 3918/3918 | ô khác nhau: 0 
+  30.06.2026.XLS     dòng 3763/3763 | ô khác nhau: 0 
+Trang đã vẽ sau khi cố ý đặt ngày 31/02/2026, 2026-02-31, rỗng, "abc", 2026-05-31 vào cột đến hạn: lỗi trang trước = [] sau = [] ; số dòng Lịch trả nợ trước/sau = 154 154

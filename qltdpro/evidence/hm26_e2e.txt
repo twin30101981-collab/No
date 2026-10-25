@@ -1,0 +1,19 @@
+PASS trang mở khi chưa có dữ liệu, có ô tìm
+PASS mở từ tdKh360Open ⇒ #/khach-hang
+PASS thẻ Dư nợ = 44,97 tỷ · 19 khoản · 1 HĐTD
+PASS thẻ Hạn mức = 45 tỷ (HĐTD tính 1 lần)
+PASS thẻ TSBĐ = 60,65 tỷ · 1 TS
+PASS thẻ Nhóm nợ = Nhóm 1
+PASS tiêu đề có mã KH
+PASS tab Khoản vay: 19 dòng, Σ dư nợ khớp
+PASS tab Lịch sử: 5 cột, đúng dư nợ từng kỳ
+PASS tab TSBĐ: 1 dòng
+PASS tab Hồ sơ vay: báo chưa liên kết
+PASS ghi chú tự lưu
+PASS ô tìm theo tên không dấu có kết quả
+PASS chọn kết quả ⇒ hiển thị 360°
+PASS ghi chú còn sau tải lại
+PASS Ctrl+K gõ tên KH có kết quả nhóm Khách hàng
+PASS Enter ⇒ mở Khách hàng 360°
+PASS không pageerror
+PASS 18 FAIL 0

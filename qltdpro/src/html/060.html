@@ -1,0 +1,119 @@
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL AUTO-SYNC IPCAS (PRO-38)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-autosync" style="display:none">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h2>🔄 Auto-Sync IPCAS — Đọc file tự động</h2>
+      <button class="modal-close" onclick="closeAutoSyncModal()">✕</button>
+    </div>
+    <div class="autosync-modal-body">
+
+      <!-- Trạng thái -->
+      <div class="autosync-section">
+        <div class="autosync-status-box" id="autosync-status-box">
+          <div class="autosync-status-dot" id="autosync-dot"></div>
+          <div style="flex:1">
+            <div id="autosync-status-text" style="font-weight:600;font-size:13px;color:var(--navy)">Chưa bật Auto-Sync</div>
+            <div id="autosync-countdown" class="autosync-countdown" style="margin-top:2px;display:none"></div>
+          </div>
+          <div id="autosync-last-sync" style="font-size:11px;color:var(--gray-500);text-align:right"></div>
+        </div>
+      </div>
+
+      <!-- Chọn file nguồn -->
+      <div class="autosync-section">
+        <div class="autosync-section-title">📁 File nguồn (msit80.xlsx)</div>
+        <div class="autosync-file-picker" id="autosync-file-picker" onclick="autoSyncPickFile()">
+          <div class="icon">📂</div>
+          <div class="info">
+            <div class="name" id="autosync-file-name">Chưa chọn file — click để chọn</div>
+            <div class="meta" id="autosync-file-meta">Hỗ trợ: .xlsx · .xls · .csv · Yêu cầu Chrome/Edge 86+</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();autoSyncPickFile()" style="flex-shrink:0">Chọn file</button>
+        </div>
+        <div style="font-size:11px;color:var(--gray-500);margin-top:6px">
+          ⚡ Chỉ cần chọn <strong>một lần</strong> — hệ thống sẽ tự đọc lại theo lịch mà không cần thao tác thêm.
+        </div>
+      </div>
+
+      <!-- Dò tìm file theo ngày -->
+      <div class="autosync-section">
+        <div class="autosync-section-title">🗓️ Dò tìm file theo ngày DD.MM.YYYY</div>
+        <div style="background:var(--blue-pale);border:1.5px solid var(--blue);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px">
+          <div style="flex:1;font-size:12px;color:var(--navy);line-height:1.5">
+            Tự động quét thư mục, tìm file có ngày <strong>gần nhất với hôm nay</strong> trong tên file (định dạng <code style="background:#dbeafe;padding:1px 5px;border-radius:3px">dd.mm.yyyy</code> hoặc <code style="background:#dbeafe;padding:1px 5px;border-radius:3px">dd/mm/yyyy</code>). Nếu nhiều file cùng ngày, ưu tiên file được tạo/sửa mới nhất.
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="autoSyncPickFolder()" style="flex-shrink:0;white-space:nowrap;border-color:var(--blue);color:var(--blue)">
+            📁 Chọn thư mục
+          </button>
+        </div>
+      </div>
+
+      <!-- Chọn chu kỳ -->
+      <div class="autosync-section">
+        <div class="autosync-section-title">⏱️ Chu kỳ kiểm tra tự động</div>
+        <div class="autosync-interval-grid" id="autosync-interval-grid">
+          <div class="autosync-interval-btn" data-min="5" onclick="autoSyncSelectInterval(5)">5<div class="label">phút</div></div>
+          <div class="autosync-interval-btn selected" data-min="10" onclick="autoSyncSelectInterval(10)">10<div class="label">phút</div></div>
+          <div class="autosync-interval-btn" data-min="15" onclick="autoSyncSelectInterval(15)">15<div class="label">phút</div></div>
+          <div class="autosync-interval-btn" data-min="30" onclick="autoSyncSelectInterval(30)">30<div class="label">phút</div></div>
+          <div class="autosync-interval-btn" data-min="60" onclick="autoSyncSelectInterval(60)">60<div class="label">phút</div></div>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="autosync-smart" checked style="width:14px;height:14px">
+          <label for="autosync-smart" style="font-size:12px;color:var(--gray-700)">
+            Chỉ import khi file thay đổi (so sánh ngày sửa đổi — tiết kiệm tài nguyên)
+          </label>
+        </div>
+      </div>
+
+      <!-- Tuỳ chọn khi import -->
+      <div class="autosync-section">
+        <div class="autosync-section-title">⚙️ Hành động khi phát hiện file mới</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="radio" name="autosync-action" value="ask" id="asa-ask" checked>
+            <span><strong>Hỏi xác nhận</strong> — Hiển thị preview, user tự xác nhận nhập</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="radio" name="autosync-action" value="auto" id="asa-auto">
+            <span><strong>Tự động nhập</strong> — Import thẳng (bỏ qua dư nợ = 0, giữ lại tất cả dương)</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="radio" name="autosync-action" value="notify" id="asa-notify">
+            <span><strong>Chỉ thông báo</strong> — Hiện toast, không tự import</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Bật/tắt -->
+      <div class="autosync-section">
+        <div class="autosync-toggle-wrap">
+          <div class="autosync-toggle-label">🔄 Bật Auto-Sync</div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="autosync-toggle" onchange="autoSyncToggle(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="autoSyncRunNow()" style="flex:1">▶️ Sync ngay</button>
+          <button class="btn btn-red btn-sm" onclick="autoSyncClear()" style="flex:0 0 auto">🗑️ Xoá cài đặt</button>
+        </div>
+      </div>
+
+      <!-- Log -->
+      <div class="autosync-section">
+        <div class="autosync-section-title">📋 Nhật ký hoạt động</div>
+        <div class="autosync-log" id="autosync-log">
+          <div class="log-line info">[Hệ thống] Auto-Sync khởi tạo — chờ cài đặt...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

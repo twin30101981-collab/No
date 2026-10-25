@@ -1,0 +1,26 @@
+const TD = require('./td_roster.js'); const R = TD.roster; let p = 0, f = 0; const ok = (n, c, x) => { if (c) p++; else { f++; console.log('FAIL', n, x === undefined ? '' : JSON.stringify(x).slice(0, 300)); } };
+/* chỉ dùng tên GIẢ */
+const txt = '# chú thích\nHội Sở | Lê Văn An | PP.KH\nhoi so | Phạm Thị Bình\nPGD Số 2 | Ngô Hữu Cường\n\nPGD Hai Bà Trưng | Đặng Thị Hương Dung\nMặc định | Lê Văn An\n';
+const P = R.parse(txt);
+ok('parse: 3 phòng (gộp "hoi so" vào "Hội Sở"), 4 cán bộ, vai trò mặc định CBTD, cán bộ mặc định', P.errors.length === 0 && P.cfg.pbs.length === 3 && R.count(P.cfg) === 4 && P.cfg.pbs[0].members[1].role === 'CBTD' && P.cfg.pbs[0].members[0].role === 'PP.KH' && P.cfg.def === 'Lê Văn An', P);
+const E = R.parse('Hội Sở\nHội Sở | Lê Văn An\nPGD Số 2 | le van an\n | x');
+ok('parse: báo dòng sai dạng + trùng cán bộ (giữ dòng đầu)', E.errors.map(e => e.line).join() === '1,3,4' && R.count(E.cfg) === 1 && /trùng/.test(E.errors[1].msg), E.errors);
+ok('format ⇄ parse khứ hồi', JSON.stringify(R.parse(R.format(P.cfg)).cfg) === JSON.stringify(P.cfg));
+const rows = []; const add = (cb, pb, n) => { for (let i = 0; i < n; i++) { const r = []; r[12] = cb; r[17] = pb; rows.push(r); } };
+add('Phạm Thị Bình', 'Hội Sở', 3); add('Lê Văn An', 'Hội Sở', 2); add('Ngô Hữu Cường', 'PGD Số 2', 4); add('Ngô Hữu Cường', 'Hội Sở', 1); add('Trịnh Văn Em', 'PGD Mới', 1); add('', 'Hội Sở', 2); add('Đặng Thị Hương Dung', 'PGD Hai Bà Trưng', 1); add('đặng thị hương dung', 'PGD Hai Bà Trưng', 1);
+const L = R.learn(rows);
+ok('learn: phòng ban theo thứ tự chuẩn rồi phòng lạ; cán bộ A→Z; mỗi cán bộ 1 phòng (phòng gặp nhiều nhất); bỏ CBTD trống; gộp hoa-thường', JSON.stringify(L.pbs.map(x => [x.pb, x.members.map(m => m.name)])) === JSON.stringify([['Hội Sở', ['Lê Văn An', 'Phạm Thị Bình']], ['PGD Hai Bà Trưng', ['Đặng Thị Hương Dung']], ['PGD Số 2', ['Ngô Hữu Cường']], ['PGD Mới', ['Trịnh Văn Em']]]), L.pbs);
+const M = R.matcher(P.cfg);
+ok('matcher: khớp đúng / bỏ dấu / hoa-thường', M('Lê Văn An').pb === 'Hội Sở' && M('le van an').name === 'Lê Văn An' && M('NGÔ HỮU CƯỜNG').pb === 'PGD Số 2');
+ok('matcher: viết tắt 1 ký tự + dấu chấm', M('Đặng Thị H Dung').name === 'Đặng Thị Hương Dung' && M('Đặng T. H. Dung').name === 'Đặng Thị Hương Dung' && M('Dang Thi H.Dung').name === 'Đặng Thị Hương Dung');
+ok('matcher: khác họ, trùng tên đệm + tên (đổi họ)', M('Trần Văn An').name === 'Lê Văn An');
+ok('matcher: không khớp / mơ hồ ⇒ null', M('Hoàng Minh') === null && M('') === null && R.matcher(R.parse('A | Lê Văn An\nB | Phạm Văn An').cfg)('Trần Văn An') === null);
+const st = { m: {}, getItem(k) { return this.m[k] || null; }, setItem(k, v) { this.m[k] = String(v); }, removeItem(k) { delete this.m[k]; } };
+ok('load khi chưa cấu hình ⇒ rỗng', R.count(R.load(st)) === 0);
+const sv = R.save(st, txt); ok('save hợp lệ ⇒ lưu; load lại = cấu hình', sv.errors.length === 0 && R.count(R.load(st)) === 4 && R.load(st).def === 'Lê Văn An');
+const sb = R.save(st, 'sai dạng'); ok('save có lỗi ⇒ KHÔNG ghi đè', sb.errors.length === 1 && R.count(R.load(st)) === 4);
+R.save(st, '# trống'); ok('save rỗng ⇒ xoá cấu hình (quay về tự học)', st.getItem(R.KEY) === null);
+ok('load chịu lỗi storage', R.count(R.load({ getItem() { throw new Error('x'); } })) === 0);
+const ef1 = R.effective(R.empty(), rows), ef2 = R.effective(P.cfg, rows), ef3 = R.effective(R.parse('Mặc định | Ngô Hữu Cường').cfg, rows);
+ok('effective: chưa cấu hình ⇒ học từ dữ liệu; có cấu hình ⇒ dùng cấu hình; chỉ đặt mặc định ⇒ học + giữ mặc định', ef1.src === 'data' && R.count(ef1.cfg) === 5 && ef2.src === 'config' && ef2.cfg === P.cfg && ef3.src === 'data' && ef3.cfg.def === 'Ngô Hữu Cường');
+console.log('PASS', p, 'FAIL', f); process.exit(f ? 1 : 0);

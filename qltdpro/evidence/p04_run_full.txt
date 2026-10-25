@@ -1,0 +1,51 @@
+App: app/QLTD_PRO_v2026-10-22_v22.3-P04a.html
+
+Tầng 0 — src/ dựng ra đúng tệp phát hành (HM-20) và các cổng build bắt được lỗi
+  ✔ src → build == app: 8 phép kiểm đạt, 0 lỗi
+
+Tầng 1 — biên dịch mọi khối <script>
+  ✔ check_scripts: 78 khối, 0 lỗi
+
+Tầng 2 — kiểm thử đơn vị (module td_*.js)
+  ✔ td_cols: 14 ca đạt, 0 lỗi
+  ✔ td_datadate: 26 ca đạt, 0 lỗi
+  ✔ td_doisoat: 7 ca đạt, 0 lỗi
+  ✔ td_giadat: 21 ca đạt, 0 lỗi
+  ✔ td_hub: 10 ca đạt, 0 lỗi
+  ✔ td_keys: 14 ca đạt, 0 lỗi
+  ✔ td_kh360: 11 ca đạt, 0 lỗi
+  ✔ td_metrics: 18 ca đạt, 0 lỗi
+  ✔ td_net: 12 ca đạt, 0 lỗi
+  ✔ td_numdate: 71 ca đạt, 0 lỗi
+  … td_pl02.test.js bỏ qua (cần PL02 .docx thật: --real)
+  ✔ td_report: 9 ca đạt, 0 lỗi
+  ✔ td_reportdocx: 12 ca đạt, 0 lỗi
+  ✔ td_router: 34 ca đạt, 0 lỗi
+  ✔ td_trend: 10 ca đạt, 0 lỗi
+  ✔ td_tsbd: 13 ca đạt, 0 lỗi
+  ✔ td_warn: 14 ca đạt, 0 lỗi
+
+Tầng 3 — module nhúng trong app = tệp nguồn
+  ✔ 17 module nguồn đều nhúng nguyên văn trong app
+
+Tầng 4 — e2e (Playwright + Chromium, fixture ẩn danh)
+  ✔ e2e: 49/49 phép kiểm đạt (28 nhóm HM)
+
+Tầng 5 — đột biến (bộ test phải thất bại với mã lỗi)
+  ✔ HM-01 — chèn xuống dòng vào chuỗi SheetJS (script vendor không biên dịch) → phát hiện: SheetJS nạp được (XLSX.version) và ghi/đọc lại .xlsx
+  ✔ HM-02 — bỏ SheetJS, bộ đọc .xlsx tự viết đổi MỌI số 1<x<100000 thành ngày (lỗi gốc) → phát hiện: nhập .xlsx: 244 khoản còn dư nợ (bỏ dòng dư nợ 0), lãi suất & dư nợ TỪ
+  ✔ HM-03 — cổng ghi đè L/S cho phép sửa tự động đè cả giá trị hợp lệ → phát hiện: hàm "tự chữa" L/S không đè lãi suất hợp lệ dù có nguồn tham chiếu khác
+  ✔ HM-04 — chunk hỏng bị bỏ qua im lặng, nạp phần còn lại như dữ liệu đầy đủ → phát hiện: chunk hỏng ⇒ báo hỏng (banner/cờ), không coi là dữ liệu đầy đủ
+  ✔ HM-05 — nhúng lại seed Past Due (dữ liệu cứng) tự ghi vào trình duyệt khi mở → phát hiện: trang mới không có dữ liệu cứng (dư nợ/TSBĐ/mốc lưu/Past Due = 0)
+  ✔ HM-08 — đếm khách hàng theo số dòng thay vì theo mã → phát hiện: Dashboard: tổng dư nợ = 141.940.949.969 và 120 KH (theo mã)
+  ✔ HM-09 — báo cáo theo CBTD bỏ im lặng phần chưa phân → phát hiện: TD_AUDIT (đối chiếu với tệp) không có vấn đề
+  ✔ HM-17b — bật lại pager desktop-patch chồng lên bảng dữ liệu → phát hiện: chỉ MỘT cơ chế phân trang (không pager ẩn dòng/nút "Hiển thị thêm" chồ
+  ✔ HM-16b — thêm z-index literal ≥100 ngoài thang token → phát hiện: không còn z-index literal ≥100 (dùng token --z-N)
+  ✔ HM-16c — thêm lại một kiểu tab riêng lệch chuẩn → phát hiện: tab kiểu A (gạch chân: Khách hàng, KH mới, Đồng bộ, Máy tính lãi) cùng
+  ✔ HM-16c — thêm lại một khối :root rời → phát hiện: token: đúng MỘT khối :root cấp cao nhất
+  ✔ HM-27 — bỏ thẻ CSP chặn mạng (dữ liệu có thể gửi ra ngoài) → phát hiện: chế độ có mạng TẮT mặc định; có thẻ CSP chặn kết nối ngoài (connect-sr
+  
+  ✔ bộ test phát hiện mọi đột biến
+
+════════════════════════════════════════════════════════════
+TỔNG: 21/21 nhóm đạt — TẤT CẢ ĐẠT

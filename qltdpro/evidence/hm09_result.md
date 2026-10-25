@@ -1,0 +1,5 @@
+# HM-09 — TD.metrics phần 2: snapshot & báo cáo — ĐẠT MỘT PHẦN, V3 tổng hợp (21/10/2026)
+Nguyên nhân gốc: 4 nơi tạo snapshot đếm "customers" bằng new Set(r[1]) (THEO TÊN: 2 KH trùng tên gộp, 1 KH nhiều cách viết tách) — dashboard đếm theo mã, hai con số khác nhau; bckhAggregateData bỏ im lặng mọi dòng có CBTD trống/không khớp bảng ⇒ báo cáo theo CBTD thấp hơn thực tế mà không cảnh báo.
+Sửa (apply_hm09.py): 4 snapshot dùng TD.metrics.countCustomers (theo mã, dư nợ>0; 20.10.2026 ⇒ 1.865 KH, khớp Dashboard); bckhAggregateData gom phần không khớp vào result.__chuaphan (các hàm lặp theo CBTD bỏ qua mục này) và bckhFillAllTables hiện dải "⚠️ Chưa phân CBTD…" (số khoản, KH, triệu đồng, tên CBTD lạ). Số ô bảng không đổi.
+Kiểm chứng: hm09_e2e.txt 5/5 (gom 3 khoản/12 tỷ/3 KH, dải cảnh báo, KH theo mã, không pageerror); V3 thật (hm07_real.txt): snapshot 30/06→1.839 KH, 20/10→1.865, 31/05→1.815 (tên cũ sẽ là số khác).
+CHƯA LÀM (chuyển HM-09b): TDCMP (so sánh kỳ), TDUP5 đọc DOM, TD_AUDIT dùng chung TD.metrics; dòng "Chưa phân CBTD" trong các bảng II–V của BCKH (cần quyết định thiết kế vì bảng là mẫu Excel cố định).

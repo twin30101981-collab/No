@@ -1,0 +1,17 @@
+const TD=require('./td_numdate.js');require('./td_tsbd.js');require('./td_kh360.js');const K=TD.kh360;let p=0,f=0;const ok=(n,c,x)=>{if(c)p++;else{f++;console.log('FAIL',n,x)}};
+const R=(ma,ten,hd,hm,due,ls,dn,cb,loai,pb,nh)=>[ma,ten,hd,'','',hm,'',due,ls,'','',dn,cb,loai,'',' ','',pb,nh];
+const rows=[R('3201001','Nguyễn Văn An','H1',3e9,'01/01/2027',8.5,1.5e9,'X','Vay ngắn hạn','Hội Sở','Nhóm 1'),R('3201001','Nguyễn Văn An','H1',3e9,'15/12/2026',8.5,0.9e9,'X','Vay ngắn hạn','Hội Sở','Nhóm 2'),R('3201001','Nguyễn Văn An','H2',1e9,'10/01/2028',9.2,0.6e9,'X','Vay trung hạn','Hội Sở','Nhóm 1'),R('3201002','Trần Thị Bình','H3',2e9,'01/02/2027',9,0,'Y','Vay ngắn hạn','PGD Số 2','Nhóm 1'),R('','Lê Văn Cường','H4',1e9,'01/03/2027',9,1e8,'Y','Vay ngắn hạn','PGD Số 2','Nhóm 1')];
+const F=K.find(rows,'nguyen van',12);ok('tìm theo tên không dấu',F.length===1&&F[0].ma==='3201001'&&F[0].duno===3e9&&F[0].hs===3,F);
+ok('tìm theo mã (≥3 số)',K.find(rows,'201002',5)[0].ma==='3201002');ok('tìm theo số HĐ',K.find(rows,'h4',5)[0].ten==='Lê Văn Cường');ok('không khớp/rỗng',K.find(rows,'zzz',5).length===0&&K.find(rows,'',5).length===0);
+ok('KH có dư nợ xếp trước',K.find(rows,'3201',5)[0].ma==='3201001');
+const parse=s=>TD.date.parse(s),today=new Date(2026,9,20);
+const snaps=[{dayKey:'31/05/2026',reportData:[R('3201001','Nguyễn Văn An','H1',3e9,'',8.5,1e9,'X','','','Nhóm 1')]},{dayKey:'30/06/2026',reportData:[R('3201001','Nguyễn Văn An','H1',3e9,'',8.5,1.2e9,'X','','','Nhóm 1'),R('3201001','Nguyễn Văn An','H2',1e9,'',9,0.3e9,'X','','','Nhóm 2'),R('3201002','T','H3',1,'',9,5,'','','','Nhóm 1')]},{dayKey:'bad',reportData:[]}];
+const H=K.history(snaps,'M:3201001',parse);ok('lịch sử 2 kỳ theo ngày, nhóm cao nhất',H.length===2&&H[0].duno===1e9&&H[1].duno===1.5e9&&H[1].nhom===2&&H[1].hs===2,H);
+const ts=[{soTS:'T1',maKH:'3201001',giaTriTS:2e9,giaTriTC:1.8e9,tienTe:'VND',loaiTS:'BĐS',ngayHetHan:'2027-01-01'},{soTS:'T1',maKH:'3201001',giaTriTS:2e9,giaTriTC:1.8e9,tienTe:'VND'},{soTS:'T2',maKH:'3201001',giaTriTS:100,tienTe:'USD'},{soTS:'T3',maKH:'9',giaTriTS:7,tienTe:'VND'}];
+const B=K.build({key:'M:3201001',rows,tsbd:{rows:ts,keyFn:x=>String(x),mdig:'3201001',dedupe:TD.tsbd.dedupe,value:TD.tsbd.value,isVND:TD.tsbd.isVND},snaps,parse,today,hoso:[{id:'a'}]});
+ok('tiêu đề: dư nợ 3 tỷ, 3 khoản, 2 HĐTD, nhóm 2, HMTD 3+1 tỷ (HĐ H1 tính 1 lần)',B.header.duno===3e9&&B.header.nKhoan===3&&B.header.nHDTD===2&&B.header.nhom===2&&B.header.hmtd===4e9,B.header);
+ok('khoản vay sắp theo dư nợ, có số ngày đến hạn',B.khoan.length===3&&B.khoan[0].duno===1.5e9&&B.khoan[0].days>0,B.khoan[0]);
+ok('TSBĐ khử trùng, VND tách ngoại tệ, tỷ lệ phủ = 1,8/3',B.ts.n===2&&B.ts.gt===1.8e9&&B.ts.fx===1&&Math.abs(B.ts.ratio-0.6)<1e-9,B.ts);
+ok('hồ sơ vay chuyển qua',B.hoso.length===1);
+const E=K.build({key:'M:9999',rows,tsbd:null,snaps:[],parse,today});ok('KH không tồn tại: không vỡ',E.header.nKhoan===0&&E.khoan.length===0&&E.ts===null);
+console.log('PASS',p,'FAIL',f);process.exit(f?1:0);

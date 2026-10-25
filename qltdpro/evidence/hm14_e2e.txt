@@ -1,0 +1,55 @@
+PASS 6+ nhóm menu
+PASS không trùng lối vào
+PASS mọi trang đều có lối vào menu
+PASS mọi mục là <a href="#/…">
+PASS href khớp router
+PASS dashboard · mở đúng trang + hash
+PASS dashboard · nhãn menu = tiêu đề trang
+PASS ctkh · mở đúng trang + hash
+PASS ctkh · nhãn menu = tiêu đề trang
+PASS doisoat · mở đúng trang + hash
+PASS doisoat · nhãn menu = tiêu đề trang
+PASS qltd · mở đúng trang + hash
+PASS qltd · nhãn menu = tiêu đề trang
+PASS kd · mở đúng trang + hash
+PASS kd · nhãn menu = tiêu đề trang
+PASS td · mở đúng trang + hash
+PASS td · nhãn menu = tiêu đề trang
+PASS qcamco · mở đúng trang + hash
+PASS qcamco · nhãn menu = tiêu đề trang
+PASS denhan · mở đúng trang + hash
+PASS denhan · nhãn menu = tiêu đề trang
+PASS laidong · mở đúng trang + hash
+PASS laidong · nhãn menu = tiêu đề trang
+PASS chlm · mở đúng trang + hash
+PASS chlm · nhãn menu = tiêu đề trang
+PASS tranop · mở đúng trang + hash
+PASS tranop · nhãn menu = tiêu đề trang
+PASS khmoi · mở đúng trang + hash
+PASS khmoi · nhãn menu = tiêu đề trang
+PASS tsbd · mở đúng trang + hash
+PASS tsbd · nhãn menu = tiêu đề trang
+PASS giadat · mở đúng trang + hash
+PASS giadat · nhãn menu = tiêu đề trang
+PASS hsvv · mở đúng trang + hash
+PASS hsvv · nhãn menu = tiêu đề trang
+PASS hmtd · mở đúng trang + hash
+PASS hmtd · nhãn menu = tiêu đề trang
+PASS tieudung · mở đúng trang + hash
+PASS tieudung · nhãn menu = tiêu đề trang
+PASS camco · mở đúng trang + hash
+PASS camco · nhãn menu = tiêu đề trang
+PASS fhs · mở đúng trang + hash
+PASS fhs · nhãn menu = tiêu đề trang
+PASS phidv · mở đúng trang + hash
+PASS phidv · nhãn menu = tiêu đề trang
+PASS baocao · mở đúng trang + hash
+PASS baocao · nhãn menu = tiêu đề trang
+PASS archive · mở đúng trang + hash
+PASS archive · nhãn menu = tiêu đề trang
+PASS nhánh con của DƯ NỢ hiển thị (3 mục)
+PASS bàn phím: Enter trên liên kết mở TSBĐ
+PASS badge id còn đủ
+PASS 1366px không tràn ngang
+PASS 390px không tràn ngang
+PASS không pageerror

@@ -1,0 +1,22 @@
+PASS chip-empty-hôm nay 
+PASS tên tệp 30.06.2026.csv 
+PASS tên tệp 30_06_2026.csv 
+PASS tên tệp DUNO_18.08.2026.csv 
+PASS tên tệp msit80_30_06_2026.csv 
+PASS tên tệp msit80-2026-06-30.csv 
+PASS tên tệp DUNO 20260630.csv 
+PASS pending rows 30 
+PASS _currentFileDate=18/08/2026 
+PASS todayMidnight = ngày dữ liệu 
+PASS chip data + stale 
+PASS snapshot dayKey 18/08/2026 
+PASS 2 mốc riêng 
+PASS nhập lại cùng ngày dữ liệu = ghi đè (2 mốc) 
+PASS toggle → hôm nay 
+PASS quá hạn/đến hạn khác nhau theo chế độ 
+PASS reload giữ chế độ + ngày 
+PASS toggle về dữ liệu 
+PASS tên không ngày → dùng hôm nay 
+PASS mobile không tràn ngang 
+errs ["dialog: ✅ Xác nhận nhập 30 bản ghi?\nDữ liệu hiện tại (0 bản ghi) sẽ bị THAY THẾ hoàn toàn.","dialog: ✅ Đã lưu trữ dữ liệu: 18/08/2026","dialog: ✅ Xác nhận nhập 30 bản ghi?\nDữ liệu hiện tại (30 bản ghi) sẽ bị THAY THẾ hoàn toàn.","dialog: ✅ Đã lưu trữ dữ liệu: 30/06/2026","dialog: ✅ Đã lưu trữ dữ liệu: Data 21/10/2026 23:13"]
+PASS 20 FAIL 0

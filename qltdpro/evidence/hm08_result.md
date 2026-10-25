@@ -1,0 +1,8 @@
+# HM-08 — Engine KPI duy nhất TD.metrics (lõi + Dashboard) — ĐẠT-V3 (21/10/2026)
+Nguyên nhân gốc: Dashboard tự tính từng bảng bằng các vòng lặp riêng nên Σ theo loại vay / nhóm nợ không bao giờ bị ràng buộc bằng tổng: khoản có loại vay lạ rơi khỏi Bảng I; nhóm nợ trống bị gán "Nhóm 1", nhóm lạ (vd "Nhóm 9") rơi khỏi Bảng II; chuỗi "trung và dài hạn" có thể bị đếm hai lần; regex /d+/ (thiếu "\") khiến nhóm nợ cao nhất của KH ở Top 10 luôn = 0.
+Sửa (apply_hm08.py + td_metrics.js — nguồn module duy nhất): TD.metrics.summarize/check/classifyLoai/normNhom/nhomRank/countCustomers (hàm thuần). renderDashboard dùng engine cho tổng, loại vay (thêm dòng "Khác (chưa phân loại)" khi có), nhóm nợ (thêm "Không rõ nhóm" khi có), quá hạn/đến hạn (ngày = ngày dữ liệu, HM-07); bất biến Σloại=Σnhóm=Σphòng ban=Σcbtd=tổng được kiểm (console.warn nếu lệch).
+Kiểm chứng:
+- V2 Node td_metrics.test.js 18/18 (hm08_unit.txt).
+- V3 DỮ LIỆU THẬT (hm08_real.txt): 5 tệp (20.10.2026.XLS 3.918 dòng, 30.09.2026.XLS, 30.06.2026.XLS, 31.05.2026.xlsx, 31.12.2025.xlsx): so bản HM-07 (cũ) và HM-08 (mới) trên cùng dữ liệu ⇒ 9 bảng Dashboard (loại vay, nhóm, phòng ban, CBTD, Top 10, đến hạn, quá hạn, lãi, tiêu đề) KHÔNG KHÁC ở cả 5 tệp; Σloại=Σnhóm=Σphòng ban=tổng (20.10: 2.160.375.016.661 — khớp số đã kiểm ở HM-01).
+- V3 tổng hợp có khoản biên (hm08_synthetic.txt 25/25): bản cũ lệch (Σloại 430,6 tỷ / Σnhóm 435,5 tỷ so với tổng 439,1 tỷ), bản mới cân đối; dòng Khác/Không rõ nhóm chỉ hiện khi có khoản.
+Giới hạn: dữ liệu thật hiện sạch (không có loại/nhóm lạ) nên khác biệt chỉ thấy ở dữ liệu biên tổng hợp. Bảng CBTD vẫn 8 cột cố định (cột ngắn hạn/trung-dài không gồm loại "Khác"). 

@@ -1,0 +1,40 @@
+  ✔ BOOT-1 — Khởi động: lỗi JS/console :: {"pageerror":[],"console":[]}
+  ✔ BOOT-2 — Khởi động: thời gian tải (load) ≤ 3 s, longtask tổng ≤ 1,5 s :: {"tLoad":558,"dcl":550,"load":552,"nodes":21230,"scripts":88,"longtasks":{"n":3,"max":172,"sum":311}}
+  ✔ BOOT-3 — Khởi động: không có yêu cầu mạng thất bại (offline-first) :: []
+  ✔ HUB-1 — Trung tâm nhập: nhận 13 tệp → nhập 11 dư nợ + 1 TSBĐ mới nhất, bỏ 1 :: {"nImport":12,"nSkip":1,"order":["duno:31/12/2025","duno:31/01/2026","duno:28/02/2026","duno:31/03/2026","duno:30/04/2026","duno:31/05/2026","duno:30/06/2026","duno:31/07/2026","duno:31/08/2026","duno:30/09/2026","duno:20/10/2026","tsbd:20/10/2026"],"kinds":"duno,duno,duno,duno,duno,duno,duno,duno,d
+  ✔ HUB-2 — Trung tâm nhập: nhập đủ 12 tệp, không tệp nào lỗi :: {"ended":true,"n":12,"bad":0} (58565 ms)
+  ✔ HUB-3 — Trung tâm nhập: mỗi tệp dư nợ ≤ 25 s :: ["20/10/2026:2521","20/10/2026:4857","30/09/2026:4948","31/08/2026:4880","31/07/2026:4904","30/06/2026:4890","31/05/2026:4804","30/04/2026:4783","31/03/2026:4755","28/02/2026:4797","31/01/2026:4860","31/12/2025:5029"]
+  ✔ HUB-4 — Nhập: không lỗi JS/console, longtask lớn nhất ≤ 1 s :: {"he":{"pageerror":[],"console":[]},"hl":{"n":28,"max":532,"sum":5542}}
+  ✔ DATA-1 — Dư nợ hiện hành là kỳ 20/10/2026, có dòng dữ liệu :: {"rows":3848,"tot":2160375016661,"kh":1865}
+  ✔ DATA-2 — Số mốc lưu trữ tự động = 11 kỳ :: {"archive":11}
+  ✔ DATA-3 — Dữ liệu: không NaN dư nợ/HMTD, không âm, đủ mã & tên KH :: {"nanDuNo":0,"nanHM":0,"badDate":0,"noMa":0,"noTen":0,"lsOut":0,"lsEmpty":0,"negDuNo":0}
+  ✔ DATA-4 — Dữ liệu: ngày đều đúng định dạng dd/mm/yyyy :: {"badDate":0}
+  ✔ DATA-5 — Dữ liệu: lãi suất trong 0–30%, không rỗng :: {"lsOut":0,"lsEmpty":0}
+  ✔ DATA-6 — Dữ liệu: không trùng khoá (tài khoản|số GN) :: {"dup":0}
+  ✔ PAGE-1 — Mọi trang mở được (active) và có nội dung :: []
+  ✔ PAGE-2 — Không trang nào hiện "undefined/NaN/[object/Invalid Date/Infinity" :: []
+  ✔ PAGE-3 — Không lỗi JS/console khi mở từng trang :: []
+  ✔ PAGE-4 — Không trang nào làm trang tràn ngang (1500 px) :: []
+  ✔ PERF-1 — Chuyển trang ≤ 1,2 s tới khung hình :: []
+  ✔ PERF-2 — Longtask khi mở trang ≤ 400 ms :: []
+   thời gian chuyển trang (ms): dashboard=323 qltd=193 kd=333 td=190 denhan=160 laidong=155 chlm=115 tranop=212 phidv=186 tsbd=421 giadat=142 doisoat=418 xuhuong=93 canhbao=346 archive=90 baocao=99 ctkh=120 khachhang=47 khmoi=76 camco=67 qcamco=56 hmtd=57 hsvv=88 fhs=72 tieudung=82 nhap=87
+  ✔ TBL-1 — Sắp xếp theo từng cột: không lỗi, mỗi lần ≤ 1,5 s :: {"n":19,"max":193,"err":{"pageerror":[],"console":[]}}
+  ✔ TBL-2 — Tìm kiếm: chuỗi không có → 0; xoá chuỗi → trả đủ hồ sơ :: {"tot":3848,"none":"0","back":"3.848"}
+  ✔ TBL-3 — Bộ lọc nhóm nợ / loại vay: tổng các nhóm = tổng hồ sơ (không rơi dòng) :: {"filter-qltd-nhomno":3848,"filter-qltd-loaivay":3848,"tot":3848}
+  ✔ TBL-4 — Phân trang 50/100/250/500 hiển thị đúng số dòng :: {"sizes":["50:50","100:100","250:250","500:500"],"p2":100}
+  ✔ PERF-3 — "Tất cả" thật: khung hình đầu ≤ 1,5 s, dựng đủ ≤ 20 s :: {"total":3848,"first":400,"js":193,"toFrame":376,"fullMs":8133,"full":3848}
+  ✔ EXP-1 — Xuất Excel QLTD: tải được tệp .xlsx đọc lại được, số dòng ≥ số hồ sơ :: {"sheets":4,"rows":3854,"cols":23}
+  ✔ EDIT-1 — Sửa ô Dư nợ: giá trị mới được ghi vào DATA :: {"ok":true}
+  ✔ PERSIST-1 — Tải lại trang: giữ nguyên hồ sơ, mốc lưu trữ, TSBĐ; không báo hỏng :: {"before":{"n":3848,"arch":11,"tsbd":19133},"after":{"n":3848,"arch":11,"tsbd":19133,"corrupt":false}}
+  ✔ PERSIST-2 — Tải lại với dữ liệu thật: không lỗi JS; thời gian tải ≤ 6 s :: {"tReload":604,"re":{"pageerror":[],"console":[]}}
+  ✔ BAK-1 — Xuất sao lưu: tải được tệp .json :: {"kb":1576}
+  ✔ BAK-2 — Khôi phục từ sao lưu đưa dữ liệu về đúng như trước (băm trùng) :: {"s0":{"n":3848,"h":1722922145,"len":1458830},"s1":{"n":3848,"h":1722922145,"len":1458830}}
+  ✔ VP-1366 — Khung laptop 1366: trang không tràn ngang toàn trang, không lỗi JS :: {"over":[],"wideTables":["tsbd:1","giadat:1"],"e":{"pageerror":[],"console":[]}}
+  ✔ VP-1920 — Khung FullHD 1920: trang không tràn ngang toàn trang, không lỗi JS :: {"over":[],"wideTables":["tsbd:1"],"e":{"pageerror":[],"console":[]}}
+  ✔ VP-390 — Khung điện thoại 390: trang không tràn ngang toàn trang, không lỗi JS :: {"over":[],"wideTables":["dashboard:8","denhan:1","tsbd:1","doisoat:1"],"e":{"pageerror":[],"console":[]}}
+  ✔ LEAK-1 — Chuyển trang 24 lần: số nút DOM không tăng quá 10% :: {"m0":{"nodes":33820,"heap":101},"m1":{"nodes":34171,"heap":116}}
+  ✔ LEAK-2 — Chuyển trang 24 lần: heap JS không tăng quá 30 MB :: {"m0":{"nodes":33820,"heap":101},"m1":{"nodes":34171,"heap":116}}
+  ✔ LEAK-3 — Chuyển trang nhiều vòng: không lỗi JS/console :: {"pageerror":[],"console":[]}
+  ✔ GD-1 — Giá đất: bảng có dữ liệu sau khi mở trang (từ PL02 nhúng) :: {"rows":50,"keys":0}
+
+TỔNG: 37/37 đạt; 0 phát hiện

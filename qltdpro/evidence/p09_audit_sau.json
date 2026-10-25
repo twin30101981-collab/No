@@ -1,0 +1,516 @@
+{
+ "app": "QLTD_PRO_v2026-10-23_v22.3-P08.html",
+ "at": "2026-10-24T13:03:38.563Z",
+ "total": 37,
+ "fail": 3,
+ "findings": [
+  {
+   "id": "BOOT-1",
+   "area": "Khởi động: lỗi JS/console",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "pageerror": [],
+    "console": []
+   },
+   "ms": null
+  },
+  {
+   "id": "BOOT-2",
+   "area": "Khởi động: thời gian tải (load) ≤ 3 s, longtask tổng ≤ 1,5 s",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "tLoad": 931,
+    "dcl": 905,
+    "load": 925,
+    "nodes": 21228,
+    "scripts": 88,
+    "longtasks": {
+     "n": 4,
+     "max": 384,
+     "sum": 670
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "BOOT-3",
+   "area": "Khởi động: không có yêu cầu mạng thất bại (offline-first)",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": [],
+   "ms": null
+  },
+  {
+   "id": "HUB-1",
+   "area": "Trung tâm nhập: nhận 13 tệp → nhập 11 dư nợ + 1 TSBĐ mới nhất, bỏ 1",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "nImport": 12,
+    "nSkip": 1,
+    "order": [
+     "duno:31/12/2025",
+     "duno:31/01/2026",
+     "duno:28/02/2026",
+     "duno:31/03/2026",
+     "duno:30/04/2026",
+     "duno:31/05/2026",
+     "duno:30/06/2026",
+     "duno:31/07/2026",
+     "duno:31/08/2026",
+     "duno:30/09/2026",
+     "duno:20/10/2026",
+     "tsbd:20/10/2026"
+    ],
+    "kinds": "duno,duno,duno,duno,duno,duno,duno,duno,duno,duno,duno,tsbd,tsbd",
+    "warns": 0
+   },
+   "ms": null
+  },
+  {
+   "id": "HUB-2",
+   "area": "Trung tâm nhập: nhập đủ 12 tệp, không tệp nào lỗi",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "ended": true,
+    "n": 12,
+    "bad": 0
+   },
+   "ms": 84478
+  },
+  {
+   "id": "HUB-3",
+   "area": "Trung tâm nhập: mỗi tệp dư nợ ≤ 25 s",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": [
+    "20/10/2026:4434",
+    "20/10/2026:7145",
+    "30/09/2026:6973",
+    "31/08/2026:7650",
+    "31/07/2026:7030",
+    "30/06/2026:7499",
+    "31/05/2026:7410",
+    "30/04/2026:6393",
+    "31/03/2026:6485",
+    "28/02/2026:6391",
+    "31/01/2026:6571",
+    "31/12/2025:8552"
+   ],
+   "ms": null
+  },
+  {
+   "id": "HUB-4",
+   "area": "Nhập: không lỗi JS/console, longtask lớn nhất ≤ 1 s",
+   "sev": "trung bình",
+   "ok": false,
+   "detail": {
+    "he": {
+     "pageerror": [],
+     "console": []
+    },
+    "hl": {
+     "n": 50,
+     "max": 3934,
+     "sum": 53561
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-1",
+   "area": "Dư nợ hiện hành là kỳ 20/10/2026, có dòng dữ liệu",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "rows": 3848,
+    "tot": 2160375016661,
+    "kh": 1865
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-2",
+   "area": "Số mốc lưu trữ tự động = 11 kỳ",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "archive": 11
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-3",
+   "area": "Dữ liệu: không NaN dư nợ/HMTD, không âm, đủ mã & tên KH",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "nanDuNo": 0,
+    "nanHM": 0,
+    "badDate": 0,
+    "noMa": 0,
+    "noTen": 0,
+    "lsOut": 0,
+    "lsEmpty": 0,
+    "negDuNo": 0
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-4",
+   "area": "Dữ liệu: ngày đều đúng định dạng dd/mm/yyyy",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "badDate": 0
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-5",
+   "area": "Dữ liệu: lãi suất trong 0–30%, không rỗng",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "lsOut": 0,
+    "lsEmpty": 0
+   },
+   "ms": null
+  },
+  {
+   "id": "DATA-6",
+   "area": "Dữ liệu: không trùng khoá (tài khoản|số GN)",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "dup": 0
+   },
+   "ms": null
+  },
+  {
+   "id": "PAGE-1",
+   "area": "Mọi trang mở được (active) và có nội dung",
+   "sev": "cao",
+   "ok": true,
+   "detail": [],
+   "ms": null
+  },
+  {
+   "id": "PAGE-2",
+   "area": "Không trang nào hiện \"undefined/NaN/[object/Invalid Date/Infinity\"",
+   "sev": "cao",
+   "ok": true,
+   "detail": [],
+   "ms": null
+  },
+  {
+   "id": "PAGE-3",
+   "area": "Không lỗi JS/console khi mở từng trang",
+   "sev": "cao",
+   "ok": true,
+   "detail": [],
+   "ms": null
+  },
+  {
+   "id": "PAGE-4",
+   "area": "Không trang nào làm trang tràn ngang (1500 px)",
+   "sev": "thấp",
+   "ok": true,
+   "detail": [],
+   "ms": null
+  },
+  {
+   "id": "PERF-1",
+   "area": "Chuyển trang ≤ 1,2 s tới khung hình",
+   "sev": "trung bình",
+   "ok": false,
+   "detail": [
+    "dashboard:1446",
+    "tranop:1427"
+   ],
+   "ms": null
+  },
+  {
+   "id": "PERF-2",
+   "area": "Longtask khi mở trang ≤ 400 ms",
+   "sev": "trung bình",
+   "ok": false,
+   "detail": [
+    "dashboard:718",
+    "tranop:487",
+    "tsbd:466",
+    "doisoat:661"
+   ],
+   "ms": null
+  },
+  {
+   "id": "TBL-1",
+   "area": "Sắp xếp theo từng cột: không lỗi, mỗi lần ≤ 1,5 s",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "n": 19,
+    "max": 431,
+    "err": {
+     "pageerror": [],
+     "console": []
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "TBL-2",
+   "area": "Tìm kiếm: chuỗi không có → 0; xoá chuỗi → trả đủ hồ sơ",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "tot": 3848,
+    "none": "0",
+    "back": "3.848"
+   },
+   "ms": null
+  },
+  {
+   "id": "TBL-3",
+   "area": "Bộ lọc nhóm nợ / loại vay: tổng các nhóm = tổng hồ sơ (không rơi dòng)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "filter-qltd-nhomno": 3848,
+    "filter-qltd-loaivay": 3848,
+    "tot": 3848
+   },
+   "ms": null
+  },
+  {
+   "id": "TBL-4",
+   "area": "Phân trang 50/100/250/500 hiển thị đúng số dòng",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "sizes": [
+     "50:50",
+     "100:100",
+     "250:250",
+     "500:500"
+    ],
+    "p2": 100
+   },
+   "ms": null
+  },
+  {
+   "id": "PERF-3",
+   "area": "\"Tất cả\" thật: khung hình đầu ≤ 1,5 s, dựng đủ ≤ 20 s",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "total": 3848,
+    "first": 400,
+    "js": 244,
+    "toFrame": 609,
+    "fullMs": 13444,
+    "full": 3848
+   },
+   "ms": null
+  },
+  {
+   "id": "EXP-1",
+   "area": "Xuất Excel QLTD: tải được tệp .xlsx đọc lại được, số dòng ≥ số hồ sơ",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "sheets": 4,
+    "rows": 3854,
+    "cols": 23
+   },
+   "ms": null
+  },
+  {
+   "id": "EDIT-1",
+   "area": "Sửa ô Dư nợ: giá trị mới được ghi vào DATA",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "ok": true
+   },
+   "ms": null
+  },
+  {
+   "id": "PERSIST-1",
+   "area": "Tải lại trang: giữ nguyên hồ sơ, mốc lưu trữ, TSBĐ; không báo hỏng",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "before": {
+     "n": 3848,
+     "arch": 11,
+     "tsbd": 19133
+    },
+    "after": {
+     "n": 3848,
+     "arch": 11,
+     "tsbd": 19133,
+     "corrupt": false
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "PERSIST-2",
+   "area": "Tải lại với dữ liệu thật: không lỗi JS; thời gian tải ≤ 6 s",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "tReload": 1141,
+    "re": {
+     "pageerror": [],
+     "console": []
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "BAK-1",
+   "area": "Xuất sao lưu: tải được tệp .json",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "kb": 1576
+   },
+   "ms": null
+  },
+  {
+   "id": "BAK-2",
+   "area": "Khôi phục từ sao lưu đưa dữ liệu về đúng như trước (băm trùng)",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "s0": {
+     "n": 3848,
+     "h": 1722922145,
+     "len": 1458830
+    },
+    "s1": {
+     "n": 3848,
+     "h": 1722922145,
+     "len": 1458830
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "VP-1366",
+   "area": "Khung laptop 1366: trang không tràn ngang toàn trang, không lỗi JS",
+   "sev": "thấp",
+   "ok": true,
+   "detail": {
+    "over": [],
+    "wideTables": [
+     "tsbd:1",
+     "giadat:1"
+    ],
+    "e": {
+     "pageerror": [],
+     "console": []
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "VP-1920",
+   "area": "Khung FullHD 1920: trang không tràn ngang toàn trang, không lỗi JS",
+   "sev": "thấp",
+   "ok": true,
+   "detail": {
+    "over": [],
+    "wideTables": [
+     "tsbd:1"
+    ],
+    "e": {
+     "pageerror": [],
+     "console": []
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "VP-390",
+   "area": "Khung điện thoại 390: trang không tràn ngang toàn trang, không lỗi JS",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "over": [],
+    "wideTables": [
+     "dashboard:8",
+     "denhan:1",
+     "tsbd:1",
+     "doisoat:1"
+    ],
+    "e": {
+     "pageerror": [],
+     "console": []
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "LEAK-1",
+   "area": "Chuyển trang 24 lần: số nút DOM không tăng quá 10%",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "m0": {
+     "nodes": 79350,
+     "heap": 95
+    },
+    "m1": {
+     "nodes": 79701,
+     "heap": 124
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "LEAK-2",
+   "area": "Chuyển trang 24 lần: heap JS không tăng quá 30 MB",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "m0": {
+     "nodes": 79350,
+     "heap": 95
+    },
+    "m1": {
+     "nodes": 79701,
+     "heap": 124
+    }
+   },
+   "ms": null
+  },
+  {
+   "id": "LEAK-3",
+   "area": "Chuyển trang nhiều vòng: không lỗi JS/console",
+   "sev": "cao",
+   "ok": true,
+   "detail": {
+    "pageerror": [],
+    "console": []
+   },
+   "ms": null
+  },
+  {
+   "id": "GD-1",
+   "area": "Giá đất: bảng có dữ liệu sau khi mở trang (từ PL02 nhúng)",
+   "sev": "trung bình",
+   "ok": true,
+   "detail": {
+    "rows": 50,
+    "keys": 0
+   },
+   "ms": null
+  }
+ ]
+}

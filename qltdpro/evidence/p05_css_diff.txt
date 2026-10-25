@@ -1,0 +1,71 @@
+P05 — khác biệt giá trị CSS TÍNH RA: app P04d → P05 (fixture ẩn danh; 26 trang × 1500/390 px; 61.687 phần tử).
+Bỏ qua thuộc tính chỉ đổi kích thước/vị trí do vùng nội dung hẹp đi 252 px, màu viền, bóng hoạt ảnh.
+1500px #btn-mob-menu align-items: center → normal | số trang: 25
+1500px #btn-mob-menu background-color: rgb(15, 39, 68) → rgb(239, 239, 239) | số trang: 25
+1500px #btn-mob-menu color: rgb(255, 255, 255) → rgb(0, 0, 0) | số trang: 25
+1500px #btn-mob-menu cursor: pointer → default | số trang: 25
+1500px #btn-mob-menu display: flex → none | số trang: 25
+1500px #btn-mob-menu flex-shrink: 0 → 1 | số trang: 25
+1500px #btn-mob-menu font-size: 18px → 13.3333px | số trang: 25
+1500px #btn-mob-menu justify-content: center → normal | số trang: 25
+1500px #btn-mob-menu min-height: auto → 0px | số trang: 25
+1500px #btn-mob-menu min-width: auto → 0px | số trang: 25
+1500px #fhs-panel-page min-width: 0px → auto | số trang: 1
+1500px #main-table min-width: max-content → 100% | số trang: 1
+1500px #page-fhs display: block → flex | số trang: 1
+1500px #page-fhs flex-direction: row → column | số trang: 1
+1500px #page-fhs min-height: 0px → 842px | số trang: 1
+1500px #sidebar transform: matrix(1, 0, 0, 1, -252, 0) → none | số trang: 25
+1500px #table-phidv contain-intrinsic-block-size: none → auto 600px | số trang: 1
+1500px #table-phidv contain-intrinsic-height: none → auto 600px | số trang: 1
+1500px #table-phidv contain-intrinsic-inline-size: none → auto 600px | số trang: 1
+1500px #table-phidv contain-intrinsic-size: none → auto 600px | số trang: 1
+1500px #table-phidv contain-intrinsic-width: none → auto 600px | số trang: 1
+1500px DIV.chips-bar overflow-block: auto → visible | số trang: 1
+1500px DIV.chips-bar overflow-inline: auto → visible | số trang: 1
+1500px DIV.chips-bar overflow-x: auto → visible | số trang: 1
+1500px DIV.chips-bar overflow-y: auto → visible | số trang: 1
+1500px DIV.chips-bar padding-block-end: 4px → 0px | số trang: 1
+1500px DIV.chips-bar padding-bottom: 4px → 0px | số trang: 1
+1500px DIV.fhs-row flex-wrap: wrap → nowrap | số trang: 1
+1500px DIV.fhs-row padding-block-end: 6px → 0px | số trang: 1
+1500px DIV.fhs-row padding-block-start: 6px → 0px | số trang: 1
+1500px DIV.fhs-row padding-bottom: 6px → 0px | số trang: 1
+1500px DIV.fhs-row padding-top: 6px → 0px | số trang: 1
+1500px DIV.hsvv-wrap background-color: rgba(0, 0, 0, 0) → rgb(238, 242, 247) | số trang: 1
+1500px DIV.hsvv-wrap min-height: 0px → 842px | số trang: 1
+1500px DIV.hsvv-wrap padding-block-end: 0px → 20px | số trang: 1
+1500px DIV.hsvv-wrap padding-block-start: 0px → 20px | số trang: 1
+1500px DIV.hsvv-wrap padding-bottom: 0px → 20px | số trang: 1
+1500px DIV.hsvv-wrap padding-inline-end: 0px → 24px | số trang: 1
+1500px DIV.hsvv-wrap padding-inline-start: 0px → 24px | số trang: 1
+1500px DIV.hsvv-wrap padding-left: 0px → 24px | số trang: 1
+1500px DIV.hsvv-wrap padding-right: 0px → 24px | số trang: 1
+1500px DIV.hsvv-wrap padding-top: 0px → 20px | số trang: 1
+1500px DIV.table-scroll-top display: none → block | số trang: 4
+1500px INPUT.fhs-row-input min-height: 34px → auto | số trang: 1
+1500px STRONG. text-wrap-mode: nowrap → wrap | số trang: 1
+1500px TABLE. min-width: max-content → 100% | số trang: 1
+1500px TABLE.ux-sticky min-width: max-content → 100% | số trang: 1
+1500px TD. text-wrap-mode: nowrap → wrap | số trang: 1
+1500px TD.num text-wrap-mode: nowrap → wrap | số trang: 1
+390px #fhs-panel-page min-width: 0px → auto | số trang: 1
+390px #main-table min-width: max-content → 100% | số trang: 1
+390px #page-fhs display: block → flex | số trang: 1
+390px #page-fhs flex-direction: row → column | số trang: 1
+390px #page-fhs min-height: 0px → 842px | số trang: 1
+390px DIV.hsvv-wrap background-color: rgba(0, 0, 0, 0) → rgb(238, 242, 247) | số trang: 1
+390px DIV.hsvv-wrap min-height: 0px → 842px | số trang: 1
+390px DIV.hsvv-wrap padding-block-end: 0px → 20px | số trang: 1
+390px DIV.hsvv-wrap padding-block-start: 0px → 20px | số trang: 1
+390px DIV.hsvv-wrap padding-bottom: 0px → 20px | số trang: 1
+390px DIV.hsvv-wrap padding-inline-end: 0px → 24px | số trang: 1
+390px DIV.hsvv-wrap padding-inline-start: 0px → 24px | số trang: 1
+390px DIV.hsvv-wrap padding-left: 0px → 24px | số trang: 1
+390px DIV.hsvv-wrap padding-right: 0px → 24px | số trang: 1
+390px DIV.hsvv-wrap padding-top: 0px → 20px | số trang: 1
+390px STRONG. text-wrap-mode: nowrap → wrap | số trang: 1
+390px TABLE. min-width: max-content → 100% | số trang: 1
+390px TABLE.ux-sticky min-width: max-content → 100% | số trang: 1
+390px TD. text-wrap-mode: nowrap → wrap | số trang: 1
+390px TD.num text-wrap-mode: nowrap → wrap | số trang: 1

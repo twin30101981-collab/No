@@ -1,0 +1,373 @@
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL: HƯỚNG DẪN SỬ DỤNG (HDSD) — QLTD PRO v19
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="modal-hdsd" onclick="if(event.target===this)hdsdClose()">
+  <div class="hdsd-wrap">
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:linear-gradient(135deg,#0D2137,#163352);flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)">
+      <span style="font-size:20px">📖</span>
+      <div style="flex:1">
+        <div style="font-weight:900;font-size:15px;color:#fff;letter-spacing:.2px">Hướng dẫn sử dụng — QLTD PRO</div>
+        <div style="font-size:10px;color:#93C5FD;margin-top:1px">Phòng KHKD · Agribank Nam Định</div>
+      </div>
+      <span class="hdsd-ver-badge">v19 · 2026-05-03</span>
+      <button onclick="hdsdClose()" style="background:rgba(255,255,255,.12);border:none;color:#fff;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.12s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">✕</button>
+    </div>
+    <!-- BODY: SIDEBAR + CONTENT -->
+    <div class="hdsd-layout">
+      <!-- SIDEBAR NAV -->
+      <div class="hdsd-sidebar">
+        <div class="hdsd-nav-sec">CHÍNH</div>
+        <div class="hdsd-nav-item active" onclick="hdsdSwitch('hsvv',this)"><span class="ni-ico">📄</span>TẠO FORM HSVV<span class="ni-badge">CORE</span></div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('archive',this)"><span class="ni-ico">💾</span>LƯU TRỮ FILE</div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('autosync',this)"><span class="ni-ico">🔄</span>AUTO-SYNC IPCAS<span class="ni-badge">AUTO</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:7px 14px"></div>
+        <div class="hdsd-nav-sec">THÔNG BÁO</div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('tranop',this)"><span class="ni-ico">🔔</span>THÔNG BÁO NỢ</div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('tinnhan',this)"><span class="ni-ico">💬</span>TIN NHẮN NỢ<span class="ni-badge">ZNS</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:7px 14px"></div>
+        <div class="hdsd-nav-sec">TIỆN ÍCH</div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('chips',this)"><span class="ni-ico">⚡</span>CHIPS & PHÍM TẮT</div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:7px 14px"></div>
+        <div class="hdsd-nav-sec">TRỢ LÝ AI</div>
+        <div class="hdsd-nav-item" onclick="hdsdSwitch('aiupdate',this)"><span class="ni-ico">🤖</span>CẬP NHẬT HDSD<span class="ni-badge">AI</span></div>
+      </div>
+      <!-- CONTENT -->
+      <div class="hdsd-body">
+
+        <!-- ── PANEL: HSVV ── -->
+        <div class="hdsd-panel active" id="hdsd-hsvv">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">📄 HỒ SƠ VAY VỐN</div>
+            <h2>TẠO FORM HSVV</h2>
+            <p>Module tạo và quản lý hồ sơ vay vốn — tự động tính tài chính, xuất Word đa template, đồng bộ 2 chiều với QLTD.</p>
+            <div class="hdsd-hero-meta">
+              <span>🗂️ <strong>100</strong> hồ sơ/phiên</span>
+              <span>📄 <strong>41+</strong> template Word</span>
+              <span>🔗 Sync <strong>2 chiều</strong></span>
+              <span>💾 IndexedDB LZ-nén</span>
+            </div>
+          </div>
+          <div class="hdsd-flow">
+            <div class="hdsd-fbox g">① Chọn loại vay</div><div class="hdsd-farr">→</div>
+            <div class="hdsd-fbox">② Tra cứu KH</div><div class="hdsd-farr">→</div>
+            <div class="hdsd-fbox">③ Điền form</div><div class="hdsd-farr">→</div>
+            <div class="hdsd-fbox gold">④ Lưu hồ sơ</div><div class="hdsd-farr">→</div>
+            <div class="hdsd-fbox">⑤ Chọn template</div><div class="hdsd-farr">→</div>
+            <div class="hdsd-fbox g">⑥ Xuất .docx ZIP</div>
+          </div>
+
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">🏷️</span><span class="th-title">BƯỚC 1 — Chọn loại sản phẩm vay</span>
+              <span class="th-badge bg-g">Bắt buộc đầu tiên</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Tab</th><th>Loại vay</th><th>Checklist</th></tr></thead>
+                <tbody>
+                  <tr><td><code>📦 Hạn mức SXKD</code></td><td>Hạn mức tín dụng SXKD</td><td>SXKD + TSĐB</td></tr>
+                  <tr><td><code>👤 Tiêu dùng</code></td><td>Vay tiêu dùng / tín chấp</td><td>Tiêu dùng + TSĐB</td></tr>
+                  <tr><td><code>🏠 Thế chấp BĐS</code></td><td>Vay thế chấp bất động sản</td><td>BĐS + TSĐB</td></tr>
+                  <tr><td><code>🏦 Cầm cố STK</code></td><td>Cầm cố sổ tiết kiệm</td><td>Cầm cố</td></tr>
+                </tbody>
+              </table>
+              <div class="hdsd-tip">💡 Chuyển loại vay bất kỳ lúc — form tự ẩn/hiện section, không mất dữ liệu đã nhập.</div>
+            </div>
+          </div>
+
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">🔍</span><span class="th-title">BƯỚC 2 — Tra cứu KH từ QLTD</span>
+              <span class="th-badge bg-b">v18: điền thêm lãi suất + loại vay</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle">Nhấn chip <code>🔍 Tra cứu KH</code></div><div class="hdsd-sdesc">Modal tìm kiếm real-time, hỗ trợ không dấu, tối đa 50 KH, gom nhóm theo mã.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle">Nhập tên hoặc mã KH (≥ 2 ký tự)</div><div class="hdsd-sdesc">Click kết quả → tự điền 9 trường: <code>Mã KH · Tên KH · Địa chỉ · Số HĐ · HMTD · Ngày HĐ · Lãi suất · Loại vay</code> và trigger <code>calcFinance()</code>.</div></div></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">✏️</span><span class="th-title">BƯỚC 3 — Điền 10 section form</span>
+              <span class="th-badge bg-gold">Trọng tâm</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Section</th><th>Tự động tính</th></tr></thead>
+                <tbody>
+                  <tr><td><code>🏛️ Thông tin chung</code></td><td>Ngày đến hạn = ngayHDTD + thoiHan</td></tr>
+                  <tr><td><code>👤 Thông tin KH</code></td><td>Cảnh báo nhóm nợ CIC ≥ 2</td></tr>
+                  <tr><td><code>💰 Khoản vay</code></td><td>Gốc+lãi/tháng · Tổng lãi · Lịch 12 kỳ</td></tr>
+                  <tr><td><code>📊 Phương án KD</code></td><td>CP nhân công (v18: oninput soLaoDong) · Lợi nhuận</td></tr>
+                  <tr><td><code>⚖️ Cân đối XGN</code></td><td>DSR alert màu nếu ≥ 50%</td></tr>
+                  <tr><td><code>📋 Chi tiết TD</code></td><td>Gốc/lãi định kỳ (v18: oninput soKy)</td></tr>
+                  <tr><td><code>🏠 Tài sản ĐB</code></td><td>GT đất · GT nhà · Tổng GTTD · LTV%</td></tr>
+                </tbody>
+              </table>
+              <div class="hdsd-chip-row">
+                <div class="hdsd-chip g">⚡ Số tiền → bằng chữ</div>
+                <div class="hdsd-chip g">📅 Ngày đến hạn tự tính</div>
+                <div class="hdsd-chip">📊 Amortization 12 kỳ</div>
+                <div class="hdsd-chip">🔍 Ctrl+F Field Spotlight</div>
+                <div class="hdsd-chip">☑️ Checklist theo loại vay</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">💾</span><span class="th-title">BƯỚC 4 — Lưu & quản lý hồ sơ</span>
+              <span class="th-badge bg-g">Tự động</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle">Nút <code>💾 Lưu</code> — IndexedDB + LZ-compress</div><div class="hdsd-sdesc">Sau khi lưu, Sync bar tự tìm và liên kết dòng QLTD tương ứng (v18 cải tiến).</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle">Nút <code>📋 Danh sách</code> — quản lý 100 hồ sơ</div><div class="hdsd-sdesc">Tìm kiếm · Phân trang 20/trang · Badge deadline 🔴 QUÁ HẠN ⚠️ CÒN Xn · Clone · So sánh 2 hồ sơ · Xuất ZIP.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">3</div><div><div class="hdsd-stitle">Nút <code>📌 Template</code> — mẫu hồ sơ tái dùng</div><div class="hdsd-sdesc">Lưu form làm template → áp dụng nhanh cho hồ sơ mới cùng loại.</div></div></li>
+              </ol>
+              <div class="hdsd-tip">💡 <strong>Ctrl+S</strong> = Lưu nhanh. Auto-save mỗi 60 giây khi hồ sơ đã được đặt tên.</div>
+            </div>
+          </div>
+
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📄</span><span class="th-title">BƯỚC 5 — Xuất .docx (Export Center)</span>
+              <span class="th-badge bg-p">41+ template</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle">Chip <code>📄⬇️ Xuất HSVV (.docx)</code> → Export Center</div><div class="hdsd-sdesc">Chọn nhóm template: HMTD · Tài sản · Giải ngân · Khác. Dùng preset: "📦 HMTD đầy đủ / 🏠 Chỉ tài sản / 💰 Giải ngân".</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle">Xuất ZIP nhiều hồ sơ từ Danh sách</div><div class="hdsd-sdesc">Checkbox nhiều hồ sơ → "📦 Xuất ZIP". Hệ thống load từng hồ sơ, recalc 600ms, collect → đóng gói ZIP tự động.</div><div class="hdsd-warn">⚠️ Cần chọn template trong Export Center trước khi Xuất ZIP.</div></div></li>
+              </ol>
+            </div>
+          </div>
+        </div><!-- /hdsd-hsvv -->
+
+        <!-- ── PANEL: ARCHIVE ── -->
+        <div class="hdsd-panel" id="hdsd-archive">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">💾 LƯU TRỮ</div>
+            <h2>LƯU TRỮ FILE</h2>
+            <p>Snapshot 2 lớp: dữ liệu (QLTD/KD/TD) và báo cáo theo mốc thời gian. Backup, khôi phục, so sánh A vs B.</p>
+            <div class="hdsd-hero-meta"><span>📊 <strong>2 loại</strong> archive</span><span>🏷️ Gắn nhãn mốc</span><span>📈 So sánh <strong>A vs B</strong></span></div>
+          </div>
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📊</span><span class="th-title">TAB 1 — Lưu trữ Dữ liệu</span>
+              <span class="th-badge bg-g">Backup DATA</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle"><code>💾 Lưu trữ Dữ liệu Ngay</code></div><div class="hdsd-sdesc">Snapshot toàn bộ DATA nén LZ, lưu IndexedDB + tải .xlsx. Tên file: <code>Data 25/04/2026 01:36</code>.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle"><code>⬆️ Khôi phục</code> — Restore từ file .xlsx</div><div class="hdsd-sdesc">Import file .xlsx đã backup → ghi đè DATA. Cần xác nhận trước khi thực hiện.</div></div></li>
+              </ol>
+              <div class="hdsd-warn">⚠️ Sau reload trang, chỉ khôi phục được từ file .xlsx đã tải về — không dùng nút 🔄 trong danh sách.</div>
+            </div>
+          </div>
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📈</span><span class="th-title">TAB 2 — Lưu trữ Báo cáo & So sánh</span>
+              <span class="th-badge bg-b">A vs B</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle">Lưu báo cáo + gắn nhãn mốc</div><div class="hdsd-sdesc">Nhãn: <span class="hdsd-chip gold">Đầu năm</span> <span class="hdsd-chip b">Đầu quý</span> <span class="hdsd-chip">Đầu tháng</span> <span class="hdsd-chip g">Cuối tháng</span> — tự động gợi ý theo ngày.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle"><code>📊 So sánh</code> — chọn 2 snapshot A vs B</div><div class="hdsd-sdesc">Delta: tăng/giảm dư nợ, số KH mới/tất toán theo CBTD. Nút "🔄 Hoán đổi" để đổi A↔B.</div></div></li>
+              </ol>
+              <div class="hdsd-tip">💡 Quy trình: Lưu đầu mỗi tháng (gắn "Đầu tháng") → cuối tháng so sánh để theo dõi biến động.</div>
+            </div>
+          </div>
+        </div><!-- /hdsd-archive -->
+
+        <!-- ── PANEL: AUTOSYNC ── -->
+        <div class="hdsd-panel" id="hdsd-autosync">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">🔄 TỰ ĐỘNG HÓA</div>
+            <h2>AUTO-SYNC IPCAS</h2>
+            <p>Tự động đọc file IPCAS theo lịch. File System Access API — chỉ cần cấp quyền 1 lần, không thao tác thủ công mỗi lần cập nhật.</p>
+            <div class="hdsd-hero-meta"><span>⏱️ <strong>5/10/15/30/60</strong> phút</span><span>🧠 Smart check khi file đổi</span><span>🌐 Chrome/Edge <strong>86+</strong></span></div>
+          </div>
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">🚀</span><span class="th-title">THIẾT LẬP LẦN ĐẦU (Chỉ làm 1 lần)</span>
+              <span class="th-badge bg-g">Bắt buộc</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <ol class="hdsd-steps">
+                <li class="hdsd-step"><div class="hdsd-snum">1</div><div><div class="hdsd-stitle">Click <code>🔄 Auto-Sync</code> trên topbar → chọn file IPCAS</div><div class="hdsd-sdesc">Chọn file <code>.xls/.xlsx</code> từ máy. Hệ thống ghi nhớ file handle — lần sau tự đọc không cần chọn lại.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">2</div><div><div class="hdsd-stitle">Chọn khoảng thời gian + chế độ xử lý</div><div class="hdsd-sdesc"><strong>Ask</strong> — hỏi trước | <strong>Auto</strong> — tự động import | <strong>Notify</strong> — chỉ thông báo. Khuyến nghị: 15 phút + Ask.</div></div></li>
+                <li class="hdsd-step"><div class="hdsd-snum">3</div><div><div class="hdsd-stitle">Bật toggle → Badge <span class="hdsd-chip b">ON</span> xuất hiện sidebar</div><div class="hdsd-sdesc">Countdown đếm ngược đến sync tiếp. Smart Check: bỏ qua nếu file chưa thay đổi.</div></div></li>
+              </ol>
+              <div class="hdsd-warn">⚠️ Chỉ hoạt động Chrome/Edge 86+. Firefox/Safari không hỗ trợ File System Access API.</div>
+            </div>
+          </div>
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📋</span><span class="th-title">MÀU LOG & XỬ LÝ SỰ CỐ</span>
+              <span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Màu</th><th>Ý nghĩa</th></tr></thead>
+                <tbody>
+                  <tr><td style="color:#4caf72">🟢 Xanh (ok)</td><td>Import thành công file mới</td></tr>
+                  <tr><td style="color:#64b5f6">🔵 Info</td><td>File chưa thay đổi — bỏ qua</td></tr>
+                  <tr><td style="color:#ffd54f">🟡 Warn</td><td>Không có file handle / cần cấp lại quyền</td></tr>
+                  <tr><td style="color:#e57373">🔴 Err</td><td>Lỗi đọc file hoặc user từ chối</td></tr>
+                </tbody>
+              </table>
+              <div class="hdsd-tip">💡 Nút <code>▶ Sync Ngay</code>: trigger thủ công không cần đợi timer. Cấu hình tự phục hồi sau khi mở lại tab.</div>
+            </div>
+          </div>
+        </div><!-- /hdsd-autosync -->
+
+        <!-- ── PANEL: TRANOP ── -->
+        <div class="hdsd-panel" id="hdsd-tranop">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">🔔 GIÁM SÁT</div>
+            <h2>THÔNG BÁO NỢ</h2>
+            <p>Theo dõi KH giảm dư nợ và tất toán hoàn toàn so với snapshot đầu năm (31/12). Tích hợp ghi chú, xuất Excel.</p>
+            <div class="hdsd-hero-meta"><span>📉 Bảng <strong>Giảm dư nợ</strong></span><span>✅ Bảng <strong>Tất toán</strong></span><span>⬇️ Xuất <strong>Excel</strong></span></div>
+          </div>
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📉</span><span class="th-title">BẢNG 1 — Giảm dư nợ & BẢNG 2 — Tất toán</span>
+              <span class="th-badge bg-b">So sánh 31/12</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Cột</th><th>Nguồn dữ liệu</th></tr></thead>
+                <tbody>
+                  <tr><td>DƯ NỢ 31/12</td><td>Snapshot đầu năm (Archive Report)</td></tr>
+                  <tr><td>DƯ NỢ HIỆN TẠI</td><td>DATA.qltd đang import</td></tr>
+                  <tr><td>GIẢM / TỶ LỆ %</td><td>Tính tự động</td></tr>
+                  <tr><td>GHI CHÚ</td><td>Dropdown: Đang xử lý / Đã xuất TS / Hoàn thành / Cần kiểm tra</td></tr>
+                </tbody>
+              </table>
+              <div class="hdsd-tip">💡 Lọc theo CBTD để xem riêng từng cán bộ. Stats chip tổng hợp ở đầu trang. Nút <code>⬇️ Excel</code> xuất cả 2 bảng.</div>
+            </div>
+          </div>
+        </div><!-- /hdsd-tranop -->
+
+        <!-- ── PANEL: TIN NHẮN ── -->
+        <div class="hdsd-panel" id="hdsd-tinnhan">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">💬 GIAO TIẾP KH</div>
+            <h2>TIN NHẮN NỢ</h2>
+            <p>Soạn và định dạng tin nhắn thông báo nợ qua Zalo/Viber/SMS. 5 mẫu tin, tùy biến header/footer, nhóm CBTD, Zalo Preview giả lập.</p>
+            <div class="hdsd-hero-meta"><span>📱 <strong>5 mẫu tin</strong></span><span>👥 Nhóm <strong>theo CBTD</strong></span><span>📱 Zalo Preview</span></div>
+          </div>
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📝</span><span class="th-title">5 MẪU TIN NHẮN & COMPOSE PANEL</span>
+              <span class="th-badge bg-b">Chọn theo kênh gửi</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Mẫu</th><th>Dùng khi</th></tr></thead>
+                <tbody>
+                  <tr><td><code>⚡ Tóm tắt nhanh</code></td><td>Danh sách nội bộ, gửi nhóm chat nhanh</td></tr>
+                  <tr><td><code>💬 Zalo/Viber</code></td><td>Gửi Zalo cá nhân đến từng KH (có *in đậm*)</td></tr>
+                  <tr><td><code>📱 SMS</code></td><td>Gửi SMS brandname, &lt; 160 ký tự, không dấu</td></tr>
+                  <tr><td><code>📋 Chính thức</code></td><td>In thông báo, gửi email ngân hàng</td></tr>
+                  <tr><td><code>✏️ Tự soạn</code></td><td>Compose Panel: biến <code>{ten} {hdtd} {ngaydenhan} {duno} {cbtd} {loaivay}</code></td></tr>
+                </tbody>
+              </table>
+              <div class="hdsd-tip">💡 Nút <strong>👥 Nhóm CBTD</strong>: gom tin theo từng CBTD, dễ copy riêng từng nhóm. <strong>📱 Zalo Preview</strong>: giả lập điện thoại với âm thanh thông báo.</div>
+            </div>
+          </div>
+        </div><!-- /hdsd-tinnhan -->
+
+        <!-- ── PANEL: CHIPS ── -->
+        <div class="hdsd-panel" id="hdsd-chips">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">⚡ CÔNG CỤ NHANH</div>
+            <h2>CHIPS & PHÍM TẮT</h2>
+            <p>Tổng hợp toàn bộ chips chức năng và phím tắt trong QLTD PRO.</p>
+          </div>
+          <div class="hdsd-tree open">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">📄</span><span class="th-title">Chips trong Form HSVV</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Chip</th><th>Màu</th><th>Chức năng</th></tr></thead>
+                <tbody>
+                  <tr><td><code>📊 Phương án SXKD</code></td><td><span class="hdsd-chip gold">Vàng</span></td><td>Bảng tính PA SXKD inline</td></tr>
+                  <tr><td><code>🔍 Tra cứu KH</code></td><td><span class="hdsd-chip b">Xanh</span></td><td>Tìm KH → tự điền 9 trường form</td></tr>
+                  <tr><td><code>📊 Excel · 📄 Word · 📋 Danh sách · 🖨️ In</code></td><td><span class="hdsd-chip g">Xanh lá</span></td><td>Xuất dữ liệu</td></tr>
+                  <tr><td><code>📥 Import file</code></td><td><span class="hdsd-chip p">Tím</span></td><td>Import JSON/Excel đã lưu</td></tr>
+                  <tr><td><code>📄⬇️ Xuất HSVV (.docx)</code></td><td><span class="hdsd-chip b">Navy</span></td><td>Export Center — ZIP đa template</td></tr>
+                  <tr><td><code>📖 Hướng dẫn</code></td><td><span class="hdsd-chip gold">Vàng</span></td><td>Mở modal HDSD này (v19 mới)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="hdsd-tree">
+            <div class="hdsd-tree-hdr" onclick="hdsdToggle(this)">
+              <span class="th-ico">⌨️</span><span class="th-title">Phím tắt toàn cục</span><span class="hdsd-tree-arrow">▶</span>
+            </div>
+            <div class="hdsd-tree-body">
+              <table class="hdsd-tbl">
+                <thead><tr><th>Phím tắt</th><th>Hành động</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Ctrl+S</code></td><td>Lưu hồ sơ HSVV hiện tại</td></tr>
+                  <tr><td><code>Ctrl+F</code></td><td>Mở Field Spotlight trong form</td></tr>
+                  <tr><td><code>Esc</code></td><td>Đóng modal đang mở</td></tr>
+                  <tr><td>Click <code>mã KH</code></td><td>Copy mã KH vào clipboard</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- /hdsd-chips -->
+
+        <!-- ── PANEL: AI UPDATE ── -->
+        <div class="hdsd-panel" id="hdsd-aiupdate">
+          <div class="hdsd-hero">
+            <div class="hdsd-hero-tag">🤖 AI ASSISTANT</div>
+            <h2>CẬP NHẬT HDSD TỰ ĐỘNG</h2>
+            <p>Mô tả thay đổi/tính năng mới bằng ngôn ngữ tự nhiên — AI soạn nội dung HDSD theo đúng phong cách tài liệu và ghi vào đúng nhánh.</p>
+          </div>
+          <div class="hdsd-ai-box">
+            <div class="hdsd-ai-hdr">
+              <h3>🤖 Trợ lý cập nhật HDSD</h3>
+              <span class="hdsd-ai-badge">Claude Sonnet</span>
+            </div>
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:6px;letter-spacing:.5px">CHỌN MỤC CẦN CẬP NHẬT</div>
+            <div class="hdsd-ai-tags" id="hdsd-ai-tags">
+              <div class="hdsd-ai-tag on" data-sec="hsvv" onclick="hdsdAiSelectSec(this)">📄 HSVV</div>
+              <div class="hdsd-ai-tag" data-sec="archive" onclick="hdsdAiSelectSec(this)">💾 Lưu trữ</div>
+              <div class="hdsd-ai-tag" data-sec="autosync" onclick="hdsdAiSelectSec(this)">🔄 AutoSync</div>
+              <div class="hdsd-ai-tag" data-sec="tranop" onclick="hdsdAiSelectSec(this)">🔔 TB Nợ</div>
+              <div class="hdsd-ai-tag" data-sec="tinnhan" onclick="hdsdAiSelectSec(this)">💬 Tin nhắn</div>
+              <div class="hdsd-ai-tag" data-sec="chips" onclick="hdsdAiSelectSec(this)">⚡ Chips</div>
+              <div class="hdsd-ai-tag" data-sec="all" onclick="hdsdAiSelectSec(this)">🔄 Tổng hợp</div>
+            </div>
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:5px;letter-spacing:.5px">MÔ TẢ THAY ĐỔI / TÍNH NĂNG MỚI</div>
+            <div class="hdsd-ai-row">
+              <textarea class="hdsd-ai-textarea" id="hdsd-ai-input" placeholder="VD: Tôi vừa thêm tính năng X... Khi dùng Y thì cần làm Z..."></textarea>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+              <button class="hdsd-ai-btn" onclick="hdsdAiRun()" id="hdsd-ai-btn">✨ Cập nhật HDSD</button>
+              <span style="font-size:10px;color:rgba(255,255,255,.35)">AI soạn nội dung theo phong cách tài liệu QLTD PRO</span>
+            </div>
+            <div class="hdsd-ai-resp" id="hdsd-ai-resp"></div>
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);margin-top:14px;margin-bottom:6px">LỊCH SỬ CẬP NHẬT</div>
+            <div class="hdsd-log" id="hdsd-ai-log">
+              <div class="hdsd-log-item"><span class="hdsd-log-t">2026-05-03</span><span class="hdsd-log-s">[INIT]</span><span class="hdsd-log-m">Khởi tạo HDSD v19 — tích hợp vào chip HSVV, 7 panel, AI assistant</span></div>
+              <div class="hdsd-log-item"><span class="hdsd-log-t">2026-05-03</span><span class="hdsd-log-s">[HSVV]</span><span class="hdsd-log-m">v18 PATCH: soLaoDong oninput, soKy oninput, sync bar hosoLoad, khSearchFill laiSuat+loaiVay</span></div>
+            </div>
+          </div>
+        </div><!-- /hdsd-aiupdate -->
+
+      </div><!-- /hdsd-body -->
+    </div><!-- /hdsd-layout -->
+  </div><!-- /hdsd-wrap -->
+</div><!-- /modal-hdsd -->
+
+

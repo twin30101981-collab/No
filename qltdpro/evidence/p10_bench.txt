@@ -1,0 +1,23 @@
+# P10 — mở trang trên dữ liệu thật (p10_bench.js, trung vị 3 lần). Dòng 1: P08/P09 · dòng 2: P10
+hồ sơ: 3848 mốc: 11
+hồ sơ: 3848 mốc: 11
+dashboard  mở   864 ms · longtask lớn nhất   486 ms · nút DOM trang 26929 · các lần 864/892/661
+dashboard  mở   277 ms · longtask lớn nhất   228 ms · nút DOM trang 2055 · các lần 421/275/277
+tranop     mở   741 ms · longtask lớn nhất   337 ms · nút DOM trang 22152 · các lần 741/695/940
+tranop     mở   238 ms · longtask lớn nhất    83 ms · nút DOM trang 4496 · các lần 253/188/238
+phidv      mở   126 ms · longtask lớn nhất    87 ms · nút DOM trang 2007 · các lần 126/128/116
+phidv      mở   185 ms · longtask lớn nhất    96 ms · nút DOM trang 2007 · các lần 105/185/186
+tsbd       mở   230 ms · longtask lớn nhất   193 ms · nút DOM trang 4555 · các lần 230/259/204
+tsbd       mở   254 ms · longtask lớn nhất   222 ms · nút DOM trang 4555 · các lần 254/284/229
+doisoat    mở   304 ms · longtask lớn nhất   293 ms · nút DOM trang 112 · các lần 435/304/297
+doisoat    mở   326 ms · longtask lớn nhất   317 ms · nút DOM trang 112 · các lần 335/324/326
+qltd       mở   152 ms · longtask lớn nhất    81 ms · nút DOM trang 3020 · các lần 136/154/152
+qltd       mở   141 ms · longtask lớn nhất    69 ms · nút DOM trang 3020 · các lần 143/141/121
+denhan     mở   147 ms · longtask lớn nhất    73 ms · nút DOM trang 2446 · các lần 167/147/135
+denhan     mở   102 ms · longtask lớn nhất    55 ms · nút DOM trang 2446 · các lần 222/97/102
+canhbao    mở   240 ms · longtask lớn nhất   132 ms · nút DOM trang 5731 · các lần 240/245/198
+canhbao    mở   215 ms · longtask lớn nhất   110 ms · nút DOM trang 5731 · các lần 296/195/215
+xuhuong    mở    97 ms · longtask lớn nhất    86 ms · nút DOM trang 124 · các lần 99/97/88
+xuhuong    mở    72 ms · longtask lớn nhất    64 ms · nút DOM trang 124 · các lần 68/98/72
+khachhang  mở    42 ms · longtask lớn nhất     0 ms · nút DOM trang 6 · các lần 39/43/42
+khachhang  mở    29 ms · longtask lớn nhất     0 ms · nút DOM trang 6 · các lần 30/27/29

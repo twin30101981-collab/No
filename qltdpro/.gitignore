@@ -1,0 +1,4 @@
+dist/
+scratchpad/
+*.zip
+__pycache__/

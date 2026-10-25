@@ -1,0 +1,8 @@
+rows 1007 wards 8
+PASS số dòng PL02 đọc được > 0 và 8 phường
+PASS ô lỗi = 40 (khớp quét ngoại tuyến)
+PASS dòng thiếu = 28
+PASS nội dung ô lỗi trùng từng ô
+PASS nội dung dòng thiếu trùng từng dòng
+PASS isNum
+PASS 6 FAIL 0

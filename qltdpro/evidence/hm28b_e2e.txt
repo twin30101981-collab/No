@@ -1,0 +1,9 @@
+khi chưa có dữ liệu: ⛔ Chưa có dữ liệu dư nợ để lập báo cáo
+kỳ: ["|Hiện hành — ngày dữ liệu 20/10/2026","20/10/2026|Mốc đã lưu 20/10/2026","30/09/2026|Mốc đã lưu 30/09/2026"]
+Dashboard tổng:  TỔNG CỘNG 1.865 2.160.375.016.661 100,00% 
+cur.docx BaoCao_20-10-2026.docx 19787 bytes
+p0930.docx BaoCao_30-09-2026.docx 15757 bytes
+p0930.xlsx BaoCao_30-09-2026.xlsx 32604 bytes
+cur.xlsx BaoCao_20-10-2026.xlsx 40320 bytes
+thông báo: ✅ Đã xuất BaoCao_20-10-2026.xlsx (6 phần)
+errs []

@@ -1,0 +1,6 @@
+PASS OS tối + chưa cấu hình ⇒ giao diện SÁNG
+PASS nền thân trang sáng
+PASS đã lưu "auto" (cấu hình cũ) + OS tối ⇒ vẫn SÁNG
+PASS vòng đổi giao diện: sáng → tối → sáng (không còn auto)
+PASS không pageerror
+PASS 5 FAIL 0

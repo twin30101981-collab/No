@@ -1,0 +1,3 @@
+# P10 (T5/T3) — nhập 11 kỳ qua Trung tâm nhập (p10_savecount.js). Dòng 1: P08/P09 · dòng 2: P10
+{"files":11,"runMs":62354,"cnt":{"save":13,"real":13,"ls":24,"lsKeys":{"qltd_pro_data_v2":12,"_prevDunoSnap":10,"td15.snapshots":2},"lzMs":8423,"lzBig":34},"n":3848,"arch":11,"ltMax":1301,"ltSum":23333,"afterReload":3848}
+{"files":11,"runMs":53554,"cnt":{"save":13,"real":2,"ls":13,"lsKeys":{"_prevDunoSnap":10,"td15.snapshots":2,"qltd_pro_data_v2":1},"lzMs":0,"lzBig":0},"n":3848,"arch":11,"ltMax":328,"ltSum":3996,"afterReload":3848}

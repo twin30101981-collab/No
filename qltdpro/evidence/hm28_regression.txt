@@ -1,0 +1,22 @@
+== Hồi quy trên bản HM-28 (cuối phiên P02)
+HM-13 router: PASS 27 FAIL 0
+HM-14 menu (63): PASS 63 FAIL 0
+HM-15 topbar/phím tắt: PASS 18 FAIL 0
+HM-16 giao diện sáng: PASS 5 FAIL 0
+HM-17 chọn cột: PASS 17 FAIL 0
+HM-19 điện thoại: PASS 24 FAIL 0
+HM-25 cảnh báo: PASS 17 FAIL 0
+HM-07 ngày dữ liệu: PASS 20 FAIL 0
+HM-24 xu hướng 11 kỳ: PASS 22 FAIL 0
+HM-26 KH 360°: PASS 18 FAIL 0
+HM-23 trung tâm nhập 15 tệp: PASS 15 FAIL 0
+HM-12 đối soát (dữ liệu thật):
+dải (chưa TSBĐ): 🔎 Đối soát: ✅ 9/9 chỉ tiêu khớp (1 chưa có dữ liệu để so)
+✅ 10/10 chỉ tiêu khớp
+smoke 1920/1366/390:
+   "docWidth": 390,
+  "errs": []
+   "docWidth": 1366,
+  "errs": []
+   "docWidth": 1920,
+  "errs": []

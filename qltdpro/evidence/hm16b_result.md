@@ -1,0 +1,7 @@
+# HM-16b (phần z-index) — Thang z-index 8 bậc — ĐẠT-V3 một phần (22/10/2026)
+Hiện trạng: 40 giá trị z-index ≥100 khác nhau (100 … 2147483601; 142 khai báo trong CSS và chuỗi style JS) ⇒ khó đoán lớp nào đè lớp nào.
+Làm (apply_hm16b.py, áp lên HM11b): 8 token --z-1…--z-8 trong :root (nền/thanh dính 100; lớp phủ trang 1000; hộp thoại 2000; bảng tràn màn hình 5000; thông báo/tooltip 9900; lớp trên hộp thoại 10000; bảng lệnh/menu ngữ cảnh 99990; chẩn đoán 100000). Mỗi giá trị cũ → calc(var(--z-N, nền) + hạng) với hạng = thứ tự trong bậc. Ánh xạ TĂNG NGẶT nên giữ nguyên mọi quan hệ trên/dưới/bằng của mọi cặp lớp; giá trị <100 (cục bộ) và var(--tdup-z-*) có sẵn giữ nguyên. Có dự phòng số trong var() cho cửa sổ in/xuất HTML không có :root.
+Chủ ý KHÔNG hợp nhất các lớp về cùng giá trị: gộp làm đổi thứ tự khi hai lớp cùng mở (vd. gạch ngang 199 mobile-overlay < 200 sidebar), cần quan sát trực quan từng cặp — để người dùng duyệt nếu muốn thang phẳng hơn nữa.
+Kiểm chứng: hm16b_e2e.txt 5/5 — 125 quy tắc CSS, 7.750 cặp: thứ tự giữ nguyên; 2.444 phần tử DOM giữ thứ tự; 0 literal z-index ≥100 còn lại; 0 pageerror. hm16b_overlay.txt: phần tử trên cùng ở giữa màn hình khi bật lần lượt 39 lớp phủ + bảng lệnh Ctrl K + bảng TD_AUDIT giống hệt bản cũ.
+CHƯA LÀM (vẫn HM-16b): gộp 9 bộ :root, 5 hệ toast, ~12 kiểu tab (đổi giao diện nhìn thấy — cần người dùng duyệt); hoàn thiện hoặc gỡ chế độ tối (hiện tắt mặc định, thử nghiệm). 
+SHA-256 app: f30f48ffad42fa4ede01146d5f801c92e3090aee327b3612b3cef9dd5ccda41e

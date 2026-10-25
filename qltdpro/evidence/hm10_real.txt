@@ -1,0 +1,29 @@
+import TSBĐ ms 8419
+{
+ "rows": 19133,
+ "unique": 19067,
+ "dupRows": 66,
+ "vnd": 20817381187868,
+ "raw": 20879074485436,
+ "fx": {
+  "USD": [
+   103,
+   990717.59
+  ],
+  "EUR": [
+   42,
+   598050.57
+  ]
+ },
+ "hold": {
+  "(trống)": 3647,
+  "N": 15486
+ },
+ "khCon": 1865,
+ "khKhongTS": 7,
+ "khCoTS": 1858,
+ "tyLePhu": 3.5503644610786234,
+ "duoi100": 9,
+}
+form {"i":0,"menu":539600000,"fieldAfterOpen":"123.456.789","note":"ℹ️ Menu TSBĐ: 539.600.000 đ (1 TS) khác giá trị đang lưu 123.456.789 đ — bấm \"Đồng bộ\" để lấy, nếu không hồ sơ giữ nguyên.","dataSame":true,"emptyThenFilled":"539.600.000"}
+errs []

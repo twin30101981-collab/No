@@ -1,0 +1,30 @@
+{
+ "vendor/pizzip.js": {
+  "sha256": "bdef7cbd55f3441243e438d1a70a573cfff3727d9c613cee5980426a071e9083",
+  "bytes": 79359
+ },
+ "vendor/jszip.js": {
+  "sha256": "6ef1fb67cd1947464b2c02dd4c5736bcb364c0bf0ce8be716fd98bd0c9fd73b1",
+  "bytes": 97659
+ },
+ "vendor/docxtemplater.js": {
+  "sha256": "f3b39c2c8f204a3a5d6844c1391d8f554f7ddc383501152002f47e57a4ca5704",
+  "bytes": 176234
+ },
+ "vendor/filesaver.js": {
+  "sha256": "ffa59cc624587e93c92d61c1bca02c6ef6135ef548a55afe74bce5151eb4a850",
+  "bytes": 2782
+ },
+ "vendor/docx-umd.js": {
+  "sha256": "e450d1eeea50606039c5389c6f007b44e7ea8a7d8125bc2a107040cfd2fa9569",
+  "bytes": 386552
+ },
+ "vendor/xlsx.js": {
+  "sha256": "97e0fc63ff14c3e9ae6d3d7b5fb0922c63ab8c6041a5bcf90941b77c80a8d211",
+  "bytes": 951957
+ },
+ "vendor/mammoth.js": {
+  "sha256": "d58aff83bbebd0b0ac576462a4aa45fb27256244ddc9dd9880f272558068f386",
+  "bytes": 642240
+ }
+}

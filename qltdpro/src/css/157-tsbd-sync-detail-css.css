@@ -1,0 +1,7 @@
+
+#tsbd-sync-detail table th,
+#tsbd-sync-detail table td { color:#111827 !important; background-image:none !important; }
+#tsbd-sync-detail table thead th { background:#e5e7eb !important; font-weight:700 !important; text-transform:none !important; letter-spacing:0 !important; }
+#tsbd-sync-detail table tbody tr:nth-child(even) td { background:#fafafa !important; }
+#tsbd-sync-detail table tfoot td { background:#e8f5ee !important; }
+#tsbd-sync-detail table tfoot td:last-child { color:#065f46 !important; }

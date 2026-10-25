@@ -1,0 +1,13 @@
+PASS khối: title/kv/section/table
+PASS là zip hợp lệ có document.xml
+PASS tổng dư nợ 4.434.567.890 có trong Word
+PASS mọi dư nợ theo loại vay/CBTD/phòng có trong Word
+PASS số trang tính = số section
+PASS Theo CBTD (8 cột) in ngang
+PASS biên bản: LỆCH tô vàng + chữ đỏ
+PASS biên bản: KHỚP chữ xanh
+PASS tiêu đề bảng nền navy chữ trắng
+PASS chữ ký 3 cột
+PASS % tổng = 100,0%
+PASS không chọn ký ⇒ không có khối chữ ký
+PASS 12 FAIL 0

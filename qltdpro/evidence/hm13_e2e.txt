@@ -1,0 +1,28 @@
+PASS http · khởi động ghi #/tong-quan
+PASS http · showPage(qltd) ⇒ #/du-no
+PASS http · #/tai-san
+PASS http · #/gia-dat
+PASS http · Back ⇒ tsbd
+PASS http · Back ⇒ qltd
+PASS http · Forward ⇒ tsbd
+PASS http · mở lại cùng trang không thêm lịch sử
+PASS http · đổi hash ⇒ mở Đối soát
+PASS http · hash lạ bị bỏ qua
+PASS http · F5 giữ trang (Đối soát)
+PASS http · nhấp menu Lưu trữ ⇒ #/luu-tru
+PASS http · không pageerror
+PASS deep link #/tai-san mở TSBĐ
+PASS file · khởi động ghi #/tong-quan
+PASS file · showPage(qltd) ⇒ #/du-no
+PASS file · #/tai-san
+PASS file · #/gia-dat
+PASS file · Back ⇒ tsbd
+PASS file · Back ⇒ qltd
+PASS file · Forward ⇒ tsbd
+PASS file · mở lại cùng trang không thêm lịch sử
+PASS file · đổi hash ⇒ mở Đối soát
+PASS file · hash lạ bị bỏ qua
+PASS file · F5 giữ trang (Đối soát)
+PASS file · nhấp menu Lưu trữ ⇒ #/luu-tru
+PASS file · không pageerror
+PASS 27 FAIL 0

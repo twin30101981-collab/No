@@ -1,0 +1,15 @@
+dải (chưa TSBĐ): 🔎 Đối soát: ✅ 9/9 chỉ tiêu khớp (1 chưa có dữ liệu để so)
+✅ 10/10 chỉ tiêu khớp
+  D1 | Dashboard · Tổng dư nợ (Bảng I) = tổng tính lại từ dữ liệu | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  D2 | Dashboard · Σ dòng theo loại vay = tổng | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  D3 | Dashboard · Σ theo nhóm nợ = tổng | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  D4 | Dashboard · Σ theo phòng ban = tổng | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  D5 | Dashboard · Số khách hàng (theo mã, dư nợ>0) = tính lại | 1.865 | 1.865 | 0 | ✅ Khớp
+  S1 | Mốc hàng ngày 20/10/2026 · Σ dư nợ = dữ liệu hiện tại | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  S2 | Mốc hàng ngày · Số KH = dữ liệu hiện tại | 1.865 | 1.865 | 0 | ✅ Khớp
+  T1 | TSBĐ · KH còn dư nợ (theo hồ sơ vay) = số KH | 1.865 | 1.865 | 0 | ✅ Khớp
+  B1 | Báo cáo theo CBTD · Σ trong bảng + chưa phân CBTD = tổng | 2.160.375.016.661 | 2.160.375.016.661 | 0 | ✅ Khớp
+  L1 | Lãi suất · tỷ lệ khoản có LS ≥ 18% | — | 0.0% |  | ✅ Khớp
+biên bản BienBanDoiSoat_20-10-2026.txt ﻿BIÊN BẢN ĐỐI SOÁT SỐ LIỆU — QLTD PRO / Ngày dữ liệu: 20/10/2026 · Lập lúc: 23:37:58 21/10/2026 · Người lập: (chưa khai) / Dữ liệu: 3848 hồ sơ dư nợ · 1865 khách hàng · tổng dư nợ 2.160.375.016.661 đ / Kết luận: ✅ 10/10 chỉ tiêu khớp
+sau khi sửa 1 khoản +1tr (chưa vẽ lại mốc): ⚠️ 1 chỉ tiêu lệch / 10 đã đối soát
+errs []

@@ -1,0 +1,16 @@
+PASS cur.docx: ngày dữ liệu 20/10/2026
+PASS cur.docx: TỔNG CỘNG (KH, khoản, dư nợ) = tính lại từ tệp gốc 2.160.375.016.661 / 1865 / 3848
+PASS cur.docx: tổng 100,0%
+PASS cur.docx: đủ 6 hoặc 4 phần theo kỳ
+PASS p0930.docx: ngày dữ liệu 30/09/2026
+PASS p0930.docx: TỔNG CỘNG (KH, khoản, dư nợ) = tính lại từ tệp gốc 2.180.310.962.058 / 1879 / 3860
+PASS p0930.docx: tổng 100,0%
+PASS p0930.docx: đủ 6 hoặc 4 phần theo kỳ
+PASS cur.docx: khối chữ ký có
+PASS p0930.docx: không chọn ký ⇒ không có
+PASS cur.docx: biên bản đối soát có KHỚP, không LỆCH
+PASS p0930.docx: kỳ cũ không có biên bản đối soát/cảnh báo
+PASS cur.xlsx: 6 trang; TỔNG = tệp gốc
+PASS p0930.xlsx: 4 trang; TỔNG = tệp gốc
+PASS Word = Excel: mọi số ≥1.000 trong Word đều có trong Excel cùng kỳ (80 số)
+PASS 15 FAIL 0

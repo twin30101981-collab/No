@@ -1,0 +1,18 @@
+PASS qltd · 1920 mặc định Gọn 1920: không cuộn ngang, 16/20 cột
+PASS kd · 1920 mặc định Gọn 1920: không cuộn ngang, 16/20 cột
+PASS td · 1920 mặc định Gọn 1920: không cuộn ngang, 16/20 cột
+PASS thanh chọn cột hiện, preset Gọn 1920 sáng
+PASS Đầy đủ: 20 cột, có cuộn ngang, cùng số dòng
+PASS Gọn 1366: 10 cột
+PASS tuỳ chọn: thêm SỐ TK ⇒ 11 cột, lưu hide
+PASS cột luôn hiện (0,4,12) bị khoá
+PASS ghim: cuộn ngang 900px, TÊN KH vẫn nằm trong khung (không bị cuốn đi)
+PASS bấm tiêu đề DƯ NỢ vẫn sắp xếp
+PASS dòng tổng có Σ dư nợ (=tổng dữ liệu khi không lọc)
+PASS nhớ cấu hình sau tải lại (Đầy đủ + ghim)
+PASS 1920 không pageerror
+PASS qltd · 1366 mặc định Gọn 1366: không cuộn ngang, 10 cột
+PASS kd · 1366 mặc định Gọn 1366: không cuộn ngang, 10 cột
+PASS td · 1366 mặc định Gọn 1366: không cuộn ngang, 10 cột
+PASS 1366 không pageerror
+PASS 17 FAIL 0

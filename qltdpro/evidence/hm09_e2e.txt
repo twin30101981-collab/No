@@ -1,0 +1,6 @@
+PASS CŨ không có dải/ __chuaphan
+PASS MỚI gom Chưa phân: 3 khoản, 12 tỷ, 3 KH
+PASS MỚI có dải cảnh báo
+PASS MỚI không pageerror
+PASS KH snapshot theo mã (A 2 dòng, B 2 dòng ⇒ 4 KH; trước: theo tên = 3)
+PASS 5 FAIL 0

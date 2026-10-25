@@ -1,0 +1,34 @@
+đã nhập 31.12.2025.xlsx 6s
+đã nhập 31.01.2026.xlsx 12s
+đã nhập 28.02.2026.xlsx 18s
+đã nhập 31.03.2026.xlsx 24s
+đã nhập 30.04.2026.xlsx 31s
+đã nhập 31.05.2026.xlsx 37s
+đã nhập 30.06.2026.XLS 43s
+đã nhập 31.07.2026.XLS 49s
+đã nhập 31.08.2026.XLS 55s
+đã nhập 30.09.2026.XLS 61s
+đã nhập 20.10.2026.XLS 67s
+PASS chưa có mốc: thông báo cần ≥2 kỳ
+PASS 11 kỳ
+PASS kỳ 31/12/2025: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 31/01/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 28/02/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 31/03/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 30/04/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 31/05/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 30/06/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 31/07/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 31/08/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 30/09/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS kỳ 20/10/2026: dư nợ/KH/khoản khớp tính độc lập (Python)
+PASS biểu đồ: 1 đường, 11 điểm, bảng 11 dòng
+PASS chia theo nhom: Σ các đường = tổng dư nợ mọi kỳ, số đường vẽ = số chuỗi
+PASS chia theo pb: Σ các đường = tổng dư nợ mọi kỳ, số đường vẽ = số chuỗi
+PASS chia theo cbtd: Σ các đường = tổng dư nợ mọi kỳ, số đường vẽ = số chuỗi
+PASS chia theo loai: Σ các đường = tổng dư nợ mọi kỳ, số đường vẽ = số chuỗi
+PASS chỉ tiêu Số KH khớp Python
+PASS CSV: tiêu đề + 11 kỳ
+PASS sau tải lại vẫn đủ 11 kỳ
+PASS không pageerror
+PASS 22 FAIL 0

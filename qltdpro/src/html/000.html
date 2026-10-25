@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════
+ TD.html — REFACTOR LOG (Lovable agent, 2026-06-08)
+═══════════════════════════════════════════════════════════════
+ GĐ-A CRITICAL
+   - C1 Đã xóa Export Center clone thứ 2 (was L35099-L35180).
+   - C1 Đã xóa khối modal-HTML rác trong ufsPrint window injection.
+   - C1 Đổi id="db-bang1-sub" lần 2 → "db-bang1-sub-ctkh".
+   - C2 Thêm escapeHtml + TD_setHTML / TD_setText helpers (script #td-xss-helper).
+   - C3 Refactor pattern `doc.open();doc.write(html);doc.close()` → documentElement.innerHTML.
+   - C4 Xóa polyfill hsvv-polyfills (Chrome 49 / Edge Legacy).
+   - C5 Thêm TD_BACKUP.wrap/verify (schemaVersion=42, SHA-1) cho JSON export.
+ GĐ-B STYLE
+   - M1 Thêm khối <style id="td-merged-styles">
+/* ===== td-tokens ===== */
+ với 12+ CSS variables + content-visibility hints.
+   - M2 Xóa !important trong các rule đã có #id (giữ @media print).
+ GĐ-C SCRIPT (PARTIAL)
+   - M3 / M4 Thêm hạ tầng TD.bus (event delegation) + TD.ls (localStorage UI prefix) + self-check (?dev=1).
+   - Lưu ý: KHÔNG tự động gom 43 <script> vào IIFE và KHÔNG tự động đổi 2.793 inline handler → quá rủi ro.
+     Code mới hãy dùng data-act="..." và TD.bus.on('...', fn) để gắn handler không inline.
+ GĐ-D PERF + SECURITY
+   - M5 Lazy-load PizZip/JSZip/Docxtemplater/FileSaver; auto-wrap exportCenterOpen().
+   - S2 Whitelist xlEvalExpr; S3 TD_escXml cho placeholder Docxtemplater.
+   - P1/P4 perf.mark('TD-boot-start/end') + TD_idle helper.
+═══════════════════════════════════════════════════════════════
+ v13.9.13 PERF-B (2026-06-22)
+   - #3 Tách bgdat-scripts: 1.43MB inline script (archive/autoSync/bgd modules) đổi sang type="application/x-td-deferred" + data-bgdat="1". Loader chia 2 queue: bgdat tải ngay khi DOMContentLoaded; vendors tải sau first paint (như v13.9.12). Thêm safety stubs trên window cho ~36 hàm phổ biến (archive*, autoSync*, bgd_*, kh_*) — nếu inline onclick gọi trước khi bgdat sẵn sàng, stub queue lại + replay sau td-bgdat-ready.
+   - #5 Gộp & dedupe style: 54 <style> top-level → 1 <style id="td-merged-styles">, giữ nguyên thứ tự cascade. Mỗi block có comment /* ===== id ===== */ để truy vết. Không động đến <style> nằm trong popup HTML string.
+   - Thêm event window 'td-bgdat-ready' để code khác chờ nếu cần.
+═══════════════════════════════════════════════════════════════
+
+ v13.9.12 PERF-A (2026-06-22)
+   - #1 Lazy vendor: 7 inline vendor scripts (pizzip/jszip/docxtemplater/filesaver/docx-umd/xlsx/mammoth ~3.3MB) marked as type="application/x-td-deferred"; loaded via Blob URL on requestIdleCallback after first paint. Eager-loaded on click of any export-ish button. window.TD_ensureVendors() exposes the Promise.
+   - #2 setInterval throttle: ticks skipped while document.hidden (saves CPU when user is on another tab). Also catches handler errors.
+   - #4 content-visibility:auto on .card/.table-wrap/.ctkh-section + .page:not(.active){content-visibility:hidden} — browser skips layout/paint for off-screen content.
+   - #6 console.log stripped (kept warn/error/info). Enable with ?dev=1 or localStorage.TD_DEV=1.
+   - #7 document.write in ufsPrint consolidated to a single open/write/close.
+   - #8 preconnect + dns-prefetch for cdnjs / jsdelivr / unpkg.
+   - SKIPPED (need broader test): #3 split bgdat-scripts (1.4MB const block, needs const→window refactor — coming in Round B).
+═══════════════════════════════════════════════════════════════
+
+  v13.9.11 PATCH (2026-06-22)
+   - Header bảng so sánh tab Khách hàng (TDCMP): nền navy gradient + chữ trắng (sửa lỗi trắng-trên-trắng).
+   - Cửa sổ "Xem trước bản in A4" (ufsPrint): header 2 dòng (Chi nhánh: Agribank Thiên Trường Nam Định / Tên báo cáo) + footer chữ ký 3 ô (Lập bảng · Kiểm soát · Giám đốc duyệt). Body padding-top tăng để không che nút Đóng.
+   - body::before in trực tiếp: đổi "Agribank Nam Định" → "Chi nhánh: Agribank Thiên Trường Nam Định".
+   - Ẩn taskbar (#tdup-dock + nút Desktop ON/OFF) khi modal/overlay đang mở (MutationObserver toggle body.modal-open).
+ v14.12 SXCB-CHUAN (2026-09-07)
+   - Thứ tự CHUẨN toàn hệ thống: Hội Sở → PGD Hai Bà Trưng → PGD Số 2; trong mỗi phòng ban CBTD theo TÊN A→Z (tiếng Việt).
+   - Module TD_SXCB (script #td-sxcb-standard): suy ra phòng ban từ tên CBTD (khớp gần đúng: viết tắt "Lê Thị H Mai",
+     sai họ "Nguyễn X Y"/"Trần X Y", khác dấu/hoa-thường) → bảng CHỈ có cột CBTD vẫn xếp đúng vị trí.
+   - Áp dụng: qltd/kd/td/denhan/laidong/chlm (mặc định khi chưa bấm tiêu đề; cột ngày/số HĐTD thành khoá phụ),
+     Khách hàng mới (tab Tổng hợp + Chi tiết khách hàng), TSBĐ, gom nhóm theo CBTD khi in/báo cáo, và mọi dropdown lọc CBTD.
+   - Sửa PB_ORDER_DEFAULT bị sai thứ tự (Hội Sở → PGD Số 2 → PGD Hai Bà Trưng).
+ v14.11 SAP-XEP-CBTD-PB (2026-09-06)
+   - Tab con toàn hệ thống đổi IN HOA (sửa text + CSS text-transform).
+   - 5 bảng có 2 cột CBTD + PHÒNG BAN (qltd/kd/td/denhan/chlm): cột CBTD → PHÒNG BAN chuyển ngay sau cột tick;
+     tfoot colspan cập nhật; CSS nth-child (row-da-thu/row-da-chuyen/#table-chlm th) cập nhật theo vị trí mới.
+   - Mặc định sắp PHÒNG BAN → CBTD khi chưa bấm tiêu đề cột (qltd/kd/td/denhan/laidong/chlm).
+   - Thanh lọc chuẩn hoá theo mẫu Khách hàng mới (script #td-std-toolbar): 🔍 → CBTD → Phòng ban → ↺ Bỏ lọc → badge.
+═══════════════════════════════════════════════════════════════
+-->
+
+<!--
+  HỆ THỐNG QUẢN LÝ TÍN DỤNG CHUYÊN NGHIỆP — PRO v2.0 + HSVV [UPGRADED 2026-06-05]
+  Phòng KHKD · Agribank Nam Định · Dữ liệu nguồn: msit80.xlsx
+  Build: 2026-06-05 | BAN_CHUAN_v42_PRO2 | UPGRADED | v13.9.7 patches: dock-top, no-rollback-buttons, tranop-cbtd-sync, bangVII-after-ipcas+autohide, ctkh-filter-bcn
+  ═══════════════════════════════════════════════════════════════
+  PATCH v39 — GIAI ĐOẠN 2: DATA LAYER & UI SKELETON (2026-05-05)
+  ═══════════════════════════════════════════════════════════════
+  PATCH v40 — GIAI ĐOẠN 3: SMART FIELDS & AUTO-FUNCTIONS (2026-05-05)
+  ═══════════════════════════════════════════════════════════════
+  ✅ Smart Field Toolbar: hiện khi focus vào bất kỳ input nào trong form GD2
+     • AA/Aa/aa — Viết HOA / Hoa đầu từ / thường
+     • ✂ — Xóa khoảng trắng thừa
+     • 📋 — Copy từ trường khác (dropdown chọn field)
+     • 📅 — Điền ngày hôm nay (dd/mm/yyyy) / T/N (tháng/năm)
+     • 💰 — Số → Chữ (VND, click popup để điền vào ô)
+     • ⌀ — Làm tròn triệu đồng
+     • % — Tính tỷ lệ A/B tự động (soTienVay/giaTriTS)
+     • ÷× — Máy tính đa phép inline (Enter để áp dụng)
+  ✅ Toolbar ẩn/hiện thông minh theo type field:
+     • Number/Date: ẩn nút AA/Aa/aa, hiện nút T/N
+     • Readonly/Computed: không gắn toolbar
+  ✅ sfNum2Text: Thuật toán đọc số → chữ tiếng Việt đầy đủ
+  ✅ sfCalcExpr: Máy tính biểu thức an toàn (sandbox eval)
+  ═══════════════════════════════════════════════════════════════
+  ✅ DATA.hosovay{} — lưu theo loai {hmtd, tieudung, camco}
+     Mỗi hồ sơ: {id, loai, trangThai, fields{}, ngayTao, ngaySua}
+     Persist: localStorage key "hsv_records_v1", _hsvCache in-memory
+  ✅ HSV_SECTIONS: cấu hình field theo từng loại hồ sơ
+     • HMTD: 3 section, 35+ fields (thông tin / khoản vay / TSBĐ)
+     • Tiêu dùng: 3 section, 20+ fields
+     • Cầm cố: 3 section, 15 fields
+  ✅ UI Layout 3 cột: Danh sách | Form | Preview
+     • Cột trái: card list với search, progress mini-bar, badge trạng thái
+     • Cột giữa: step-nav + progress bar + form nhập + footer Prev/Next
+     • Cột phải: live preview toàn bộ fields + section progress bars
+  ✅ Sync 2 chiều QLTD: auto-link theo maKH → điền tenKH, soHD, duNo, laiSuat, loaiVay, cbtd
+  ✅ Progress tracking: % hoàn thành per-section + tổng thể
+  ✅ Nút Tiếp theo / Quay lại + auto-save 3s sau khi nhập
+  ✅ Auto-calc: LTV (soTienVay/giaTriTS), laiThang (tienVay×lsuat/12)
+  ✅ Mobile: tab bar 3 tab (Danh sách / Form / Preview)
+  ✅ Hook showPage → hsvInitPage() khi chuyển sang hmtd/tieudung/camco
+  ═══════════════════════════════════════════════════════════════
+  PATCH v36 — FIX MENU NGẮN HẠN / TRUNG HẠN
+  ═══════════════════════════════════════════════════════════════
+  ✅ FIX: .nav-children.open max-height 120px → 200px (menu bị cắt)
+  ✅ FEAT: Tối ưu Mobile (max-width 768px)
+     • Sidebar ẩn → hamburger ☰ để mở/đóng + overlay backdrop
+     • Topbar compact: ẩn p sub-title, ẩn nút phụ không cần thiết
+     • FHS rows: label xếp trên, input bên dưới (stack), ẩn cột placeholder
+     • FHS footer buttons: wrap gọn, font nhỏ hơn
+     • Step nav compact, inline search full-width
+     • Tables scroll ngang, modal full-width 96%
+  ✅ FEAT: Nút điều hướng Tiếp theo / Quay lại cho FORM HỒ SƠ
+     • Thanh step nav hiện bên trên footer khi đã chọn loại hồ sơ
+     • Dots indicator: xám = chưa làm, xanh lá = đã điền, xanh đậm = đang ở
+     • Hiển thị "Bước X/N — Tên chip", click dot để nhảy thẳng
+     • Nút "Tiếp theo →" đổi thành "✅ Xong" ở bước cuối
+  ✅ FEAT: Bảng nhập placeholder kẻ viền kiểu Excel
+     • Viền rõ từng ô (border), nền xen kẽ trắng/#F7FAFD
+     • Hàng tiêu đề cột: # | TÊN TRƯỜNG | PLACEHOLDER | GIÁ TRỊ NHẬP
+     • Focus → viền xanh nổi bật (box-shadow inset 2px #2563EB)
+     • Đã nhập → nền xanh lá nhạt (#F0FDF4), chữ đậm
+  ✅ FIX: mammoth.js — fallback 3 CDN (jsdelivr → unpkg → cdnjs), version 1.8.0
+     Thông báo lỗi rõ ràng nếu tất cả CDN đều thất bại
+  ✅ XÓA: Menu TẠO FORM HSVV khỏi sidebar (tránh trùng lặp)
+  ✅ FIX: Modal-kh-search tự đóng khi chuyển trang (showPage cleanup)
+  ✅ FIX: FHS inline dropdown đóng khi blur input (onblur + setTimeout)
+  ✅ FIX: Click-outside handler bổ sung đóng modal-kh-search
+  ✅ FIX: qltdTreeToggle — tách navigate khỏi toggle mũi tên
+     • Click label → toggle + navigate qltd
+     • Click mũi tên → chỉ toggle, không navigate
+  ═══════════════════════════════════════════════════════════════
+  PATCH v35 — FOCUS STATE & RECORD COUNT INLINE SEARCH
+  ═══════════════════════════════════════════════════════════════
+  ✅ fhsInlineSearchFocus(): xử lý onfocus tách biệt
+     • DATA.qltd rỗng → dropdown hiện card hướng dẫn import ngay
+     • DATA.qltd có data → count span hiện "● N KH"
+     • Đã gõ ≥2 ký tự trước khi focus lại → search tiếp bình thường
+  ✅ fhsInlineSearchClear(): restore count span sau khi xóa input
+  ═══════════════════════════════════════════════════════════════
+  PATCH v34 — TỔNG DƯ NỢ TRONG INLINE SEARCH DROPDOWN
+  ═══════════════════════════════════════════════════════════════
+  ✅ Tính tổng dư nợ (r[11]) tất cả HĐ của KH → hiển thị bên phải badge
+     • Dư nợ > 0: đỏ (#DC2626), bold, format tỷ/triệu
+     • Dư nợ = 0: xám nhạt "—"
+     • Layout hàng badge: flex space-between (badges | dư nợ)
+  ═══════════════════════════════════════════════════════════════
+  PATCH v33 — HIGHLIGHT TỪ KHÓA TRONG INLINE SEARCH
+  ═══════════════════════════════════════════════════════════════
+  ✅ _fhsHighlight(text, q): bôi xanh phần khớp trong tên/mã KH
+     • Hỗ trợ tìm nhiều từ (tokenize), so sánh không dấu
+     • <mark> style inline: nền #DBEAFE, chữ #1D4ED8, bold
+     • _fhsEscHtml() guard XSS cho tên KH
+  ✅ Áp dụng cho cả tên KH và mã KH trong dropdown
+  ═══════════════════════════════════════════════════════════════
+  PATCH v32 — INLINE KH SEARCH (page-fhs)
+  ═══════════════════════════════════════════════════════════════
+  ✅ Thay modal-kh-search bằng Inline Search Panel trong header
+     • Search bar compact luôn hiển thị (không cần click mở)
+     • Gõ ≥2 ký tự → dropdown kết quả tức thì (debounce 250ms)
+     • Click / Enter → fhsFillFromQltd() + sync bar hiện ngay
+     • ↑↓ keyboard navigation, Escape đóng dropdown
+     • Click ngoài vùng search → tự đóng dropdown
+     • Tái dụng: _khNorm, _khFmtMoney, _khLoaiChip, fhsFillFromQltd
+     • Modal cũ (modal-kh-search) giữ nguyên cho overlay FHS mode
+  ═══════════════════════════════════════════════════════════════
+  PATCH v31 — FORM HỒ SƠ: BUG FIX TỐI THIỂU
+  ═══════════════════════════════════════════════════════════════
+  🔴 FIX #1: fhsPageResetAll() — bỏ confirm trùng lặp
+     TRƯỚC: hỏi confirm 2 lần (page + fhsResetAll)
+     SAU:   chỉ 1 lần confirm trong fhsResetAll()
+  🔴 FIX #2: _fhsSyncBar() — không bao giờ cập nhật page sync bar
+     TRƯỚC: luôn return getElementById('fhs-sync-bar') (overlay)
+     SAU:   dùng _fhsMode() → trả đúng 'fhs-page-sync-bar' khi ở page
+  🟠 FIX #3: imApplyFields (FHS mode) không sync page body sau điền
+     SAU:   thêm setTimeout(_fhsPageSyncFromOverlay,120) nếu mode=page
+  🟠 FIX #4: _fhsPageSyncFromOverlay clone DOM đè khi user đang gõ
+     SAU:   guard document.activeElement — bỏ qua clone nếu focus trong body
+  🟡 FIX #5: #fhs-sync-bar style inline có display:none kép (cosmetic)
+  ═══════════════════════════════════════════════════════════════
+  ═══════════════════════════════════════════════════════════════
+  PATCH v20b — XÓA KH PLACEHOLDER (2026-05-03)
+  ═══════════════════════════════════════════════════════════════
+  🔴 ROOT CAUSE: 3 KH hardcode trong TKSTT_PLACEHOLDERS (dòng 16940)
+     → inject vào DATA.qltd mỗi lần load → xóa trong bảng vô dụng
+  ✅ FIX: Xóa khỏi mảng TKSTT_PLACEHOLDERS:
+     • (đã ẩn)  (3201000000000 · STK 3201000000000)
+     • (đã ẩn)       (3201000000000 · STK 3201000000000)
+     • (đã ẩn)   (3201000000000 · STK 3201000000000)
+  ═══════════════════════════════════════════════════════════════
+  PATCH v20 — RÀ SOÁT TOÀN BỘ HSVV (2026-05-03)
+  ═══════════════════════════════════════════════════════════════
+  🔴 FIX #1: hosoSerialize lưu _loanType (div lt-tab không phải input)
+  🔴 FIX #2: hosoDeserialize restore _loanType → sections đúng loại vay
+  🔴 FIX #3: hosoClearForm reset lt-tab về Hạn mức mặc định
+  🟠 FIX #4: khSearchFill map lntpcd r[13] → option value theLoaiVay
+             (VD: "Vay ngắn hạn TK211" → select "Hạn mức" đúng option)
+  🟠 FIX #5: ecRenderOne guard null-check PizZip + Docxtemplater
+             (tránh crash "not a constructor" khi CDN chưa tải)
+  🟠 FIX #6: hosoMeta lưu thêm loanType + laiSuat → danh sách badge đúng
+  🟡 FIX #7: hosoRenderList badge icon 📦👤🏠🏦 theo loại vay + badge LS%
+  ═══════════════════════════════════════════════════════════════
+  PATCH v19 — CHIP HDSD (2026-05-03)
+  ═══════════════════════════════════════════════════════════════
+  ✅ ADD: Chip "📖 Hướng dẫn" trong chips-bar của HSVV
+  ✅ ADD: Modal HDSD 7 panel (HSVV/Archive/AutoSync/TB Nợ/Tin nhắn/Chips/AI)
+  ✅ ADD: AI Assistant cập nhật HDSD tự động (Claude Sonnet)
+  ✅ ADD: CSS chip-hdsd + modal-hdsd + toàn bộ component styles
+  ✅ ADD: Phím tắt Esc đóng modal HDSD
+  ═══════════════════════════════════════════════════════════════
+  PATCH v18 — FIX FORM HSVV (2026-05-03)
+  ═══════════════════════════════════════════════════════════════
+  🔴 FIX #1: Xóa orphaned code sau hosoClone() — lỗi JS syntax block
+  🔴 FIX #2: Gắn oninput="calcPA()" cho soLaoDong
+  🔴 FIX #3: Gắn oninput="calcTDIncome()" cho soKy
+  🔴 FIX #4: Guard null-safe window._ecSelected trước hosoBatchExport
+  🟠 FIX #5: Tăng timeout batch export 420→600ms (chain recalc đủ thời gian)
+  🟠 FIX #6: hosoLoad() gọi hsvvAutoLink() → sync bar cập nhật đúng trạng thái
+  🟠 FIX #7: khSearchFill() điền thêm lãi suất (r[8]) + loại vay (r[13]) từ QLTD
+  🟡 FIX #8: calcFinance() trigger calcTDIncome() với anti-loop guard
+             (_inTDRecalc flag + _skipFinance flag — tránh đệ quy vô hạn)
+  ═══════════════════════════════════════════════════════════════
+  FIX ①: HOSO_STORE_KEY migrated localStorage → IndexedDB (LZ-compressed, same DB)
+          _hosoCache in-memory; sync read, async write; auto-migrate on first load
+  FIX ②: updateProgress() scoped to #page-hsvv only — thanh % hiển thị đúng
+  FIX ③: hosoMeta() bổ sung ngayDenHan, loaiVay, nhomNo — danh sách rõ hơn
+  FIX ⑥: hosoUpdateNameBar cập nhật label nút Lưu → "💾 Lưu: [tên KH]"
+  FIX ⑦: printChecklist() — in A4 checklist có tên KH, tiến độ, chữ ký
+  FEAT ①: hosoClone() — nhân bản hồ sơ, giữ KH+TSĐB, xóa trắng trường hành chính
+
+  ═══════════════════════════════════════════════════════════════
+  v1.9 (BAN_CHUAN v11): HOÀN THIỆN FORM HỒ SƠ — BƯỚC 3
+  ═══════════════════════════════════════════════════════════════
+  ① HOSO_FIELD_LABELS mở rộng: ~35 → ~90 label tiếng Việt
+     Bổ sung nhóm: Hành chính (tờ trình/phê duyệt), KH vay
+     (ngày cấp/nơi cấp CCCD, email, MST, xếp hạng, nhóm nợ,
+     điểm CIC), Người TK (SĐT, nghề nghiệp, ngày cấp),
+     Khoản vay (lãi suất ưu đãi/thường, hình thức GN,
+     tiền vay GD/HĐ, kỳ hạn trả gốc/lãi, ngày tái xét,
+     tỷ lệ vay/TSĐB), Thu nhập (TN3, chi sinh hoạt,
+     chi trả nợ), TSBĐ tóm tắt (8 field), ABIC/BH (4 field),
+     Ghi chú (2 field).
+  ② HOSO_MAX: 30 → 100 hồ sơ
+  ③ Phân trang danh sách hồ sơ: 20 records/trang,
+     tự động nhảy tới trang chứa hồ sơ đang mở,
+     nút Trước/Sau + số trang.
+  ④ beforeunload: cảnh báo khi HSVV dirty mà auto-save thất bại
+
+  🐛 BUG FIX BƯỚC 1 — hosoBatchExport: Race condition recalc
+     TRƯỚC: setTimeout(r, 120) → thu thập form trước khi hsvvRecalcAll xong (300ms)
+     SAU:   setTimeout(r, 420) → đảm bảo đủ thời gian tính lại trước collectDocxData
+     RESULT: Các ô tính toán (LTV, lãi/tháng, tổng TN...) xuất đúng giá trị
+
+  🐛 BUG FIX BƯỚC 1 — hosoBatchExport: Không xóa selection sau export
+     SAU:   _hosoBatchSelected.clear() sau khi xuất xong
+     RESULT: Checkbox tự bỏ chọn — UX sạch hơn
+
+  🐛 BUG FIX BƯỚC 4 — hosoImportJSON: Cancel → hành động nguy hiểm
+     TRƯỚC: confirm() → false (Hủy) → GHI ĐÈ toàn bộ — ngược intuition!
+     SAU:   OK → Gộp (an toàn) · Hủy → Hỏi ghi đè · Hủy lần 2 → Thoát hẳn
+     RESULT: Không thể vô tình ghi đè khi nhấn Hủy nhầm
+
+  ✅ TÍNH NĂNG BƯỚC 5 — Sync HSVV ↔ QLTD (2 chiều)
+     ① Khi lưu HSVV: tự động ghép với dòng QLTD qua Mã KH / Số HĐ
+     ② Sync bar bên dưới hoso-bar: hiện trạng thái liên kết + dư nợ thực
+     ③ Badge 📄 HSVV trong cột Mã KH bảng QLTD → click mở form luôn
+     ④ Nút "Xem QLTD →" trong sync bar → chuyển trang + tô sáng dòng
+     ⑤ Tìm khớp thông minh: ưu tiên cả 2 trường, fallback từng trường
+
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-41: PHÍ GN — FILTER "TỪ ĐẦU THÁNG TRỞ ĐI" (CBTD CBTD A)
+  ═══════════════════════════════════════════════════════════════
+
+  🎯 YÊU CẦU: Đồng bộ dsbsdt → lấy toàn bộ GN từ đầu tháng trở đi của CBTD THT
+
+  🟢 FIX #1 — phidvSetDefaultFilter():
+     TRƯỚC: toEl.value = fmt(lastDay)  → Ngày kết thúc = cuối tháng hiện tại
+     SAU:   toEl.value = ''            → Để trắng (không giới hạn cuối)
+     RESULT: "Tháng này trở đi" — lấy đủ GN từ 01/MM đến tương lai
+             Không bỏ sót khoản GN nhập muộn (sau cuối tháng do điều chỉnh)
+
+  🟢 FIX #2 — getFilteredData('phidv') date filter:
+     TRƯỚC: if (!d) return true  → Giữ dòng thiếu ngày GN (FIX-40 legacy)
+     SAU:   if (!d) return false → Loại dòng thiếu ngày khi filter đang active
+     LOGIC: Khi đã chọn "từ đầu tháng trở đi", chỉ muốn GN có ngày thực tế.
+            Dòng r[6]='' không thuộc khoảng thời gian nào → loại khỏi kết quả.
+            Khi KHÔNG có filter ngày → vẫn dùng getFilteredData bình thường (không ảnh hưởng)
+
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-39: PHÍ GIẢI NGÂN — 5 SYNC ISSUES RESOLVED
+  ═══════════════════════════════════════════════════════════════
+  
+  🔴 FIX #1 (CRITICAL): Inline edit không sync phí
+     ISSUE:  saveEditableNum() chỉ refresh tfoot, không re-render Phí GN
+             → User edit "Số tiền GN" trong QLTD → Phí GN vẫn hiển thị giá CŨ
+     FIX:    Set window._phidvNeedsRefresh = true khi edit col 9 hoặc 11
+             showPage('phidv') reset flag sau khi đã render
+     RESULT: Phí GN tự động refresh khi mở lại page sau khi edit
+  
+  🟠 FIX #2 (HIGH): Add/Delete extra không save ngay
+     ISSUE:  savePhiGNExtra/deletePhiGNExtra chỉ markUnsaved (đợi 3s)
+             → User reload trong 3s → mất dữ liệu mới thêm/xóa
+     FIX:    Thêm saveData(true) ngay sau markUnsaved()
+     RESULT: Dữ liệu được persist ngay lập tức
+  
+  🟡 FIX #3 (MEDIUM): phidvChangeStatus không refresh badge sidebar
+     ISSUE:  Đổi trạng thái Đã/Chưa báo phí → badge sidebar không update
+             Cũng không save ngay
+     FIX:    Thêm refreshBadges() + saveData(true) sau renderPhiDV()
+             Áp dụng cả cho phidvEditMucPhi() (sửa mức phí)
+     RESULT: Badge và data luôn đồng bộ
+  
+  🟡 FIX #4 (MEDIUM): Search input không filter dữ liệu
+     ISSUE:  Input #search-phidv được oninput="qaDebounce('filter-phidv', ()=>filterTable('phidv'), 220)"
+             nhưng getFilteredData('phidv') KHÔNG dùng giá trị search
+             → Gõ tìm KH không có kết quả!
+     FIX:    Thêm filter theo q ($('search-phidv')?.value) trên các cột
+             r[0] (mã KH), r[1] (tên), r[2] (số HĐ), r[12] (CBTD)
+     RESULT: Search hoạt động đúng cho phidv
+  
+  🟢 FIX #5 (LOW): fakeRow của phí thủ công thiếu trường
+     ISSUE:  savePhiGNExtra chỉ điền r[0],[1],[6],[9],[12],[13],[99]
+             → Thiếu r[7] (ngày ĐH), r[11] (dư nợ), r[17] (phòng ban)
+             → Filter theo phòng ban hoặc dư nợ → row thủ công bị lọc sai
+     FIX:    Hoàn thiện fakeRow với đầy đủ 24 cột chuẩn
+     RESULT: Hàng thủ công tương thích 100% với mọi filter/render
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-38: DATE FORMAT DD/MM/YYYY + AUTO-SYNC IPCAS (v1.6)
+  ═══════════════════════════════════════════════════════════════
+  
+  📅 PART 1 - DATE FORMAT (DD/MM/YYYY):
+     ✅ Archive Data filename: "Data_2026_04_25_0136" → "Data 25/04/2026 01:36"
+     ✅ Archive Report filename: "Report_..." → "Report 25/04/2026 01:36"
+     ✅ IPCAS Report filename: "Report_IPCAS_..." → "Report IPCAS 25/04/2026 01:36"
+     ✅ Hiển thị TÊN FILE và TÊN BÁO CÁO theo định dạng Việt Nam dd/mm/yyyy
+     ✅ Sanitize filename for download (replace / with -)
+     RESULT: Dễ truy xuất theo thời điểm hơn (xx.xx.xxxx → xx/xx/xxxx)
+  
+  🔄 PART 2 - AUTO-SYNC IPCAS:
+     ✅ Tự động đọc file IPCAS theo lịch (5/10/15/30/60 phút)
+     ✅ File System Access API (Chrome/Edge 86+) - cấp quyền 1 lần
+     ✅ Smart check: chỉ import khi file thay đổi
+     ✅ 3 modes: Ask / Auto / Notify
+     ✅ Sidebar nav item: AUTO-SYNC IPCAS
+     ✅ Topbar button: 🔄 Auto-Sync
+     ✅ Log activity với 100 dòng gần nhất
+     ✅ Persist config qua localStorage
+     RESULT: Đồng bộ IPCAS không cần thao tác thủ công
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-37: UI POLISH (Click-Copy + Font + Text Cleanup) - v1.5
+  ═══════════════════════════════════════════════════════════════
+  
+  📝 PART 1 - TEXT CLEANUP:
+     ✅ Removed "Có TỔNG CỘNG TOÀN CHI NHÁNH ở hàng đầu tiên" (subtitle)
+     ✅ Removed "HỘI SỞ —" prefix → "PHÒNG KHÁCH HÀNG"
+     ✅ Removed "(3 phòng)" from grand totals (top + bottom)
+     ✅ Removed "Tổng cộng" prefix in subtotal rows
+     RESULT: Cleaner, simpler labels in BCKH section
+  
+  📋 PART 2 - CLICK-TO-COPY (MÃ KH & SỐ TK):
+     ✅ Click vào ô MÃ KH → tự động copy vào clipboard (Ctrl+C)
+     ✅ Click vào ô SỐ TK → tự động copy vào clipboard
+     ✅ Visual feedback: Cell flashes green on click
+     ✅ Toast notification: "📋 Đã copy: [value]"
+     ✅ Hover effect: Shows 📋 icon + green background
+     ✅ Cursor changes to "copy" on hover
+     ✅ Fallback for older browsers (document.execCommand)
+     PAGES AFFECTED: QLTD, KD, TD, Đến hạn, Lãi đọng, Phí DV, Sync table
+  
+  🔍 PART 3 - FONT SIZE INCREASE:
+     ✅ thead th: 10.5px → 12px (+14%)
+     ✅ tbody td: 11.5px → 13px (+13%)
+     ✅ tfoot td: 11px → 12.5px (+14%)
+     ✅ chip: 10px → 11.5px (+15%)
+     ✅ padding tăng để dễ click: 4px → 6px
+     RESULT: Bảng tính dễ đọc hơn, đỡ mỏi mắt
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-36: DASHBOARD RENDER FIX (v1.4)
+  ═══════════════════════════════════════════════════════════════
+  Restored missing <span id="db-bang1-sub"> + defensive null-check
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-35: IPCAS IMPORT → SAVE LOCATION CHOICE (v1.3)
+  ═══════════════════════════════════════════════════════════════
+  Modal cho user chọn: Data Archive / Report Archive / Skip
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-34: DASHBOARD SYNC IN rebuildAll() (v1.2.1)
+  ═══════════════════════════════════════════════════════════════
+  rebuildAll() LUÔN gọi renderDashboard()
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX PRO-33: FILE ARCHIVE SYSTEM (v1.2)
+  ═══════════════════════════════════════════════════════════════
+  Data Archive + Report Archive với LocalStorage + Download
+  
+  ═══════════════════════════════════════════════════════════════
+  FIX A, B, C, D + 1, 2, 3, 4: Original fixes preserved
+-->
+<html lang="vi">
+<head>

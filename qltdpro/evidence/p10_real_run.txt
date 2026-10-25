@@ -1,0 +1,19 @@
+App: dist/QLTD_PRO_v2026-10-23_v22.3-P08.html
+… cài xlrd + openpyxl vào /tmp/claude-0/p10/realrun/pylib
+Đã dựng môi trường (36 s).
+
+✔ hm17c    24 đạt / 0 lỗi  (76 s)
+✔ hm23     15 đạt / 0 lỗi  (75 s)
+✔ hm24     22 đạt / 0 lỗi  (91 s)
+✔ hm25     17 đạt / 0 lỗi  (37 s)
+✔ hm26     18 đạt / 0 lỗi  (64 s)
+✔ hm15     18 đạt / 0 lỗi  (17 s)
+✔ hm19     24 đạt / 0 lỗi  (40 s)
+✔ hm09b    vấn đề đối chiếu: 0 · không lỗi JS  (22 s)
+✔ real10   không lỗi JS  (24 s)
+✔ real12   không lỗi JS  (23 s)
+✔ hm28b    không lỗi JS · kiểm chéo: 15 đạt / 0 lỗi  (29 s)
+✔ td_pl02  6 đạt / 0 lỗi  (0 s)
+
+TỔNG: 12/12 kịch bản đạt
+exit 0
