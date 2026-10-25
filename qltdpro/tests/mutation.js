@@ -39,7 +39,7 @@ const MUT = [
   { hm: 'PERF', name: 'saveData: bộ nhớ đệm nén khoá theo độ dài (lưu NHẦM dữ liệu cũ khi sửa 1 chữ số)', f: s => s.replace('let v = _lzMemoMap.get(str);', 'let v = _lzMemoMap.get(str.length);').replace('_lzMemoMap.set(str, v);', '_lzMemoMap.set(str.length, v);') },
   { hm: 'HM-17b', name: 'Phí DV: dựng lại cả tập không phân trang (lỗi nghẽn 7 s với dữ liệu thật)', f: s => s.replace('const visibleRows = __pg.size > 0 ? rows.slice(__start, __start + __pg.size) : rows;', 'const visibleRows = rows;') },
   { hm: 'HM-17b', name: 'Phí DV: "chọn tất cả" chỉ áp cho các dòng đang hiện (sót phần ở trang khác)', f: s => s.replace("getFilteredData('phidv').forEach(r => phidvSetSt(phidvGetRowKey(r), { checked: masterCb.checked }));", '') },
-  { hm: 'HM-17b', name: '"Tất cả" không còn dựng dần (dựng cả 1.400 dòng một lần)', f: s => s.replace('__parts.length > 600);', '__parts.length > 600000);') },
+  { hm: 'HM-17b', name: '"Tất cả" không còn dựng dần (dựng cả 1.400 dòng một lần)', f: s => s.replace('__parts.length > 600 && !window.__TD_NODEFER);', '__parts.length > 600000 && !window.__TD_NODEFER);') },
   { hm: 'HM-17', name: 'Chuyển HM/TSBĐ: ô ghim không có tác dụng (không ghim cột)', f: s => s.replace('pin: spec ? (spec.pinTo != null && saved.pin === true)', 'pin: spec ? false') },
   { hm: 'HM-17', name: 'ghim cột Tên KH không còn bật mặc định', f: s => s.replace('(saved.pin === undefined ? viewportW >= 1280 : !!saved.pin)', '!!saved.pin') },
   { hm: 'HM-23', name: 'Trung tâm nhập bỏ nhận dạng theo tiêu đề cột (TSBĐ tên lạ bị nhập thành dư nợ)', f: s => s.replace("if (k && TD.hub.kind(f.name) !== k) { f.kind = k;", "if (false) { f.kind = k;") },

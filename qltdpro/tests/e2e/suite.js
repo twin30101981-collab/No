@@ -213,8 +213,8 @@ async function step(name, fn) { try { await fn(); } catch (e) { ck('SUITE', name
     { const x = await newPage(b, 1500, 900); await boot(x); // P10 (T3/T4): đọc Excel + nén trong Web Worker (blob, chạy từ file://); kết quả = đọc trên luồng chính; worker hỏng ⇒ tự chạy luồng chính
       const fs = require('fs'); const bufs = ['20.10.2026.xlsx', '20.10.2026.XLS', 'Sao ke tai san bao dam 20.10.2026.xlsx'].map(f => Array.from(fs.readFileSync(FIX + '/' + f)));
       const w = await x.evaluate(async bufs => { const XL = await loadSheetJS(); const u = bufs.map(a => new Uint8Array(a)); const s0 = Object.assign({}, TD.xlsWorker.stat);
-        const wi = [], mi = []; for (const k of [0, 1]) { wi.push(JSON.stringify(await TD.readRows('ipcas', u[k], () => { throw new Error('main'); }))); mi.push(JSON.stringify(TD.xlsrows.ipcasRows(XL, u[k], true))); }
-        const wa = await TD.readRows('aoa', u[2], () => { throw new Error('main'); }), ma = TD.xlsrows.aoa(XL, u[2]);
+        const wi = [], mi = []; for (const k of [0, 1]) { wi.push(JSON.stringify(await TD.readRows('ipcas', u[k], () => TD.xlsrows.ipcasRows(XL, u[k], true)))); mi.push(JSON.stringify(TD.xlsrows.ipcasRows(XL, u[k], true))); } // luồng chính dự phòng KHÔNG ném lỗi ⇒ nếu worker không chạy, phép kiểm thất bại đúng nhóm P10-T3 (stat.worker)
+        const wa = await TD.readRows('aoa', u[2], () => TD.xlsrows.aoa(XL, u[2])), ma = TD.xlsrows.aoa(XL, u[2]);
         const big = JSON.stringify(DATA.qltd.length ? DATA.qltd : Array.from({ length: 3000 }, (_, i) => ['Khách hàng ' + i, i * 1.5, '20/10/2026']));
         const lz = (await TD.xlsWorker.call('lz', { strs: [big] }))[0];
         return { stat: [s0, TD.xlsWorker.stat], eqI: wi.map((s, i) => s === mi[i] && s.length > 1000), eqA: JSON.stringify(wa) === JSON.stringify(ma) && wa.length > 5, dateA: wa.slice(1).some(r => r.some(c => c instanceof Date)), lzEq: lz === LZS.compressToBase64(big), lzBack: LZS.decompressFromBase64(lz) === big }; }, bufs);
