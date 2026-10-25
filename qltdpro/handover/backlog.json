@@ -1691,5 +1691,6 @@
  "app_hien_hanh": {
   "tep": "app/QLTD_PRO_v2026-10-25_v22.3-P10.html",
   "ghi_chu": "SHA-256 xem handover/HANDOVER.md (dau tep)"
- }
+ },
+ "dot_bien_P10": "59/59 bi phat hien (evidence/p10_mutation_full.txt)"
 }

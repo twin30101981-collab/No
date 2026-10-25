@@ -44,7 +44,7 @@ Chi tiết: `p10_bench.txt`, `p10_savecount.txt`, `p10_audit_truoc/sau.txt`, `p1
 ## 3. Kiểm thử
 - `node tests/run.js`: **23/23** nhóm, **e2e 121/121** (mốc 21/21, 97/97). Unit: thêm `td_xlsrows` (21), `td_roster` (14).
 - Dữ liệu thật: `tools/real-run.mjs` 12/12; audit_p09 37/37; audit_p09b 13/13.
-- Đột biến: 59 (42 cũ + 17 mới) — kết quả ở `p10_mutation_full.txt` (chạy cuối phiên, xem mục 6).
+- Đột biến: **59/59 bị phát hiện** (42 cũ + 17 mới) — `p10_mutation_full.txt`.
 
 ## 3b. Làm sạch dữ liệu cá nhân trước khi push (quyết định người dùng 25/10/2026: "gỡ DATA.macb, làm sạch lịch sử rồi push")
 - Gỡ `DATA.macb` (49 hồ sơ cán bộ: họ tên, mã CB, số TK, hệ số lương) — cài mới: `autoGenerateMaCB()` sinh danh sách từ dữ liệu dư nợ; người dùng đang dùng vẫn giữ danh sách đã lưu trong IndexedDB.
@@ -73,4 +73,4 @@ Chi tiết: `p10_bench.txt`, `p10_savecount.txt`, `p10_audit_truoc/sau.txt`, `p1
 | U5 | Thông tin | Đổi hành vi T6: 2 cán bộ đổi nhóm phòng theo IPCAS; bộ lọc thông báo không còn chọn sẵn 1 cán bộ trừ khi đặt "Mặc định" | người dùng xác nhận |
 
 ## 6. Đột biến
-Xem `p10_mutation_full.txt` (cập nhật khi chạy xong).
+**59/59 bị phát hiện** (`p10_mutation_full.txt`). Trong lúc chạy phát hiện và sửa 3 lỗi của BỘ KIỂM THỬ (không phải app): `run.js` giới hạn tầng 5 chỉ 3 giờ (cắt sau 20 đột biến) → 16 giờ + tuỳ chọn `mutation.js --from N`; mẫu đột biến HM-17b "dựng dần" lệch vì T5 đổi dòng mã; phép kiểm P10-T3 ném lỗi khi thiếu worker nên báo nhầm nhóm SUITE → nay báo đúng P10-T3. Hai nhóm này chạy lại: 9/9 bị phát hiện.

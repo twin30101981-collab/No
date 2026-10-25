@@ -1,0 +1,72 @@
+# P10 — đột biến đầy đủ trên app/QLTD_PRO_v2026-10-25_v22.3-P10.html: 59/59 bị phát hiện
+# Phần 1 (đột biến 1–20, qua tests/run.js --mutation; lượt này bị giới hạn 3 giờ cũ cắt sau 20):
+  ✔ HM-01 — chèn xuống dòng vào chuỗi SheetJS (script vendor không biên dịch) → phát hiện: SheetJS nạp được (XLSX.version) và ghi/đọc lại .xlsx
+  ✔ HM-02 — bỏ SheetJS, bộ đọc .xlsx tự viết đổi MỌI số 1<x<100000 thành ngày (lỗi gốc) → phát hiện: nhập .xlsx: 244 khoản còn dư nợ (bỏ dòng dư nợ 0), lãi suất & dư nợ TỪ
+  ✔ HM-03 — cổng ghi đè L/S cho phép sửa tự động đè cả giá trị hợp lệ → phát hiện: hàm "tự chữa" L/S không đè lãi suất hợp lệ dù có nguồn tham chiếu khác
+  ✔ HM-04 — chunk hỏng bị bỏ qua im lặng, nạp phần còn lại như dữ liệu đầy đủ → phát hiện: chunk hỏng ⇒ báo hỏng (banner/cờ), không coi là dữ liệu đầy đủ
+  ✔ HM-05 — nhúng lại seed Past Due (dữ liệu cứng) tự ghi vào trình duyệt khi mở → phát hiện: trang mới không có dữ liệu cứng (dư nợ/TSBĐ/mốc lưu/Past Due = 0)
+  ✔ HM-08 — đếm khách hàng theo số dòng thay vì theo mã → phát hiện: Dashboard: tổng dư nợ = 141.940.949.969 và 120 KH (theo mã)
+  ✔ HM-09 — báo cáo theo CBTD bỏ im lặng phần chưa phân → phát hiện: TD_AUDIT (đối chiếu với tệp) không có vấn đề
+  ✔ HM-17b — bật lại pager desktop-patch chồng lên bảng dữ liệu → phát hiện: chỉ MỘT cơ chế phân trang (không pager ẩn dòng/nút "Hiển thị thêm" chồ
+  ✔ HM-17b — chọn cột: không đặt lại colspan tiêu đề gộp ô (lệch cột) → phát hiện: Giá đất "Chỉ giá UBND": 8 cột, hết tràn ngang ở 1366, tiêu đề gộp ô vẫ
+  ✔ HM-10 — TSBĐ: bỏ khử trùng clno (một TS thế chấp qua 2 HĐ bị cộng 2 lần) → phát hiện: TSBĐ: 145 dòng, 135 TS sau khử trùng clno (10 dòng trùng), Σ VND = tệp
+  ✔ HM-28 — báo cáo Excel quay về SheetJS trơn (mất định dạng) → phát hiện: Excel có định dạng: hàng tiêu đề nền navy chữ đậm, dòng TỔNG đậm, cố đ
+  ✔ HM-13b — showPage không chạy sổ hook (mất khởi tạo trang Hồ sơ/FHS/…) → phát hiện: một showPage duy nhất (không lớp bọc) + sổ hook ≥ 8; hook chạy mỗi lần
+  ✔ HM-16b — thêm z-index literal ≥100 ngoài thang token → phát hiện: không còn z-index literal ≥100 (dùng token --z-N)
+  ✔ HM-16c — thêm lại một kiểu tab riêng lệch chuẩn → phát hiện: tab kiểu A (gạch chân: Khách hàng, KH mới, Đồng bộ, Máy tính lãi, mục 
+  ✔ HM-16c — thêm lại một khối :root rời → phát hiện: token: đúng MỘT khối :root cấp cao nhất
+  ✔ CSS — mất dòng mở @media ngăn kéo (lỗi gốc: quy tắc ngăn kéo áp mọi độ rộng, menu bên ẩn trên máy tính) → phát hiện: 1366px: menu bên là DẢI BIỂU TƯỢNG 64px (không ☰), nội dung lùi 64px
+  ✔ HM-17 — bảng Dư nợ mặc định không còn tự lùi mẫu cột (tràn ngang ở 1920 với menu cố định — lỗi P05) → phát hiện: 1920px (menu bên cố định): bảng Dư nợ mặc định KHÔNG tràn ngang (tự lù
+  ✔ CSS — nút ↶/↷ định vị cố định đè lên topbar (lỗi cũ) → phát hiện: 1920px: không phần tử nào trên topbar bị che bởi phần tử khác (↶/↷ nằm
+  ✔ SEC — bỏ escape tên khách hàng khi dựng bảng Dư nợ (chèn mã qua dữ liệu nhập) → phát hiện: dữ liệu nhập chứa thẻ HTML (tên KH, CBTD, phòng, …) KHÔNG được thực th
+  ✔ HM-19 — thẻ KPI tổng dư nợ đếm số hồ sơ thay vì cộng dư nợ (lệch engine) → phát hiện: 390px: thẻ KPI 2×2 (5 thẻ), số khớp tổng dư nợ/số KH của engine; topba
+# Phần 2 (đột biến 21–59, tests/mutation.js --from 21):
+✔ CSS — ngăn chi tiết không mở khi bấm dòng → phát hiện: ngăn chi tiết: bấm dòng Dư nợ mở ngăn bên phải 380px, liệt kê ≥15 trườ
+✔ HM-23 — hoàn tác lần nhập không khôi phục dữ liệu → phát hiện: Trung tâm nhập: nhập 1 tệp rồi "Hoàn tác lần nhập" đưa dư nợ về trước 
+✔ SEC — bỏ escape tên mốc lưu trữ ở danh sách Lưu trữ (tên tệp chứa thẻ HTML) → phát hiện: tên mốc lưu trữ (lấy từ tên tệp/nhãn người dùng) chứa thẻ HTML KHÔNG đ
+✔ CSS — bỏ bẫy bàn phím của hộp thoại (Tab chui ra menu phía sau) → phát hiện: hộp thoại Thêm mới: Tab/Shift+Tab xoay vòng TRONG hộp thoại (0/40 lần 
+✔ SEC — bỏ escape ngày thế chấp/hết hạn ở bảng TSBĐ (ngày lấy từ tệp nhập) → phát hiện: TSBĐ (145 dòng) + hồ sơ vay (danh sách, tìm kiếm, so sánh) chứa thẻ HT
+✔ SEC — bỏ escape ghi chú/tên ở danh sách hồ sơ vay (hồ sơ nhập từ JSON chứa thẻ HTML) → phát hiện: TSBĐ (145 dòng) + hồ sơ vay (danh sách, tìm kiếm, so sánh) chứa thẻ HT
+✔ HM-23 — Trung tâm nhập: tệp bị bỏ chọn vẫn được nhập (cờ loại bị bỏ qua) → phát hiện: Trung tâm nhập (P08): bỏ chọn một tệp ⇒ kế hoạch chỉ còn 1 tệp (bỏ qua
+✔ HM-23 — Trung tâm nhập: xem trước không escape ô dữ liệu → phát hiện: Trung tâm nhập (P08): bỏ chọn một tệp ⇒ kế hoạch chỉ còn 1 tệp (bỏ qua
+✔ PERF — modal-open: bỏ điều kiện nằm trong khung nhìn (ngăn kéo đóng bị coi là hộp thoại mở ⇒ dock ẩn vĩnh viễn) → phát hiện: body.modal-open: tắt lúc đầu (dock còn hiện; ngăn kéo đóng nằm ngoài k
+✔ PERF — modal-open: quay lại dùng offsetParent (không bao giờ phát hiện hộp thoại fixed — lỗi gốc) → phát hiện: body.modal-open: tắt lúc đầu (dock còn hiện; ngăn kéo đóng nằm ngoài k
+✔ PERF — TD_SXCB.rank: bộ nhớ đệm khoá sai (mọi phòng ban nhận hạng của lần gọi đầu) → phát hiện: TD_SXCB: rank đúng (Hội Sở 0, PGD Hai Bà Trưng 1, PGD Số 2 2, rỗng/lạ 
+✔ PERF — TSBĐ: lưu IndexedDB không còn bộ bắt lỗi (Promise bị từ chối chưa bắt khi IndexedDB bị chặn) → phát hiện: IndexedDB bị chặn: khởi động + Dashboard + nhập TSBĐ không có lỗi JS c
+✔ PERF — Web Vitals: ghi kv.set không bắt Promise bị từ chối (lỗi chưa bắt khi IndexedDB bị chặn) → phát hiện: IndexedDB bị chặn: khởi động + Dashboard + nhập TSBĐ không có lỗi JS c
+✔ PERF — saveData: bộ nhớ đệm nén bị tắt (nén lại 6 lần mỗi lần nhập — lỗi nghẽn 4,8 s) → phát hiện: saveData: lần lưu thứ 2 với dữ liệu KHÔNG đổi không nén lại mảng lớn; 
+✔ PERF — saveData: bộ nhớ đệm nén khoá theo độ dài (lưu NHẦM dữ liệu cũ khi sửa 1 chữ số) → phát hiện: saveData: lần lưu thứ 2 với dữ liệu KHÔNG đổi không nén lại mảng lớn; 
+✔ HM-17b — Phí DV: dựng lại cả tập không phân trang (lỗi nghẽn 7 s với dữ liệu thật) → phát hiện: Phí DV: phân trang 100 dòng/trang (không dựng cả tập), tổng theo toàn 
+✔ HM-17b — Phí DV: "chọn tất cả" chỉ áp cho các dòng đang hiện (sót phần ở trang khác) → phát hiện: Phí DV: phân trang 100 dòng/trang (không dựng cả tập), tổng theo toàn 
+✘ HM-17b — đột biến không áp dụng được (mẫu mã đã đổi): "Tất cả" không còn dựng dần (dựng cả 1.400 dòng một lần)
+✔ HM-17 — Chuyển HM/TSBĐ: ô ghim không có tác dụng (không ghim cột) → phát hiện: TD.cols: bảng Chuyển HM/TSBĐ ghim mặc định TẮT, bật khi chọn; Giá đất 
+✔ HM-17 — ghim cột Tên KH không còn bật mặc định → phát hiện: bảng Dư nợ ≥1280 px: ghim cột đến Tên KH BẬT mặc định (khi chưa chọn g
+✔ HM-23 — Trung tâm nhập bỏ nhận dạng theo tiêu đề cột (TSBĐ tên lạ bị nhập thành dư nợ) → phát hiện: Trung tâm nhập: sao kê TSBĐ tên tệp không có từ khoá vẫn nhận là TSBĐ 
+✔ HM-27 — bỏ thẻ CSP chặn mạng (dữ liệu có thể gửi ra ngoài) → phát hiện: chế độ có mạng TẮT mặc định; có thẻ CSP chặn kết nối ngoài (connect-sr
+✔ P10-T1 — Dashboard Bảng VIII dựng lại cả tập (không phân trang — 2.229 hàng, mở 1,4 s trên dữ liệu thật) → phát hiện: Dashboard: Bảng VIII (lãi phải thu) phân trang 100 dòng, đếm đủ cả tập
+✔ P10-T2 — Trả nợ: xuất Excel đọc thẳng bảng đang phân trang (mất các trang khác) → phát hiện: Trả nợ: bảng Giảm dư nợ phân trang 100 dòng, dòng tổng vẫn đếm cả tập;
+✔ P10-T2 — bảng phụ phân trang bỏ cắt trang (dựng cả tập) → phát hiện: Trả nợ: bảng Giảm dư nợ phân trang 100 dòng, dòng tổng vẫn đếm cả tập;
+✔ P10-EXP — xuất Excel bảng đã phân trang chỉ lấy trang đang xem (lỗi tiềm ẩn từ HM-17b/P09) → phát hiện: Xuất Excel bảng đã phân trang (Phí DV): đủ mọi dòng, không có dòng "Tr
+✘ P10-T3 — đọc Excel không dùng worker nữa (đọc đồng bộ trên luồng chính — longtask 1,2 s mỗi kỳ) → KHÔNG bị phát hiện!
+✔ P10-T3 — worker bị chặn ⇒ không có đường dự phòng luồng chính (không nhập được) → phát hiện: Worker bị chặn ⇒ đọc trên luồng chính, vẫn nhập đủ 244 khoản, không lỗ
+✔ P10-T3 — saveData không nén trước trong worker (nén 0,9 s trên luồng chính) → phát hiện: saveData sau khi sửa dữ liệu: KHÔNG nén mảng lớn trên luồng chính (đã 
+✔ P10-T4 — nhánh cứu lãi suất quay lại cắt phần thập phân (8,5 ⇒ 8 — lỗi tiềm ẩn của bản cũ) → phát hiện: ô lãi suất lẻ định dạng ngày trong tệp nhập ⇒ L/S đúng từng khoản (8.5
+✔ P10-T5 — Trung tâm nhập lưu lại sau MỖI lần gọi saveData (không gộp theo đợt) → phát hiện: nhập 2 tệp qua Trung tâm nhập: lưu ngay khi đợt xong, đúng 1 lần lưu t
+✔ P10-T5 — gộp lưu nhưng quên lưu cuối đợt (mất dữ liệu nhập khi tải lại) → phát hiện: nhập 2 tệp qua Trung tâm nhập: lưu ngay khi đợt xong, đúng 1 lần lưu t
+✔ P10-T6 — danh sách cán bộ bỏ qua cấu hình người dùng → phát hiện: cấu hình người dùng: sai dạng ⇒ không lưu; lưu ⇒ ưu tiên hơn dữ liệu (
+✔ P10-T6 — không còn khớp tên viết tắt / đổi họ (thay cho bảng bí danh nhúng cứng) → phát hiện: cấu hình người dùng: sai dạng ⇒ không lưu; lưu ⇒ ưu tiên hơn dữ liệu (
+✔ P10-T6 — chưa cấu hình thì không tự học phòng ban từ dữ liệu → phát hiện: chưa cấu hình: phòng ban mỗi cán bộ = phòng gặp nhiều nhất trong dữ li
+✔ P10-T7 — topbar mất nút ↶ hoàn tác (lệch tiêu chí HM-15 cập nhật) → phát hiện: topbar 1920 px: ≤ 7 nút hiển thị, có Nhập IPCAS / Ctrl K / Tiện ích / 
+✔ P10-T9 — không gỡ DOM trang không hoạt động (giữ ~150.000 nút sau khi duyệt hết trang) → phát hiện: rời Dư nợ (250 dòng, nặng) ⇒ gỡ bảng (DOM trang giảm mạnh); quay lại d
+✔ P10-T9 — gỡ cả trang có biểu mẫu giữ trạng thái (Hồ sơ vay) — mất dữ liệu đang nhập → phát hiện: rời Dư nợ (250 dòng, nặng) ⇒ gỡ bảng (DOM trang giảm mạnh); quay lại d
+✔ P10-T10 — Trung tâm nhập không giữ nội dung tệp đã đọc (đọc lại 3 lần mỗi tệp) → phát hiện: nhập 1 tệp dư nợ + 1 sao kê TSBĐ qua Trung tâm nhập: đúng 2 lần đọc nộ
+# Phần 3 — chạy lại sau khi sửa BỘ TEST (mẫu HM-17b đổi theo mã T5; phép kiểm P10-T3 báo đúng nhóm): nhóm P10-T3 + HM-17b
+✔ P10-T3 — đọc Excel không dùng worker nữa (đọc đồng bộ trên luồng chính — longtask 1,2 s mỗi kỳ) → phát hiện: worker (blob từ SheetJS nhúng) đọc IPCAS .xlsx/.XLS + TSBĐ cho kết quả
+✔ P10-T3 — worker bị chặn ⇒ không có đường dự phòng luồng chính (không nhập được) → phát hiện: Worker bị chặn ⇒ đọc trên luồng chính, vẫn nhập đủ 244 khoản, không lỗ
+✔ P10-T3 — saveData không nén trước trong worker (nén 0,9 s trên luồng chính) → phát hiện: saveData sau khi sửa dữ liệu: KHÔNG nén mảng lớn trên luồng chính (đã 
+✔ HM-17b — bật lại pager desktop-patch chồng lên bảng dữ liệu → phát hiện: chỉ MỘT cơ chế phân trang (không pager ẩn dòng/nút "Hiển thị thêm" chồ
+✔ HM-17b — chọn cột: không đặt lại colspan tiêu đề gộp ô (lệch cột) → phát hiện: Giá đất "Chỉ giá UBND": 8 cột, hết tràn ngang ở 1366, tiêu đề gộp ô vẫ
+✔ HM-17b — Phí DV: dựng lại cả tập không phân trang (lỗi nghẽn 7 s với dữ liệu thật) → phát hiện: Phí DV: phân trang 100 dòng/trang (không dựng cả tập), tổng theo toàn 
+✔ HM-17b — Phí DV: "chọn tất cả" chỉ áp cho các dòng đang hiện (sót phần ở trang khác) → phát hiện: Phí DV: phân trang 100 dòng/trang (không dựng cả tập), tổng theo toàn 
+✔ HM-17b — "Tất cả" không còn dựng dần (dựng cả 1.400 dòng một lần) → phát hiện: "Tất cả" >600 dòng: hiện 400 dòng đầu ngay, dựng đủ 1.400 dòng sau đó,
+# Tổng: 59 đột biến; 2 mục ✘ ở phần 2 là lỗi bộ test (đã sửa), phần 3 xác nhận bị phát hiện ⇒ 59/59.
