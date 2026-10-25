@@ -52,11 +52,13 @@ Chi tiết: `p10_bench.txt`, `p10_savecount.txt`, `p10_audit_truoc/sau.txt`, `p1
 - Số trông như thật: placeholder điện thoại, mã KH ví dụ trong chú thích TSBĐ → giá trị giả. `tools/pii-allow.json` dựng lại: 107 → **10** băm (chỉ placeholder/hằng số) — bản cũ chứa băm số TK có tiền tố cố định, đảo ngược được.
 - Ảnh: xem từng ảnh (37 + 7 trong docx); làm mờ mạnh thêm vùng dữ liệu của `hm17_qltd_1920_blur.png`, `hm19_390_qltd_blur.png` (lớp mờ cũ còn thấy hình dạng chữ). Các ảnh khác là dữ liệu giả/fixture, không có dữ liệu, hoặc đã mờ đủ.
 - Lịch sử: các commit cục bộ (chưa từng push) gộp thành MỘT commit trên `origin/claude/new-session-01tmpj` ⇒ không commit nào được push chứa ROSTER/DATA.macb.
-- **Còn trên remote từ trước (do người dùng tải lên, không thuộc P10):** `index.html` và `hsv-react-phien16.zip` ở gốc repo có họ tên trùng người thật (cả tên cán bộ). Gỡ khỏi lịch sử remote cần force-push — chưa làm, cần người dùng quyết định.
+- **Viết lại lịch sử repo `No` (người dùng cho phép, phạm vi: TẤT CẢ nhánh, 25/10/2026):** gỡ khỏi mọi commit của 11 nhánh (kể cả `main`) bản `index.html` đã tải lên (blob 77bf159f — có họ tên người thật), `hsv-react-phien16.zip`, và **`QLTDPRO_P08_FINAL_20261023.zip`, `QLTDPRO_P09_FINAL_20261024.zip`** (nhánh `ccr-b543dfba-9rg4b2` — chứa DATA.macb, ROSTER, tên KH). `index.html` riêng của nhánh `ccr-9dbbe50d-dw0kll` (ứng dụng khác, 40 phiên bản) GIỮ NGUYÊN. Kiểm: mỗi nhánh chỉ mất đúng các tệp trên; 0 commit mới còn các blob này; force-push `--force-with-lease` 11 nhánh; PR #1 tự trỏ sang commit mới. Mã băm commit của mọi nhánh đã đổi ⇒ bản sao cục bộ cũ phải clone lại / `git reset --hard origin/<nhánh>`.
+- **Cần người dùng làm:** commit cũ vẫn có thể mở được qua mã băm trên GitHub một thời gian (bộ nhớ đệm, PR #1 cũ) ⇒ liên hệ GitHub Support yêu cầu xoá dữ liệu nhạy cảm (sensitive data removal) cho repo `twin30101981-collab/No`; nếu có bản fork/clone của người khác thì cũng còn dữ liệu cũ.
+- **Chưa quét (không thuộc phạm vi được phép):** các gói `GIAYTO_P*.zip` (hàng chục bản) và `handover/export/LANDGIS_*.zip` trên các nhánh dự án khác.
 - Số tổng hợp của chi nhánh (tổng dư nợ, theo nhóm nợ/phòng ban) vẫn có trong evidence/ảnh — không phải dữ liệu cá nhân nhưng là thông tin nội bộ.
 
 ## 4. CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
-1. ~~`DATA.macb`~~ — ĐÃ GỠ (mục 3b). **Mới:** `index.html` + `hsv-react-phien16.zip` (đã có trên remote công khai từ trước) chứa họ tên người thật — gỡ khỏi lịch sử cần force-push: anh/chị quyết định.
+1. ~~`DATA.macb`~~, ~~`index.html` + `hsv-react-phien16.zip` + QLTDPRO_P08/P09 zip~~ — ĐÃ GỠ khỏi toàn bộ lịch sử (mục 3b). **Còn:** nhờ GitHub Support dọn bộ nhớ đệm commit cũ; quyết định có quét `GIAYTO_P*.zip`/`LANDGIS_*.zip` không.
 2. ~~Push lên đâu~~ — đã làm sạch + push lên `No` (mục 3b).
 3. Danh sách cán bộ: muốn giữ cách xếp CŨ thì dán tệp `danh_sach_can_bo_cu.txt` (để ngoài repo, trong thư mục nháp của phiên) vào Tiện ích → Danh sách cán bộ; mặc định nay theo phòng ban ghi trong IPCAS.
 4. Như P09: Phụ lục I NQ38 (HM-11), khoá AI thật (HM-27), mẫu .docx cơ quan, Past Due thật, băm SRI SheetJS — giữ nguyên, không làm.
@@ -65,7 +67,7 @@ Chi tiết: `p10_bench.txt`, `p10_savecount.txt`, `p10_audit_truoc/sau.txt`, `p1
 | # | Mức | Mô tả | Đề xuất |
 |---|---|---|---|
 | U1 | Cao | Nhánh `ccr-266ec07a-kxmt78` (dữ liệu thật) vẫn còn — phiên không được cấp quyền thêm repo | xem mục 0 |
-| U2 | Cao | `index.html`, `hsv-react-phien16.zip` (có sẵn trên remote công khai) chứa họ tên người thật | người dùng quyết định gỡ (force-push) |
+| U2 | Cao | Commit cũ (trước khi viết lại lịch sử) có thể còn trong bộ nhớ đệm GitHub | người dùng nhờ GitHub Support; cân nhắc quét GIAYTO/LANDGIS zip |
 | U3 | Thấp | Mỗi kỳ nhập vẫn ghi localStorage `_prevDunoSnap` (> 100 KB, 10 lần/11 kỳ) cho nhãn "Vừa trả gốc" | gộp như T5 |
 | U4 | Thấp | Longtask còn lại khi nhập ≤ 532 ms (dựng lại giao diện sau mỗi kỳ, đối chiếu TSBĐ 19k dòng) | dựng lại 1 lần cuối đợt |
 | U5 | Thông tin | Đổi hành vi T6: 2 cán bộ đổi nhóm phòng theo IPCAS; bộ lọc thông báo không còn chọn sẵn 1 cán bộ trừ khi đặt "Mặc định" | người dùng xác nhận |

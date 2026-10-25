@@ -6,7 +6,7 @@
 - Kiểm thử: `node tests/run.js` **23/23, e2e 121/121** (mốc 21/21, 97/97); đột biến 59 (17 mới) — evidence/p10_mutation_full.txt.
 - App: app/QLTD_PRO_v2026-10-25_v22.3-P10.html (SHA-256 7909c1d4a3fa89a2faee1b556ee1339e5223675d6fc0c5b0ec55c2bdbbc08c16). Bản P08 đã gỡ khỏi app/.
 - **Làm sạch trước khi push (quyết định người dùng):** gỡ `DATA.macb` (49 hồ sơ cán bộ), che tên khách hàng/cán bộ thật còn sót (quét bằng 7.301 họ tên + 41.646 mã từ dữ liệu thật, danh sách ngoài repo), dựng lại `pii-allow.json` (107 → 10 băm placeholder), làm mờ mạnh 2 ảnh; gộp lịch sử cục bộ thành 1 commit rồi push lên `No` (evidence/p10_result.md mục 3b).
-- **Cần quyết định:** `index.html` + `hsv-react-phien16.zip` (có sẵn trên remote công khai từ trước, không thuộc P10) chứa họ tên người thật — gỡ khỏi lịch sử cần force-push.
+- **Viết lại lịch sử `No` (được phép, tất cả nhánh):** gỡ `index.html` đã tải lên, `hsv-react-phien16.zip`, `QLTDPRO_P08/P09_FINAL_*.zip` khỏi mọi commit của 11 nhánh; force-push. Mã băm commit đã đổi — clone lại. **Việc của anh/chị:** nhờ GitHub Support dọn bộ nhớ đệm commit cũ.
 ---
 # BÀN GIAO — QLTDPRO — Phiên P09 — luỹ kế HM-01…HM-28b (xem bảng mục 2)
 **P09 (24/10/2026)** — người dùng gửi lại dữ liệu thật (11 kỳ dư nợ, 2 sao kê TSBĐ, GIÁ ĐẤT) và yêu cầu kiểm chứng Playwright toàn bộ để tìm điểm nghẽn/hạn chế/lỗi tồn đọng và tiềm ẩn. Báo cáo đầy đủ: **evidence/p09_result.md** (số đo trước/sau, 8 lỗi/điểm nghẽn đã sửa, 10 tồn đọng T1–T10). Nhánh `ccr-266ec07a-kxmt78` KHÔNG đụng. **Bốn chuỗi giống khoá API xuất hiện trong lời nhắn — KHÔNG dùng/ghi; người dùng cần thu hồi.**
@@ -141,7 +141,7 @@ Kết quả lần chạy cuối (P04d): tests/run.js --mutation --real = 23/23 n
 - **P04b — HM-17b chọn cột Chuyển HM/TSBĐ/Giá đất, fixture .XLS + TSBĐ ẩn danh, hồi quy dữ liệu thật — ĐẠT-V3 (22/10/2026)** (evidence/p04b_result.md)
 ## 4. HẠNG MỤC CÒN LẠI
 ### A. Cần NGƯỜI DÙNG quyết định / cung cấp (sau P05)
-0. **P10 — cần quyết định:** (a) gỡ `index.html` + `hsv-react-phien16.zip` (có tên người thật) khỏi lịch sử repo công khai `No` (force-push)? (b) giữ cách xếp cán bộ cũ? (dán `danh_sach_can_bo_cu.txt` vào Tiện ích → Danh sách cán bộ). `DATA.macb` đã gỡ; mã đã push lên `No` sau khi làm sạch.
+0. **P10 — còn lại:** (a) nhờ GitHub Support dọn commit cũ của repo `No` (đã viết lại lịch sử 11 nhánh); quét `GIAYTO_P*.zip`/`LANDGIS_*.zip` trên các nhánh khác? (b) giữ cách xếp cán bộ cũ? (dán `danh_sach_can_bo_cu.txt` vào Tiện ích → Danh sách cán bộ). `DATA.macb` đã gỡ; mã đã push lên `No` sau khi làm sạch.
 1. **Nhánh ccr-266ec07a-kxmt78 (chứa dữ liệu khách hàng thật, commit 649fdb2) VẪN CÒN trên GitHub** (P10 được phép xoá nhưng không thêm được repo — mục 0): anh/chị tự xoá (GitHub → Branches → thùng rác) rồi nhờ GitHub Support dọn commit mồ côi/cache — HOẶC ghi rõ trong PROMPT "cho phép Claude xoá nhánh" để phiên sau thử `git push origin --delete` (không đảo ngược). Thu hồi khoá API đã lộ trong ảnh chat.
 2. **Xem giao diện P05**: menu bên cố định ở màn ≥1440 px; HSVV có khung nền/lề; FHS nhãn–ô nhập nằm ngang trên máy tính — ổn hay chỉnh?
 3. **HM-11**: gửi Phụ lục I của NQ38 (bảng giá đất ở tại đô thị).

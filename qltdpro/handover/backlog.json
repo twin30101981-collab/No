@@ -1622,7 +1622,8 @@
   "P10: cho phep xoa nhanh ccr-266ec07a-kxmt78 (chi nhanh nay; khong force-push)",
   "P10: lam T1→T10 theo thu tu; giu nguyen HM-11/HM-27/mau .docx/Past Due/SRI SheetJS",
   "P10 (T5): GIU ban sao localStorage (duong phuc hoi HM-04) — khong doi muc an toan",
-  "P10 (25/10/2026): go DATA.macb, lam sach lich su (gop commit cuc bo chua push) roi push len repo 'No'"
+  "P10 (25/10/2026): go DATA.macb, lam sach lich su (gop commit cuc bo chua push) roi push len repo 'No'",
+  "P10 (25/10/2026): cho phep go index.html (ban tai len) + hsv-react-phien16.zip + QLTDPRO_P08/P09_FINAL zip khoi lich su TAT CA nhanh repo 'No', force-push"
  ],
  "quyet_dinh_cho_chot": [
   "SU CO git: nhanh ccr-266ec07a-kxmt78 (commit 649fdb2, du lieu khach hang that) VAN CON tren GitHub. P10: nguoi dung DA CHO PHEP xoa nhung add_repo Land-gis bi bo phan loai quyen cua phien tu choi => chua xoa. Lam: tu xoa (GitHub > Land-gis > Branches) HOAC cho phep cong cu add_repo roi mo phien moi; sau do nho GitHub Support don commit mo coi + cache.",
@@ -1630,7 +1631,7 @@
   "HM-27: thu voi khoa AI that; nha cung cap AI khac?",
   "Tep bo sung: mau .docx cua co quan (HM-28b), Past Due that (TDUP5).",
   "Giao dien P06 (menu 64px/252px, the KPI, luoi 2 cot, ngan chi tiet, topbar dien thoai): on hay chinh? Ghim cot Ten KH mac dinh: bat/khong?",
-  "P10: go index.html + hsv-react-phien16.zip (ho ten nguoi that) khoi lich su repo cong khai 'No' (force-push)?"
+  "P10: quet GIAYTO_P*.zip + handover/export/LANDGIS_*.zip (nhanh du an khac tren repo 'No') tim du lieu that?"
  ],
  "loi_nen_ngoai_pham_vi": [
   "PDF NQ38 la anh scan, chua OCR",
@@ -1676,12 +1677,13 @@
   "T8 tools/real-run.mjs: 1 lệnh, 12/12 kịch bản dữ liệu thật",
   "T9 gỡ bảng trang nặng không hoạt động (DOM 56.206→38.297)",
   "T10 Trung tâm nhập đọc mỗi tệp 1 lần (6→2 lần/2 tệp)",
-  "PII: go DATA.macb (49 ho so can bo), che ten KH/can bo that con sot (quet theo du lieu that), pii-allow 107→10, lam mo manh 2 anh"
+  "PII: go DATA.macb (49 ho so can bo), che ten KH/can bo that con sot (quet theo du lieu that), pii-allow 107→10, lam mo manh 2 anh",
+  "PII: viet lai lich su 11 nhanh repo 'No' — go index.html (blob 77bf159f), hsv-react-phien16.zip, QLTDPRO_P08/P09_FINAL zip; force-push"
  ],
  "ton_dong_P09_trang_thai": "T1–T10 ĐÃ LÀM ở P10 (evidence/p10_result.md)",
  "ton_dong_P10": [
   "U1 nhánh ccr-266ec07a-kxmt78 (dữ liệu thật) vẫn còn — add_repo Land-gis bị từ chối quyền trong phiên P10",
-  "U2 index.html + hsv-react-phien16.zip (co san tren remote cong khai 'No', khong thuoc P10) chua ho ten nguoi that — go khoi lich su can force-push",
+  "U2 commit cu cua repo 'No' (truoc khi viet lai lich su 25/10/2026) co the con trong bo nho dem GitHub — nguoi dung nho GitHub Support; GIAYTO_P*.zip / LANDGIS_*.zip tren nhanh khac chua quet",
   "U3 _prevDunoSnap ghi localStorage mỗi kỳ nhập",
   "U4 longtask ≤532 ms khi nhập (dựng lại giao diện sau mỗi kỳ)",
   "U5 hành vi T6: 2 cán bộ đổi nhóm phòng theo IPCAS; không còn chọn sẵn cán bộ mặc định"

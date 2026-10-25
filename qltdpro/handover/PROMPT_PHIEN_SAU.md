@@ -2,7 +2,7 @@ Tiếp tục đề án QLTDPRO (phiên P11). Đính kèm ZIP bàn giao QLTDPRO_P
 
 QUYẾT ĐỊNH CỦA NGƯỜI DÙNG (điền trước khi gửi — để trống = Claude KHÔNG làm mục đó):
 1. Nhánh `ccr-266ec07a-kxmt78` (repo Land-gis, dữ liệu khách hàng thật, commit 649fdb2): [ ] tôi đã tự xoá trên GitHub — Claude chỉ kiểm lại danh sách nhánh · [ ] cho phép Claude xoá (tôi đã cho phép công cụ `add_repo` trong cài đặt quyền; chỉ `git push origin --delete ccr-266ec07a-kxmt78`, KHÔNG force-push, KHÔNG xoá nhánh khác như `ccr-45c0b8ef-riyvtt`, `ccr-c8312b7d-xdaqyo`). Sau đó tôi tự nhờ GitHub Support dọn commit mồ côi/cache.
-2. Repo `No` (CÔNG KHAI): `index.html` + `hsv-react-phien16.zip` ở gốc (tải lên trước P10) chứa họ tên người thật: [ ] cho phép gỡ khỏi lịch sử nhánh `claude/new-session-01tmpj` (force-push, không đảo ngược) · [ ] tôi tự xử lý · [ ] giữ nguyên.
+2. Repo `No` (CÔNG KHAI, P10 đã viết lại lịch sử 11 nhánh): [ ] tôi đã nhờ GitHub Support dọn commit cũ · [ ] cho phép Claude quét `GIAYTO_P*.zip` + `LANDGIS_*.zip` trên các nhánh khác và BÁO (không tự gỡ).
 3. Nơi lưu mã P11: [ ] tiếp tục nhánh `claude/new-session-01tmpj` của `No` (đã làm sạch ở P10) · [ ] repo riêng tư Land-gis.
 4. Danh sách cán bộ: [ ] dùng tự học theo IPCAS (mặc định P10) · [ ] tôi đã dán danh sách cũ vào Tiện ích → 👥 Danh sách cán bộ.
 5. Tồn đọng U3–U4 (evidence/p10_result.md mục 5): [ ] làm · [ ] bỏ qua. Chưa có (giữ như P10): Phụ lục I NQ38 (HM-11), khoá AI thật (HM-27), mẫu .docx cơ quan, Past Due thật, băm SRI SheetJS.
